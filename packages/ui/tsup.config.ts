@@ -7,12 +7,20 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: ["react", "react-dom"],
+  external: [
+    "react",
+    "react-dom",
+    "next-themes",
+    /^@radix-ui\/.*/,
+    "cmdk",
+    "sonner",
+    "vaul",
+    "embla-carousel-react",
+    "react-day-picker",
+    "react-resizable-panels",
+    "input-otp",
+    "lucide-react",
+  ],
   treeshake: true,
   minify: false,
-  esbuildOptions(options) {
-    options.banner = {
-      js: '"use client"',
-    };
-  },
 });

@@ -6,6 +6,9 @@ const withMDX = createMDX();
 const config = {
   reactStrictMode: true,
   transpilePackages: ["@blips/ui"],
+  experimental: {
+    optimizePackageImports: ["@blips/ui"],
+  },
 };
 
 export default withMDX(config);

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { Button } from "@blips/ui";
+import Link from "next/link";
 
 export default function HomePage() {
   return (

@@ -7,10 +7,7 @@
       "name": "button",
       "type": "registry:ui",
       "description": "A button component with multiple variants and sizes.",
-      "dependencies": [
-        "@radix-ui/react-slot",
-        "class-variance-authority"
-      ],
+      "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
       "files": [
         {
           "path": "default/ui/button.tsx",
