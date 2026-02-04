@@ -1,4 +1,4 @@
-import { Button } from "@blips/ui";
+import { Button } from "@blips/ui/components/button";
 import Link from "next/link";
 
 export default function HomePage() {
