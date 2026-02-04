@@ -1,0 +1,84 @@
+---
+title: Button
+description: A button component with multiple variants and sizes.
+---
+
+import { Button } from "@blips/ui";
+
+# Button
+
+A button component with multiple variants and sizes, built on top of Radix UI's Slot primitive.
+
+## Installation
+
+```bash
+pnpm add @blips/ui
+```
+
+## Usage
+
+```tsx
+import { Button } from "@blips/ui";
+
+export function MyComponent() {
+  return <Button>Click me</Button>;
+}
+```
+
+## Examples
+
+### Variants
+
+<div className="flex flex-wrap gap-4 my-6">
+  <Button>Default</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="destructive">Destructive</Button>
+  <Button variant="outline">Outline</Button>
+  <Button variant="ghost">Ghost</Button>
+  <Button variant="link">Link</Button>
+</div>
+
+```tsx
+<Button>Default</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="destructive">Destructive</Button>
+<Button variant="outline">Outline</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="link">Link</Button>
+```
+
+### Sizes
+
+<div className="flex flex-wrap items-center gap-4 my-6">
+  <Button size="sm">Small</Button>
+  <Button size="default">Default</Button>
+  <Button size="lg">Large</Button>
+</div>
+
+```tsx
+<Button size="sm">Small</Button>
+<Button size="default">Default</Button>
+<Button size="lg">Large</Button>
+```
+
+### As Child
+
+Use the `asChild` prop to render the button as a different element:
+
+```tsx
+import Link from "next/link";
+
+<Button asChild>
+  <Link href="/about">About</Link>
+</Button>
+```
+
+## API Reference
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link"` | `"default"` | The visual style of the button |
+| `size` | `"default" \| "sm" \| "lg" \| "icon"` | `"default"` | The size of the button |
+| `asChild` | `boolean` | `false` | Render as a child element |

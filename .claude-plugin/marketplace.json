@@ -1,0 +1,35 @@
+{
+  "name": "blips-ui-marketplace",
+  "owner": {
+    "name": "Blips",
+    "email": "dev@blips.com"
+  },
+  "metadata": {
+    "description": "Marketplace de plugins para componentes Blips UI",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "blips-ui",
+      "source": "./plugins/blips-ui",
+      "description": "Skills para adicionar e gerenciar componentes Blips UI",
+      "version": "1.0.0",
+      "author": {
+        "name": "Blips"
+      },
+      "keywords": ["ui", "components", "react"],
+      "category": "ui"
+    },
+    {
+      "name": "blips-templates",
+      "source": "./plugins/blips-templates",
+      "description": "Templates de páginas e layouts Blips",
+      "version": "1.0.0",
+      "author": {
+        "name": "Blips"
+      },
+      "keywords": ["templates", "pages", "layouts"],
+      "category": "templates"
+    }
+  ]
+}
