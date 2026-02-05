@@ -61,7 +61,15 @@
     "./components/textarea": "./src/components/textarea.tsx",
     "./components/toggle": "./src/components/toggle.tsx",
     "./components/toggle-group": "./src/components/toggle-group.tsx",
-    "./components/tooltip": "./src/components/tooltip.tsx"
+    "./components/tooltip": "./src/components/tooltip.tsx",
+    "./components/button-group": "./src/components/button-group.tsx",
+    "./components/chart": "./src/components/chart.tsx",
+    "./components/form": "./src/components/form.tsx",
+    "./components/input-group": "./src/components/input-group.tsx",
+    "./components/kbd": "./src/components/kbd.tsx",
+    "./components/sidebar": "./src/components/sidebar.tsx",
+    "./components/spinner": "./src/components/spinner.tsx",
+    "./hooks/use-mobile": "./src/hooks/use-mobile.tsx"
   },
   "files": [
     "dist",
@@ -83,6 +91,7 @@
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
@@ -118,10 +127,13 @@
     "lucide-react": "^0.468.0",
     "next-themes": "^0.4.6",
     "react-day-picker": "^9.13.0",
+    "react-hook-form": "^7.71.1",
     "react-resizable-panels": "^4.5.9",
+    "recharts": "2.15.4",
     "sonner": "^2.0.7",
     "tailwind-merge": "^2.6.0",
-    "vaul": "^1.1.2"
+    "vaul": "^1.1.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
