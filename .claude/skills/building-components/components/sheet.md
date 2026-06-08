@@ -7,25 +7,25 @@ Sheet, SheetPortal, SheetOverlay, SheetTrigger, SheetClose, SheetContent, SheetH
 
 sheetVariants via cva: side = `top` | `bottom` | `left` | `right` (default: `right`)
 
-## Usage
+## Uso
 
 ```tsx
 import { Sheet, SheetTrigger, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription, SheetClose } from "@blips/ui"
 
 <Sheet>
-  <SheetTrigger asChild><Button variant="outline">Open</Button></SheetTrigger>
+  <SheetTrigger asChild><Button variant="outline">Abrir</Button></SheetTrigger>
   <SheetContent side="right">
     <SheetHeader>
-      <SheetTitle>Settings</SheetTitle>
-      <SheetDescription>Manage your preferences.</SheetDescription>
+      <SheetTitle>Configurações</SheetTitle>
+      <SheetDescription>Gerencie suas preferências.</SheetDescription>
     </SheetHeader>
-    <div className="py-4">Content</div>
+    <div className="py-4">Conteúdo</div>
     <SheetFooter>
-      <SheetClose asChild><Button>Done</Button></SheetClose>
+      <SheetClose asChild><Button>Concluir</Button></SheetClose>
     </SheetFooter>
   </SheetContent>
 </Sheet>
 
-// Left side
+// Lado esquerdo
 <SheetContent side="left">...</SheetContent>
 ```

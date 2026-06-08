@@ -3,18 +3,18 @@
 
 Exports: Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator, MenubarLabel, MenubarCheckboxItem, MenubarRadioGroup, MenubarRadioItem, MenubarPortal, MenubarSubContent, MenubarSubTrigger, MenubarGroup, MenubarSub, MenubarShortcut
 
-Usage:
+Uso:
 ```tsx
 import { Menubar, MenubarMenu, MenubarTrigger, MenubarContent, MenubarItem, MenubarSeparator, MenubarShortcut } from "@blips/ui"
 
 <Menubar>
   <MenubarMenu>
-    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarTrigger>Arquivo</MenubarTrigger>
     <MenubarContent>
-      <MenubarItem>New <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
-      <MenubarItem>Open <MenubarShortcut>⌘O</MenubarShortcut></MenubarItem>
+      <MenubarItem>Novo <MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
+      <MenubarItem>Abrir <MenubarShortcut>⌘O</MenubarShortcut></MenubarItem>
       <MenubarSeparator />
-      <MenubarItem>Print <MenubarShortcut>⌘P</MenubarShortcut></MenubarItem>
+      <MenubarItem>Imprimir <MenubarShortcut>⌘P</MenubarShortcut></MenubarItem>
     </MenubarContent>
   </MenubarMenu>
 </Menubar>

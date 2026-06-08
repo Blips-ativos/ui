@@ -5,10 +5,10 @@
 ## Exports
 ToggleGroup, ToggleGroupItem
 
-## Features
-Context propagates variant/size to items.
+## Recursos
+O contexto propaga variant/size para os itens.
 
-## Usage
+## Uso
 
 ```tsx
 import { ToggleGroup, ToggleGroupItem } from "@blips/ui"
@@ -20,7 +20,7 @@ import { ToggleGroup, ToggleGroupItem } from "@blips/ui"
   <ToggleGroupItem value="right"><AlignRight /></ToggleGroupItem>
 </ToggleGroup>
 
-// Multiple with outline
+// Múltiplo com outline
 <ToggleGroup type="multiple" variant="outline">
   <ToggleGroupItem value="bold">B</ToggleGroupItem>
   <ToggleGroupItem value="italic">I</ToggleGroupItem>

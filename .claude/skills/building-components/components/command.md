@@ -6,7 +6,7 @@
 
 `Command`, `CommandDialog`, `CommandInput`, `CommandList`, `CommandEmpty`, `CommandGroup`, `CommandItem`, `CommandShortcut`, `CommandSeparator`
 
-## Usage
+## Uso
 
 ### Inline Command
 
@@ -14,12 +14,12 @@
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut } from "@blips/ui"
 
 <Command className="rounded-lg border shadow-md">
-  <CommandInput placeholder="Type a command..." />
+  <CommandInput placeholder="Digite um comando..." />
   <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Suggestions">
-      <CommandItem>Calendar</CommandItem>
-      <CommandItem>Search</CommandItem>
+    <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+    <CommandGroup heading="Sugestões">
+      <CommandItem>Calendário</CommandItem>
+      <CommandItem>Buscar</CommandItem>
     </CommandGroup>
   </CommandList>
 </Command>
@@ -31,16 +31,16 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut } from "@blips/ui"
 
 <CommandDialog open={open} onOpenChange={setOpen}>
-  <CommandInput placeholder="Type a command..." />
+  <CommandInput placeholder="Digite um comando..." />
   <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Actions">
+    <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+    <CommandGroup heading="Ações">
       <CommandItem>
-        New File
+        Novo arquivo
         <CommandShortcut>⌘N</CommandShortcut>
       </CommandItem>
       <CommandItem>
-        Open File
+        Abrir arquivo
         <CommandShortcut>⌘O</CommandShortcut>
       </CommandItem>
     </CommandGroup>
@@ -48,42 +48,42 @@ import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, C
 </CommandDialog>
 ```
 
-## Props & Variants
+## Props e Variantes
 
 ### Command
-- `className`: string - Custom CSS classes
-- `children`: ReactNode - Command content
+- `className`: string - Classes CSS customizadas
+- `children`: ReactNode - Conteúdo do command
 
 ### CommandDialog
-- `open`: boolean - Dialog open state
-- `onOpenChange`: (open: boolean) => void - Dialog state change handler
+- `open`: boolean - Estado de abertura do dialog
+- `onOpenChange`: (open: boolean) => void - Handler de mudança de estado do dialog
 
 ### CommandInput
-- `placeholder`: string - Input placeholder text
-- `className`: string - Custom CSS classes
+- `placeholder`: string - Texto de placeholder do input
+- `className`: string - Classes CSS customizadas
 
 ### CommandList
-- `children`: ReactNode - List content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo da lista
+- `className`: string - Classes CSS customizadas
 
 ### CommandEmpty
-- `children`: ReactNode - Empty state content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do estado vazio
+- `className`: string - Classes CSS customizadas
 
 ### CommandGroup
-- `heading`: string - Group heading text
-- `children`: ReactNode - Group items
-- `className`: string - Custom CSS classes
+- `heading`: string - Texto do cabeçalho do grupo
+- `children`: ReactNode - Itens do grupo
+- `className`: string - Classes CSS customizadas
 
 ### CommandItem
-- `children`: ReactNode - Item content
-- `onSelect`: () => void - Selection callback
-- `className`: string - Custom CSS classes
-- `value`: string - Item value for filtering
+- `children`: ReactNode - Conteúdo do item
+- `onSelect`: () => void - Callback de seleção
+- `className`: string - Classes CSS customizadas
+- `value`: string - Valor do item para filtragem
 
 ### CommandShortcut
-- `children`: ReactNode - Shortcut text/icon
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto/ícone do atalho
+- `className`: string - Classes CSS customizadas
 
 ### CommandSeparator
-- `className`: string - Custom CSS classes
+- `className`: string - Classes CSS customizadas

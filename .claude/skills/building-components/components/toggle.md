@@ -8,7 +8,7 @@ Toggle, toggleVariants
 ## Props & Variants
 **Variants:** variant (default, outline), size (default h-10, sm h-9, lg h-11)
 
-## Usage
+## Uso
 
 ```tsx
 import { Toggle } from "@blips/ui"
@@ -18,4 +18,4 @@ import { Toggle } from "@blips/ui"
 <Toggle pressed={isBold} onPressedChange={setIsBold}>B</Toggle>
 ```
 
-toggleVariants exported for reuse in ToggleGroup.
+toggleVariants é exportado para reuso no ToggleGroup.

@@ -6,7 +6,7 @@
 
 `ContextMenu`, `ContextMenuTrigger`, `ContextMenuContent`, `ContextMenuItem`, `ContextMenuCheckboxItem`, `ContextMenuRadioItem`, `ContextMenuLabel`, `ContextMenuSeparator`, `ContextMenuShortcut`, `ContextMenuGroup`, `ContextMenuPortal`, `ContextMenuSub`, `ContextMenuSubContent`, `ContextMenuSubTrigger`, `ContextMenuRadioGroup`
 
-## Usage
+## Uso
 
 ### Basic Context Menu
 
@@ -23,20 +23,20 @@ import {
 
 <ContextMenu>
   <ContextMenuTrigger className="w-64 h-32 border border-dashed rounded-md flex items-center justify-center">
-    Right click here
+    Clique com o botão direito aqui
   </ContextMenuTrigger>
   <ContextMenuContent className="w-64">
     <ContextMenuItem>
-      Back
+      Voltar
       <ContextMenuShortcut>⌘[</ContextMenuShortcut>
     </ContextMenuItem>
     <ContextMenuItem>
-      Forward
+      Avançar
       <ContextMenuShortcut>⌘]</ContextMenuShortcut>
     </ContextMenuItem>
     <ContextMenuSeparator />
-    <ContextMenuCheckboxItem checked>Show Bookmarks</ContextMenuCheckboxItem>
-    <ContextMenuCheckboxItem>Show Full URLs</ContextMenuCheckboxItem>
+    <ContextMenuCheckboxItem checked>Mostrar favoritos</ContextMenuCheckboxItem>
+    <ContextMenuCheckboxItem>Mostrar URLs completas</ContextMenuCheckboxItem>
   </ContextMenuContent>
 </ContextMenu>
 ```
@@ -45,16 +45,16 @@ import {
 
 ```tsx
 <ContextMenu>
-  <ContextMenuTrigger>Right click</ContextMenuTrigger>
+  <ContextMenuTrigger>Clique com o botão direito</ContextMenuTrigger>
   <ContextMenuContent>
-    <ContextMenuItem>Cut</ContextMenuItem>
-    <ContextMenuItem>Copy</ContextMenuItem>
+    <ContextMenuItem>Recortar</ContextMenuItem>
+    <ContextMenuItem>Copiar</ContextMenuItem>
     <ContextMenuSeparator />
     <ContextMenuSub>
-      <ContextMenuSubTrigger>More Tools</ContextMenuSubTrigger>
+      <ContextMenuSubTrigger>Mais ferramentas</ContextMenuSubTrigger>
       <ContextMenuSubContent>
-        <ContextMenuItem>Save Page As...</ContextMenuItem>
-        <ContextMenuItem>Create Shortcut...</ContextMenuItem>
+        <ContextMenuItem>Salvar página como...</ContextMenuItem>
+        <ContextMenuItem>Criar atalho...</ContextMenuItem>
       </ContextMenuSubContent>
     </ContextMenuSub>
   </ContextMenuContent>
@@ -65,76 +65,76 @@ import {
 
 ```tsx
 <ContextMenu>
-  <ContextMenuTrigger>Right click</ContextMenuTrigger>
+  <ContextMenuTrigger>Clique com o botão direito</ContextMenuTrigger>
   <ContextMenuContent>
-    <ContextMenuLabel>Appearance</ContextMenuLabel>
+    <ContextMenuLabel>Aparência</ContextMenuLabel>
     <ContextMenuSeparator />
     <ContextMenuRadioGroup value={theme} onValueChange={setTheme}>
-      <ContextMenuRadioItem value="light">Light</ContextMenuRadioItem>
-      <ContextMenuRadioItem value="dark">Dark</ContextMenuRadioItem>
-      <ContextMenuRadioItem value="system">System</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="light">Claro</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="dark">Escuro</ContextMenuRadioItem>
+      <ContextMenuRadioItem value="system">Sistema</ContextMenuRadioItem>
     </ContextMenuRadioGroup>
   </ContextMenuContent>
 </ContextMenu>
 ```
 
-## Props & Variants
+## Props e Variantes
 
 ### ContextMenuTrigger
-- `children`: ReactNode - Trigger element
-- `className`: string - Custom CSS classes
-- `asChild`: boolean - Use as child component
+- `children`: ReactNode - Elemento que dispara o menu
+- `className`: string - Classes CSS customizadas
+- `asChild`: boolean - Usar como componente filho
 
 ### ContextMenuContent
-- `children`: ReactNode - Menu content
-- `className`: string - Custom CSS classes
-- `align`: 'start' | 'center' | 'end' - Content alignment
-- `side`: 'top' | 'right' | 'bottom' | 'left' - Menu side
+- `children`: ReactNode - Conteúdo do menu
+- `className`: string - Classes CSS customizadas
+- `align`: 'start' | 'center' | 'end' - Alinhamento do conteúdo
+- `side`: 'top' | 'right' | 'bottom' | 'left' - Lado do menu
 
 ### ContextMenuItem
-- `children`: ReactNode - Item content
-- `onSelect`: () => void - Selection callback
-- `className`: string - Custom CSS classes
-- `disabled`: boolean - Disable item
+- `children`: ReactNode - Conteúdo do item
+- `onSelect`: () => void - Callback de seleção
+- `className`: string - Classes CSS customizadas
+- `disabled`: boolean - Desabilitar item
 
 ### ContextMenuCheckboxItem
-- `checked`: boolean - Checkbox state
-- `onCheckedChange`: (checked: boolean) => void - State change handler
-- `children`: ReactNode - Item content
-- `className`: string - Custom CSS classes
+- `checked`: boolean - Estado do checkbox
+- `onCheckedChange`: (checked: boolean) => void - Handler de mudança de estado
+- `children`: ReactNode - Conteúdo do item
+- `className`: string - Classes CSS customizadas
 
 ### ContextMenuRadioItem
-- `value`: string - Radio value
-- `children`: ReactNode - Item content
-- `className`: string - Custom CSS classes
+- `value`: string - Valor do radio
+- `children`: ReactNode - Conteúdo do item
+- `className`: string - Classes CSS customizadas
 
 ### ContextMenuLabel
-- `children`: ReactNode - Label text
-- `className`: string - Custom CSS classes
-- `inset`: boolean - Add inset padding
+- `children`: ReactNode - Texto do label
+- `className`: string - Classes CSS customizadas
+- `inset`: boolean - Adicionar padding interno
 
 ### ContextMenuSeparator
-- `className`: string - Custom CSS classes
+- `className`: string - Classes CSS customizadas
 
 ### ContextMenuShortcut
-- `children`: ReactNode - Shortcut text
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto do atalho
+- `className`: string - Classes CSS customizadas
 
 ### ContextMenuRadioGroup
-- `value`: string - Selected value
-- `onValueChange`: (value: string) => void - Change handler
-- `children`: ReactNode - Radio items
+- `value`: string - Valor selecionado
+- `onValueChange`: (value: string) => void - Handler de mudança
+- `children`: ReactNode - Itens de radio
 
 ### ContextMenuSub
-- `children`: ReactNode - Submenu content
-- `open`: boolean - Open state
-- `onOpenChange`: (open: boolean) => void - State change handler
+- `children`: ReactNode - Conteúdo do submenu
+- `open`: boolean - Estado de abertura
+- `onOpenChange`: (open: boolean) => void - Handler de mudança de estado
 
 ### ContextMenuSubTrigger
-- `children`: ReactNode - Trigger content
-- `className`: string - Custom CSS classes
-- `inset`: boolean - Add inset padding
+- `children`: ReactNode - Conteúdo do trigger
+- `className`: string - Classes CSS customizadas
+- `inset`: boolean - Adicionar padding interno
 
 ### ContextMenuSubContent
-- `children`: ReactNode - Submenu content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do submenu
+- `className`: string - Classes CSS customizadas

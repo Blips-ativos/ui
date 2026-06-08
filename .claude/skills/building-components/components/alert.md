@@ -92,14 +92,14 @@ import { Terminal, AlertCircle } from "lucide-react"
 // Default
 <Alert>
   <Terminal className="h-4 w-4" />
-  <AlertTitle>Heads up!</AlertTitle>
-  <AlertDescription>You can add components using the CLI.</AlertDescription>
+  <AlertTitle>Atenção!</AlertTitle>
+  <AlertDescription>Você pode adicionar componentes usando a CLI.</AlertDescription>
 </Alert>
 
 // Destructive
 <Alert variant="destructive">
   <AlertCircle className="h-4 w-4" />
-  <AlertTitle>Error</AlertTitle>
-  <AlertDescription>Your session has expired.</AlertDescription>
+  <AlertTitle>Erro</AlertTitle>
+  <AlertDescription>Sua sessão expirou.</AlertDescription>
 </Alert>
 ```

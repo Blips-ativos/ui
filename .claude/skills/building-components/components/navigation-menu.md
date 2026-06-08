@@ -3,24 +3,24 @@
 
 Exports: NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuContent, NavigationMenuTrigger, NavigationMenuLink, NavigationMenuIndicator, NavigationMenuViewport, navigationMenuTriggerStyle
 
-NavigationMenu auto-renders NavigationMenuViewport.
+O NavigationMenu renderiza automaticamente o NavigationMenuViewport.
 
-Usage:
+Uso:
 ```tsx
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, navigationMenuTriggerStyle } from "@blips/ui"
 
 <NavigationMenu>
   <NavigationMenuList>
     <NavigationMenuItem>
-      <NavigationMenuTrigger>Getting Started</NavigationMenuTrigger>
+      <NavigationMenuTrigger>Primeiros passos</NavigationMenuTrigger>
       <NavigationMenuContent>
         <ul className="grid gap-3 p-4 w-[400px]">
-          <li><NavigationMenuLink href="/docs">Documentation</NavigationMenuLink></li>
+          <li><NavigationMenuLink href="/docs">Documentação</NavigationMenuLink></li>
         </ul>
       </NavigationMenuContent>
     </NavigationMenuItem>
     <NavigationMenuItem>
-      <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/about">About</NavigationMenuLink>
+      <NavigationMenuLink className={navigationMenuTriggerStyle()} href="/about">Sobre</NavigationMenuLink>
     </NavigationMenuItem>
   </NavigationMenuList>
 </NavigationMenu>

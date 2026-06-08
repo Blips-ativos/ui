@@ -30,65 +30,65 @@ export { Input }
 
 `Input`
 
-## Usage
+## Uso
 
-### Text Input
+### Campo de texto
 
 ```tsx
 import { Input } from "@blips/ui"
 
-<Input placeholder="Enter text..." />
+<Input placeholder="Digite o texto..." />
 ```
 
-### Email Input
+### Campo de e-mail
 
 ```tsx
-<Input type="email" placeholder="name@example.com" />
+<Input type="email" placeholder="nome@exemplo.com" />
 ```
 
-### Password Input
+### Campo de senha
 
 ```tsx
-<Input type="password" placeholder="Enter password..." />
+<Input type="password" placeholder="Digite a senha..." />
 ```
 
-### File Input
+### Campo de arquivo
 
 ```tsx
 <Input type="file" />
 ```
 
-### Number Input
+### Campo numérico
 
 ```tsx
 <Input type="number" placeholder="0" />
 ```
 
-### Date Input
+### Campo de data
 
 ```tsx
 <Input type="date" />
 ```
 
-### Search Input
+### Campo de busca
 
 ```tsx
-<Input type="search" placeholder="Search..." />
+<Input type="search" placeholder="Buscar..." />
 ```
 
-### Disabled Input
+### Campo desabilitado
 
 ```tsx
-<Input disabled placeholder="Disabled input" />
+<Input disabled placeholder="Campo desabilitado" />
 ```
 
-### Input with Default Value
+### Campo com valor padrão
 
 ```tsx
-<Input defaultValue="Default value" />
+<Input defaultValue="Valor padrão" />
 ```
 
-### Controlled Input
+### Campo controlado
 
 ```tsx
 const [value, setValue] = React.useState("")
@@ -96,22 +96,22 @@ const [value, setValue] = React.useState("")
 <Input
   value={value}
   onChange={(e) => setValue(e.target.value)}
-  placeholder="Type something..."
+  placeholder="Digite algo..."
 />
 ```
 
-### Input with Icon
+### Campo com ícone
 
 ```tsx
 import { Search } from "lucide-react"
 
 <div className="relative">
   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-  <Input className="pl-9" placeholder="Search..." />
+  <Input className="pl-9" placeholder="Buscar..." />
 </div>
 ```
 
-### Input in a Form
+### Campo em um formulário
 
 ```tsx
 import { Form, FormField, FormItem, FormLabel, FormControl } from "@blips/ui"
@@ -121,9 +121,9 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "@blips/ui"
   name="email"
   render={({ field }) => (
     <FormItem>
-      <FormLabel>Email</FormLabel>
+      <FormLabel>E-mail</FormLabel>
       <FormControl>
-        <Input placeholder="Enter your email..." {...field} />
+        <Input placeholder="Digite o seu e-mail..." {...field} />
       </FormControl>
     </FormItem>
   )}
@@ -134,7 +134,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "@blips/ui"
 
 ### Input
 
-The `Input` component accepts all standard HTML input element props:
+O componente `Input` aceita todas as props padrão do elemento input HTML:
 
 - `type`: string - Input type (default: 'text')
   - Common values: 'text', 'email', 'password', 'number', 'date', 'file', 'search', 'tel', 'url'
@@ -160,22 +160,22 @@ The `Input` component accepts all standard HTML input element props:
 
 ## Styling
 
-The Input component applies these default classes:
+O componente Input aplica estas classes padrão:
 
-- **Layout**: `flex h-10 w-full` - Full width with fixed height
-- **Borders**: `rounded-md border border-input` - Rounded corners and input border color
-- **Background**: `bg-background` - Uses CSS variable for background
-- **Padding**: `px-3 py-2` - Horizontal and vertical padding
-- **Text**: `text-base md:text-sm` - Responsive font sizes
-- **Focus**: `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` - Outline ring on focus
-- **Disabled**: `disabled:cursor-not-allowed disabled:opacity-50` - Visual feedback when disabled
-- **Placeholder**: `placeholder:text-muted-foreground` - Muted placeholder color
-- **File Input**: `file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground` - Styled file button
+- **Layout**: `flex h-10 w-full` - Largura total com altura fixa
+- **Bordas**: `rounded-md border border-input` - Cantos arredondados e cor de borda do input
+- **Fundo**: `bg-background` - Usa variável CSS para o fundo
+- **Padding**: `px-3 py-2` - Padding horizontal e vertical
+- **Texto**: `text-base md:text-sm` - Tamanhos de fonte responsivos
+- **Foco**: `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2` - Anel de contorno no foco
+- **Desabilitado**: `disabled:cursor-not-allowed disabled:opacity-50` - Feedback visual quando desabilitado
+- **Placeholder**: `placeholder:text-muted-foreground` - Cor de placeholder atenuada
+- **Campo de arquivo**: `file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground` - Botão de arquivo estilizado
 
 ## Accessibility
 
-- Semantic HTML input element
-- Focus ring for keyboard navigation
-- Disabled state properly marked
-- Works with form labels and form field context
-- Supports all ARIA attributes via pass-through
+- Elemento input HTML semântico
+- Anel de foco para navegação por teclado
+- Estado desabilitado corretamente sinalizado
+- Funciona com labels de formulário e o contexto de campo de formulário
+- Suporta todos os atributos ARIA via pass-through

@@ -5,27 +5,27 @@
 ## Exports
 Toaster
 
-## Features
-Integrates `useTheme()` from next-themes. Custom icons: CircleCheck, OctagonX, TriangleAlert, Info, LoaderCircle.
+## Recursos
+Integra `useTheme()` do next-themes. Ícones customizados: CircleCheck, OctagonX, TriangleAlert, Info, LoaderCircle.
 
-## Usage
+## Uso
 
 ```tsx
-// In layout
+// No layout
 import { Toaster } from "@blips/ui"
 <Toaster />
 
-// Trigger toasts
+// Disparar toasts
 import { toast } from "sonner"
-toast("Event created")
-toast.success("Saved successfully")
-toast.error("Something went wrong")
-toast.warning("Check your input")
-toast.info("New update available")
-toast.loading("Processing...")
+toast("Evento criado")
+toast.success("Salvo com sucesso")
+toast.error("Algo deu errado")
+toast.warning("Verifique os dados informados")
+toast.info("Nova atualização disponível")
+toast.loading("Processando...")
 
-// With action
-toast("File deleted", {
-  action: { label: "Undo", onClick: () => console.log("Undo") },
+// Com ação
+toast("Arquivo excluído", {
+  action: { label: "Desfazer", onClick: () => console.log("Undo") },
 })
 ```

@@ -21,7 +21,7 @@ Progress.displayName = ProgressPrimitive.Root.displayName
 export { Progress }
 ```
 
-Usage:
+Uso:
 ```tsx
 import { Progress } from "@blips/ui"
 <Progress value={60} />

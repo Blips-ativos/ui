@@ -65,12 +65,12 @@ export { Button, buttonVariants }
 
 | variant | Descrição |
 |---|---|
-| `default` | Primary background |
-| `destructive` | Red/destructive |
-| `outline` | Border only |
-| `secondary` | Secondary background |
-| `ghost` | Transparent, hover accent |
-| `link` | Underline on hover |
+| `default` | Fundo primary |
+| `destructive` | Vermelho/destructive |
+| `outline` | Apenas borda |
+| `secondary` | Fundo secondary |
+| `ghost` | Transparente, accent no hover |
+| `link` | Sublinhado no hover |
 
 | size | Dimensões |
 |---|---|
@@ -84,15 +84,15 @@ export { Button, buttonVariants }
 ```tsx
 import { Button } from "@blips/ui"
 
-<Button>Click me</Button>
-<Button variant="destructive" size="lg">Delete</Button>
+<Button>Clique aqui</Button>
+<Button variant="destructive" size="lg">Excluir</Button>
 <Button variant="outline" size="icon"><ChevronRight /></Button>
-<Button variant="ghost">Cancel</Button>
-<Button variant="link">Learn more</Button>
+<Button variant="ghost">Cancelar</Button>
+<Button variant="link">Saiba mais</Button>
 
-// asChild (render as link)
+// asChild (renderiza como link)
 <Button asChild>
-  <a href="/about">About</a>
+  <a href="/about">Sobre</a>
 </Button>
 
 // Com Next.js Link
@@ -100,9 +100,9 @@ import { Button } from "@blips/ui"
   <Link href="/dashboard">Dashboard</Link>
 </Button>
 
-// Loading state
+// Estado de carregamento
 <Button disabled>
   <Loader2 className="animate-spin" />
-  Please wait
+  Aguarde
 </Button>
 ```

@@ -6,9 +6,9 @@
 
 `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`
 
-## Usage
+## Uso
 
-### Basic Form with Text Input
+### Formulário básico com campo de texto
 
 ```tsx
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -28,7 +28,7 @@ import {
 
 const schema = z.object({
   username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "O nome de usuário deve ter pelo menos 2 caracteres.",
   }),
 })
 
@@ -52,25 +52,25 @@ function ProfileForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Nome de usuário</FormLabel>
               <FormControl>
                 <Input placeholder="johndoe" {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                Este é o seu nome de exibição público.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Enviar</Button>
       </form>
     </Form>
   )
 }
 ```
 
-### Form with Select
+### Formulário com Select
 
 ```tsx
 import {
@@ -86,17 +86,17 @@ import {
   name="role"
   render={({ field }) => (
     <FormItem>
-      <FormLabel>Role</FormLabel>
+      <FormLabel>Função</FormLabel>
       <Select onValueChange={field.onChange} defaultValue={field.value}>
         <FormControl>
           <SelectTrigger>
-            <SelectValue placeholder="Select a role" />
+            <SelectValue placeholder="Selecione uma função" />
           </SelectTrigger>
         </FormControl>
         <SelectContent>
-          <SelectItem value="admin">Admin</SelectItem>
-          <SelectItem value="user">User</SelectItem>
-          <SelectItem value="guest">Guest</SelectItem>
+          <SelectItem value="admin">Administrador</SelectItem>
+          <SelectItem value="user">Usuário</SelectItem>
+          <SelectItem value="guest">Convidado</SelectItem>
         </SelectContent>
       </Select>
       <FormMessage />
@@ -105,7 +105,7 @@ import {
 />
 ```
 
-### Form with Checkbox
+### Formulário com Checkbox
 
 ```tsx
 import { Checkbox } from "@blips/ui"
@@ -122,9 +122,9 @@ import { Checkbox } from "@blips/ui"
         />
       </FormControl>
       <div className="space-y-1 leading-none">
-        <FormLabel>Terms and Conditions</FormLabel>
+        <FormLabel>Termos e condições</FormLabel>
         <FormDescription>
-          I agree to the terms and conditions.
+          Concordo com os termos e condições.
         </FormDescription>
       </div>
     </FormItem>
@@ -132,7 +132,7 @@ import { Checkbox } from "@blips/ui"
 />
 ```
 
-### Form with Radio Group
+### Formulário com Radio Group
 
 ```tsx
 import { RadioGroup, RadioGroupItem } from "@blips/ui"
@@ -142,7 +142,7 @@ import { RadioGroup, RadioGroupItem } from "@blips/ui"
   name="language"
   render={({ field }) => (
     <FormItem className="space-y-3">
-      <FormLabel>Language</FormLabel>
+      <FormLabel>Idioma</FormLabel>
       <FormControl>
         <RadioGroup
           onValueChange={field.onChange}
@@ -153,13 +153,13 @@ import { RadioGroup, RadioGroupItem } from "@blips/ui"
             <FormControl>
               <RadioGroupItem value="en" />
             </FormControl>
-            <FormLabel className="font-normal">English</FormLabel>
+            <FormLabel className="font-normal">Inglês</FormLabel>
           </FormItem>
           <FormItem className="flex items-center space-x-3 space-y-0">
             <FormControl>
               <RadioGroupItem value="pt" />
             </FormControl>
-            <FormLabel className="font-normal">Portuguese</FormLabel>
+            <FormLabel className="font-normal">Português</FormLabel>
           </FormItem>
         </RadioGroup>
       </FormControl>
@@ -169,7 +169,7 @@ import { RadioGroup, RadioGroupItem } from "@blips/ui"
 />
 ```
 
-### Form with Textarea
+### Formulário com Textarea
 
 ```tsx
 import { Textarea } from "@blips/ui"
@@ -182,13 +182,13 @@ import { Textarea } from "@blips/ui"
       <FormLabel>Bio</FormLabel>
       <FormControl>
         <Textarea
-          placeholder="Tell us about yourself..."
+          placeholder="Fale um pouco sobre você..."
           className="resize-none"
           {...field}
         />
       </FormControl>
       <FormDescription>
-        Brief description for your profile. Max 160 characters.
+        Breve descrição para o seu perfil. Máximo de 160 caracteres.
       </FormDescription>
       <FormMessage />
     </FormItem>
@@ -205,7 +205,7 @@ import { Textarea } from "@blips/ui"
 
 ### FormControl Component
 
-The `FormControl` component uses `Slot` to inject `aria-describedby`, `aria-invalid`, and `disabled` attributes into child form elements. This ensures proper accessibility without requiring explicit prop passing.
+O componente `FormControl` usa `Slot` para injetar os atributos `aria-describedby`, `aria-invalid` e `disabled` nos elementos de formulário filhos. Isso garante a acessibilidade correta sem exigir a passagem explícita de props.
 
 ## Props & Variants
 

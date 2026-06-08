@@ -6,9 +6,9 @@
 
 `HoverCard`, `HoverCardTrigger`, `HoverCardContent`
 
-## Usage
+## Uso
 
-### Basic Hover Card
+### Hover card básico
 
 ```tsx
 import {
@@ -27,10 +27,10 @@ import { Button } from "@blips/ui"
       <div className="space-y-2">
         <h4 className="text-sm font-semibold">@username</h4>
         <p className="text-sm text-muted-foreground">
-          The React component library for building web applications.
+          A biblioteca de componentes React para construir aplicações web.
         </p>
         <div className="flex items-center pt-2">
-          <span className="text-xs text-muted-foreground">Joined March 2020</span>
+          <span className="text-xs text-muted-foreground">Entrou em março de 2020</span>
         </div>
       </div>
     </div>
@@ -38,7 +38,7 @@ import { Button } from "@blips/ui"
 </HoverCard>
 ```
 
-### Hover Card with Avatar
+### Hover card com avatar
 
 ```tsx
 import { Avatar, AvatarImage, AvatarFallback } from "@blips/ui"
@@ -56,10 +56,10 @@ import { Avatar, AvatarImage, AvatarFallback } from "@blips/ui"
       <div className="space-y-2 flex-1">
         <h4 className="text-sm font-semibold">@username</h4>
         <p className="text-sm text-muted-foreground">
-          Frontend developer and UI enthusiast.
+          Desenvolvedor frontend e entusiasta de UI.
         </p>
         <div className="flex items-center gap-2 pt-2">
-          <span className="text-xs text-muted-foreground">Joined March 2020</span>
+          <span className="text-xs text-muted-foreground">Entrou em março de 2020</span>
         </div>
       </div>
     </div>
@@ -67,18 +67,18 @@ import { Avatar, AvatarImage, AvatarFallback } from "@blips/ui"
 </HoverCard>
 ```
 
-### Hover Card with Custom Content
+### Hover card com conteúdo personalizado
 
 ```tsx
 <HoverCard openDelay={200} closeDelay={100}>
-  <HoverCardTrigger>Hover me</HoverCardTrigger>
+  <HoverCardTrigger>Passe o mouse aqui</HoverCardTrigger>
   <HoverCardContent>
     <div className="space-y-4">
-      <h3 className="font-semibold">Card Title</h3>
+      <h3 className="font-semibold">Título do card</h3>
       <p className="text-sm text-muted-foreground">
-        This is some helpful information that appears when you hover.
+        Esta é uma informação útil que aparece quando você passa o mouse.
       </p>
-      <Button size="sm">Action</Button>
+      <Button size="sm">Ação</Button>
     </div>
   </HoverCardContent>
 </HoverCard>
@@ -108,12 +108,12 @@ import { Avatar, AvatarImage, AvatarFallback } from "@blips/ui"
 
 ## Default Styling
 
-The `HoverCardContent` component applies these default classes:
+O componente `HoverCardContent` aplica estas classes padrão:
 - `z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2`
 
-This provides:
-- Fixed sizing (w-64)
-- Rounded corners and border
-- Popover background styling
-- Entrance/exit animations
-- Proper z-index stacking
+Isso fornece:
+- Tamanho fixo (w-64)
+- Cantos arredondados e borda
+- Estilização de fundo de popover
+- Animações de entrada/saída
+- Empilhamento correto de z-index

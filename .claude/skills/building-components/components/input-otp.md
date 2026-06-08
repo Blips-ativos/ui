@@ -6,9 +6,9 @@
 
 `InputOTP`, `InputOTPGroup`, `InputOTPSlot`, `InputOTPSeparator`
 
-## Usage
+## Uso
 
-### Basic OTP Input (6 digits)
+### Input de OTP básico (6 dígitos)
 
 ```tsx
 import {
@@ -33,7 +33,7 @@ import {
 </InputOTP>
 ```
 
-### Controlled OTP Input
+### Input de OTP controlado
 
 ```tsx
 const [otp, setOtp] = React.useState("")
@@ -53,7 +53,7 @@ const [otp, setOtp] = React.useState("")
 </InputOTP>
 ```
 
-### OTP with Pattern Restriction (Digits Only)
+### OTP com restrição de padrão (apenas dígitos)
 
 ```tsx
 import { REGEXP_ONLY_DIGITS } from "input-otp"
@@ -73,7 +73,7 @@ import { REGEXP_ONLY_DIGITS } from "input-otp"
 </InputOTP>
 ```
 
-### OTP with Pattern Restriction (Alphanumeric)
+### OTP com restrição de padrão (alfanumérico)
 
 ```tsx
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
@@ -93,7 +93,7 @@ import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 </InputOTP>
 ```
 
-### OTP in a Form
+### OTP em um formulário
 
 ```tsx
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@blips/ui"
@@ -103,7 +103,7 @@ import * as z from "zod"
 import { REGEXP_ONLY_DIGITS } from "input-otp"
 
 const schema = z.object({
-  otp: z.string().length(6, "OTP must be 6 digits"),
+  otp: z.string().length(6, "O OTP deve ter 6 dígitos"),
 })
 
 function OTPForm() {
@@ -120,7 +120,7 @@ function OTPForm() {
           name="otp"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>One-Time Password</FormLabel>
+              <FormLabel>Senha de uso único</FormLabel>
               <FormControl>
                 <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS} {...field}>
                   <InputOTPGroup>
@@ -140,14 +140,14 @@ function OTPForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Verify</Button>
+        <Button type="submit">Verificar</Button>
       </form>
     </Form>
   )
 }
 ```
 
-### OTP with Custom Styling
+### OTP com estilização personalizada
 
 ```tsx
 <InputOTP maxLength={6}>
@@ -165,13 +165,13 @@ function OTPForm() {
 </InputOTP>
 ```
 
-## Available Patterns
+## Padrões disponíveis
 
-The `input-otp` package provides several regex patterns for validation:
+O pacote `input-otp` fornece vários padrões regex para validação:
 
-- `REGEXP_ONLY_DIGITS`: Digits only (0-9)
-- `REGEXP_ONLY_CHARS`: Letters only (a-z, A-Z)
-- `REGEXP_ONLY_DIGITS_AND_CHARS`: Alphanumeric (0-9, a-z, A-Z)
+- `REGEXP_ONLY_DIGITS`: Apenas dígitos (0-9)
+- `REGEXP_ONLY_CHARS`: Apenas letras (a-z, A-Z)
+- `REGEXP_ONLY_DIGITS_AND_CHARS`: Alfanumérico (0-9, a-z, A-Z)
 
 ## Props & Variants
 
@@ -190,7 +190,7 @@ The `input-otp` package provides several regex patterns for validation:
 - `children`: ReactNode - OTP slots
 - `className`: string - Custom CSS classes
 
-Typically rendered as a flex container with gap between slots.
+Normalmente renderizado como um container flex com espaçamento entre os slots.
 
 ### InputOTPSlot
 - `index`: number - Slot index (0-based, required)
@@ -198,31 +198,31 @@ Typically rendered as a flex container with gap between slots.
 - `disabled`: boolean - Disable slot
 - `hasCaret`: boolean - Show input caret (default: true)
 
-Special styling:
-- Shows placeholder dot when empty: `•`
-- Shows the character when filled
-- Displays caret on focus by default
-- Accessible focus ring on keyboard navigation
+Estilização especial:
+- Mostra um ponto de placeholder quando vazio: `•`
+- Mostra o caractere quando preenchido
+- Exibe o caret no foco por padrão
+- Anel de foco acessível na navegação por teclado
 
 ### InputOTPSeparator
 - `children`: ReactNode - Separator content (typically unused)
 - `className`: string - Custom CSS classes
 
-Typically renders as a visual separator (dash or space) between groups.
+Normalmente renderiza como um separador visual (traço ou espaço) entre grupos.
 
-## Behavior
+## Comportamento
 
-- **Auto-advance**: Automatically moves to next slot when digit is entered
-- **Auto-backspace**: Pressing backspace moves to previous slot
-- **Paste support**: Can paste full OTP value at once
-- **Keyboard navigation**: Arrow keys move between slots
-- **Focus management**: Tab key navigates through slots in sequence
-- **Mobile friendly**: Touch-friendly slot size and spacing
-- **Accessibility**: Full keyboard and screen reader support
+- **Avanço automático**: Move automaticamente para o próximo slot quando um dígito é inserido
+- **Backspace automático**: Pressionar backspace move para o slot anterior
+- **Suporte a colar**: Permite colar o valor completo do OTP de uma vez
+- **Navegação por teclado**: As setas movem entre os slots
+- **Gerenciamento de foco**: A tecla Tab navega pelos slots em sequência
+- **Compatível com mobile**: Tamanho e espaçamento de slots adequados ao toque
+- **Acessibilidade**: Suporte completo a teclado e leitores de tela
 
-## Common Use Cases
+## Casos de uso comuns
 
-### Verify Email
+### Verificar e-mail
 
 ```tsx
 <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
@@ -240,7 +240,7 @@ Typically renders as a visual separator (dash or space) between groups.
 </InputOTP>
 ```
 
-### Two-Factor Authentication (2FA)
+### Autenticação de dois fatores (2FA)
 
 ```tsx
 <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS}>
@@ -255,7 +255,7 @@ Typically renders as a visual separator (dash or space) between groups.
 </InputOTP>
 ```
 
-### Multi-character Code
+### Código com múltiplos caracteres
 
 ```tsx
 <InputOTP maxLength={4} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>

@@ -26,7 +26,7 @@ Separator.displayName = SeparatorPrimitive.Root.displayName
 export { Separator }
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Separator } from "@blips/ui"

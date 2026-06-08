@@ -3,9 +3,9 @@
 
 Exports: ScrollArea, ScrollBar
 
-ScrollArea auto-embeds ScrollBar and Corner.
+ScrollArea já inclui ScrollBar e Corner automaticamente.
 
-Usage:
+Uso:
 ```tsx
 import { ScrollArea, ScrollBar } from "@blips/ui"
 

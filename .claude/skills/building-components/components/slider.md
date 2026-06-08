@@ -5,7 +5,7 @@
 ## Exports
 Slider
 
-## Usage
+## Uso
 
 ```tsx
 import { Slider } from "@blips/ui"

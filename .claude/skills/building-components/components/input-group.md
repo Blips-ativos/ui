@@ -6,9 +6,9 @@
 
 `InputGroup`, `InputGroupAddon`, `InputGroupButton`, `InputGroupInput`, `InputGroupTextarea`, `InputGroupText`
 
-## Usage
+## Uso
 
-### Input Group with Icon (Leading)
+### Input group com ícone (à esquerda)
 
 ```tsx
 import {
@@ -22,11 +22,11 @@ import { Search } from "lucide-react"
   <InputGroupAddon align="inline-start">
     <Search className="h-4 w-4" />
   </InputGroupAddon>
-  <InputGroupInput placeholder="Search..." />
+  <InputGroupInput placeholder="Buscar..." />
 </InputGroup>
 ```
 
-### Input Group with Button (Trailing)
+### Input group com botão (à direita)
 
 ```tsx
 import {
@@ -37,14 +37,14 @@ import {
 } from "@blips/ui"
 
 <InputGroup>
-  <InputGroupInput placeholder="Enter URL..." />
+  <InputGroupInput placeholder="Digite a URL..." />
   <InputGroupAddon align="inline-end">
-    <InputGroupButton size="xs">Go</InputGroupButton>
+    <InputGroupButton size="xs">Ir</InputGroupButton>
   </InputGroupAddon>
 </InputGroup>
 ```
 
-### Input Group with Text Prefix
+### Input group com prefixo de texto
 
 ```tsx
 import {
@@ -62,7 +62,7 @@ import {
 </InputGroup>
 ```
 
-### Input Group with Kbd Shortcut
+### Input group com atalho de teclado (Kbd)
 
 ```tsx
 import {
@@ -73,24 +73,24 @@ import {
 import { Kbd } from "@blips/ui"
 
 <InputGroup>
-  <InputGroupInput placeholder="Search..." />
+  <InputGroupInput placeholder="Buscar..." />
   <InputGroupAddon align="inline-end">
     <Kbd>⌘K</Kbd>
   </InputGroupAddon>
 </InputGroup>
 ```
 
-### Input Group with Multiple Addons
+### Input group com múltiplos addons
 
 ```tsx
 <InputGroup>
   <InputGroupAddon align="block-start">
-    <label className="text-sm font-medium">Email</label>
+    <label className="text-sm font-medium">E-mail</label>
   </InputGroupAddon>
   <InputGroupAddon align="inline-start">
     <Mail className="h-4 w-4" />
   </InputGroupAddon>
-  <InputGroupInput type="email" placeholder="name@example.com" />
+  <InputGroupInput type="email" placeholder="nome@exemplo.com" />
   <InputGroupAddon align="inline-end">
     <InputGroupButton size="icon-xs">
       <Check className="h-4 w-4" />
@@ -99,7 +99,7 @@ import { Kbd } from "@blips/ui"
 </InputGroup>
 ```
 
-### Textarea Group
+### Grupo de textarea
 
 ```tsx
 import {
@@ -111,22 +111,22 @@ import {
 
 <InputGroup>
   <InputGroupAddon align="block-start">
-    <InputGroupText className="text-sm font-medium">Description</InputGroupText>
+    <InputGroupText className="text-sm font-medium">Descrição</InputGroupText>
   </InputGroupAddon>
-  <InputGroupTextarea placeholder="Enter description..." />
+  <InputGroupTextarea placeholder="Digite a descrição..." />
 </InputGroup>
 ```
 
-### Input Group with Block Layout
+### Input group com layout em bloco
 
 ```tsx
 <InputGroup>
   <InputGroupAddon align="block-start">
-    <label className="text-sm font-semibold">Password</label>
+    <label className="text-sm font-semibold">Senha</label>
   </InputGroupAddon>
-  <InputGroupInput type="password" placeholder="Enter password..." />
+  <InputGroupInput type="password" placeholder="Digite a senha..." />
   <InputGroupAddon align="block-end">
-    <p className="text-xs text-muted-foreground">Min 8 characters</p>
+    <p className="text-xs text-muted-foreground">Mínimo de 8 caracteres</p>
   </InputGroupAddon>
 </InputGroup>
 ```
@@ -203,4 +203,4 @@ The InputGroup component uses CSS `:has()` selectors to apply reactive styling:
 }
 ```
 
-This allows the component to adapt its layout based on the presence and position of addons without additional wrapper elements.
+Isso permite que o componente adapte seu layout com base na presença e posição dos addons, sem elementos de wrapper adicionais.

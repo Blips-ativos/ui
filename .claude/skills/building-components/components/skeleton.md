@@ -14,7 +14,7 @@ function Skeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>)
 export { Skeleton }
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Skeleton } from "@blips/ui"

@@ -78,7 +78,7 @@ import {
 <Breadcrumb>
   <BreadcrumbList>
     <BreadcrumbItem>
-      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+      <BreadcrumbLink href="/">Início</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
@@ -86,18 +86,18 @@ import {
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbLink href="/products">Products</BreadcrumbLink>
+      <BreadcrumbLink href="/products">Produtos</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
-      <BreadcrumbPage>Current Page</BreadcrumbPage>
+      <BreadcrumbPage>Página atual</BreadcrumbPage>
     </BreadcrumbItem>
   </BreadcrumbList>
 </Breadcrumb>
 
 // Com Next.js Link
 <BreadcrumbLink asChild>
-  <Link href="/">Home</Link>
+  <Link href="/">Início</Link>
 </BreadcrumbLink>
 
 // Separador customizado

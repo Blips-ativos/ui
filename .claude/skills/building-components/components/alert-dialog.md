@@ -114,16 +114,16 @@ import {
 
 <AlertDialog>
   <AlertDialogTrigger asChild>
-    <Button variant="destructive">Delete Account</Button>
+    <Button variant="destructive">Excluir conta</Button>
   </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-      <AlertDialogDescription>This action cannot be undone.</AlertDialogDescription>
+      <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+      <AlertDialogDescription>Esta ação não pode ser desfeita.</AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction>Continue</AlertDialogAction>
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogAction>Continuar</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>

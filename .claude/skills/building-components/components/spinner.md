@@ -15,7 +15,7 @@ function Spinner({ className, ...props }: React.ComponentProps<typeof Loader2Ico
 export { Spinner }
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Spinner } from "@blips/ui"

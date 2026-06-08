@@ -3,19 +3,19 @@
 
 Exports: ResizablePanelGroup, ResizablePanel, ResizableHandle
 
-ResizableHandle has optional `withHandle` prop for visual grip icon.
+ResizableHandle tem a prop opcional `withHandle` para exibir o ícone visual de arraste.
 
-Usage:
+Uso:
 ```tsx
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@blips/ui"
 
 <ResizablePanelGroup direction="horizontal" className="max-w-md rounded-lg border">
   <ResizablePanel defaultSize={50}>
-    <div className="flex h-full items-center justify-center p-6">Panel 1</div>
+    <div className="flex h-full items-center justify-center p-6">Painel 1</div>
   </ResizablePanel>
   <ResizableHandle withHandle />
   <ResizablePanel defaultSize={50}>
-    <div className="flex h-full items-center justify-center p-6">Panel 2</div>
+    <div className="flex h-full items-center justify-center p-6">Painel 2</div>
   </ResizablePanel>
 </ResizablePanelGroup>
 ```

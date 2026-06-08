@@ -25,10 +25,10 @@ Textarea.displayName = "Textarea"
 export { Textarea }
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Textarea } from "@blips/ui"
-<Textarea placeholder="Your message..." />
+<Textarea placeholder="Sua mensagem..." />
 <Textarea rows={6} className="resize-none" />
 ```

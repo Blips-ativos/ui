@@ -51,20 +51,20 @@ import { ButtonGroup, ButtonGroupText, ButtonGroupSeparator } from "@blips/ui"
 
 // Horizontal
 <ButtonGroup>
-  <Button variant="outline">Left</Button>
-  <Button variant="outline">Center</Button>
-  <Button variant="outline">Right</Button>
+  <Button variant="outline">Esquerda</Button>
+  <Button variant="outline">Centro</Button>
+  <Button variant="outline">Direita</Button>
 </ButtonGroup>
 
 // Vertical
 <ButtonGroup orientation="vertical">
-  <Button variant="outline">Top</Button>
-  <Button variant="outline">Bottom</Button>
+  <Button variant="outline">Topo</Button>
+  <Button variant="outline">Base</Button>
 </ButtonGroup>
 
 // Com separador (split button)
 <ButtonGroup>
-  <Button>Primary</Button>
+  <Button>Principal</Button>
   <ButtonGroupSeparator />
   <Button size="icon"><ChevronDown /></Button>
 </ButtonGroup>

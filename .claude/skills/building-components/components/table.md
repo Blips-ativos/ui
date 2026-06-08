@@ -5,23 +5,23 @@
 ## Exports
 Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption
 
-All forwardRef for native HTML table elements. Table wrapped in `<div className="relative w-full overflow-auto">`.
+Todos usam forwardRef para elementos nativos de tabela HTML. Table é envolvido em `<div className="relative w-full overflow-auto">`.
 
 ## Props & Variants
 **TableRow:** `border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted`
 
-## Usage
+## Uso
 
 ```tsx
 import { Table, TableHeader, TableBody, TableFooter, TableRow, TableHead, TableCell, TableCaption } from "@blips/ui"
 
 <Table>
-  <TableCaption>List of users</TableCaption>
+  <TableCaption>Lista de usuários</TableCaption>
   <TableHeader>
     <TableRow>
-      <TableHead>Name</TableHead>
-      <TableHead>Email</TableHead>
-      <TableHead className="text-right">Amount</TableHead>
+      <TableHead>Nome</TableHead>
+      <TableHead>E-mail</TableHead>
+      <TableHead className="text-right">Valor</TableHead>
     </TableRow>
   </TableHeader>
   <TableBody>

@@ -44,18 +44,18 @@ export { Badge, badgeVariants }
 
 | Variant | Visual |
 |---|---|
-| `default` | Primary background |
-| `secondary` | Secondary background |
-| `destructive` | Red/destructive background |
-| `outline` | Transparent with border |
+| `default` | Fundo primary |
+| `secondary` | Fundo secondary |
+| `destructive` | Fundo vermelho/destructive |
+| `outline` | Transparente com borda |
 
 ## Uso
 
 ```tsx
 import { Badge } from "@blips/ui"
 
-<Badge>New</Badge>
-<Badge variant="secondary">Draft</Badge>
-<Badge variant="destructive">Error</Badge>
+<Badge>Novo</Badge>
+<Badge variant="secondary">Rascunho</Badge>
+<Badge variant="destructive">Erro</Badge>
 <Badge variant="outline">v1.0</Badge>
 ```

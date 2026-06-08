@@ -5,10 +5,10 @@
 ## Exports
 Tooltip, TooltipTrigger, TooltipContent, TooltipProvider
 
-## Features
-TooltipProvider should wrap the app. TooltipContent: `z-50 rounded-md border bg-popover px-3 py-1.5 text-sm shadow-md`, sideOffset=4
+## Recursos
+TooltipProvider deve envolver a aplicação. TooltipContent: `z-50 rounded-md border bg-popover px-3 py-1.5 text-sm shadow-md`, sideOffset=4
 
-## Usage
+## Uso
 
 ```tsx
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@blips/ui"
@@ -16,10 +16,10 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@blips
 <TooltipProvider>
   <Tooltip>
     <TooltipTrigger asChild><Button variant="outline" size="icon"><PlusIcon /></Button></TooltipTrigger>
-    <TooltipContent><p>Add new item</p></TooltipContent>
+    <TooltipContent><p>Adicionar novo item</p></TooltipContent>
   </Tooltip>
 </TooltipProvider>
 
-// Custom side
-<TooltipContent side="right">Right tooltip</TooltipContent>
+// Lado customizado
+<TooltipContent side="right">Tooltip à direita</TooltipContent>
 ```

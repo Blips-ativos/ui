@@ -22,9 +22,9 @@ Label.displayName = LabelPrimitive.Root.displayName
 export { Label }
 ```
 
-Usage:
+Uso:
 ```tsx
 import { Label } from "@blips/ui"
-<Label htmlFor="email">Email</Label>
+<Label htmlFor="email">E-mail</Label>
 <Input id="email" />
 ```

@@ -6,9 +6,9 @@
 
 `DropdownMenu`, `DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuItem`, `DropdownMenuCheckboxItem`, `DropdownMenuRadioItem`, `DropdownMenuLabel`, `DropdownMenuSeparator`, `DropdownMenuShortcut`, `DropdownMenuGroup`, `DropdownMenuPortal`, `DropdownMenuSub`, `DropdownMenuSubContent`, `DropdownMenuSubTrigger`, `DropdownMenuRadioGroup`
 
-## Usage
+## Uso
 
-### Basic Dropdown Menu
+### Menu dropdown básico
 
 ```tsx
 import {
@@ -24,104 +24,104 @@ import { Button } from "@blips/ui"
 
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">Open</Button>
+    <Button variant="outline">Abrir</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent className="w-56">
-    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+    <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuItem>
-      Profile
+      Perfil
       <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
     </DropdownMenuItem>
     <DropdownMenuItem>
-      Settings
+      Configurações
       <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
     </DropdownMenuItem>
     <DropdownMenuSeparator />
-    <DropdownMenuItem>Log out</DropdownMenuItem>
+    <DropdownMenuItem>Sair</DropdownMenuItem>
   </DropdownMenuContent>
 </DropdownMenu>
 ```
 
-### Dropdown Menu with Checkbox Items
+### Menu dropdown com itens de checkbox
 
 ```tsx
 const [checked, setChecked] = React.useState(false)
 
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">View</Button>
+    <Button variant="outline">Exibir</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent className="w-56">
     <DropdownMenuCheckboxItem checked={checked} onCheckedChange={setChecked}>
-      Show Panel
+      Mostrar painel
     </DropdownMenuCheckboxItem>
-    <DropdownMenuCheckboxItem>Show Details</DropdownMenuCheckboxItem>
+    <DropdownMenuCheckboxItem>Mostrar detalhes</DropdownMenuCheckboxItem>
   </DropdownMenuContent>
 </DropdownMenu>
 ```
 
-### Dropdown Menu with Radio Items
+### Menu dropdown com itens de rádio
 
 ```tsx
 const [theme, setTheme] = React.useState("light")
 
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">Theme</Button>
+    <Button variant="outline">Tema</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent className="w-56">
-    <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+    <DropdownMenuLabel>Aparência</DropdownMenuLabel>
     <DropdownMenuSeparator />
     <DropdownMenuRadioGroup value={theme} onValueChange={setTheme}>
-      <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
-      <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
-      <DropdownMenuRadioItem value="system">System</DropdownMenuRadioItem>
+      <DropdownMenuRadioItem value="light">Claro</DropdownMenuRadioItem>
+      <DropdownMenuRadioItem value="dark">Escuro</DropdownMenuRadioItem>
+      <DropdownMenuRadioItem value="system">Sistema</DropdownMenuRadioItem>
     </DropdownMenuRadioGroup>
   </DropdownMenuContent>
 </DropdownMenu>
 ```
 
-### Dropdown Menu with Submenu
+### Menu dropdown com submenu
 
 ```tsx
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">Actions</Button>
+    <Button variant="outline">Ações</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent className="w-56">
-    <DropdownMenuItem>Cut</DropdownMenuItem>
-    <DropdownMenuItem>Copy</DropdownMenuItem>
+    <DropdownMenuItem>Recortar</DropdownMenuItem>
+    <DropdownMenuItem>Copiar</DropdownMenuItem>
     <DropdownMenuSeparator />
     <DropdownMenuSub>
-      <DropdownMenuSubTrigger>More Tools</DropdownMenuSubTrigger>
+      <DropdownMenuSubTrigger>Mais ferramentas</DropdownMenuSubTrigger>
       <DropdownMenuSubContent className="w-48">
-        <DropdownMenuItem>Save Page As...</DropdownMenuItem>
-        <DropdownMenuItem>Create Shortcut...</DropdownMenuItem>
+        <DropdownMenuItem>Salvar página como...</DropdownMenuItem>
+        <DropdownMenuItem>Criar atalho...</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Developer Tools</DropdownMenuItem>
+        <DropdownMenuItem>Ferramentas de desenvolvedor</DropdownMenuItem>
       </DropdownMenuSubContent>
     </DropdownMenuSub>
   </DropdownMenuContent>
 </DropdownMenu>
 ```
 
-### Dropdown Menu with Groups
+### Menu dropdown com grupos
 
 ```tsx
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">More</Button>
+    <Button variant="outline">Mais</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent className="w-56">
     <DropdownMenuGroup>
-      <DropdownMenuLabel>Group 1</DropdownMenuLabel>
+      <DropdownMenuLabel>Grupo 1</DropdownMenuLabel>
       <DropdownMenuItem>Item 1</DropdownMenuItem>
       <DropdownMenuItem>Item 2</DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuSeparator />
     <DropdownMenuGroup>
-      <DropdownMenuLabel>Group 2</DropdownMenuLabel>
+      <DropdownMenuLabel>Grupo 2</DropdownMenuLabel>
       <DropdownMenuItem>Item 3</DropdownMenuItem>
       <DropdownMenuItem>Item 4</DropdownMenuItem>
     </DropdownMenuGroup>

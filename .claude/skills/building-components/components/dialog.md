@@ -127,7 +127,7 @@ export {
 }
 ```
 
-## Usage
+## Uso
 
 ### Basic Dialog
 
@@ -145,21 +145,21 @@ import { Button } from "@blips/ui"
 
 <Dialog>
   <DialogTrigger asChild>
-    <Button variant="outline">Open Dialog</Button>
+    <Button variant="outline">Abrir dialog</Button>
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Edit Profile</DialogTitle>
+      <DialogTitle>Editar perfil</DialogTitle>
       <DialogDescription>
-        Make changes to your profile here. Click save when you're done.
+        Faça alterações no seu perfil aqui. Clique em salvar quando terminar.
       </DialogDescription>
     </DialogHeader>
     <div className="grid gap-4 py-4">
-      <Input id="name" placeholder="Name" />
-      <Input id="email" placeholder="Email" />
+      <Input id="name" placeholder="Nome" />
+      <Input id="email" placeholder="E-mail" />
     </div>
     <DialogFooter>
-      <Button type="submit">Save changes</Button>
+      <Button type="submit">Salvar alterações</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
@@ -172,56 +172,56 @@ const [open, setOpen] = React.useState(false)
 
 <Dialog open={open} onOpenChange={setOpen}>
   <DialogTrigger asChild>
-    <Button>Open</Button>
+    <Button>Abrir</Button>
   </DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Are you sure?</DialogTitle>
+      <DialogTitle>Tem certeza?</DialogTitle>
     </DialogHeader>
     <DialogFooter>
       <Button variant="outline" onClick={() => setOpen(false)}>
-        Cancel
+        Cancelar
       </Button>
-      <Button onClick={() => setOpen(false)}>Confirm</Button>
+      <Button onClick={() => setOpen(false)}>Confirmar</Button>
     </DialogFooter>
   </DialogContent>
 </Dialog>
 ```
 
-## Props & Variants
+## Props e Variantes
 
 ### Dialog
-- `open`: boolean - Dialog open state
-- `onOpenChange`: (open: boolean) => void - Open state change handler
-- `children`: ReactNode - Dialog content
+- `open`: boolean - Estado de abertura do dialog
+- `onOpenChange`: (open: boolean) => void - Handler de mudança do estado de abertura
+- `children`: ReactNode - Conteúdo do dialog
 
 ### DialogTrigger
-- `children`: ReactNode - Trigger element
-- `asChild`: boolean - Merge with child component props
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Elemento que dispara o dialog
+- `asChild`: boolean - Mesclar com as props do componente filho
+- `className`: string - Classes CSS customizadas
 
 ### DialogContent
-- `children`: ReactNode - Dialog content
-- `className`: string - Custom CSS classes
-- `side`: 'top' | 'right' | 'bottom' | 'left' - Dialog position
+- `children`: ReactNode - Conteúdo do dialog
+- `className`: string - Classes CSS customizadas
+- `side`: 'top' | 'right' | 'bottom' | 'left' - Posição do dialog
 
 ### DialogHeader
-- `children`: ReactNode - Header content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do cabeçalho
+- `className`: string - Classes CSS customizadas
 
 ### DialogFooter
-- `children`: ReactNode - Footer content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do rodapé
+- `className`: string - Classes CSS customizadas
 
 ### DialogTitle
-- `children`: ReactNode - Title text
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto do título
+- `className`: string - Classes CSS customizadas
 
 ### DialogDescription
-- `children`: ReactNode - Description text
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto da descrição
+- `className`: string - Classes CSS customizadas
 
 ### DialogClose
-- `children`: ReactNode - Close button content
-- `asChild`: boolean - Merge with child component props
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do botão de fechar
+- `asChild`: boolean - Mesclar com as props do componente filho
+- `className`: string - Classes CSS customizadas

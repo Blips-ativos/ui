@@ -3,9 +3,9 @@
 
 Exports: Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis
 
-PaginationLink uses buttonVariants. isActive controls variant (outline vs ghost).
+PaginationLink usa buttonVariants. isActive controla a variant (outline vs ghost).
 
-Usage:
+Uso:
 ```tsx
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "@blips/ui"
 

@@ -7,23 +7,23 @@ Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, Sel
 
 SelectContent defaults to `position="popper"`.
 
-## Usage
+## Uso
 
 ```tsx
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectGroup, SelectLabel, SelectItem, SelectSeparator } from "@blips/ui"
 
 <Select>
-  <SelectTrigger className="w-[180px]"><SelectValue placeholder="Select a fruit" /></SelectTrigger>
+  <SelectTrigger className="w-[180px]"><SelectValue placeholder="Selecione uma fruta" /></SelectTrigger>
   <SelectContent>
     <SelectGroup>
-      <SelectLabel>Fruits</SelectLabel>
-      <SelectItem value="apple">Apple</SelectItem>
+      <SelectLabel>Frutas</SelectLabel>
+      <SelectItem value="apple">Maçã</SelectItem>
       <SelectItem value="banana">Banana</SelectItem>
     </SelectGroup>
     <SelectSeparator />
     <SelectGroup>
-      <SelectLabel>Vegetables</SelectLabel>
-      <SelectItem value="carrot">Carrot</SelectItem>
+      <SelectLabel>Vegetais</SelectLabel>
+      <SelectItem value="carrot">Cenoura</SelectItem>
     </SelectGroup>
   </SelectContent>
 </Select>

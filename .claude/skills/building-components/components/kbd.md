@@ -1,9 +1,9 @@
 # Kbd
 **Categoria:** Primitive | **Deps:** Nenhuma externa | **"use client":** Não
 
-Exports: Kbd, KbdGroup. Plain functions, no forwardRef. Uses data-slot="kbd"/"kbd-group".
+Exports: Kbd, KbdGroup. Funções simples, sem forwardRef. Usa data-slot="kbd"/"kbd-group".
 
-Usage:
+Uso:
 ```tsx
 import { Kbd, KbdGroup } from "@blips/ui"
 

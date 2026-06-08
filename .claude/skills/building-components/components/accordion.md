@@ -81,24 +81,24 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@b
 // Único item aberto por vez
 <Accordion type="single" collapsible>
   <AccordionItem value="item-1">
-    <AccordionTrigger>Is it accessible?</AccordionTrigger>
-    <AccordionContent>Yes. It adheres to the WAI-ARIA design pattern.</AccordionContent>
+    <AccordionTrigger>É acessível?</AccordionTrigger>
+    <AccordionContent>Sim. Segue o padrão de design WAI-ARIA.</AccordionContent>
   </AccordionItem>
   <AccordionItem value="item-2">
-    <AccordionTrigger>Is it styled?</AccordionTrigger>
-    <AccordionContent>Yes. It comes with default styles.</AccordionContent>
+    <AccordionTrigger>Tem estilo?</AccordionTrigger>
+    <AccordionContent>Sim. Vem com estilos padrão.</AccordionContent>
   </AccordionItem>
 </Accordion>
 
 // Múltiplos abertos simultaneamente
 <Accordion type="multiple">
   <AccordionItem value="item-1">
-    <AccordionTrigger>Section 1</AccordionTrigger>
-    <AccordionContent>Content 1</AccordionContent>
+    <AccordionTrigger>Seção 1</AccordionTrigger>
+    <AccordionContent>Conteúdo 1</AccordionContent>
   </AccordionItem>
   <AccordionItem value="item-2">
-    <AccordionTrigger>Section 2</AccordionTrigger>
-    <AccordionContent>Content 2</AccordionContent>
+    <AccordionTrigger>Seção 2</AccordionTrigger>
+    <AccordionContent>Conteúdo 2</AccordionContent>
   </AccordionItem>
 </Accordion>
 

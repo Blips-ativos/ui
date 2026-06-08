@@ -6,7 +6,7 @@
 
 `Drawer`, `DrawerPortal`, `DrawerOverlay`, `DrawerTrigger`, `DrawerClose`, `DrawerContent`, `DrawerHeader`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`
 
-## Usage
+## Uso
 
 ### Basic Drawer
 
@@ -25,20 +25,20 @@ import { Button } from "@blips/ui"
 
 <Drawer>
   <DrawerTrigger asChild>
-    <Button variant="outline">Open Drawer</Button>
+    <Button variant="outline">Abrir drawer</Button>
   </DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>Move Goal</DrawerTitle>
-      <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+      <DrawerTitle>Ajustar meta</DrawerTitle>
+      <DrawerDescription>Defina sua meta de atividade diária.</DrawerDescription>
     </DrawerHeader>
     <div className="p-4">
-      <p>Your daily activity goal content here</p>
+      <p>Conteúdo da sua meta de atividade diária aqui</p>
     </div>
     <DrawerFooter>
-      <Button>Submit</Button>
+      <Button>Enviar</Button>
       <DrawerClose asChild>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline">Cancelar</Button>
       </DrawerClose>
     </DrawerFooter>
   </DrawerContent>
@@ -52,20 +52,20 @@ const [open, setOpen] = React.useState(false)
 
 <Drawer open={open} onOpenChange={setOpen}>
   <DrawerTrigger asChild>
-    <Button>Open</Button>
+    <Button>Abrir</Button>
   </DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>Edit Goal</DrawerTitle>
+      <DrawerTitle>Editar meta</DrawerTitle>
     </DrawerHeader>
     <div className="p-4 space-y-4">
-      <Input placeholder="Enter your goal..." />
+      <Input placeholder="Digite sua meta..." />
       <Slider defaultValue={[33]} className="w-full" />
     </div>
     <DrawerFooter>
-      <Button onClick={() => setOpen(false)}>Save</Button>
+      <Button onClick={() => setOpen(false)}>Salvar</Button>
       <DrawerClose asChild>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline">Cancelar</Button>
       </DrawerClose>
     </DrawerFooter>
   </DrawerContent>
@@ -77,71 +77,71 @@ const [open, setOpen] = React.useState(false)
 ```tsx
 <Drawer shouldScaleBackground>
   <DrawerTrigger asChild>
-    <Button>Open</Button>
+    <Button>Abrir</Button>
   </DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>Drawer Title</DrawerTitle>
-      <DrawerDescription>Drawer description goes here</DrawerDescription>
+      <DrawerTitle>Título do drawer</DrawerTitle>
+      <DrawerDescription>A descrição do drawer vai aqui</DrawerDescription>
     </DrawerHeader>
-    <div className="p-4">Content area with padding</div>
+    <div className="p-4">Área de conteúdo com padding</div>
     <DrawerFooter>
-      <Button>Action</Button>
-      <DrawerClose>Cancel</DrawerClose>
+      <Button>Ação</Button>
+      <DrawerClose>Cancelar</DrawerClose>
     </DrawerFooter>
   </DrawerContent>
 </Drawer>
 ```
 
-## Features
+## Recursos
 
-- **Drag Handle**: Content includes an automatic drag handle bar for mobile-friendly interaction
-- **Scale Background**: `shouldScaleBackground` prop defaults to `true`, providing visual feedback when drawer is open
-- **Responsive**: Optimized for mobile and desktop devices
-- **Accessible**: Built on accessible primitives with keyboard support
+- **Drag Handle**: O conteúdo inclui uma barra de arraste automática para interação amigável no mobile
+- **Scale Background**: A prop `shouldScaleBackground` tem valor padrão `true`, fornecendo feedback visual quando o drawer está aberto
+- **Responsive**: Otimizado para dispositivos mobile e desktop
+- **Accessible**: Construído sobre primitives acessíveis com suporte a teclado
 
-## Props & Variants
+## Props e Variantes
 
 ### Drawer
-- `open`: boolean - Drawer open state
-- `onOpenChange`: (open: boolean) => void - Open state change handler
-- `shouldScaleBackground`: boolean - Scale background when open (default: true)
-- `children`: ReactNode - Drawer content
+- `open`: boolean - Estado de abertura do drawer
+- `onOpenChange`: (open: boolean) => void - Handler de mudança do estado de abertura
+- `shouldScaleBackground`: boolean - Escalar o fundo quando aberto (padrão: true)
+- `children`: ReactNode - Conteúdo do drawer
 
 ### DrawerTrigger
-- `children`: ReactNode - Trigger element
-- `asChild`: boolean - Merge with child component props
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Elemento que dispara o drawer
+- `asChild`: boolean - Mesclar com as props do componente filho
+- `className`: string - Classes CSS customizadas
 
 ### DrawerContent
-- `children`: ReactNode - Drawer content
-- `className`: string - Custom CSS classes
-- `side`: 'top' | 'right' | 'bottom' | 'left' - Drawer position (typically bottom on mobile)
+- `children`: ReactNode - Conteúdo do drawer
+- `className`: string - Classes CSS customizadas
+- `side`: 'top' | 'right' | 'bottom' | 'left' - Posição do drawer (tipicamente embaixo no mobile)
 
 ### DrawerHeader
-- `children`: ReactNode - Header content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do cabeçalho
+- `className`: string - Classes CSS customizadas
 
 ### DrawerFooter
-- `children`: ReactNode - Footer content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do rodapé
+- `className`: string - Classes CSS customizadas
 
 ### DrawerTitle
-- `children`: ReactNode - Title text
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto do título
+- `className`: string - Classes CSS customizadas
 
 ### DrawerDescription
-- `children`: ReactNode - Description text
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto da descrição
+- `className`: string - Classes CSS customizadas
 
 ### DrawerClose
-- `children`: ReactNode - Close button content
-- `asChild`: boolean - Merge with child component props
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do botão de fechar
+- `asChild`: boolean - Mesclar com as props do componente filho
+- `className`: string - Classes CSS customizadas
 
 ### DrawerPortal
-- `children`: ReactNode - Portal content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do portal
+- `className`: string - Classes CSS customizadas
 
 ### DrawerOverlay
-- `className`: string - Custom CSS classes for overlay backdrop
+- `className`: string - Classes CSS customizadas para o overlay de fundo
