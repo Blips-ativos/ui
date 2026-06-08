@@ -14,8 +14,7 @@ published as `@blips/ui`.
   `globals.css`, barrel `src/index.ts`. Built with **tsup** (ESM+CJS+dts).
 - `packages/tailwind-config/` — `@blips/tailwind-config`, shared Tailwind v4 config.
 - `apps/docs/` — fumadocs documentation site.
-- `plugins/` — Claude Code plugin marketplace (`blips-templates`, `blips-ui`);
-  not app code.
+- `plugins/` — Claude Code plugin marketplace (`blips-ui`); not app code.
 - `packages/ui/registry/` + `registry.json` — shadcn registry definitions.
 
 ## Commands (run from repo root)
@@ -37,6 +36,21 @@ pnpm --filter @blips/ui dev        # tsup --watch
 # Release (changesets)
 pnpm changeset && pnpm version-packages && pnpm release
 ```
+
+## Versioning
+
+Two independent release tracks — bump them separately:
+
+- **npm (`@blips/ui`)** — versioned with **changesets**. Add a changeset per
+  change (`pnpm changeset`), then `pnpm version-packages` bumps `package.json` +
+  writes the changelog, and `pnpm release` builds and publishes to npm.
+- **Marketplace plugin (`blips-ui`)** — has an explicit
+  `version` in **both** `plugins/blips-ui/.claude-plugin/plugin.json` **and** its
+  entry in `.claude-plugin/marketplace.json`. Because `version` is explicit, you
+  **must bump it on every release** (keep both files in sync) — without the bump
+  the Claude Code cache keeps the stale version and users get no update. The
+  marketplace repo is `Blips-ativos/ui` (private): use the `BernardoBlips` `gh`
+  account or `GITHUB_TOKEN` for push and background auto-updates.
 
 ## Conventions & gotchas
 
