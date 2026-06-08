@@ -18,6 +18,7 @@ export {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogOverlay,
   AlertDialogPortal,
   AlertDialogTitle,
@@ -28,7 +29,14 @@ export {
 export { AspectRatio } from "./components/aspect-ratio";
 
 // Avatar
-export { Avatar, AvatarFallback, AvatarImage } from "./components/avatar";
+export {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarImage,
+} from "./components/avatar";
 
 // Badge
 export { Badge, badgeVariants } from "./components/badge";
@@ -45,7 +53,7 @@ export {
 } from "./components/breadcrumb";
 
 // Button
-export { Button, type ButtonProps, buttonVariants } from "./components/button";
+export { Button, buttonVariants } from "./components/button";
 
 // Calendar
 export { Calendar, CalendarDayButton } from "./components/calendar";
@@ -53,6 +61,7 @@ export { Calendar, CalendarDayButton } from "./components/calendar";
 // Card
 export {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -225,7 +234,15 @@ export {
 } from "./components/pagination";
 
 // Popover
-export { Popover, PopoverContent, PopoverTrigger } from "./components/popover";
+export {
+  Popover,
+  PopoverAnchor,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "./components/popover";
 
 // Progress
 export { Progress } from "./components/progress";
@@ -268,8 +285,6 @@ export {
   SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetOverlay,
-  SheetPortal,
   SheetTitle,
   SheetTrigger,
 } from "./components/sheet";
@@ -299,7 +314,13 @@ export {
 } from "./components/table";
 
 // Tabs
-export { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/tabs";
+export {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  tabsListVariants,
+} from "./components/tabs";
 
 // Textarea
 export { Textarea } from "./components/textarea";
