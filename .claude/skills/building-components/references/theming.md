@@ -6,7 +6,7 @@
 
 A `@blips/ui` usa **Tailwind CSS v4** com configuração CSS-first via `@theme` blocks. Não existe `tailwind.config.ts` — toda configuração vive em CSS.
 
-### Tailwind v4 Key Differences
+### Principais Diferenças do Tailwind v4
 
 ```css
 /* Tailwind v4: theme via @theme blocks no CSS */
