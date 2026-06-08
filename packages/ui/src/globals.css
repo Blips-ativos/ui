@@ -2,6 +2,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Content sources — scan this package's own files and every app that
+   consumes it (shadcn monorepo pattern). Paths are relative to this file
+   (packages/ui/src/globals.css). */
+@source "../**/*.{ts,tsx}";
+@source "../../../apps/**/*.{ts,tsx}";
+
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
@@ -60,6 +66,27 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-display: var(--font-display);
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
 }
 
 /* ----- Light theme (default) ----- */
