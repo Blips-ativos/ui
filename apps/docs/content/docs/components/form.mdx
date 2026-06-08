@@ -1,17 +1,17 @@
 ---
 title: Form
-description: Building forms with React Hook Form and Zod.
+description: Construindo formulários com React Hook Form e Zod.
 ---
 
 <ComponentPreview name="form-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -33,16 +33,16 @@ import {
       name="username"
       render={({ field }) => (
         <FormItem>
-          <FormLabel>Username</FormLabel>
+          <FormLabel>Nome de usuário</FormLabel>
           <FormControl>
             <Input placeholder="shadcn" {...field} />
           </FormControl>
-          <FormDescription>Your public display name.</FormDescription>
+          <FormDescription>Seu nome de exibição público.</FormDescription>
           <FormMessage />
         </FormItem>
       )}
     />
-    <Button type="submit">Submit</Button>
+    <Button type="submit">Enviar</Button>
   </form>
 </Form>
 ```

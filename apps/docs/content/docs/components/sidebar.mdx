@@ -1,28 +1,28 @@
 ---
 title: Sidebar
-description: A composable, themeable and customizable sidebar component.
+description: Um componente de sidebar componível, customizável e com suporte a temas.
 ---
 
 <ComponentPreview name="sidebar-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Structure
+## Estrutura
 
-A `Sidebar` component is composed of the following parts:
+Um componente `Sidebar` é composto pelas seguintes partes:
 
-- `SidebarProvider` - Handles collapsible state.
-- `Sidebar` - The sidebar container.
-- `SidebarHeader` and `SidebarFooter` - Sticky at the top and bottom of the sidebar.
-- `SidebarContent` - Scrollable content.
-- `SidebarGroup` - Section within the `SidebarContent`.
-- `SidebarTrigger` - Trigger for the `Sidebar`.
+- `SidebarProvider` - Gerencia o estado de colapso.
+- `Sidebar` - O contêiner da sidebar.
+- `SidebarHeader` e `SidebarFooter` - Fixos no topo e na base da sidebar.
+- `SidebarContent` - Conteúdo rolável.
+- `SidebarGroup` - Seção dentro do `SidebarContent`.
+- `SidebarTrigger` - Gatilho para a `Sidebar`.
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -45,11 +45,11 @@ export function AppSidebar() {
       <Sidebar>
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupLabel>Aplicação</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 <SidebarMenuItem>
-                  <SidebarMenuButton>Home</SidebarMenuButton>
+                  <SidebarMenuButton>Início</SidebarMenuButton>
                 </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
@@ -61,34 +61,34 @@ export function AppSidebar() {
 }
 ```
 
-## API Reference
+## Referência da API
 
 ### SidebarProvider
 
-The `SidebarProvider` component handles the sidebar's collapsible state.
+O componente `SidebarProvider` gerencia o estado de colapso da sidebar.
 
-| Prop | Type | Default | Description |
+| Prop | Tipo | Padrão | Descrição |
 |------|------|---------|-------------|
-| `defaultOpen` | `boolean` | `true` | The default open state |
-| `open` | `boolean` | - | The controlled open state |
-| `onOpenChange` | `(open: boolean) => void` | - | Callback when the open state changes |
+| `defaultOpen` | `boolean` | `true` | O estado aberto padrão |
+| `open` | `boolean` | - | O estado aberto controlado |
+| `onOpenChange` | `(open: boolean) => void` | - | Callback acionado quando o estado aberto muda |
 
 ### Sidebar
 
-The main sidebar container.
+O contêiner principal da sidebar.
 
-| Prop | Type | Default | Description |
+| Prop | Tipo | Padrão | Descrição |
 |------|------|---------|-------------|
-| `side` | `"left" \| "right"` | `"left"` | The side the sidebar appears on |
-| `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` | The visual variant |
-| `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | The collapse behavior |
+| `side` | `"left" \| "right"` | `"left"` | O lado em que a sidebar aparece |
+| `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` | A variante visual |
+| `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | O comportamento de colapso |
 
 ### SidebarMenuButton
 
-| Prop | Type | Default | Description |
+| Prop | Tipo | Padrão | Descrição |
 |------|------|---------|-------------|
-| `asChild` | `boolean` | `false` | Render as a child element |
-| `isActive` | `boolean` | `false` | Whether the item is active |
-| `tooltip` | `string \| TooltipContentProps` | - | Tooltip content for collapsed state |
-| `variant` | `"default" \| "outline"` | `"default"` | The visual variant |
-| `size` | `"default" \| "sm" \| "lg"` | `"default"` | The size |
+| `asChild` | `boolean` | `false` | Renderiza como um elemento filho |
+| `isActive` | `boolean` | `false` | Se o item está ativo |
+| `tooltip` | `string \| TooltipContentProps` | - | Conteúdo do tooltip para o estado colapsado |
+| `variant` | `"default" \| "outline"` | `"default"` | A variante visual |
+| `size` | `"default" \| "sm" \| "lg"` | `"default"` | O tamanho |

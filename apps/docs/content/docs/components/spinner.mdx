@@ -1,17 +1,17 @@
 ---
 title: Spinner
-description: An indicator that can be used to show a loading state.
+description: Um indicador que pode ser usado para exibir um estado de carregamento.
 ---
 
 <ComponentPreview name="spinner-demo" />
 
-## Installation
+## Instalacao
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Spinner } from "@blips/ui/components/spinner"
@@ -21,9 +21,9 @@ import { Spinner } from "@blips/ui/components/spinner"
 <Spinner />
 ```
 
-## Customization
+## Customizacao
 
-You can replace the default spinner icon with any other icon by editing the `Spinner` component.
+Voce pode substituir o icone padrao do spinner por qualquer outro icone editando o componente `Spinner`.
 
 ```tsx title="components/ui/spinner.tsx"
 import { LoaderIcon } from "lucide-react"
@@ -44,4 +44,4 @@ function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
 export { Spinner }
 ```
 
-## Examples
+## Exemplos

@@ -1,17 +1,17 @@
 ---
 title: Navigation Menu
-description: A collection of links for navigating websites.
+description: Uma coleção de links para navegação em sites.
 ---
 
 <ComponentPreview name="navigation-menu-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -37,9 +37,9 @@ import {
 </NavigationMenu>
 ```
 
-## Link Component
+## Componente de Link
 
-Use the `asChild` prop to compose a custom link component such as Next.js `Link`.
+Use a prop `asChild` para compor um componente de link customizado, como o `Link` do Next.js.
 
 ```tsx
 import Link from "next/link"
@@ -54,13 +54,13 @@ export function NavigationMenuDemo() {
   return (
     <NavigationMenuItem>
       <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-        <Link href="/docs">Documentation</Link>
+        <Link href="/docs">Documentação</Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
   )
 }
 ```
 
-## API Reference
+## Referência da API
 
-See the [Radix UI Navigation Menu](https://www.radix-ui.com/docs/primitives/components/navigation-menu#api-reference) documentation for more information.
+Consulte a documentação do [Radix UI Navigation Menu](https://www.radix-ui.com/docs/primitives/components/navigation-menu#api-reference) para mais informações.

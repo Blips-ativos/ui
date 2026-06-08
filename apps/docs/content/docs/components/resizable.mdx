@@ -1,21 +1,21 @@
 ---
 title: Resizable
-description: Accessible resizable panel groups and layouts with keyboard support.
+description: Grupos de paineis e layouts redimensionaveis e acessiveis, com suporte a teclado.
 ---
 
 <ComponentPreview name="resizable-demo" />
 
-## About
+## Sobre
 
-The `Resizable` component is built on top of [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) by [bvaughn](https://github.com/bvaughn).
+O componente `Resizable` e construido sobre o [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) de [bvaughn](https://github.com/bvaughn).
 
-## Installation
+## Instalacao
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -33,25 +33,25 @@ import {
 </ResizablePanelGroup>
 ```
 
-## Examples
+## Exemplos
 
 ### Vertical
 
-Use `orientation="vertical"` for vertical resizing.
+Use `orientation="vertical"` para redimensionamento vertical.
 
 <ComponentPreview name="resizable-vertical" />
 
-## API Reference
+## Referencia da API
 
-See the [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels/tree/main/packages/react-resizable-panels) documentation.
+Consulte a documentacao do [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels/tree/main/packages/react-resizable-panels).
 
 ## Changelog
 
 ### 2025-02-02 `react-resizable-panels` v4
 
-Updated to `react-resizable-panels` v4. See the [v4.0.0 release notes](https://github.com/bvaughn/react-resizable-panels/releases/tag/4.0.0) for full details.
+Atualizado para o `react-resizable-panels` v4. Consulte as [notas da versao v4.0.0](https://github.com/bvaughn/react-resizable-panels/releases/tag/4.0.0) para os detalhes completos.
 
-If you're using `react-resizable-panels` primitives directly, note the following changes:
+Se voce usa os primitives do `react-resizable-panels` diretamente, observe as seguintes mudancas:
 
 | v3                           | v4                      |
 | ---------------------------- | ----------------------- |
@@ -64,5 +64,5 @@ If you're using `react-resizable-panels` primitives directly, note the following
 | `ref` prop on Panel          | `panelRef` prop         |
 | `data-panel-group-direction` | `aria-orientation`      |
 
-> **Note:** The shadcn/ui wrapper components (`ResizablePanelGroup`, `ResizablePanel`,
-> `ResizableHandle`) remain unchanged.
+> **Nota:** Os componentes wrapper do shadcn/ui (`ResizablePanelGroup`, `ResizablePanel`,
+> `ResizableHandle`) permanecem inalterados.

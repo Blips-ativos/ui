@@ -1,17 +1,17 @@
 ---
 title: Menubar
-description: A visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.
+description: Um menu visualmente persistente, comum em aplicações desktop, que fornece acesso rápido a um conjunto consistente de comandos.
 ---
 
 <ComponentPreview name="menubar-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -29,26 +29,26 @@ import {
 ```tsx
 <Menubar>
   <MenubarMenu>
-    <MenubarTrigger>File</MenubarTrigger>
+    <MenubarTrigger>Arquivo</MenubarTrigger>
     <MenubarContent>
       <MenubarGroup>
         <MenubarItem>
-          New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+          Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
         </MenubarItem>
-        <MenubarItem>New Window</MenubarItem>
+        <MenubarItem>Nova janela</MenubarItem>
       </MenubarGroup>
       <MenubarSeparator />
       <MenubarGroup>
-        <MenubarItem>Share</MenubarItem>
-        <MenubarItem>Print</MenubarItem>
+        <MenubarItem>Compartilhar</MenubarItem>
+        <MenubarItem>Imprimir</MenubarItem>
       </MenubarGroup>
     </MenubarContent>
   </MenubarMenu>
 </Menubar>
 ```
 
-## Examples
+## Exemplos
 
-## API Reference
+## Referência da API
 
-See the [Radix UI Menubar](https://www.radix-ui.com/docs/primitives/components/menubar#api-reference) documentation.
+Consulte a documentação do [Radix UI Menubar](https://www.radix-ui.com/docs/primitives/components/menubar#api-reference).

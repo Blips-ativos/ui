@@ -1,17 +1,17 @@
 ---
 title: Sheet
-description: Extends the Dialog component to display content that complements the main content of the screen.
+description: Estende o componente Dialog para exibir conteúdo que complementa o conteúdo principal da tela.
 ---
 
 <ComponentPreview name="sheet-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -28,24 +28,24 @@ import {
 
 ```tsx
 <Sheet>
-  <SheetTrigger>Open</SheetTrigger>
+  <SheetTrigger>Abrir</SheetTrigger>
   <SheetContent>
     <SheetHeader>
-      <SheetTitle>Are you absolutely sure?</SheetTitle>
-      <SheetDescription>This action cannot be undone.</SheetDescription>
+      <SheetTitle>Você tem certeza absoluta?</SheetTitle>
+      <SheetDescription>Esta ação não pode ser desfeita.</SheetDescription>
     </SheetHeader>
   </SheetContent>
 </Sheet>
 ```
 
-## Examples
+## Exemplos
 
 ### Side
 
-Use the `side` prop on `SheetContent` to set the edge of the screen where the sheet appears. Values are `top`, `right`, `bottom`, or `left`.
+Use a prop `side` no `SheetContent` para definir a borda da tela onde o sheet aparece. Os valores são `top`, `right`, `bottom` ou `left`.
 
 <ComponentPreview name="sheet-side" />
 
-## API Reference
+## Referência da API
 
-See the [Radix UI Dialog](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference) documentation.
+Consulte a documentação do [Radix UI Dialog](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference).

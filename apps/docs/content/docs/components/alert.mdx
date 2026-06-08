@@ -1,17 +1,17 @@
 ---
 title: Alert
-description: Displays a callout for user attention.
+description: Exibe um destaque para chamar a atenção do usuário.
 ---
 
 <ComponentPreview name="alert-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -25,29 +25,29 @@ import {
 ```tsx
 <Alert>
   <InfoIcon />
-  <AlertTitle>Heads up!</AlertTitle>
+  <AlertTitle>Atenção!</AlertTitle>
   <AlertDescription>
-    You can add components and dependencies to your app using the cli.
+    Você pode adicionar componentes e dependências ao seu app usando a cli.
   </AlertDescription>
   <AlertAction>
-    <Button variant="outline">Enable</Button>
+    <Button variant="outline">Ativar</Button>
   </AlertAction>
 </Alert>
 ```
 
-## Examples
+## Exemplos
 
 ### Destructive
 
-Use `variant="destructive"` to create a destructive alert.
+Use `variant="destructive"` para criar um alerta destrutivo.
 
 <ComponentPreview name="alert-destructive" />
 
-## API Reference
+## Referência da API
 
 ### Alert
 
-The `Alert` component displays a callout for user attention.
+O componente `Alert` exibe um destaque para chamar a atenção do usuário.
 
 | Prop      | Type                         | Default     |
 | --------- | ---------------------------- | ----------- |
@@ -55,7 +55,7 @@ The `Alert` component displays a callout for user attention.
 
 ### AlertTitle
 
-The `AlertTitle` component displays the title of the alert.
+O componente `AlertTitle` exibe o título do alerta.
 
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |
@@ -63,7 +63,7 @@ The `AlertTitle` component displays the title of the alert.
 
 ### AlertDescription
 
-The `AlertDescription` component displays the description or content of the alert.
+O componente `AlertDescription` exibe a descrição ou o conteúdo do alerta.
 
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |
@@ -71,7 +71,7 @@ The `AlertDescription` component displays the description or content of the aler
 
 ### AlertAction
 
-The `AlertAction` component displays an action element (like a button) positioned absolutely in the top-right corner of the alert.
+O componente `AlertAction` exibe um elemento de ação (como um botão) posicionado de forma absoluta no canto superior direito do alerta.
 
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |

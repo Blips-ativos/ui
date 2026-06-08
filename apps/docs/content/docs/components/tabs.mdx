@@ -1,17 +1,17 @@
 ---
 title: Tabs
-description: A set of layered sections of content—known as tab panels—that are displayed one at a time.
+description: Um conjunto de seções de conteúdo sobrepostas—conhecidas como painéis de abas—que são exibidas uma de cada vez.
 ---
 
 <ComponentPreview name="tabs-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@blips/ui/components/tabs"
@@ -20,16 +20,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@blips/ui/components/t
 ```tsx
 <Tabs defaultValue="account" className="w-[400px]">
   <TabsList>
-    <TabsTrigger value="account">Account</TabsTrigger>
-    <TabsTrigger value="password">Password</TabsTrigger>
+    <TabsTrigger value="account">Conta</TabsTrigger>
+    <TabsTrigger value="password">Senha</TabsTrigger>
   </TabsList>
-  <TabsContent value="account">Make changes to your account here.</TabsContent>
-  <TabsContent value="password">Change your password here.</TabsContent>
+  <TabsContent value="account">Faça alterações na sua conta aqui.</TabsContent>
+  <TabsContent value="password">Altere sua senha aqui.</TabsContent>
 </Tabs>
 ```
 
-## Examples
+## Exemplos
 
-## API Reference
+## Referência da API
 
-See the [Radix Tabs](https://www.radix-ui.com/docs/primitives/components/tabs#api-reference) documentation.
+Consulte a documentação do [Radix Tabs](https://www.radix-ui.com/docs/primitives/components/tabs#api-reference).

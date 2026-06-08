@@ -1,17 +1,17 @@
 ---
 title: Table
-description: A responsive table component.
+description: Um componente de tabela responsivo.
 ---
 
 <ComponentPreview name="table-demo" />
 
-## Installation
+## Instalacao
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -27,32 +27,32 @@ import {
 
 ```tsx
 <Table>
-  <TableCaption>A list of your recent invoices.</TableCaption>
+  <TableCaption>Uma lista das suas faturas recentes.</TableCaption>
   <TableHeader>
     <TableRow>
-      <TableHead className="w-[100px]">Invoice</TableHead>
+      <TableHead className="w-[100px]">Fatura</TableHead>
       <TableHead>Status</TableHead>
-      <TableHead>Method</TableHead>
-      <TableHead className="text-right">Amount</TableHead>
+      <TableHead>Metodo</TableHead>
+      <TableHead className="text-right">Valor</TableHead>
     </TableRow>
   </TableHeader>
   <TableBody>
     <TableRow>
       <TableCell className="font-medium">INV001</TableCell>
-      <TableCell>Paid</TableCell>
-      <TableCell>Credit Card</TableCell>
+      <TableCell>Pago</TableCell>
+      <TableCell>Cartao de Credito</TableCell>
       <TableCell className="text-right">$250.00</TableCell>
     </TableRow>
   </TableBody>
 </Table>
 ```
 
-## Examples
+## Exemplos
 
 ## Data Table
 
-You can use the `<Table />` component to build more complex data tables. Combine it with [@tanstack/react-table](https://tanstack.com/table/v8) to create tables with sorting, filtering and pagination.
+Voce pode usar o componente `<Table />` para construir tabelas de dados mais complexas. Combine-o com [@tanstack/react-table](https://tanstack.com/table/v8) para criar tabelas com ordenacao, filtragem e paginacao.
 
-See the [Data Table](/docs/components/data-table) documentation for more information.
+Consulte a documentacao de [Data Table](/docs/components/data-table) para mais informacoes.
 
-You can also see an example of a data table in the [Tasks](/examples/tasks) demo.
+Voce tambem pode ver um exemplo de tabela de dados na demo de [Tasks](/examples/tasks).

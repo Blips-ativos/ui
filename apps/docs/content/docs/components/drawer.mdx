@@ -1,21 +1,21 @@
 ---
 title: Drawer
-description: A drawer component for React.
+description: Um componente de drawer para React.
 ---
 
 <ComponentPreview name="drawer-demo" />
 
-## About
+## Sobre
 
-Drawer is built on top of [Vaul](https://github.com/emilkowalski/vaul) by [emilkowalski](https://twitter.com/emilkowalski).
+O Drawer é construído sobre o [Vaul](https://github.com/emilkowalski/vaul) por [emilkowalski](https://twitter.com/emilkowalski).
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -32,24 +32,24 @@ import {
 
 ```tsx
 <Drawer>
-  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerTrigger>Abrir</DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
-      <DrawerTitle>Are you absolutely sure?</DrawerTitle>
-      <DrawerDescription>This action cannot be undone.</DrawerDescription>
+      <DrawerTitle>Você tem certeza absoluta?</DrawerTitle>
+      <DrawerDescription>Esta ação não pode ser desfeita.</DrawerDescription>
     </DrawerHeader>
     <DrawerFooter>
-      <Button>Submit</Button>
+      <Button>Enviar</Button>
       <DrawerClose>
-        <Button variant="outline">Cancel</Button>
+        <Button variant="outline">Cancelar</Button>
       </DrawerClose>
     </DrawerFooter>
   </DrawerContent>
 </Drawer>
 ```
 
-## Examples
+## Exemplos
 
-## API Reference
+## Referência da API
 
-See the [Vaul documentation](https://vaul.emilkowal.ski/getting-started) for the full API reference.
+Consulte a [documentação do Vaul](https://vaul.emilkowal.ski/getting-started) para a referência completa da API.

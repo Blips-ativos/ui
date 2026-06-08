@@ -1,21 +1,21 @@
 ---
 title: Command
-description: Command menu for search and quick actions.
+description: Menu de comandos para busca e ações rápidas.
 ---
 
 <ComponentPreview name="command-demo" />
 
-## About
+## Sobre
 
-The `<Command />` component uses the [`cmdk`](https://github.com/dip/cmdk) component by [Dip](https://www.dip.org/).
+O componente `<Command />` utiliza o componente [`cmdk`](https://github.com/dip/cmdk) de [Dip](https://www.dip.org/).
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -33,26 +33,26 @@ import {
 
 ```tsx
 <Command className="max-w-sm rounded-lg border">
-  <CommandInput placeholder="Type a command or search..." />
+  <CommandInput placeholder="Digite um comando ou pesquise..." />
   <CommandList>
-    <CommandEmpty>No results found.</CommandEmpty>
-    <CommandGroup heading="Suggestions">
-      <CommandItem>Calendar</CommandItem>
-      <CommandItem>Search Emoji</CommandItem>
-      <CommandItem>Calculator</CommandItem>
+    <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+    <CommandGroup heading="Sugestões">
+      <CommandItem>Calendário</CommandItem>
+      <CommandItem>Buscar Emoji</CommandItem>
+      <CommandItem>Calculadora</CommandItem>
     </CommandGroup>
     <CommandSeparator />
-    <CommandGroup heading="Settings">
-      <CommandItem>Profile</CommandItem>
-      <CommandItem>Billing</CommandItem>
-      <CommandItem>Settings</CommandItem>
+    <CommandGroup heading="Configurações">
+      <CommandItem>Perfil</CommandItem>
+      <CommandItem>Cobrança</CommandItem>
+      <CommandItem>Configurações</CommandItem>
     </CommandGroup>
   </CommandList>
 </Command>
 ```
 
-## Examples
+## Exemplos
 
-## API Reference
+## Referência da API
 
-See the [cmdk](https://github.com/dip/cmdk) documentation for more information.
+Consulte a documentação do [cmdk](https://github.com/dip/cmdk) para mais informações.

@@ -1,17 +1,17 @@
 ---
 title: Input Group
-description: Add addons, buttons, and helper content to inputs.
+description: Adicione addons, botões e conteúdo auxiliar a inputs.
 ---
 
 <ComponentPreview name="input-group-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -26,7 +26,7 @@ import {
 
 ```tsx
 <InputGroup>
-  <InputGroupInput placeholder="Search..." />
+  <InputGroupInput placeholder="Buscar..." />
   <InputGroupAddon>
     <SearchIcon />
   </InputGroupAddon>
@@ -35,19 +35,19 @@ import {
 
 ## Align
 
-Use the `align` prop on `InputGroupAddon` to position the addon relative to the input.
+Use a prop `align` em `InputGroupAddon` para posicionar o addon em relação ao input.
 
-> **Note:** For proper focus management, `InputGroupAddon` should always be placed after
-> `InputGroupInput` or `InputGroupTextarea` in the DOM. Use the `align` prop to
-> visually position the addon.
+> **Nota:** Para um gerenciamento de foco adequado, o `InputGroupAddon` deve sempre ser posicionado depois
+> de `InputGroupInput` ou `InputGroupTextarea` no DOM. Use a prop `align` para
+> posicionar o addon visualmente.
 
-## Examples
+## Exemplos
 
-## API Reference
+## Referência da API
 
 ### InputGroup
 
-The main component that wraps inputs and addons.
+O componente principal que envolve inputs e addons.
 
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |
@@ -62,10 +62,10 @@ The main component that wraps inputs and addons.
 
 ### InputGroupAddon
 
-Displays icons, text, buttons, or other content alongside inputs.
+Exibe ícones, texto, botões ou outro conteúdo ao lado dos inputs.
 
-> **Focus Navigation:** For proper focus navigation, the `InputGroupAddon` component should be placed
-> after the input. Set the `align` prop to position the addon.
+> **Navegação por foco:** Para uma navegação por foco adequada, o componente `InputGroupAddon` deve ser posicionado
+> depois do input. Defina a prop `align` para posicionar o addon.
 
 | Prop        | Type                                                             | Default          |
 | ----------- | ---------------------------------------------------------------- | ---------------- |
@@ -78,9 +78,9 @@ Displays icons, text, buttons, or other content alongside inputs.
 </InputGroupAddon>
 ```
 
-**For `<InputGroupInput />`, use the `inline-start` or `inline-end` alignment. For `<InputGroupTextarea />`, use the `block-start` or `block-end` alignment.**
+**Para `<InputGroupInput />`, use o alinhamento `inline-start` ou `inline-end`. Para `<InputGroupTextarea />`, use o alinhamento `block-start` ou `block-end`.**
 
-The `InputGroupAddon` component can have multiple `InputGroupButton` components and icons.
+O componente `InputGroupAddon` pode ter múltiplos componentes `InputGroupButton` e ícones.
 
 ```tsx
 <InputGroupAddon>
@@ -91,7 +91,7 @@ The `InputGroupAddon` component can have multiple `InputGroupButton` components 
 
 ### InputGroupButton
 
-Displays buttons within input groups.
+Exibe botões dentro dos input groups.
 
 | Prop        | Type                                                                          | Default   |
 | ----------- | ----------------------------------------------------------------------------- | --------- |
@@ -101,24 +101,24 @@ Displays buttons within input groups.
 
 ```tsx
 <InputGroupButton>Button</InputGroupButton>
-<InputGroupButton size="icon-xs" aria-label="Copy">
+<InputGroupButton size="icon-xs" aria-label="Copiar">
   <CopyIcon />
 </InputGroupButton>
 ```
 
 ### InputGroupInput
 
-Replacement for `<Input />` when building input groups. This component has the input group styles pre-applied and uses the unified `data-slot="input-group-control"` for focus state handling.
+Substituto para `<Input />` ao construir input groups. Este componente tem os estilos de input group pré-aplicados e usa o `data-slot="input-group-control"` unificado para o tratamento do estado de foco.
 
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |
 | `className` | `string` |         |
 
-All other props are passed through to the underlying `<Input />` component.
+Todas as outras props são repassadas para o componente `<Input />` subjacente.
 
 ```tsx
 <InputGroup>
-  <InputGroupInput placeholder="Enter text..." />
+  <InputGroupInput placeholder="Digite o texto..." />
   <InputGroupAddon>
     <SearchIcon />
   </InputGroupAddon>
@@ -127,21 +127,21 @@ All other props are passed through to the underlying `<Input />` component.
 
 ### InputGroupTextarea
 
-Replacement for `<Textarea />` when building input groups. This component has the textarea group styles pre-applied and uses the unified `data-slot="input-group-control"` for focus state handling.
+Substituto para `<Textarea />` ao construir input groups. Este componente tem os estilos de textarea group pré-aplicados e usa o `data-slot="input-group-control"` unificado para o tratamento do estado de foco.
 
 | Prop        | Type     | Default |
 | ----------- | -------- | ------- |
 | `className` | `string` |         |
 
-All other props are passed through to the underlying `<Textarea />` component.
+Todas as outras props são repassadas para o componente `<Textarea />` subjacente.
 
 ```tsx
 <InputGroup>
-  <InputGroupTextarea placeholder="Enter message..." />
+  <InputGroupTextarea placeholder="Digite a mensagem..." />
   <InputGroupAddon align="block-end">
-    <InputGroupButton>Send</InputGroupButton>
+    <InputGroupButton>Enviar</InputGroupButton>
   </InputGroupAddon>
 </InputGroup>
 ```
 
-## Changelog
+## Histórico de alterações

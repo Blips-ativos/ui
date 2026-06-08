@@ -1,17 +1,17 @@
 ---
 title: Pagination
-description: Pagination with page navigation, next and previous links.
+description: Paginação com navegação entre páginas e links de avançar e voltar.
 ---
 
 <ComponentPreview name="pagination-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -52,13 +52,13 @@ import {
 </Pagination>
 ```
 
-## Examples
+## Exemplos
 
 ## Next.js
 
-By default the `<PaginationLink />` component will render an `<a />` tag.
+Por padrão, o componente `<PaginationLink />` renderiza uma tag `<a />`.
 
-To use the Next.js `<Link />` component, make the following updates to `pagination.tsx`.
+Para usar o componente `<Link />` do Next.js, faça as seguintes alterações em `pagination.tsx`.
 
 ```diff /typeof Link/ {1}
 + import Link from "next/link"
@@ -78,6 +78,6 @@ const PaginationLink = ({...props }: ) => (
 
 ```
 
-> **Note:** We are making updates to the cli to automatically do this for you.
+> **Nota:** Estamos fazendo atualizações na cli para realizar isso automaticamente para você.
 
 ## Changelog

@@ -1,21 +1,21 @@
 ---
 title: Carousel
-description: A carousel with motion and swipe built using Embla.
+description: Um carrossel com animação e gesto de arrastar construído com Embla.
 ---
 
 <ComponentPreview name="carousel-demo" />
 
-## About
+## Sobre
 
-The carousel component is built using the [Embla Carousel](https://www.embla-carousel.com/) library.
+O componente de carrossel é construído utilizando a biblioteca [Embla Carousel](https://www.embla-carousel.com/).
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -39,11 +39,11 @@ import {
 </Carousel>
 ```
 
-## Examples
+## Exemplos
 
 ## Options
 
-You can pass options to the carousel using the `opts` prop. See the [Embla Carousel docs](https://www.embla-carousel.com/api/options/) for more information.
+Você pode passar opções para o carrossel usando a prop `opts`. Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/options/) para mais informações.
 
 ```tsx {2-5}
 <Carousel
@@ -62,7 +62,7 @@ You can pass options to the carousel using the `opts` prop. See the [Embla Carou
 
 ## API
 
-Use a state and the `setApi` props to get an instance of the carousel API.
+Use um state e a prop `setApi` para obter uma instância da API do carrossel.
 
 ```tsx {1,4,22}
 import { type CarouselApi } from "@blips/ui/components/carousel"
@@ -99,7 +99,7 @@ export function Example() {
 
 ## Events
 
-You can listen to events using the api instance from `setApi`.
+Você pode escutar eventos usando a instância da api obtida de `setApi`.
 
 ```tsx {1,4-14,16}
 import { type CarouselApi } from "@blips/ui/components/carousel"
@@ -129,11 +129,11 @@ export function Example() {
 }
 ```
 
-See the [Embla Carousel docs](https://www.embla-carousel.com/api/events/) for more information on using events.
+Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/events/) para mais informações sobre o uso de eventos.
 
 ## Plugins
 
-You can use the `plugins` prop to add plugins to the carousel.
+Você pode usar a prop `plugins` para adicionar plugins ao carrossel.
 
 ```ts {1,6-10}
 import Autoplay from "embla-carousel-autoplay"
@@ -155,4 +155,4 @@ export function Example() {
 
 ## API Reference
 
-See the [Embla Carousel docs](https://www.embla-carousel.com/api/plugins/) for more information on props and plugins.
+Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/plugins/) para mais informações sobre props e plugins.

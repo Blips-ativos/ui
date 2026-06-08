@@ -1,17 +1,17 @@
 ---
 title: Dropdown Menu
-description: Displays a menu to the user — such as a set of actions or functions — triggered by a button.
+description: Exibe um menu para o usuário — como um conjunto de ações ou funções — acionado por um botão.
 ---
 
 <ComponentPreview name="dropdown-menu-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Button } from "@blips/ui/components/button"
@@ -29,37 +29,37 @@ import {
 ```tsx
 <DropdownMenu>
   <DropdownMenuTrigger asChild>
-    <Button variant="outline">Open</Button>
+    <Button variant="outline">Abrir</Button>
   </DropdownMenuTrigger>
   <DropdownMenuContent>
     <DropdownMenuGroup>
-      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-      <DropdownMenuItem>Profile</DropdownMenuItem>
-      <DropdownMenuItem>Billing</DropdownMenuItem>
+      <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
+      <DropdownMenuItem>Perfil</DropdownMenuItem>
+      <DropdownMenuItem>Faturamento</DropdownMenuItem>
     </DropdownMenuGroup>
     <DropdownMenuGroup>
       <DropdownMenuSeparator />
-      <DropdownMenuItem>Team</DropdownMenuItem>
-      <DropdownMenuItem>Subscription</DropdownMenuItem>
+      <DropdownMenuItem>Equipe</DropdownMenuItem>
+      <DropdownMenuItem>Assinatura</DropdownMenuItem>
     </DropdownMenuGroup>
   </DropdownMenuContent>
 </DropdownMenu>
 ```
 
-## Examples
+## Exemplos
 
 ### Checkboxes
 
-Use `DropdownMenuCheckboxItem` for toggles.
+Use `DropdownMenuCheckboxItem` para alternâncias.
 
 <ComponentPreview name="dropdown-menu-checkboxes" />
 
 ### Radio Group
 
-Use `DropdownMenuRadioGroup` for exclusive choices.
+Use `DropdownMenuRadioGroup` para escolhas exclusivas.
 
 <ComponentPreview name="dropdown-menu-radio-group" />
 
-## API Reference
+## Referência da API
 
-See the [Radix UI documentation](https://www.radix-ui.com/docs/primitives/components/dropdown-menu) for the full API reference.
+Consulte a [documentação do Radix UI](https://www.radix-ui.com/docs/primitives/components/dropdown-menu) para a referência completa da API.

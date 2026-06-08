@@ -1,17 +1,17 @@
 ---
 title: Alert Dialog
-description: A modal dialog that interrupts the user with important content and expects a response.
+description: Um diálogo modal que interrompe o usuário com conteúdo importante e espera uma resposta.
 ---
 
 <ComponentPreview name="alert-dialog-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import {
@@ -30,34 +30,34 @@ import {
 ```tsx
 <AlertDialog>
   <AlertDialogTrigger asChild>
-    <Button variant="outline">Show Dialog</Button>
+    <Button variant="outline">Mostrar diálogo</Button>
   </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+      <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
       <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        from our servers.
+        Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta
+        dos nossos servidores.
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction>Continue</AlertDialogAction>
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogAction>Continuar</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
 ```
 
-## Examples
+## Exemplos
 
-## API Reference
+## Referência da API
 
 ### size
 
-Use the `size` props on the `AlertDialogContent` component to control the size of the alert dialog. It accepts the following values:
+Use a prop `size` no componente `AlertDialogContent` para controlar o tamanho do alert dialog. Ela aceita os seguintes valores:
 
 | Prop   | Type                | Default     |
 | ------ | ------------------- | ----------- |
 | `size` | `"default" \| "sm"` | `"default"` |
 
-For more information about the other components and their props, see the [Radix UI documentation](https://www.radix-ui.com/primitives/docs/components/alert-dialog#api-reference).
+Para mais informações sobre os outros componentes e suas props, consulte a [documentação do Radix UI](https://www.radix-ui.com/primitives/docs/components/alert-dialog#api-reference).

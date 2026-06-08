@@ -1,17 +1,17 @@
 ---
 title: Checkbox
-description: A control that allows the user to toggle between checked and not checked.
+description: Um controle que permite ao usuário alternar entre marcado e não marcado.
 ---
 
 <ComponentPreview name="checkbox-demo" />
 
-## Installation
+## Instalação
 
 ```bash
 pnpm add @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
 import { Checkbox } from "@blips/ui/components/checkbox"
@@ -21,10 +21,10 @@ import { Checkbox } from "@blips/ui/components/checkbox"
 <Checkbox />
 ```
 
-## Checked State
+## Estado Marcado
 
-Use `defaultChecked` for uncontrolled checkboxes, or `checked` and
-`onCheckedChange` to control the state.
+Use `defaultChecked` para checkboxes não controlados, ou `checked` e
+`onCheckedChange` para controlar o estado.
 
 ```tsx
 import * as React from "react"
@@ -36,19 +36,19 @@ export function Example() {
 }
 ```
 
-## Invalid State
+## Estado Inválido
 
-Set `aria-invalid` on the checkbox and `data-invalid` on the field wrapper to
-show the invalid styles.
+Defina `aria-invalid` no checkbox e `data-invalid` no wrapper do campo para
+exibir os estilos de estado inválido.
 
-## Examples
+## Exemplos
 
 ### Disabled
 
-Use the `disabled` prop to prevent interaction and add the `data-disabled` attribute to the `<Field>` component for disabled styles.
+Use a prop `disabled` para impedir a interação e adicione o atributo `data-disabled` ao componente `<Field>` para aplicar os estilos de desabilitado.
 
 <ComponentPreview name="checkbox-disabled" />
 
-## API Reference
+## Referência da API
 
-See the [Radix UI](https://www.radix-ui.com/docs/primitives/components/checkbox#api-reference) documentation for more information.
+Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/checkbox#api-reference) para mais informações.
