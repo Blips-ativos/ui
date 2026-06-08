@@ -1,13 +1,9 @@
 ---
 title: Card
-description: A card component with header, content, and footer sections.
+description: Displays a card with header, content, and footer.
 ---
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, Button } from "@blips/ui";
-
-# Card
-
-A card component with header, content, and footer sections for organizing content.
+<ComponentPreview name="card-demo" />
 
 ## Installation
 
@@ -20,91 +16,88 @@ pnpm add @blips/ui
 ```tsx
 import {
   Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@blips/ui";
+} from "@blips/ui/components/card"
+```
 
-export function MyComponent() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
-      </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
-    </Card>
-  );
-}
+```tsx
+<Card>
+  <CardHeader>
+    <CardTitle>Card Title</CardTitle>
+    <CardDescription>Card Description</CardDescription>
+    <CardAction>Card Action</CardAction>
+  </CardHeader>
+  <CardContent>
+    <p>Card Content</p>
+  </CardContent>
+  <CardFooter>
+    <p>Card Footer</p>
+  </CardFooter>
+</Card>
 ```
 
 ## Examples
-
-### Basic Card
-
-<Card className="my-6 max-w-sm">
-  <CardHeader>
-    <CardTitle>Create project</CardTitle>
-    <CardDescription>Deploy your new project in one-click.</CardDescription>
-  </CardHeader>
-  <CardContent>
-    <p className="text-sm text-muted-foreground">
-      Your new project will be created with all the default settings.
-    </p>
-  </CardContent>
-  <CardFooter className="flex justify-between">
-    <Button variant="outline">Cancel</Button>
-    <Button>Deploy</Button>
-  </CardFooter>
-</Card>
-
-```tsx
-<Card className="max-w-sm">
-  <CardHeader>
-    <CardTitle>Create project</CardTitle>
-    <CardDescription>Deploy your new project in one-click.</CardDescription>
-  </CardHeader>
-  <CardContent>
-    <p className="text-sm text-muted-foreground">
-      Your new project will be created with all the default settings.
-    </p>
-  </CardContent>
-  <CardFooter className="flex justify-between">
-    <Button variant="outline">Cancel</Button>
-    <Button>Deploy</Button>
-  </CardFooter>
-</Card>
-```
 
 ## API Reference
 
 ### Card
 
-The main container component.
+The `Card` component is the root container for card content.
+
+| Prop        | Type                | Default     |
+| ----------- | ------------------- | ----------- |
+| `size`      | `"default" \| "sm"` | `"default"` |
+| `className` | `string`            | -           |
 
 ### CardHeader
 
-Container for the title and description.
+The `CardHeader` component is used for a title, description, and optional action.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
 
 ### CardTitle
 
-The title of the card.
+The `CardTitle` component is used for the card title.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
 
 ### CardDescription
 
-A description below the title.
+The `CardDescription` component is used for helper text under the title.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### CardAction
+
+The `CardAction` component places content in the top-right of the header (for example, a button or a badge).
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
 
 ### CardContent
 
-The main content area.
+The `CardContent` component is used for the main card body.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
 
 ### CardFooter
 
-The footer area, typically for actions.
+The `CardFooter` component is used for actions and secondary content at the bottom of the card.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |

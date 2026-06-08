@@ -1,13 +1,9 @@
 ---
 title: Button
-description: A button component with multiple variants and sizes.
+description: Displays a button or a component that looks like a button.
 ---
 
-import { Button } from "@blips/ui";
-
-# Button
-
-A button component with multiple variants and sizes, built on top of Radix UI's Slot primitive.
+<ComponentPreview name="button-demo" />
 
 ## Installation
 
@@ -18,67 +14,55 @@ pnpm add @blips/ui
 ## Usage
 
 ```tsx
-import { Button } from "@blips/ui";
+import { Button } from "@blips/ui/components/button"
+```
 
-export function MyComponent() {
-  return <Button>Click me</Button>;
-}
+```tsx
+<Button variant="outline">Button</Button>
 ```
 
 ## Examples
 
-### Variants
+### Outline
 
-<div className="flex flex-wrap gap-4 my-6">
-  <Button>Default</Button>
-  <Button variant="secondary">Secondary</Button>
-  <Button variant="destructive">Destructive</Button>
-  <Button variant="outline">Outline</Button>
-  <Button variant="ghost">Ghost</Button>
-  <Button variant="link">Link</Button>
-</div>
+<ComponentPreview name="button-outline" />
 
-```tsx
-<Button>Default</Button>
-<Button variant="secondary">Secondary</Button>
-<Button variant="destructive">Destructive</Button>
-<Button variant="outline">Outline</Button>
-<Button variant="ghost">Ghost</Button>
-<Button variant="link">Link</Button>
-```
+### Secondary
 
-### Sizes
+<ComponentPreview name="button-secondary" />
 
-<div className="flex flex-wrap items-center gap-4 my-6">
-  <Button size="sm">Small</Button>
-  <Button size="default">Default</Button>
-  <Button size="lg">Large</Button>
-</div>
+### Ghost
 
-```tsx
-<Button size="sm">Small</Button>
-<Button size="default">Default</Button>
-<Button size="lg">Large</Button>
-```
+<ComponentPreview name="button-ghost" />
 
-### As Child
+### Destructive
 
-Use the `asChild` prop to render the button as a different element:
+<ComponentPreview name="button-destructive" />
 
-```tsx
-import Link from "next/link";
+### Link
 
-<Button asChild>
-  <Link href="/about">About</Link>
-</Button>
-```
+<ComponentPreview name="button-link" />
+
+### With Icon
+
+Remember to add the `data-icon="inline-start"` or `data-icon="inline-end"` attribute to the icon for the correct spacing.
+
+<ComponentPreview name="button-with-icon" />
+
+### Button Group
+
+To create a button group, use the `ButtonGroup` component. See the [Button Group](/docs/components/button-group) documentation for more details.
+
+<ComponentPreview name="button-group-demo" />
 
 ## API Reference
 
-### Props
+### Button
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link"` | `"default"` | The visual style of the button |
-| `size` | `"default" \| "sm" \| "lg" \| "icon"` | `"default"` | The size of the button |
-| `asChild` | `boolean` | `false` | Render as a child element |
+The `Button` component is a wrapper around the `button` element that adds a variety of styles and functionality.
+
+| Prop      | Type                                                                                 | Default     |
+| --------- | ------------------------------------------------------------------------------------ | ----------- |
+| `variant` | `"default" \| "outline" \| "ghost" \| "destructive" \| "secondary" \| "link"`        | `"default"` |
+| `size`    | `"default" \| "xs" \| "sm" \| "lg" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg"` | `"default"` |
+| `asChild` | `boolean`                                                                            | `false`     |

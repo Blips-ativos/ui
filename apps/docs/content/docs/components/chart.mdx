@@ -1,0 +1,181 @@
+---
+title: Chart
+description: Beautiful charts. Built using Recharts. Copy and paste into your apps.
+---
+
+> **Note:** We're working on upgrading to Recharts v3. In the meantime, if you'd like to start testing v3, see the code in the comment [here](https://github.com/shadcn-ui/ui/issues/7669#issuecomment-2998299159). We'll have an official release soon.
+
+<ComponentPreview name="chart-demo" />
+
+Introducing **Charts**. A collection of chart components that you can copy and paste into your apps.
+
+Charts are designed to look great out of the box. They work well with the other components and are fully customizable to fit your project.
+
+[Browse the Charts Library](/charts).
+
+## Component
+
+We use [Recharts](https://recharts.org/) under the hood.
+
+We designed the `chart` component with composition in mind. **You build your charts using Recharts components and only bring in custom components, such as `ChartTooltip`, when and where you need it**.
+
+```tsx /ChartContainer/ /ChartTooltipContent/
+import { Bar, BarChart } from "recharts"
+
+import { ChartContainer, ChartTooltipContent } from "@blips/ui/components/chart"
+
+export function MyChart() {
+  return (
+    <ChartContainer>
+      <BarChart data={data}>
+        <Bar dataKey="value" />
+        <ChartTooltip content={<ChartTooltipContent />} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+We do not wrap Recharts. This means you're not locked into an abstraction. When a new Recharts version is released, you can follow the official upgrade path to upgrade your charts.
+
+**The components are yours**.
+
+## Installation
+
+```bash
+pnpm add @blips/ui
+```
+
+## Your First Chart
+
+Let's build your first chart. We'll build a bar chart, add a grid, axis, tooltip and legend.
+
+<Steps>
+
+<Step>Start by defining your data</Step>
+
+The following data represents the number of desktop and mobile users for each month.
+
+> **Note:** Your data can be in any shape. You are not limited to the shape of the data below. Use the `dataKey` prop to map your data to the chart.
+
+```tsx title="components/example-chart.tsx"
+const chartData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+]
+```
+
+<Step>Define your chart config</Step>
+
+The chart config holds configuration for the chart. This is where you place human-readable strings, such as labels, icons and color tokens for theming.
+
+```tsx title="components/example-chart.tsx"
+import { type ChartConfig } from "@blips/ui/components/chart"
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "#2563eb",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "#60a5fa",
+  },
+} satisfies ChartConfig
+```
+
+<Step>Build your chart</Step>
+
+You can now build your chart using Recharts components.
+
+> **Important:** Remember to set a `min-h-[VALUE]` on the `ChartContainer` component. This is required for the chart to be responsive.
+
+</Steps>
+
+## Chart Config
+
+The chart config is where you define the labels, icons and colors for a chart.
+
+It is intentionally decoupled from chart data.
+
+This allows you to share config and color tokens between charts. It can also work independently for cases where your data or color tokens live remotely or in a different format.
+
+```tsx /ChartConfig/
+import { Monitor } from "lucide-react"
+
+import { type ChartConfig } from "@blips/ui/components/chart"
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    icon: Monitor,
+    // A color like 'hsl(220, 98%, 61%)' or 'var(--color-name)'
+    color: "#2563eb",
+    // OR a theme object with 'light' and 'dark' keys
+    theme: {
+      light: "#2563eb",
+      dark: "#dc2626",
+    },
+  },
+} satisfies ChartConfig
+```
+
+## Theming
+
+Charts have built-in support for theming. You can use css variables (recommended) or color values in any color format, such as hex, hsl or oklch.
+
+## Tooltip
+
+A chart tooltip contains a label, name, indicator and value. You can use a combination of these to customize your tooltip.
+
+You can turn on/off any of these using the `hideLabel`, `hideIndicator` props and customize the indicator style using the `indicator` prop.
+
+Use `labelKey` and `nameKey` to use a custom key for the tooltip label and name.
+
+Chart comes with the `<ChartTooltip>` and `<ChartTooltipContent>` components. You can use these two components to add custom tooltips to your chart.
+
+```tsx title="components/example-chart.tsx"
+import { ChartTooltip, ChartTooltipContent } from "@blips/ui/components/chart"
+```
+
+```tsx title="components/example-chart.tsx"
+<ChartTooltip content={<ChartTooltipContent />} />
+```
+
+### Props
+
+Use the following props to customize the tooltip.
+
+| Prop            | Type                     | Description                                  |
+| :-------------- | :----------------------- | :------------------------------------------- |
+| `labelKey`      | string                   | The config or data key to use for the label. |
+| `nameKey`       | string                   | The config or data key to use for the name.  |
+| `indicator`     | `dot` `line` or `dashed` | The indicator style for the tooltip.         |
+| `hideLabel`     | boolean                  | Whether to hide the label.                   |
+| `hideIndicator` | boolean                  | Whether to hide the indicator.               |
+
+## Legend
+
+You can use the custom `<ChartLegend>` and `<ChartLegendContent>` components to add a legend to your chart.
+
+```tsx title="components/example-chart.tsx"
+import { ChartLegend, ChartLegendContent } from "@blips/ui/components/chart"
+```
+
+```tsx title="components/example-chart.tsx"
+<ChartLegend content={<ChartLegendContent />} />
+```
+
+## Accessibility
+
+You can turn on the `accessibilityLayer` prop to add an accessible layer to your chart.
+
+This prop adds keyboard access and screen reader support to your charts.
+
+```tsx title="components/example-chart.tsx"
+<LineChart accessibilityLayer />
+```

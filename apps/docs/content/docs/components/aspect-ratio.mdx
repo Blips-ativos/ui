@@ -1,0 +1,39 @@
+---
+title: Aspect Ratio
+description: Displays content within a desired ratio.
+---
+
+<ComponentPreview name="aspect-ratio-demo" />
+
+## Installation
+
+```bash
+pnpm add @blips/ui
+```
+
+## Usage
+
+```tsx
+import { AspectRatio } from "@blips/ui/components/aspect-ratio"
+```
+
+```tsx
+<AspectRatio ratio={16 / 9}>
+  <Image src="..." alt="Image" className="rounded-md object-cover" />
+</AspectRatio>
+```
+
+## Examples
+
+## API Reference
+
+### AspectRatio
+
+The `AspectRatio` component displays content within a desired ratio.
+
+| Prop        | Type     | Default | Required |
+| ----------- | -------- | ------- | -------- |
+| `ratio`     | `number` | -       | Yes      |
+| `className` | `string` | -       | No       |
+
+For more information, see the [Radix UI documentation](https://www.radix-ui.com/primitives/docs/components/aspect-ratio#api-reference).

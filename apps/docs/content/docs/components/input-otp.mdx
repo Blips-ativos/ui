@@ -1,0 +1,61 @@
+---
+title: Input OTP
+description: Accessible one-time password component with copy paste functionality.
+---
+
+<ComponentPreview name="input-otp-demo" />
+
+## About
+
+Input OTP is built on top of [input-otp](https://github.com/guilhermerodz/input-otp) by [@guilherme_rodz](https://twitter.com/guilherme_rodz).
+
+## Installation
+
+```bash
+pnpm add @blips/ui
+```
+
+## Usage
+
+```tsx
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@blips/ui/components/input-otp"
+```
+
+```tsx
+<InputOTP maxLength={6}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
+  <InputOTPSeparator />
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+## Pattern
+
+Use the `pattern` prop to define a custom pattern for the OTP input.
+
+```tsx {1,5}
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
+
+;<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+  ...
+</InputOTP>
+```
+
+## Examples
+
+## API Reference
+
+See the [input-otp](https://input-otp.rodz.dev) documentation for more information.
