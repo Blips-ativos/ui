@@ -19,17 +19,6 @@
       },
       "keywords": ["ui", "components", "react"],
       "category": "ui"
-    },
-    {
-      "name": "blips-templates",
-      "source": "./plugins/blips-templates",
-      "description": "Templates de páginas e layouts Blips",
-      "version": "1.0.0",
-      "author": {
-        "name": "Blips"
-      },
-      "keywords": ["templates", "pages", "layouts"],
-      "category": "templates"
     }
   ]
 }
