@@ -1,9 +1,11 @@
 /* Theme, tokens, Tailwind entry and content sources all live in the
-   @blips/ui package globals (single source of truth). This file only adds
-   docs-specific concerns: fumadocs styles, fumadocs color overrides, and
-   data-attribute variants/utilities used by the docs site. */
+   @blips/ui package globals (single source of truth). Fumadocs v15 ships a
+   Tailwind v4-native preset: `shadcn.css` maps its --fd-* colors onto the
+   shadcn tokens we define, and `preset.css` is properly cascade-layered so
+   it no longer overrides our component utilities. */
 @import "@blips/ui/globals.css";
-@import "fumadocs-ui/style.css";
+@import "fumadocs-ui/css/shadcn.css";
+@import "fumadocs-ui/css/preset.css";
 
 /* shadcn data-attribute variants (used by docs pages/examples) */
 @custom-variant data-open {
@@ -73,58 +75,4 @@
   &::-webkit-scrollbar {
     display: none;
   }
-}
-
-:root {
-  /* Override fumadocs color vars to align with our theme */
-  --fd-background: 0 0% 100%;
-  --fd-foreground: 0 0% 9%;
-  --fd-muted: 0 0% 95%;
-  --fd-muted-foreground: 0 0% 45%;
-  --fd-popover: 0 0% 100%;
-  --fd-popover-foreground: 0 0% 9%;
-  --fd-card: 0 0% 100%;
-  --fd-card-foreground: 0 0% 9%;
-  --fd-border: 0 0% 90%;
-  --fd-primary: 0 0% 13%;
-  --fd-primary-foreground: 0 0% 97%;
-  --fd-secondary: 0 0% 95%;
-  --fd-secondary-foreground: 0 0% 13%;
-  --fd-accent: 0 0% 95%;
-  --fd-accent-foreground: 0 0% 13%;
-  --fd-ring: 0 0% 63%;
-}
-
-.dark {
-  /* Override fumadocs color vars for dark mode */
-  --fd-background: 0 0% 9%;
-  --fd-foreground: 0 0% 97%;
-  --fd-muted: 0 0% 17%;
-  --fd-muted-foreground: 0 0% 63%;
-  --fd-popover: 0 0% 13%;
-  --fd-popover-foreground: 0 0% 97%;
-  --fd-card: 0 0% 13%;
-  --fd-card-foreground: 0 0% 97%;
-  --fd-border: 0 0% 18%;
-  --fd-primary: 0 0% 97%;
-  --fd-primary-foreground: 0 0% 9%;
-  --fd-secondary: 0 0% 17%;
-  --fd-secondary-foreground: 0 0% 97%;
-  --fd-accent: 0 0% 20%;
-  --fd-accent-foreground: 0 0% 97%;
-  --fd-ring: 0 0% 45%;
-}
-
-/* Unlayered so these override fumadocs' unlayered * and body rules */
-*,
-*::before,
-*::after {
-  border-color: var(--color-border);
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-foreground);
-  font-synthesis-weight: none;
-  text-rendering: optimizeLegibility;
 }
