@@ -1,0 +1,56 @@
+---
+title: Table
+description: Um componente de tabela responsivo.
+---
+
+<ComponentPreview name="table-demo" />
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@blips/ui/components/table"
+```
+
+```tsx
+<Table>
+  <TableCaption>Uma lista das suas faturas recentes.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead className="w-[100px]">Fatura</TableHead>
+      <TableHead>Status</TableHead>
+      <TableHead>Metodo</TableHead>
+      <TableHead className="text-right">Valor</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell className="font-medium">INV001</TableCell>
+      <TableCell>Pago</TableCell>
+      <TableCell>Cartao de Credito</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+```
+
+## Exemplos
+
+### Exemplo
+
+Uma tabela completa com cabecalho, corpo e rodape exibindo uma lista de faturas.
+
+<ComponentPreview name="table-demo" />

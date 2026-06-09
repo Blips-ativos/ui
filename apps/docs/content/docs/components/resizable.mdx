@@ -1,0 +1,74 @@
+---
+title: Resizable
+description: Grupos de paineis e layouts redimensionaveis e acessiveis, com suporte a teclado.
+---
+
+<ComponentPreview name="resizable-demo" />
+
+## Sobre
+
+O componente `Resizable` e construido sobre o [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) de [bvaughn](https://github.com/bvaughn).
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@blips/ui/components/resizable"
+```
+
+```tsx
+<ResizablePanelGroup orientation="horizontal">
+  <ResizablePanel>Um</ResizablePanel>
+  <ResizableHandle />
+  <ResizablePanel>Dois</ResizablePanel>
+</ResizablePanelGroup>
+```
+
+## Exemplos
+
+### Vertical
+
+Use `orientation="vertical"` para redimensionamento vertical.
+
+<ComponentPreview name="resizable-vertical" />
+
+### Alca de arraste
+
+Use a prop `withHandle` no `ResizableHandle` para exibir uma alca de arraste visivel.
+
+<ComponentPreview name="resizable-handle" />
+
+## Referencia da API
+
+Consulte a documentacao do [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels/tree/main/packages/react-resizable-panels).
+
+## Changelog
+
+### 2025-02-02 `react-resizable-panels` v4
+
+Atualizado para o `react-resizable-panels` v4. Consulte as [notas da versao v4.0.0](https://github.com/bvaughn/react-resizable-panels/releases/tag/4.0.0) para os detalhes completos.
+
+Se voce usa os primitives do `react-resizable-panels` diretamente, observe as seguintes mudancas:
+
+| v3                           | v4                      |
+| ---------------------------- | ----------------------- |
+| `PanelGroup`                 | `Group`                 |
+| `PanelResizeHandle`          | `Separator`             |
+| `direction` prop             | `orientation` prop      |
+| `defaultSize={50}`           | `defaultSize="50%"`     |
+| `onLayout`                   | `onLayoutChange`        |
+| `ImperativePanelHandle`      | `PanelImperativeHandle` |
+| `ref` prop on Panel          | `panelRef` prop         |
+| `data-panel-group-direction` | `aria-orientation`      |
+
+> **Nota:** Os componentes wrapper do shadcn/ui (`ResizablePanelGroup`, `ResizablePanel`,
+> `ResizableHandle`) permanecem inalterados.

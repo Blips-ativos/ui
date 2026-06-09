@@ -1,0 +1,48 @@
+---
+title: Toggle Group
+description: Um conjunto de botões de dois estados que podem ser alternados entre ligado e desligado.
+---
+
+<ComponentPreview name="toggle-group-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from "@blips/ui/components/toggle-group"
+```
+
+```tsx
+<ToggleGroup type="single">
+  <ToggleGroupItem value="a">A</ToggleGroupItem>
+  <ToggleGroupItem value="b">B</ToggleGroupItem>
+  <ToggleGroupItem value="c">C</ToggleGroupItem>
+</ToggleGroup>
+```
+
+## Exemplos
+
+### Outline
+
+Use `variant="outline"` para um estilo com contorno.
+
+<ComponentPreview name="toggle-group-outline" />
+
+### Espaçamento
+
+Use `spacing` para adicionar espaço entre os itens do toggle group.
+
+<ComponentPreview name="toggle-group-spacing" />
+
+### Desabilitado
+
+<ComponentPreview name="toggle-group-disabled" />
+
+## Referência da API
+
+Consulte a documentação do [Radix Toggle Group](https://www.radix-ui.com/docs/primitives/components/toggle-group#api-reference).

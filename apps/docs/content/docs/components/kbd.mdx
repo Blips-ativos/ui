@@ -1,0 +1,77 @@
+---
+title: Kbd
+description: Usado para exibir entrada textual do usuário a partir do teclado.
+---
+
+<ComponentPreview name="kbd-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Kbd } from "@blips/ui/components/kbd"
+```
+
+```tsx
+<Kbd>Ctrl</Kbd>
+```
+
+## Exemplos
+
+### Grupo
+
+Use o componente `KbdGroup` para agrupar teclas do teclado.
+
+<ComponentPreview name="kbd-group" />
+
+### Botão
+
+Use o componente `Kbd` dentro de um `Button` para exibir uma tecla do teclado dentro de um botão.
+
+<ComponentPreview name="kbd-button" />
+
+### Tooltip
+
+Use o componente `Kbd` dentro de um `Tooltip` para exibir uma dica com uma tecla do teclado.
+
+<ComponentPreview name="kbd-tooltip" />
+
+### Input Group
+
+Use o componente `Kbd` dentro de um `InputGroupAddon` para exibir uma tecla do teclado dentro de um grupo de input.
+
+<ComponentPreview name="kbd-input-group" />
+
+## Referência da API
+
+### Kbd
+
+Use o componente `Kbd` para exibir uma tecla do teclado.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | ``      |
+
+```tsx
+<Kbd>Ctrl</Kbd>
+```
+
+### KbdGroup
+
+Use o componente `KbdGroup` para agrupar componentes `Kbd`.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | ``      |
+
+```tsx
+<KbdGroup>
+  <Kbd>Ctrl</Kbd>
+  <Kbd>B</Kbd>
+</KbdGroup>
+```

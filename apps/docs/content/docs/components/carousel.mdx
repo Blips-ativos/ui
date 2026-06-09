@@ -1,0 +1,176 @@
+---
+title: Carousel
+description: Um carrossel com animação e gesto de arrastar construído com Embla.
+---
+
+<ComponentPreview name="carousel-demo" />
+
+## Sobre
+
+O componente de carrossel é construído utilizando a biblioteca [Embla Carousel](https://www.embla-carousel.com/).
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@blips/ui/components/carousel"
+```
+
+```tsx
+<Carousel>
+  <CarouselContent>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+</Carousel>
+```
+
+## Exemplos
+
+### Tamanhos
+
+Para definir o tamanho dos itens, use a classe utilitária `basis` no `<CarouselItem />`.
+
+<ComponentPreview name="carousel-size" />
+
+### Espaçamento
+
+Para definir o espaçamento entre os itens, use a classe `pl-[VALOR]` no `<CarouselItem />` e um `-ml-[VALOR]` negativo no `<CarouselContent />`.
+
+<ComponentPreview name="carousel-spacing" />
+
+### Orientação
+
+Use a prop `orientation` para definir a orientação do carrossel.
+
+<ComponentPreview name="carousel-orientation" />
+
+## Opções
+
+Você pode passar opções para o carrossel usando a prop `opts`. Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/options/) para mais informações.
+
+```tsx {2-5}
+<Carousel
+  opts={{
+    align: "start",
+    loop: true,
+  }}
+>
+  <CarouselContent>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+    <CarouselItem>...</CarouselItem>
+  </CarouselContent>
+</Carousel>
+```
+
+## API
+
+Use um state e a prop `setApi` para obter uma instância da API do carrossel.
+
+```tsx {1,4,22}
+import { type CarouselApi } from "@blips/ui/components/carousel"
+
+export function Example() {
+  const [api, setApi] = React.useState<CarouselApi>()
+  const [current, setCurrent] = React.useState(0)
+  const [count, setCount] = React.useState(0)
+
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap() + 1)
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap() + 1)
+    })
+  }, [api])
+
+  return (
+    <Carousel setApi={setApi}>
+      <CarouselContent>
+        <CarouselItem>...</CarouselItem>
+        <CarouselItem>...</CarouselItem>
+        <CarouselItem>...</CarouselItem>
+      </CarouselContent>
+    </Carousel>
+  )
+}
+```
+
+## Eventos
+
+Você pode escutar eventos usando a instância da api obtida de `setApi`.
+
+```tsx {1,4-14,16}
+import { type CarouselApi } from "@blips/ui/components/carousel"
+
+export function Example() {
+  const [api, setApi] = React.useState<CarouselApi>()
+
+  React.useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    api.on("select", () => {
+      // Faça algo ao selecionar.
+    })
+  }, [api])
+
+  return (
+    <Carousel setApi={setApi}>
+      <CarouselContent>
+        <CarouselItem>...</CarouselItem>
+        <CarouselItem>...</CarouselItem>
+        <CarouselItem>...</CarouselItem>
+      </CarouselContent>
+    </Carousel>
+  )
+}
+```
+
+Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/events/) para mais informações sobre o uso de eventos.
+
+## Plugins
+
+Você pode usar a prop `plugins` para adicionar plugins ao carrossel.
+
+```ts {1,6-10}
+import Autoplay from "embla-carousel-autoplay"
+
+export function Example() {
+  return (
+    <Carousel
+      plugins={[
+        Autoplay({
+          delay: 2000,
+        }),
+      ]}
+    >
+      // ...
+    </Carousel>
+  )
+}
+```
+
+## Referência da API
+
+Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/plugins/) para mais informações sobre props e plugins.

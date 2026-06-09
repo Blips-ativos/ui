@@ -1,0 +1,69 @@
+---
+title: Alert Dialog
+description: Um diálogo modal que interrompe o usuário com conteúdo importante e espera uma resposta.
+---
+
+<ComponentPreview name="alert-dialog-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@blips/ui/components/alert-dialog"
+```
+
+```tsx
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="outline">Mostrar diálogo</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+      <AlertDialogDescription>
+        Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta
+        dos nossos servidores.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogAction>Continuar</AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+## Exemplos
+
+### Exemplo
+
+Um alert dialog padrão que confirma uma ação destrutiva antes de prosseguir.
+
+<ComponentPreview name="alert-dialog-demo" />
+
+## Referência da API
+
+### size
+
+Use a prop `size` no componente `AlertDialogContent` para controlar o tamanho do alert dialog. Ela aceita os seguintes valores:
+
+| Prop   | Tipo                | Padrão      |
+| ------ | ------------------- | ----------- |
+| `size` | `"default" \| "sm"` | `"default"` |
+
+Para mais informações sobre os outros componentes e suas props, consulte a [documentação do Radix UI](https://www.radix-ui.com/primitives/docs/components/alert-dialog#api-reference).

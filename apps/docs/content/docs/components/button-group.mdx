@@ -1,0 +1,184 @@
+---
+title: Button Group
+description: Um contêiner que agrupa botões relacionados com estilização consistente.
+---
+
+<ComponentPreview name="button-group-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+} from "@blips/ui/components/button-group"
+```
+
+```tsx
+<ButtonGroup>
+  <Button>Button 1</Button>
+  <Button>Button 2</Button>
+</ButtonGroup>
+```
+
+## Acessibilidade
+
+- O componente `ButtonGroup` tem o atributo `role` definido como `group`.
+- Use `Tab` para navegar entre os botões do grupo.
+- Use `aria-label` ou `aria-labelledby` para rotular o grupo de botões.
+
+```tsx
+<ButtonGroup aria-label="Button group">
+  <Button>Button 1</Button>
+  <Button>Button 2</Button>
+</ButtonGroup>
+```
+
+## ButtonGroup vs ToggleGroup
+
+- Use o componente `ButtonGroup` quando quiser agrupar botões que executam uma ação.
+- Use o componente `ToggleGroup` quando quiser agrupar botões que alternam um estado.
+
+## Exemplos
+
+### Orientação
+
+Defina a prop `orientation` para alterar o layout do grupo de botões.
+
+<ComponentPreview name="button-group-orientation" />
+
+### Tamanho
+
+Controle o tamanho dos botões usando a prop `size` em cada botão.
+
+<ComponentPreview name="button-group-size" />
+
+### Aninhado
+
+Aninhe componentes `<ButtonGroup>` para criar grupos de botões com espaçamento.
+
+<ComponentPreview name="button-group-nested" />
+
+### Separador
+
+O componente `ButtonGroupSeparator` divide visualmente os botões dentro de um grupo.
+
+<ComponentPreview name="button-group-separator" />
+
+### Split
+
+Crie um grupo de botões split adicionando dois botões separados por um `ButtonGroupSeparator`.
+
+<ComponentPreview name="button-group-split" />
+
+### Input
+
+Envolva um componente `Input` com botões.
+
+<ComponentPreview name="button-group-input" />
+
+### Input Group
+
+Envolva um componente `InputGroup` para criar layouts de entrada elaborados.
+
+<ComponentPreview name="button-group-input-group" />
+
+### Dropdown Menu
+
+Crie um grupo de botões split com um componente `DropdownMenu`.
+
+<ComponentPreview name="button-group-dropdown" />
+
+### Select
+
+Combine com um componente `Select`.
+
+<ComponentPreview name="button-group-select" />
+
+### Popover
+
+Use com um componente `Popover`.
+
+<ComponentPreview name="button-group-popover" />
+
+## Referência da API
+
+### ButtonGroup
+
+O componente `ButtonGroup` é um contêiner que agrupa botões relacionados com estilização consistente.
+
+| Prop          | Type                         | Default        |
+| ------------- | ---------------------------- | -------------- |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` |
+
+```tsx
+<ButtonGroup>
+  <Button>Button 1</Button>
+  <Button>Button 2</Button>
+</ButtonGroup>
+```
+
+Aninhe múltiplos grupos de botões para criar layouts elaborados com espaçamento. Veja o exemplo [nested](#nested) para mais detalhes.
+
+```tsx
+<ButtonGroup>
+  <ButtonGroup />
+  <ButtonGroup />
+</ButtonGroup>
+```
+
+### ButtonGroupSeparator
+
+O componente `ButtonGroupSeparator` divide visualmente os botões dentro de um grupo.
+
+| Prop          | Type                         | Default      |
+| ------------- | ---------------------------- | ------------ |
+| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` |
+
+```tsx
+<ButtonGroup>
+  <Button>Button 1</Button>
+  <ButtonGroupSeparator />
+  <Button>Button 2</Button>
+</ButtonGroup>
+```
+
+### ButtonGroupText
+
+Use este componente para exibir texto dentro de um grupo de botões.
+
+| Prop      | Type      | Default |
+| --------- | --------- | ------- |
+| `asChild` | `boolean` | `false` |
+
+```tsx
+<ButtonGroup>
+  <ButtonGroupText>Text</ButtonGroupText>
+  <Button>Button</Button>
+</ButtonGroup>
+```
+
+Use a prop `asChild` para renderizar um componente personalizado como texto, por exemplo um label.
+
+```tsx
+import { ButtonGroupText } from "@blips/ui/components/button-group"
+import { Label } from "@blips/ui/components/label"
+
+export function ButtonGroupTextDemo() {
+  return (
+    <ButtonGroup>
+      <ButtonGroupText asChild>
+        <Label htmlFor="name">Text</Label>
+      </ButtonGroupText>
+      <Input placeholder="Digite algo aqui..." id="name" />
+    </ButtonGroup>
+  )
+}
+```

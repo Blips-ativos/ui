@@ -1,0 +1,47 @@
+---
+title: Context Menu
+description: Exibe um menu de ações acionado por um clique com o botão direito.
+---
+
+<ComponentPreview name="context-menu-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@blips/ui/components/context-menu"
+```
+
+```tsx
+<ContextMenu>
+  <ContextMenuTrigger>Clique com o botão direito aqui</ContextMenuTrigger>
+  <ContextMenuContent>
+    <ContextMenuItem>Profile</ContextMenuItem>
+    <ContextMenuItem>Billing</ContextMenuItem>
+    <ContextMenuItem>Team</ContextMenuItem>
+    <ContextMenuItem>Subscription</ContextMenuItem>
+  </ContextMenuContent>
+</ContextMenu>
+```
+
+## Exemplos
+
+### Exemplo
+
+Um menu de contexto completo com itens, atalhos, submenu, caixas de seleção e grupo de opções.
+
+<ComponentPreview name="context-menu-demo" />
+
+## Referência da API
+
+Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/context-menu#api-reference) para mais informações.

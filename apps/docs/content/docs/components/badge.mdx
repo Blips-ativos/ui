@@ -1,0 +1,65 @@
+---
+title: Badge
+description: Exibe um badge ou um componente que se parece com um badge.
+---
+
+<ComponentPreview name="badge-demo" />
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Badge } from "@blips/ui/components/badge"
+```
+
+```tsx
+<Badge variant="default | outline | secondary | destructive">Badge</Badge>
+```
+
+## Exemplos
+
+### Variantes
+
+Use a prop `variant` para alterar a variante do badge.
+
+<ComponentPreview name="badge-variants" />
+
+### Com icone
+
+Voce pode renderizar um icone dentro do badge. Use `data-icon="inline-start"` para renderizar o icone a esquerda e `data-icon="inline-end"` para renderiza-lo a direita.
+
+<ComponentPreview name="badge-icon" />
+
+### Com spinner
+
+Voce pode renderizar um spinner dentro do badge. Lembre-se de adicionar a prop `data-icon="inline-start"` ou `data-icon="inline-end"` ao spinner.
+
+<ComponentPreview name="badge-spinner" />
+
+### Link
+
+Use a prop `asChild` para renderizar um link como um badge.
+
+<ComponentPreview name="badge-link" />
+
+### Cores personalizadas
+
+Voce pode personalizar as cores de um badge adicionando classes como `bg-green-50 dark:bg-green-800` ao componente `Badge`.
+
+<ComponentPreview name="badge-colors" />
+
+## Referencia da API
+
+### Badge
+
+O componente `Badge` exibe um badge ou um componente que se parece com um badge.
+
+| Prop        | Type                                                                          | Default     |
+| ----------- | ----------------------------------------------------------------------------- | ----------- |
+| `variant`   | `"default" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "link"` | `"default"` |
+| `className` | `string`                                                                      | -           |

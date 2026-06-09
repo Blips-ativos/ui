@@ -1,0 +1,78 @@
+---
+title: Alert
+description: Exibe um destaque para chamar a atenção do usuário.
+---
+
+<ComponentPreview name="alert-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@blips/ui/components/alert"
+```
+
+```tsx
+<Alert>
+  <InfoIcon />
+  <AlertTitle>Atenção!</AlertTitle>
+  <AlertDescription>
+    Você pode adicionar componentes e dependências ao seu app usando a cli.
+  </AlertDescription>
+  <AlertAction>
+    <Button variant="outline">Ativar</Button>
+  </AlertAction>
+</Alert>
+```
+
+## Exemplos
+
+### Destrutivo
+
+Use `variant="destructive"` para criar um alerta destrutivo.
+
+<ComponentPreview name="alert-destructive" />
+
+## Referência da API
+
+### Alert
+
+O componente `Alert` exibe um destaque para chamar a atenção do usuário.
+
+| Prop      | Tipo                         | Padrão      |
+| --------- | ---------------------------- | ----------- |
+| `variant` | `"default" \| "destructive"` | `"default"` |
+
+### AlertTitle
+
+O componente `AlertTitle` exibe o título do alerta.
+
+| Prop        | Tipo     | Padrão  |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AlertDescription
+
+O componente `AlertDescription` exibe a descrição ou o conteúdo do alerta.
+
+| Prop        | Tipo     | Padrão  |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### AlertAction
+
+O componente `AlertAction` exibe um elemento de ação (como um botão) posicionado de forma absoluta no canto superior direito do alerta.
+
+| Prop        | Tipo     | Padrão  |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |

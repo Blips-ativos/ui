@@ -1,0 +1,52 @@
+---
+title: Dialog
+description: Uma janela sobreposta a janela principal ou a outra janela de dialog, tornando o conteudo abaixo inerte.
+---
+
+<ComponentPreview name="dialog-demo" />
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@blips/ui/components/dialog"
+```
+
+```tsx
+<Dialog>
+  <DialogTrigger>Abrir</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Voce tem certeza absoluta?</DialogTitle>
+      <DialogDescription>
+        Esta acao nao pode ser desfeita. Isso excluira permanentemente sua conta
+        e removera seus dados de nossos servidores.
+      </DialogDescription>
+    </DialogHeader>
+  </DialogContent>
+</Dialog>
+```
+
+## Exemplos
+
+### Botao de fechar personalizado
+
+Substitua o controle de fechar padrao pelo seu proprio botao.
+
+<ComponentPreview name="dialog-close-button" />
+
+## Referencia da API
+
+Consulte a documentacao do [Radix UI](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference) para mais informacoes.

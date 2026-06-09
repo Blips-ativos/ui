@@ -1,0 +1,24 @@
+# Spinner
+
+**Categoria:** Primitive | **Deps:** `@phosphor-icons/react` | **"use client":** Não
+
+## Source
+
+```tsx
+import { Loader2Icon } from "@phosphor-icons/react"
+import { cn } from "@/lib/utils"
+
+function Spinner({ className, ...props }: React.ComponentProps<typeof Loader2Icon>) {
+  return <Loader2Icon className={cn("animate-spin", className)} role="status" aria-label="Loading" {...props} />
+}
+
+export { Spinner }
+```
+
+## Uso
+
+```tsx
+import { Spinner } from "@blips/ui"
+<Spinner />
+<Spinner className="size-8" />
+```

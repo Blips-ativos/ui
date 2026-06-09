@@ -1,0 +1,51 @@
+---
+title: Popover
+description: Exibe conteúdo rico em um portal, acionado por um botão.
+---
+
+<ComponentPreview name="popover-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@blips/ui/components/popover"
+```
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline">Abrir Popover</Button>
+  </PopoverTrigger>
+  <PopoverContent>
+    <PopoverHeader>
+      <PopoverTitle>Título</PopoverTitle>
+      <PopoverDescription>Texto de descrição aqui.</PopoverDescription>
+    </PopoverHeader>
+  </PopoverContent>
+</Popover>
+```
+
+## Exemplos
+
+### Exemplo
+
+Um popover com campos de formulário para ajustar as dimensões de uma camada.
+
+<ComponentPreview name="popover-demo" />
+
+## Referência da API
+
+Consulte a documentação do [Radix UI Popover](https://www.radix-ui.com/docs/primitives/components/popover#api-reference).

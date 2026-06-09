@@ -1,0 +1,43 @@
+---
+title: Tooltip
+description: Um popup que exibe informações relacionadas a um elemento quando o elemento recebe foco do teclado ou o mouse passa sobre ele.
+---
+
+<ComponentPreview name="tooltip-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@blips/ui/components/tooltip"
+```
+
+```tsx
+<Tooltip>
+  <TooltipTrigger>Passe o mouse</TooltipTrigger>
+  <TooltipContent>
+    <p>Adicionar à biblioteca</p>
+  </TooltipContent>
+</Tooltip>
+```
+
+## Exemplos
+
+### Exemplo
+
+Exibe uma dica simples quando o usuário passa o mouse sobre o gatilho.
+
+<ComponentPreview name="tooltip-demo" />
+
+## Referência da API
+
+Consulte a documentação do [Radix Tooltip](https://www.radix-ui.com/docs/primitives/components/tooltip#api-reference).

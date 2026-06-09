@@ -1,0 +1,71 @@
+---
+title: Spinner
+description: Um indicador que pode ser usado para exibir um estado de carregamento.
+---
+
+<ComponentPreview name="spinner-demo" />
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Spinner } from "@blips/ui/components/spinner"
+```
+
+```tsx
+<Spinner />
+```
+
+## Customizacao
+
+Voce pode substituir o icone padrao do spinner por qualquer outro icone editando o componente `Spinner`.
+
+```tsx title="components/ui/spinner.tsx"
+import { CircleNotch } from "@phosphor-icons/react"
+
+import { cn } from "@/lib/utils"
+
+function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
+  return (
+    <CircleNotch
+      role="status"
+      aria-label="Carregando"
+      className={cn("size-4 animate-spin", className)}
+      {...props}
+    />
+  )
+}
+
+export { Spinner }
+```
+
+## Exemplos
+
+### Tamanho
+
+Use a classe utilitaria `size-*` para alterar o tamanho do spinner.
+
+<ComponentPreview name="spinner-size" />
+
+### Botao
+
+Adicione um spinner a um botao para indicar um estado de carregamento.
+
+<ComponentPreview name="spinner-button" />
+
+### Badge
+
+Adicione um spinner a um badge para indicar um estado de carregamento.
+
+<ComponentPreview name="spinner-badge" />
+
+### Input Group
+
+Use um spinner dentro de um input group para indicar processamento.
+
+<ComponentPreview name="spinner-input-group" />

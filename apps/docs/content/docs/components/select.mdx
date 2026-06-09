@@ -1,0 +1,52 @@
+---
+title: Select
+description: Exibe uma lista de opções para o usuário escolher—acionada por um botão.
+---
+
+<ComponentPreview name="select-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@blips/ui/components/select"
+```
+
+```tsx
+<Select>
+  <SelectTrigger className="w-[180px]">
+    <SelectValue placeholder="Tema" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectGroup>
+      <SelectItem value="light">Claro</SelectItem>
+      <SelectItem value="dark">Escuro</SelectItem>
+      <SelectItem value="system">Sistema</SelectItem>
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+## Exemplos
+
+### Rolável
+
+Um select com muitos itens que rola.
+
+<ComponentPreview name="select-scrollable" />
+
+## Referência da API
+
+Consulte a documentação do [Radix UI Select](https://www.radix-ui.com/docs/primitives/components/select#api-reference).

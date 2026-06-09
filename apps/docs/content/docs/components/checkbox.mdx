@@ -1,0 +1,54 @@
+---
+title: Checkbox
+description: Um controle que permite ao usuário alternar entre marcado e não marcado.
+---
+
+<ComponentPreview name="checkbox-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Checkbox } from "@blips/ui/components/checkbox"
+```
+
+```tsx
+<Checkbox />
+```
+
+## Estado Marcado
+
+Use `defaultChecked` para checkboxes não controlados, ou `checked` e
+`onCheckedChange` para controlar o estado.
+
+```tsx
+import * as React from "react"
+
+export function Example() {
+  const [checked, setChecked] = React.useState(false)
+
+  return <Checkbox checked={checked} onCheckedChange={setChecked} />
+}
+```
+
+## Estado Inválido
+
+Defina `aria-invalid` no checkbox e `data-invalid` no wrapper do campo para
+exibir os estilos de estado inválido.
+
+## Exemplos
+
+### Desabilitado
+
+Use a prop `disabled` para impedir a interação e adicione o atributo `data-disabled` ao componente `<Field>` para aplicar os estilos de desabilitado.
+
+<ComponentPreview name="checkbox-disabled" />
+
+## Referência da API
+
+Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/checkbox#api-reference) para mais informações.

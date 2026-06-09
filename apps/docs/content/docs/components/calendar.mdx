@@ -1,0 +1,129 @@
+---
+title: Calendar
+description: Um componente de calendário que permite ao usuário selecionar uma data ou um intervalo de datas.
+---
+
+<ComponentPreview name="calendar-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Calendar } from "@blips/ui/components/calendar"
+```
+
+```tsx
+const [date, setDate] = React.useState<Date | undefined>(new Date())
+
+return (
+  <Calendar
+    mode="single"
+    selected={date}
+    onSelect={setDate}
+    className="rounded-lg border"
+  />
+)
+```
+
+Consulte a documentação do [React DayPicker](https://react-day-picker.js.org) para mais informações.
+
+## Sobre
+
+O componente `Calendar` é construído sobre o [React DayPicker](https://react-day-picker.js.org).
+
+## Seletor de data
+
+Você pode usar o componente `<Calendar>` para construir um seletor de datas. Você pode compô-lo com um `Popover` para construir um seletor de datas.
+
+## Calendário Persa / Hijri / Jalali
+
+Para usar o calendário persa, edite `components/ui/calendar.tsx` e substitua `react-day-picker` por `react-day-picker/persian`.
+
+```diff
+- import { DayPicker } from "react-day-picker"
++ import { DayPicker } from "react-day-picker/persian"
+```
+
+
+## Data Selecionada (Com TimeZone)
+
+O componente Calendar aceita uma prop `timeZone` para garantir que as datas sejam exibidas e selecionadas no fuso horário local do usuário.
+
+```tsx
+export function CalendarWithTimezone() {
+  const [date, setDate] = React.useState<Date | undefined>(undefined)
+  const [timeZone, setTimeZone] = React.useState<string | undefined>(undefined)
+
+  React.useEffect(() => {
+    setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  }, [])
+
+  return (
+    <Calendar
+      mode="single"
+      selected={date}
+      onSelect={setDate}
+      timeZone={timeZone}
+    />
+  )
+}
+```
+
+**Nota:** Se você notar um deslocamento na data selecionada (por exemplo, selecionar o dia 20 destaca o dia 19), certifique-se de que a prop `timeZone` esteja definida para o fuso horário local do usuário.
+
+**Por que no client-side?** O fuso horário é detectado usando `Intl.DateTimeFormat().resolvedOptions().timeZone` dentro de um `useEffect` para garantir compatibilidade com renderização no servidor. Detectar o fuso horário durante a renderização causaria divergências de hidratação, já que o servidor e o cliente podem estar em fusos horários diferentes.
+
+## Exemplos
+
+### Básico
+
+Um componente de calendário básico. Usamos `className="rounded-lg border"` para estilizar o calendário.
+
+<ComponentPreview name="calendar-basic" />
+
+### Calendário de Intervalo
+
+Use a prop `mode="range"` para habilitar a seleção de intervalos.
+
+<ComponentPreview name="calendar-range" />
+
+### Seletor de Mês e Ano
+
+Use `captionLayout="dropdown"` para exibir menus suspensos de mês e ano.
+
+<ComponentPreview name="calendar-caption" />
+
+### Predefinições
+
+Um calendário com botões de predefinição para selecionar datas rapidamente.
+
+<ComponentPreview name="calendar-presets" />
+
+### Datas Reservadas
+
+Um calendário com datas reservadas desabilitadas e estilizadas.
+
+<ComponentPreview name="calendar-booked-dates" />
+
+### Tamanho de Célula Personalizado
+
+Um calendário com tamanho de célula personalizado e responsivo.
+
+<ComponentPreview name="calendar-custom-days" />
+
+### Números de Semana
+
+Use `showWeekNumber` para exibir os números das semanas.
+
+<ComponentPreview name="calendar-week-numbers" />
+
+## Referência da API
+
+Consulte a documentação do [React DayPicker](https://react-day-picker.js.org) para mais informações sobre o componente `Calendar`.
+
+## Changelog

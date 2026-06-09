@@ -1,0 +1,183 @@
+---
+title: Input Group
+description: Adicione addons, botões e conteúdo auxiliar a inputs.
+---
+
+<ComponentPreview name="input-group-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "@blips/ui/components/input-group"
+```
+
+```tsx
+<InputGroup>
+  <InputGroupInput placeholder="Buscar..." />
+  <InputGroupAddon>
+    <SearchIcon />
+  </InputGroupAddon>
+</InputGroup>
+```
+
+## Alinhamento
+
+Use a prop `align` em `InputGroupAddon` para posicionar o addon em relação ao input.
+
+> **Nota:** Para um gerenciamento de foco adequado, o `InputGroupAddon` deve sempre ser posicionado depois
+> de `InputGroupInput` ou `InputGroupTextarea` no DOM. Use a prop `align` para
+> posicionar o addon visualmente.
+
+## Exemplos
+
+### Ícone
+
+Posicione ícones em qualquer extremidade do input usando `InputGroupAddon`.
+
+<ComponentPreview name="input-group-icon" />
+
+### Texto
+
+Use `InputGroupText` para exibir prefixos, sufixos ou textos auxiliares ao lado do input.
+
+<ComponentPreview name="input-group-text" />
+
+### Dropdown
+
+Combine `InputGroupButton` com um `DropdownMenu` para oferecer ações dentro do input.
+
+<ComponentPreview name="input-group-dropdown" />
+
+### Spinner
+
+Exiba um `Spinner` no input para indicar estados de carregamento.
+
+<ComponentPreview name="input-group-spinner" />
+
+### Textarea
+
+Use `InputGroupTextarea` com addons em `block-start` e `block-end` para criar editores ricos.
+
+<ComponentPreview name="input-group-textarea" />
+
+### Input Customizado
+
+Adicione o atributo `data-slot="input-group-control"` ao seu input customizado para o tratamento automático do estado de foco.
+
+<ComponentPreview name="input-group-custom" />
+
+## Referência da API
+
+### InputGroup
+
+O componente principal que envolve inputs e addons.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` |        |
+
+```tsx
+<InputGroup>
+  <InputGroupInput />
+  <InputGroupAddon />
+</InputGroup>
+```
+
+### InputGroupAddon
+
+Exibe ícones, texto, botões ou outro conteúdo ao lado dos inputs.
+
+> **Navegação por foco:** Para uma navegação por foco adequada, o componente `InputGroupAddon` deve ser posicionado
+> depois do input. Defina a prop `align` para posicionar o addon.
+
+| Prop        | Tipo                                                             | Padrão           |
+| ----------- | ---------------------------------------------------------------- | ---------------- |
+| `align`     | `"inline-start" \| "inline-end" \| "block-start" \| "block-end"` | `"inline-start"` |
+| `className` | `string`                                                         |                  |
+
+```tsx
+<InputGroupAddon align="inline-end">
+  <SearchIcon />
+</InputGroupAddon>
+```
+
+**Para `<InputGroupInput />`, use o alinhamento `inline-start` ou `inline-end`. Para `<InputGroupTextarea />`, use o alinhamento `block-start` ou `block-end`.**
+
+O componente `InputGroupAddon` pode ter múltiplos componentes `InputGroupButton` e ícones.
+
+```tsx
+<InputGroupAddon>
+  <InputGroupButton>Button</InputGroupButton>
+  <InputGroupButton>Button</InputGroupButton>
+</InputGroupAddon>
+```
+
+### InputGroupButton
+
+Exibe botões dentro dos input groups.
+
+| Prop        | Tipo                                                                          | Padrão    |
+| ----------- | ----------------------------------------------------------------------------- | --------- |
+| `size`      | `"xs" \| "icon-xs" \| "sm" \| "icon-sm"`                                      | `"xs"`    |
+| `variant`   | `"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link"` | `"ghost"` |
+| `className` | `string`                                                                      |           |
+
+```tsx
+<InputGroupButton>Button</InputGroupButton>
+<InputGroupButton size="icon-xs" aria-label="Copiar">
+  <CopyIcon />
+</InputGroupButton>
+```
+
+### InputGroupInput
+
+Substituto para `<Input />` ao construir input groups. Este componente tem os estilos de input group pré-aplicados e usa o `data-slot="input-group-control"` unificado para o tratamento do estado de foco.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` |        |
+
+Todas as outras props são repassadas para o componente `<Input />` subjacente.
+
+```tsx
+<InputGroup>
+  <InputGroupInput placeholder="Digite o texto..." />
+  <InputGroupAddon>
+    <SearchIcon />
+  </InputGroupAddon>
+</InputGroup>
+```
+
+### InputGroupTextarea
+
+Substituto para `<Textarea />` ao construir input groups. Este componente tem os estilos de textarea group pré-aplicados e usa o `data-slot="input-group-control"` unificado para o tratamento do estado de foco.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` |        |
+
+Todas as outras props são repassadas para o componente `<Textarea />` subjacente.
+
+```tsx
+<InputGroup>
+  <InputGroupTextarea placeholder="Digite a mensagem..." />
+  <InputGroupAddon align="block-end">
+    <InputGroupButton>Enviar</InputGroupButton>
+  </InputGroupAddon>
+</InputGroup>
+```
+
+## Histórico de alterações

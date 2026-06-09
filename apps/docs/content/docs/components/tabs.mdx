@@ -1,0 +1,55 @@
+---
+title: Tabs
+description: Um conjunto de seções de conteúdo sobrepostas—conhecidas como painéis de abas—que são exibidas uma de cada vez.
+---
+
+<ComponentPreview name="tabs-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@blips/ui/components/tabs"
+```
+
+```tsx
+<Tabs defaultValue="account" className="w-[400px]">
+  <TabsList>
+    <TabsTrigger value="account">Conta</TabsTrigger>
+    <TabsTrigger value="password">Senha</TabsTrigger>
+  </TabsList>
+  <TabsContent value="account">Faça alterações na sua conta aqui.</TabsContent>
+  <TabsContent value="password">Altere sua senha aqui.</TabsContent>
+</Tabs>
+```
+
+## Exemplos
+
+### Linha
+
+Use a prop `variant="line"` no `TabsList` para um estilo de linha.
+
+<ComponentPreview name="tabs-line" />
+
+### Vertical
+
+Use `orientation="vertical"` para abas verticais.
+
+<ComponentPreview name="tabs-vertical" />
+
+### Desabilitado
+
+<ComponentPreview name="tabs-disabled" />
+
+### Ícones
+
+<ComponentPreview name="tabs-icons" />
+
+## Referência da API
+
+Consulte a documentação do [Radix Tabs](https://www.radix-ui.com/docs/primitives/components/tabs#api-reference).

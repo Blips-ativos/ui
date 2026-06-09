@@ -1,0 +1,74 @@
+---
+title: Navigation Menu
+description: Uma coleção de links para navegação em sites.
+---
+
+<ComponentPreview name="navigation-menu-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@blips/ui/components/navigation-menu"
+```
+
+```tsx
+<NavigationMenu>
+  <NavigationMenuList>
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>Item Um</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <NavigationMenuLink>Link</NavigationMenuLink>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  </NavigationMenuList>
+</NavigationMenu>
+```
+
+## Componente de Link
+
+Use a prop `asChild` para compor um componente de link customizado, como o `Link` do Next.js.
+
+```tsx
+import Link from "next/link"
+
+import {
+  NavigationMenuItem,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
+} from "@blips/ui/components/navigation-menu"
+
+export function NavigationMenuDemo() {
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+        <Link href="/docs">Documentação</Link>
+      </NavigationMenuLink>
+    </NavigationMenuItem>
+  )
+}
+```
+
+## Referência da API
+
+Consulte a documentação do [Radix UI Navigation Menu](https://www.radix-ui.com/docs/primitives/components/navigation-menu#api-reference) para mais informações.
+
+## Exemplos
+
+### Exemplo
+
+Um menu de navegação completo com gatilhos, conteúdo em grade, links e ícones.
+
+<ComponentPreview name="navigation-menu-demo" />

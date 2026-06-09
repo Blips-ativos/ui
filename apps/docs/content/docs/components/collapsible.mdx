@@ -1,0 +1,63 @@
+---
+title: Collapsible
+description: Um componente interativo que expande/recolhe um painel.
+---
+
+<ComponentPreview name="collapsible-demo" />
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@blips/ui/components/collapsible"
+```
+
+```tsx
+<Collapsible>
+  <CollapsibleTrigger>Posso usar isso no meu projeto?</CollapsibleTrigger>
+  <CollapsibleContent>
+    Sim. Livre para uso em projetos pessoais e comerciais. Nenhuma atribuicao
+    necessaria.
+  </CollapsibleContent>
+</Collapsible>
+```
+
+## Estado Controlado
+
+Use as props `open` e `onOpenChange` para controlar o estado.
+
+```tsx
+import * as React from "react"
+
+export function Example() {
+  const [open, setOpen] = React.useState(false)
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <CollapsibleTrigger>Alternar</CollapsibleTrigger>
+      <CollapsibleContent>Conteudo</CollapsibleContent>
+    </Collapsible>
+  )
+}
+```
+
+## Exemplos
+
+### Exemplo
+
+Exemplo padrao com estado controlado e um gatilho para expandir e recolher o conteudo.
+
+<ComponentPreview name="collapsible-demo" />
+
+## Referencia da API
+
+Consulte a documentacao do [Radix UI](https://www.radix-ui.com/docs/primitives/components/collapsible#api-reference) para mais informacoes.

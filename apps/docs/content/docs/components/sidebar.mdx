@@ -1,0 +1,94 @@
+---
+title: Sidebar
+description: Um componente de sidebar componível, customizável e com suporte a temas.
+---
+
+<ComponentPreview name="sidebar-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Estrutura
+
+Um componente `Sidebar` é composto pelas seguintes partes:
+
+- `SidebarProvider` - Gerencia o estado de colapso.
+- `Sidebar` - O contêiner da sidebar.
+- `SidebarHeader` e `SidebarFooter` - Fixos no topo e na base da sidebar.
+- `SidebarContent` - Conteúdo rolável.
+- `SidebarGroup` - Seção dentro do `SidebarContent`.
+- `SidebarTrigger` - Gatilho para a `Sidebar`.
+
+## Uso
+
+```tsx
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@blips/ui/components/sidebar"
+```
+
+```tsx
+export function AppSidebar() {
+  return (
+    <SidebarProvider>
+      <Sidebar>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Aplicação</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton>Início</SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </Sidebar>
+    </SidebarProvider>
+  )
+}
+```
+
+## Referência da API
+
+### SidebarProvider
+
+O componente `SidebarProvider` gerencia o estado de colapso da sidebar.
+
+| Prop | Tipo | Padrão | Descrição |
+|------|------|---------|-------------|
+| `defaultOpen` | `boolean` | `true` | O estado aberto padrão |
+| `open` | `boolean` | - | O estado aberto controlado |
+| `onOpenChange` | `(open: boolean) => void` | - | Callback acionado quando o estado aberto muda |
+
+### Sidebar
+
+O contêiner principal da sidebar.
+
+| Prop | Tipo | Padrão | Descrição |
+|------|------|---------|-------------|
+| `side` | `"left" \| "right"` | `"left"` | O lado em que a sidebar aparece |
+| `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` | A variante visual |
+| `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | O comportamento de colapso |
+
+### SidebarMenuButton
+
+| Prop | Tipo | Padrão | Descrição |
+|------|------|---------|-------------|
+| `asChild` | `boolean` | `false` | Renderiza como um elemento filho |
+| `isActive` | `boolean` | `false` | Se o item está ativo |
+| `tooltip` | `string \| TooltipContentProps` | - | Conteúdo do tooltip para o estado colapsado |
+| `variant` | `"default" \| "outline"` | `"default"` | A variante visual |
+| `size` | `"default" \| "sm" \| "lg"` | `"default"` | O tamanho |

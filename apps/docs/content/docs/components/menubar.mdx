@@ -1,0 +1,60 @@
+---
+title: Menubar
+description: Um menu visualmente persistente, comum em aplicações desktop, que fornece acesso rápido a um conjunto consistente de comandos.
+---
+
+<ComponentPreview name="menubar-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Menubar,
+  MenubarContent,
+  MenubarGroup,
+  MenubarItem,
+  MenubarMenu,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@blips/ui/components/menubar"
+```
+
+```tsx
+<Menubar>
+  <MenubarMenu>
+    <MenubarTrigger>Arquivo</MenubarTrigger>
+    <MenubarContent>
+      <MenubarGroup>
+        <MenubarItem>
+          Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
+        </MenubarItem>
+        <MenubarItem>Nova janela</MenubarItem>
+      </MenubarGroup>
+      <MenubarSeparator />
+      <MenubarGroup>
+        <MenubarItem>Compartilhar</MenubarItem>
+        <MenubarItem>Imprimir</MenubarItem>
+      </MenubarGroup>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
+
+## Exemplos
+
+### Exemplo
+
+Uma barra de menus completa com submenus, atalhos, itens de seleção e grupos de opções.
+
+<ComponentPreview name="menubar-demo" />
+
+## Referência da API
+
+Consulte a documentação do [Radix UI Menubar](https://www.radix-ui.com/docs/primitives/components/menubar#api-reference).

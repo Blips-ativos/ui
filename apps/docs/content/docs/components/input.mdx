@@ -1,85 +1,36 @@
 ---
 title: Input
-description: An input component with consistent styling.
+description: Um componente de campo de texto para formulários e entrada de dados do usuário, com estilização e recursos de acessibilidade integrados.
 ---
 
-import { Input } from "@blips/ui";
+<ComponentPreview name="input-demo" />
 
-# Input
-
-An input component with consistent styling for form fields.
-
-## Installation
+## Instalação
 
 ```bash
-pnpm add @blips/ui
+npm install @blips/ui
 ```
 
-## Usage
+## Uso
 
 ```tsx
-import { Input } from "@blips/ui";
-
-export function MyComponent() {
-  return <Input type="email" placeholder="Email" />;
-}
+import { Input } from "@blips/ui/components/input"
 ```
-
-## Examples
-
-### Default
-
-<div className="my-6 max-w-sm">
-  <Input placeholder="Enter your email" />
-</div>
 
 ```tsx
-<Input placeholder="Enter your email" />
+<Input />
 ```
 
-### With Label
+## Exemplos
 
-<div className="my-6 max-w-sm space-y-2">
-  <label htmlFor="email" className="text-sm font-medium">Email</label>
-  <Input id="email" type="email" placeholder="name@example.com" />
-</div>
+### Desabilitado
 
-```tsx
-<div className="space-y-2">
-  <label htmlFor="email" className="text-sm font-medium">Email</label>
-  <Input id="email" type="email" placeholder="name@example.com" />
-</div>
-```
+Use a prop `disabled` para desabilitar o input.
 
-### Disabled
+<ComponentPreview name="input-disabled" />
 
-<div className="my-6 max-w-sm">
-  <Input disabled placeholder="Disabled input" />
-</div>
+### Arquivo
 
-```tsx
-<Input disabled placeholder="Disabled input" />
-```
+Use a prop `type="file"` para criar um input de arquivo.
 
-### File Input
-
-<div className="my-6 max-w-sm">
-  <Input type="file" />
-</div>
-
-```tsx
-<Input type="file" />
-```
-
-## API Reference
-
-### Props
-
-The Input component accepts all standard HTML input attributes.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | `string` | `"text"` | The type of input |
-| `placeholder` | `string` | - | Placeholder text |
-| `disabled` | `boolean` | `false` | Whether the input is disabled |
-| `className` | `string` | - | Additional CSS classes |
+<ComponentPreview name="input-file" />

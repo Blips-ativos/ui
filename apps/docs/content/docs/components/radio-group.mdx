@@ -1,0 +1,38 @@
+---
+title: Radio Group
+description: Um conjunto de botões selecionáveis—conhecidos como radio buttons—onde no máximo um dos botões pode estar selecionado por vez.
+---
+
+<ComponentPreview name="radio-group-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Label } from "@blips/ui/components/label"
+import { RadioGroup, RadioGroupItem } from "@blips/ui/components/radio-group"
+```
+
+```tsx
+<RadioGroup defaultValue="option-one">
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="option-one" id="option-one" />
+    <Label htmlFor="option-one">Opção Um</Label>
+  </div>
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="option-two" id="option-two" />
+    <Label htmlFor="option-two">Opção Dois</Label>
+  </div>
+</RadioGroup>
+```
+
+## Exemplos
+
+## Referência da API
+
+Consulte a documentação do [Radix UI Radio Group](https://www.radix-ui.com/docs/primitives/components/radio-group#api-reference).

@@ -1,0 +1,89 @@
+---
+title: Pagination
+description: Paginação com navegação entre páginas e links de avançar e voltar.
+---
+
+<ComponentPreview name="pagination-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@blips/ui/components/pagination"
+```
+
+```tsx
+<Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious href="#" />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">1</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#" isActive>
+        2
+      </PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationLink href="#">3</PaginationLink>
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationEllipsis />
+    </PaginationItem>
+    <PaginationItem>
+      <PaginationNext href="#" />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+```
+
+## Exemplos
+
+### Exemplo
+
+Paginação completa com links numerados, reticências e botões de avançar e voltar.
+
+<ComponentPreview name="pagination-demo" />
+
+## Next.js
+
+Por padrão, o componente `<PaginationLink />` renderiza uma tag `<a />`.
+
+Para usar o componente `<Link />` do Next.js, faça as seguintes alterações em `pagination.tsx`.
+
+```diff /typeof Link/ {1}
++ import Link from "next/link"
+
+- type PaginationLinkProps = ... & React.ComponentProps<"a">
++ type PaginationLinkProps = ... & React.ComponentProps<typeof Link>
+
+const PaginationLink = ({...props }: ) => (
+  <PaginationItem>
+-   <a>
++   <Link>
+      // ...
+-   </a>
++   </Link>
+  </PaginationItem>
+)
+
+```
+
+> **Nota:** Estamos fazendo atualizações na cli para realizar isso automaticamente para você.
+
+## Changelog

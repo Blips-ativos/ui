@@ -1,0 +1,219 @@
+---
+title: Chart
+description: Graficos bonitos. Construidos com Recharts. Copie e cole nos seus apps.
+---
+
+> **Nota:** Estamos trabalhando na atualizacao para o Recharts v3. Enquanto isso, se quiser comecar a testar o v3, veja o codigo no comentario [aqui](https://github.com/shadcn-ui/ui/issues/7669#issuecomment-2998299159). Em breve teremos um lancamento oficial.
+
+<ComponentPreview name="chart-demo" />
+
+Apresentamos os **Charts**. Uma colecao de componentes de grafico que voce pode copiar e colar nos seus apps.
+
+Os graficos foram projetados para ficar otimos imediatamente. Eles funcionam bem com os outros componentes e sao totalmente personalizaveis para se adequar ao seu projeto.
+
+[Navegue pela Biblioteca de Graficos](/charts).
+
+## Componente
+
+Usamos o [Recharts](https://recharts.org/) por baixo dos panos.
+
+Projetamos o componente `chart` pensando em composicao. **Voce constroi seus graficos usando componentes do Recharts e so traz componentes customizados, como o `ChartTooltip`, quando e onde precisar**.
+
+```tsx /ChartContainer/ /ChartTooltipContent/
+import { Bar, BarChart } from "recharts"
+
+import { ChartContainer, ChartTooltipContent } from "@blips/ui/components/chart"
+
+export function MyChart() {
+  return (
+    <ChartContainer>
+      <BarChart data={data}>
+        <Bar dataKey="value" />
+        <ChartTooltip content={<ChartTooltipContent />} />
+      </BarChart>
+    </ChartContainer>
+  )
+}
+```
+
+Nao fazemos wrap do Recharts. Isso significa que voce nao fica preso a uma abstracao. Quando uma nova versao do Recharts for lancada, voce pode seguir o caminho oficial de upgrade para atualizar seus graficos.
+
+**Os componentes sao seus**.
+
+## Instalacao
+
+```bash
+npm install @blips/ui
+```
+
+## Seu Primeiro Grafico
+
+Vamos construir seu primeiro grafico. Vamos montar um grafico de barras, adicionar uma grade, eixos, tooltip e legenda.
+
+<Steps>
+
+<Step>Comece definindo seus dados</Step>
+
+Os dados a seguir representam o numero de usuarios de desktop e mobile para cada mes.
+
+> **Nota:** Seus dados podem ter qualquer formato. Voce nao esta limitado ao formato dos dados abaixo. Use a prop `dataKey` para mapear seus dados ao grafico.
+
+```tsx title="components/example-chart.tsx"
+const chartData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+]
+```
+
+<Step>Defina a configuracao do grafico</Step>
+
+A configuracao do grafico guarda as configuracoes do grafico. E aqui que voce coloca strings legiveis por humanos, como labels, icones e tokens de cor para temas.
+
+```tsx title="components/example-chart.tsx"
+import { type ChartConfig } from "@blips/ui/components/chart"
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "#2563eb",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "#60a5fa",
+  },
+} satisfies ChartConfig
+```
+
+<Step>Construa seu grafico</Step>
+
+Agora voce pode construir seu grafico usando componentes do Recharts.
+
+> **Importante:** Lembre-se de definir um `min-h-[VALUE]` no componente `ChartContainer`. Isso e necessario para que o grafico seja responsivo.
+
+</Steps>
+
+## Configuracao do Grafico
+
+A configuracao do grafico e onde voce define as labels, os icones e as cores de um grafico.
+
+Ela e intencionalmente desacoplada dos dados do grafico.
+
+Isso permite que voce compartilhe a configuracao e os tokens de cor entre graficos. Tambem pode funcionar de forma independente para casos em que seus dados ou tokens de cor estao remotos ou em um formato diferente.
+
+```tsx /ChartConfig/
+import { Monitor } from "@phosphor-icons/react"
+
+import { type ChartConfig } from "@blips/ui/components/chart"
+
+const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    icon: Monitor,
+    // Uma cor como 'hsl(220, 98%, 61%)' ou 'var(--color-name)'
+    color: "#2563eb",
+    // OU um objeto de tema com chaves 'light' e 'dark'
+    theme: {
+      light: "#2563eb",
+      dark: "#dc2626",
+    },
+  },
+} satisfies ChartConfig
+```
+
+## Temas
+
+Os graficos tem suporte nativo a temas. Voce pode usar variaveis css (recomendado) ou valores de cor em qualquer formato, como hex, hsl ou oklch.
+
+## Tooltip
+
+Um tooltip de grafico contem uma label, um name, um indicator e um value. Voce pode usar uma combinacao deles para personalizar seu tooltip.
+
+Voce pode ativar/desativar qualquer um deles usando as props `hideLabel` e `hideIndicator` e personalizar o estilo do indicador usando a prop `indicator`.
+
+Use `labelKey` e `nameKey` para usar uma chave customizada para a label e o name do tooltip.
+
+O Chart vem com os componentes `<ChartTooltip>` e `<ChartTooltipContent>`. Voce pode usar esses dois componentes para adicionar tooltips customizados ao seu grafico.
+
+```tsx title="components/example-chart.tsx"
+import { ChartTooltip, ChartTooltipContent } from "@blips/ui/components/chart"
+```
+
+```tsx title="components/example-chart.tsx"
+<ChartTooltip content={<ChartTooltipContent />} />
+```
+
+### Props
+
+Use as props a seguir para personalizar o tooltip.
+
+| Prop            | Tipo                     | Descricao                                            |
+| :-------------- | :----------------------- | :--------------------------------------------------- |
+| `labelKey`      | string                   | A chave de config ou de dados a usar para a label.   |
+| `nameKey`       | string                   | A chave de config ou de dados a usar para o name.    |
+| `indicator`     | `dot` `line` or `dashed` | O estilo do indicador para o tooltip.                |
+| `hideLabel`     | boolean                  | Se deve ocultar a label.                             |
+| `hideIndicator` | boolean                  | Se deve ocultar o indicador.                         |
+
+## Legenda
+
+Voce pode usar os componentes customizados `<ChartLegend>` e `<ChartLegendContent>` para adicionar uma legenda ao seu grafico.
+
+```tsx title="components/example-chart.tsx"
+import { ChartLegend, ChartLegendContent } from "@blips/ui/components/chart"
+```
+
+```tsx title="components/example-chart.tsx"
+<ChartLegend content={<ChartLegendContent />} />
+```
+
+## Acessibilidade
+
+Voce pode ativar a prop `accessibilityLayer` para adicionar uma camada acessivel ao seu grafico.
+
+Essa prop adiciona acesso por teclado e suporte a leitores de tela aos seus graficos.
+
+```tsx title="components/example-chart.tsx"
+<LineChart accessibilityLayer />
+```
+
+## Exemplos
+
+### Grafico Basico
+
+Construa seu primeiro grafico de barras usando componentes do Recharts.
+
+<ComponentPreview name="chart-example" />
+
+### Adicione uma Grade
+
+Adicione uma grade ao grafico com o componente `CartesianGrid`.
+
+<ComponentPreview name="chart-example-grid" />
+
+### Adicione um Eixo
+
+Adicione um eixo x ao grafico usando o componente `XAxis`.
+
+<ComponentPreview name="chart-example-axis" />
+
+### Adicione um Tooltip
+
+Use os componentes `ChartTooltip` e `ChartTooltipContent` para adicionar um tooltip customizado.
+
+<ComponentPreview name="chart-example-tooltip" />
+
+### Adicione uma Legenda
+
+Use os componentes `ChartLegend` e `ChartLegendContent` para adicionar uma legenda ao grafico.
+
+<ComponentPreview name="chart-example-legend" />
+
+### Tooltip
+
+Um tooltip contem uma label, um name, um indicator e um value que voce pode combinar para personaliza-lo.
+
+<ComponentPreview name="chart-tooltip" />

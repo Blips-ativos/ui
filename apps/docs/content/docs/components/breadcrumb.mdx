@@ -1,0 +1,128 @@
+---
+title: Breadcrumb
+description: Exibe o caminho até o recurso atual usando uma hierarquia de links.
+---
+
+<ComponentPreview name="breadcrumb-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@blips/ui/components/breadcrumb"
+```
+
+```tsx
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/components">Components</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## Exemplos
+
+### Separador personalizado
+
+Use um componente personalizado como `children` de `<BreadcrumbSeparator />` para criar um separador customizado.
+
+<ComponentPreview name="breadcrumb-separator" />
+
+### Dropdown
+
+Você pode compor `<BreadcrumbItem />` com um `<DropdownMenu />` para criar um dropdown no breadcrumb.
+
+<ComponentPreview name="breadcrumb-dropdown" />
+
+### Recolhido
+
+Fornecemos um componente `<BreadcrumbEllipsis />` para mostrar um estado recolhido quando o breadcrumb fica muito longo.
+
+<ComponentPreview name="breadcrumb-ellipsis" />
+
+### Componente de link
+
+Para usar um componente de link personalizado da sua biblioteca de roteamento, você pode usar a prop `asChild` em `<BreadcrumbLink />`.
+
+<ComponentPreview name="breadcrumb-link" />
+
+## Referência da API
+
+### Breadcrumb
+
+O componente `Breadcrumb` é o elemento de navegação raiz que envolve todos os componentes do breadcrumb.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbList
+
+O componente `BreadcrumbList` exibe a lista ordenada de itens do breadcrumb.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbItem
+
+O componente `BreadcrumbItem` envolve itens individuais do breadcrumb.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbLink
+
+O componente `BreadcrumbLink` exibe um link clicável no breadcrumb.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbPage
+
+O componente `BreadcrumbPage` exibe a página atual no breadcrumb (não clicável).
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |
+
+### BreadcrumbSeparator
+
+O componente `BreadcrumbSeparator` exibe um separador entre os itens do breadcrumb. Você pode passar children personalizados para substituir o ícone de separador padrão.
+
+| Prop        | Type              | Default |
+| ----------- | ----------------- | ------- |
+| `children`  | `React.ReactNode` | -       |
+| `className` | `string`          | -       |
+
+### BreadcrumbEllipsis
+
+O componente `BreadcrumbEllipsis` exibe um indicador de reticências para itens recolhidos do breadcrumb.
+
+| Prop        | Type     | Default |
+| ----------- | -------- | ------- |
+| `className` | `string` | -       |

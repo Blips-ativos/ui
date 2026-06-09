@@ -1,0 +1,68 @@
+---
+title: Hover Card
+description: Permite que usuários com visão visualizem o conteúdo disponível por trás de um link.
+---
+
+<ComponentPreview name="hover-card-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@blips/ui/components/hover-card"
+```
+
+```tsx
+<HoverCard>
+  <HoverCardTrigger>Passe o mouse</HoverCardTrigger>
+  <HoverCardContent>
+    O framework React – criado e mantido por @vercel.
+  </HoverCardContent>
+</HoverCard>
+```
+
+## Atrasos de acionamento
+
+Use `openDelay` e `closeDelay` no `HoverCard` para controlar quando o card abre e
+fecha.
+
+```tsx
+<HoverCard openDelay={100} closeDelay={200}>
+  <HoverCardTrigger>Passe o mouse</HoverCardTrigger>
+  <HoverCardContent>Conteúdo</HoverCardContent>
+</HoverCard>
+```
+
+## Posicionamento
+
+Use as props `side` e `align` no `HoverCardContent` para controlar o posicionamento.
+
+```tsx
+<HoverCard>
+  <HoverCardTrigger>Passe o mouse</HoverCardTrigger>
+  <HoverCardContent side="top" align="start">
+    Conteúdo
+  </HoverCardContent>
+</HoverCard>
+```
+
+## Exemplos
+
+### Básico
+
+Pré-visualização de conteúdo disponível por trás de um link.
+
+<ComponentPreview name="hover-card-demo" />
+
+## Referência da API
+
+Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/hover-card#api-reference) para mais informações.

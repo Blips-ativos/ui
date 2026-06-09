@@ -1,11 +1,7 @@
-import defaultMdxComponents from "fumadocs-ui/mdx";
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
+import { DocsPager } from "@/components/docs-pager";
+import { DocsToc } from "@/components/docs-toc";
+import { mdxComponents } from "@/components/mdx-components";
 import { source } from "@/lib/source";
 
 export default async function Page(props: {
@@ -18,13 +14,31 @@ export default async function Page(props: {
   const MDX = page.data.body;
 
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription>{page.data.description}</DocsDescription>
-      <DocsBody>
-        <MDX components={{ ...defaultMdxComponents }} />
-      </DocsBody>
-    </DocsPage>
+    <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_16rem]">
+      <article className="mx-auto w-full max-w-3xl px-4 py-8 lg:px-8 lg:py-10">
+        <div className="text-muted-foreground mb-3 text-sm font-medium">
+          Documentação
+        </div>
+        <h1 className="font-display scroll-m-20 text-3xl font-bold tracking-tight">
+          {page.data.title}
+        </h1>
+        {page.data.description ? (
+          <p className="text-muted-foreground mt-2 text-lg text-balance">
+            {page.data.description}
+          </p>
+        ) : null}
+        <div data-slot="docs" className="mt-8">
+          <MDX components={mdxComponents} />
+        </div>
+        <div className="mt-10">
+          <DocsPager tree={source.pageTree} url={page.url} />
+        </div>
+      </article>
+
+      <aside className="hidden xl:block">
+        <DocsToc toc={page.data.toc} />
+      </aside>
+    </div>
   );
 }
 

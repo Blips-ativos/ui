@@ -18,7 +18,15 @@
         "noExplicitAny": "off"
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "noRestrictedImports": {
+          "level": "error",
+          "options": {
+            "paths": {
+              "lucide-react": "Use @phosphor-icons/react (padrão de ícones do Blips UI), não lucide-react."
+            }
+          }
+        }
       },
       "a11y": {
         "useButtonType": "off",
