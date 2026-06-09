@@ -1,9 +1,9 @@
 import path from "node:path";
+import type { NextConfig } from "next";
 import { createMDX } from "fumadocs-mdx/next";
 
 const withMDX = createMDX();
 
-/** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
   transpilePackages: ["@blips/ui"],
@@ -20,6 +20,6 @@ const config = {
   turbopack: {
     root: path.resolve(import.meta.dirname, "../.."),
   },
-};
+} satisfies NextConfig;
 
 export default withMDX(config);
