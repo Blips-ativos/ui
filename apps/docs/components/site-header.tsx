@@ -2,13 +2,25 @@
 
 import { Button } from "@blips/ui/components/button";
 import { SidebarTrigger } from "@blips/ui/components/sidebar";
-import { useSearchContext } from "fumadocs-ui/contexts/search";
+import { cn } from "@blips/ui/lib/utils";
 import { MagnifyingGlass } from "@phosphor-icons/react";
+import { useSearchContext } from "fumadocs-ui/contexts/search";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
+
+const NAV_ITEMS = [
+  {
+    label: "Componentes",
+    href: "/docs/components/accordion",
+    match: "/docs/components",
+  },
+  { label: "Skills", href: "/docs/skills", match: "/docs/skills" },
+];
 
 export function SiteHeader() {
   const { setOpenSearch } = useSearchContext();
+  const pathname = usePathname();
 
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 h-(--header-height) border-b backdrop-blur">
@@ -20,6 +32,28 @@ export function SiteHeader() {
         >
           Blips <span className="text-primary">UI</span>
         </Link>
+
+        <nav className="ml-2 hidden items-center gap-0.5 lg:flex">
+          {NAV_ITEMS.map((item) => (
+            <Button
+              key={item.href}
+              variant="ghost"
+              size="sm"
+              asChild
+              className="px-2.5"
+            >
+              <Link
+                href={item.href}
+                data-active={pathname.startsWith(item.match)}
+                className={cn(
+                  "text-foreground/70 transition-colors hover:text-foreground data-[active=true]:text-foreground data-[active=true]:font-medium"
+                )}
+              >
+                {item.label}
+              </Link>
+            </Button>
+          ))}
+        </nav>
 
         <div className="ml-auto flex items-center gap-2">
           <Button
