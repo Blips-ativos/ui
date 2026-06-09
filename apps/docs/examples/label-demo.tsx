@@ -1,5 +1,5 @@
-"use client"
-import { Label } from "@blips/ui/components/label"
+"use client";
+import { Label } from "@blips/ui/components/label";
 export default function LabelDemo() {
-  return <Label htmlFor="email">Your email address</Label>
+  return <Label htmlFor="email">Your email address</Label>;
 }

@@ -1,11 +1,18 @@
-"use client"
-import { useState } from "react"
-import { Button } from "@blips/ui/components/button"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@blips/ui/components/dropdown-menu"
+"use client";
+import { Button } from "@blips/ui/components/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@blips/ui/components/dropdown-menu";
+import { useState } from "react";
 export default function DropdownMenuCheckboxes() {
-  const [showStatusBar, setShowStatusBar] = useState(true)
-  const [showActivityBar, setShowActivityBar] = useState(false)
-  const [showPanel, setShowPanel] = useState(false)
+  const [showStatusBar, setShowStatusBar] = useState(true);
+  const [showActivityBar, setShowActivityBar] = useState(false);
+  const [showPanel, setShowPanel] = useState(false);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -14,10 +21,26 @@ export default function DropdownMenuCheckboxes() {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Appearance</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem checked={showStatusBar} onCheckedChange={setShowStatusBar}>Status Bar</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem checked={showActivityBar} onCheckedChange={setShowActivityBar} disabled>Activity Bar</DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem checked={showPanel} onCheckedChange={setShowPanel}>Panel</DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={showStatusBar}
+          onCheckedChange={setShowStatusBar}
+        >
+          Status Bar
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={showActivityBar}
+          onCheckedChange={setShowActivityBar}
+          disabled
+        >
+          Activity Bar
+        </DropdownMenuCheckboxItem>
+        <DropdownMenuCheckboxItem
+          checked={showPanel}
+          onCheckedChange={setShowPanel}
+        >
+          Panel
+        </DropdownMenuCheckboxItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+import { Button } from "@blips/ui/components/button";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@blips/ui/components/popover"
+} from "@blips/ui/components/popover";
 
 export default function PopoverDemo() {
   return (
@@ -44,5 +44,5 @@ export default function PopoverDemo() {
         </div>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-import { AlignCenter, AlignLeft, AlignRight } from "lucide-react"
+} from "@blips/ui/components/toggle-group";
+import { AlignCenter, AlignLeft, AlignRight } from "lucide-react";
 
 export default function ToggleGroupSingle() {
   return (
@@ -19,5 +19,5 @@ export default function ToggleGroupSingle() {
         <AlignRight className="h-4 w-4" />
       </ToggleGroupItem>
     </ToggleGroup>
-  )
+  );
 }

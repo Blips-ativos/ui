@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
-import { Button } from "@blips/ui/components/button"
+import { Button } from "@blips/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@blips/ui/components/tooltip"
+} from "@blips/ui/components/tooltip";
 
 export default function TooltipDemo() {
   return (
@@ -20,5 +20,5 @@ export default function TooltipDemo() {
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  )
+  );
 }

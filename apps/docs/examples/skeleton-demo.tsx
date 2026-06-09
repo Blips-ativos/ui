@@ -1,5 +1,5 @@
-"use client"
-import { Skeleton } from "@blips/ui/components/skeleton"
+"use client";
+import { Skeleton } from "@blips/ui/components/skeleton";
 export default function SkeletonDemo() {
   return (
     <div className="flex items-center space-x-4">
@@ -9,5 +9,5 @@ export default function SkeletonDemo() {
         <Skeleton className="h-4 w-[200px]" />
       </div>
     </div>
-  )
+  );
 }

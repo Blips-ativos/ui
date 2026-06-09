@@ -1,5 +1,10 @@
-"use client"
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@blips/ui/components/input-otp"
+"use client";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@blips/ui/components/input-otp";
 export default function InputOTPDemo() {
   return (
     <InputOTP maxLength={6}>
@@ -15,5 +20,5 @@ export default function InputOTPDemo() {
         <InputOTPSlot index={5} />
       </InputOTPGroup>
     </InputOTP>
-  )
+  );
 }

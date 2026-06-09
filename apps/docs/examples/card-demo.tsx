@@ -1,8 +1,15 @@
-"use client"
-import { Button } from "@blips/ui/components/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@blips/ui/components/card"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+"use client";
+import { Button } from "@blips/ui/components/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@blips/ui/components/card";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 export default function CardDemo() {
   return (
     <Card className="w-[350px]">
@@ -25,5 +32,5 @@ export default function CardDemo() {
         <Button>Deploy</Button>
       </CardFooter>
     </Card>
-  )
+  );
 }

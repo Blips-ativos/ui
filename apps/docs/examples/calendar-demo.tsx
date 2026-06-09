@@ -1,8 +1,8 @@
-"use client"
-import { useState } from "react"
-import { Calendar } from "@blips/ui/components/calendar"
+"use client";
+import { Calendar } from "@blips/ui/components/calendar";
+import { useState } from "react";
 export default function CalendarDemo() {
-  const [date, setDate] = useState<Date | undefined>(new Date())
+  const [date, setDate] = useState<Date | undefined>(new Date());
   return (
     <Calendar
       mode="single"
@@ -10,5 +10,5 @@ export default function CalendarDemo() {
       onSelect={setDate}
       className="rounded-md border"
     />
-  )
+  );
 }

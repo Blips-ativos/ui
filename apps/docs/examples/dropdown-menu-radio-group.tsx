@@ -1,9 +1,17 @@
-"use client"
-import { useState } from "react"
-import { Button } from "@blips/ui/components/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@blips/ui/components/dropdown-menu"
+"use client";
+import { Button } from "@blips/ui/components/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@blips/ui/components/dropdown-menu";
+import { useState } from "react";
 export default function DropdownMenuRadioGroupDemo() {
-  const [position, setPosition] = useState("bottom")
+  const [position, setPosition] = useState("bottom");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -19,5 +27,5 @@ export default function DropdownMenuRadioGroupDemo() {
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

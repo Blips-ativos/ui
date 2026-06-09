@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Toggle } from "@blips/ui/components/toggle"
-import { Italic } from "lucide-react"
+import { Toggle } from "@blips/ui/components/toggle";
+import { Italic } from "lucide-react";
 
 export default function ToggleWithText() {
   return (
@@ -9,5 +9,5 @@ export default function ToggleWithText() {
       <Italic className="h-4 w-4" />
       Italic
     </Toggle>
-  )
+  );
 }

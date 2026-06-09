@@ -1,5 +1,5 @@
-"use client"
-import { Input } from "@blips/ui/components/input"
+"use client";
+import { Input } from "@blips/ui/components/input";
 export default function InputDemo() {
-  return <Input type="email" placeholder="Email" />
+  return <Input type="email" placeholder="Email" />;
 }

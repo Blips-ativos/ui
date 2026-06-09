@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { ScrollArea } from "@blips/ui/components/scroll-area"
-import { Separator } from "@blips/ui/components/separator"
+import { ScrollArea } from "@blips/ui/components/scroll-area";
+import { Separator } from "@blips/ui/components/separator";
 
 export default function ScrollAreaDemo() {
-  const tags = Array.from({ length: 50 }).map((_, i) => `v1.2.0-beta.${i}`)
+  const tags = Array.from({ length: 50 }).map((_, i) => `v1.2.0-beta.${i}`);
 
   return (
     <ScrollArea className="h-72 w-48 rounded-md border">
@@ -18,5 +18,5 @@ export default function ScrollAreaDemo() {
         ))}
       </div>
     </ScrollArea>
-  )
+  );
 }

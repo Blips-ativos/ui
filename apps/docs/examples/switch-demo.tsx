@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { Label } from "@blips/ui/components/label"
-import { Switch } from "@blips/ui/components/switch"
+import { Label } from "@blips/ui/components/label";
+import { Switch } from "@blips/ui/components/switch";
 
 export default function SwitchDemo() {
   return (
@@ -9,5 +9,5 @@ export default function SwitchDemo() {
       <Switch id="airplane-mode" />
       <Label htmlFor="airplane-mode">Airplane Mode</Label>
     </div>
-  )
+  );
 }

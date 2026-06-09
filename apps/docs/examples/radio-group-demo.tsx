@@ -1,10 +1,7 @@
-"use client"
+"use client";
 
-import { Label } from "@blips/ui/components/label"
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@blips/ui/components/radio-group"
+import { Label } from "@blips/ui/components/label";
+import { RadioGroup, RadioGroupItem } from "@blips/ui/components/radio-group";
 
 export default function RadioGroupDemo() {
   return (
@@ -22,5 +19,5 @@ export default function RadioGroupDemo() {
         <Label htmlFor="r3">Compact</Label>
       </div>
     </RadioGroup>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Select,
@@ -8,7 +8,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@blips/ui/components/select"
+} from "@blips/ui/components/select";
 
 export default function SelectDemo() {
   return (
@@ -27,5 +27,5 @@ export default function SelectDemo() {
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }

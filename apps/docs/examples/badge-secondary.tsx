@@ -1,5 +1,5 @@
-"use client"
-import { Badge } from "@blips/ui/components/badge"
+"use client";
+import { Badge } from "@blips/ui/components/badge";
 export default function BadgeSecondary() {
-  return <Badge variant="secondary">Secondary</Badge>
+  return <Badge variant="secondary">Secondary</Badge>;
 }

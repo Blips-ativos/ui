@@ -47,7 +47,14 @@ async function buildRegistry() {
 
     imports.push(
       `  "${name}": {`,
-      `    component: React.lazy(() => import("@/examples/${name}")),`,
+      `    component: React.lazy(() =>`,
+      `      import("@/examples/${name}").then((m) => {`,
+      `        const mod = m as Record<string, unknown>;`,
+      `        const C = (mod.default ??`,
+      `          Object.values(mod).find((v) => typeof v === "function")) as React.ComponentType;`,
+      `        return { default: C };`,
+      `      })`,
+      `    ),`,
       `    source: ${JSON.stringify(source)},`,
       `    highlightedSource: ${JSON.stringify(highlighted)},`,
       `  },`

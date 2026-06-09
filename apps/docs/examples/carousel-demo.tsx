@@ -1,6 +1,12 @@
-"use client"
-import { Card, CardContent } from "@blips/ui/components/card"
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@blips/ui/components/carousel"
+"use client";
+import { Card, CardContent } from "@blips/ui/components/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@blips/ui/components/carousel";
 export default function CarouselDemo() {
   return (
     <Carousel className="w-full max-w-xs">
@@ -20,5 +26,5 @@ export default function CarouselDemo() {
       <CarouselPrevious />
       <CarouselNext />
     </Carousel>
-  )
+  );
 }

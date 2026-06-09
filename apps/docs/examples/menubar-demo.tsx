@@ -1,13 +1,31 @@
-"use client"
-import { Menubar, MenubarCheckboxItem, MenubarContent, MenubarItem, MenubarMenu, MenubarRadioGroup, MenubarRadioItem, MenubarSeparator, MenubarShortcut, MenubarSub, MenubarSubContent, MenubarSubTrigger, MenubarTrigger } from "@blips/ui/components/menubar"
+"use client";
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
+  MenubarTrigger,
+} from "@blips/ui/components/menubar";
 export default function MenubarDemo() {
   return (
     <Menubar>
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>New Tab<MenubarShortcut>⌘T</MenubarShortcut></MenubarItem>
-          <MenubarItem>New Window<MenubarShortcut>⌘N</MenubarShortcut></MenubarItem>
+          <MenubarItem>
+            New Tab<MenubarShortcut>⌘T</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            New Window<MenubarShortcut>⌘N</MenubarShortcut>
+          </MenubarItem>
           <MenubarItem disabled>New Incognito Window</MenubarItem>
           <MenubarSeparator />
           <MenubarSub>
@@ -19,14 +37,20 @@ export default function MenubarDemo() {
             </MenubarSubContent>
           </MenubarSub>
           <MenubarSeparator />
-          <MenubarItem>Print...<MenubarShortcut>⌘P</MenubarShortcut></MenubarItem>
+          <MenubarItem>
+            Print...<MenubarShortcut>⌘P</MenubarShortcut>
+          </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger>Edit</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>Undo<MenubarShortcut>⌘Z</MenubarShortcut></MenubarItem>
-          <MenubarItem>Redo<MenubarShortcut>⇧⌘Z</MenubarShortcut></MenubarItem>
+          <MenubarItem>
+            Undo<MenubarShortcut>⌘Z</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem>
+            Redo<MenubarShortcut>⇧⌘Z</MenubarShortcut>
+          </MenubarItem>
           <MenubarSeparator />
           <MenubarItem>Cut</MenubarItem>
           <MenubarItem>Copy</MenubarItem>
@@ -37,10 +61,16 @@ export default function MenubarDemo() {
         <MenubarTrigger>View</MenubarTrigger>
         <MenubarContent>
           <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
-          <MenubarCheckboxItem checked>Always Show Full URLs</MenubarCheckboxItem>
+          <MenubarCheckboxItem checked>
+            Always Show Full URLs
+          </MenubarCheckboxItem>
           <MenubarSeparator />
-          <MenubarItem inset>Reload<MenubarShortcut>⌘R</MenubarShortcut></MenubarItem>
-          <MenubarItem disabled inset>Force Reload<MenubarShortcut>⇧⌘R</MenubarShortcut></MenubarItem>
+          <MenubarItem inset>
+            Reload<MenubarShortcut>⌘R</MenubarShortcut>
+          </MenubarItem>
+          <MenubarItem disabled inset>
+            Force Reload<MenubarShortcut>⇧⌘R</MenubarShortcut>
+          </MenubarItem>
           <MenubarSeparator />
           <MenubarItem inset>Toggle Fullscreen</MenubarItem>
           <MenubarSeparator />
@@ -48,5 +78,5 @@ export default function MenubarDemo() {
         </MenubarContent>
       </MenubarMenu>
     </Menubar>
-  )
+  );
 }

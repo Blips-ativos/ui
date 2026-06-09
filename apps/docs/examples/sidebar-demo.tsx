@@ -1,6 +1,16 @@
-"use client"
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react"
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@blips/ui/components/sidebar"
+"use client";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@blips/ui/components/sidebar";
+import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
 
 const items = [
   { title: "Home", icon: Home },
@@ -8,7 +18,7 @@ const items = [
   { title: "Calendar", icon: Calendar },
   { title: "Search", icon: Search },
   { title: "Settings", icon: Settings },
-]
+];
 
 export default function SidebarDemo() {
   return (
@@ -33,5 +43,5 @@ export default function SidebarDemo() {
         </SidebarContent>
       </Sidebar>
     </SidebarProvider>
-  )
+  );
 }

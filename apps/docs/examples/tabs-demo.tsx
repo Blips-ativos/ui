@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { Button } from "@blips/ui/components/button"
+import { Button } from "@blips/ui/components/button";
 import {
   Card,
   CardContent,
@@ -8,15 +8,15 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@blips/ui/components/card"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+} from "@blips/ui/components/card";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@blips/ui/components/tabs"
+} from "@blips/ui/components/tabs";
 
 export default function TabsDemo() {
   return (
@@ -72,5 +72,5 @@ export default function TabsDemo() {
         </Card>
       </TabsContent>
     </Tabs>
-  )
+  );
 }

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-import { Bold, Italic, Underline } from "lucide-react"
+} from "@blips/ui/components/toggle-group";
+import { Bold, Italic, Underline } from "lucide-react";
 
 export default function ToggleGroupOutline() {
   return (
@@ -19,5 +19,5 @@ export default function ToggleGroupOutline() {
         <Underline className="h-4 w-4" />
       </ToggleGroupItem>
     </ToggleGroup>
-  )
+  );
 }

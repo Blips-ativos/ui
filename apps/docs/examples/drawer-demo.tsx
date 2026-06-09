@@ -1,7 +1,16 @@
-"use client"
-import { useState } from "react"
-import { Button } from "@blips/ui/components/button"
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "@blips/ui/components/drawer"
+"use client";
+import { Button } from "@blips/ui/components/button";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@blips/ui/components/drawer";
+import { useState } from "react";
 export default function DrawerDemo() {
   return (
     <Drawer>
@@ -18,7 +27,9 @@ export default function DrawerDemo() {
             <div className="flex items-center justify-center space-x-2">
               <div className="flex-1 text-center">
                 <div className="text-7xl font-bold tracking-tighter">350</div>
-                <div className="text-[0.70rem] uppercase text-muted-foreground">Calories/day</div>
+                <div className="text-[0.70rem] uppercase text-muted-foreground">
+                  Calories/day
+                </div>
               </div>
             </div>
           </div>
@@ -31,5 +42,5 @@ export default function DrawerDemo() {
         </div>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
