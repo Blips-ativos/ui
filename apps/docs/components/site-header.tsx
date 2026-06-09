@@ -5,6 +5,7 @@ import { SidebarTrigger } from "@blips/ui/components/sidebar";
 import { cn } from "@blips/ui/lib/utils";
 import { MagnifyingGlass } from "@phosphor-icons/react";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -26,14 +27,40 @@ export function SiteHeader() {
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 h-(--header-height) border-b backdrop-blur">
       <div className="flex h-full items-center gap-2 px-4 lg:px-6">
         <SidebarTrigger className="lg:hidden" />
-        <Link
-          href="/"
-          className="font-display text-base font-bold tracking-tight"
-        >
-          Blips <span className="text-primary">UI</span>
+        <Link href="/" className="flex items-center" aria-label="Blips">
+          <Image
+            src="/blips-logo.png"
+            alt="Blips"
+            width={144}
+            height={46}
+            priority
+            className="h-5 w-auto dark:hidden"
+          />
+          <Image
+            src="/blips-logo-white.png"
+            alt="Blips"
+            width={144}
+            height={46}
+            priority
+            className="hidden h-5 w-auto dark:block"
+          />
         </Link>
 
-        <nav className="ml-2 hidden items-center gap-0.5 lg:flex">
+        {/* slanted separator between the logo and the nav */}
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1"
+          className="text-foreground/15 hidden shrink-0 lg:block"
+          aria-hidden="true"
+        >
+          <path d="M16.88 3.549L7.12 20.451" />
+        </svg>
+
+        <nav className="hidden items-center gap-0.5 lg:flex">
           {NAV_ITEMS.map((item) => (
             <Button
               key={item.href}
