@@ -1,5 +1,7 @@
+"use client";
+
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { findNeighbour, type Root } from "fumadocs-core/page-tree";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
 export function DocsPager({ tree, url }: { tree: Root; url: string }) {
@@ -15,7 +17,7 @@ export function DocsPager({ tree, url }: { tree: Root; url: string }) {
           className="hover:bg-accent/50 flex flex-col gap-1 rounded-lg border p-3 text-sm transition-colors"
         >
           <span className="text-muted-foreground flex items-center gap-1 text-xs">
-            <ChevronLeftIcon className="size-3" />
+            <CaretLeft className="size-3" />
             Anterior
           </span>
           <span className="font-medium">{previous.name}</span>
@@ -30,7 +32,7 @@ export function DocsPager({ tree, url }: { tree: Root; url: string }) {
         >
           <span className="text-muted-foreground flex items-center gap-1 text-xs">
             Próximo
-            <ChevronRightIcon className="size-3" />
+            <CaretRight className="size-3" />
           </span>
           <span className="font-medium">{next.name}</span>
         </Link>
