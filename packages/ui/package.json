@@ -74,7 +74,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "postcss.config.mjs"
   ],
   "sideEffects": [
     "**/*.css"
