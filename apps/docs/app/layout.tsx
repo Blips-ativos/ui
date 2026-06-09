@@ -17,9 +17,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
-        <RootProvider>{children}</RootProvider>
+        <RootProvider
+          i18n={{
+            locale: "pt-BR",
+            translations: {
+              search: "Buscar",
+              searchNoResult: "Nenhum resultado encontrado",
+              toc: "Nesta página",
+              tocNoHeadings: "Sem seções",
+              lastUpdate: "Última atualização",
+              nextPage: "Próxima página",
+              previousPage: "Página anterior",
+              chooseTheme: "Escolher tema",
+              chooseLanguage: "Escolher idioma",
+              editOnGithub: "Editar no GitHub",
+            },
+          }}
+        >
+          {children}
+        </RootProvider>
       </body>
     </html>
   );
