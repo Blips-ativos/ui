@@ -62,7 +62,7 @@ Crie o arquivo `components.json` na raiz do projeto:
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "phosphor"
 }
 ```
 

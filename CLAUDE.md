@@ -60,6 +60,10 @@ Two independent release tracks — bump them separately:
 - Component pattern: function components (no `forwardRef`) with `data-slot`
   attributes and **CVA** variants. Use the **`building-components` skill**
   (`.claude/skills/building-components/`) when creating components.
+- **Icons: `@phosphor-icons/react` is the standard** (weight `regular`, the
+  default — don't pass `weight`). Never import `lucide-react` — a Biome
+  `noRestrictedImports` rule blocks it. Use Phosphor names (`CaretDown`, `X`,
+  `MagnifyingGlass`, `Check`, `Circle`, `DotsThree`…), not Lucide names.
 - Internal imports use **`@blips/*`** (this repo), not `@workspace/*`.
 - **Two registry build scripts** must stay in sync: `packages/ui/scripts/build-registry.js`
   (package) and `apps/docs/scripts/build-registry.ts` (docs site, runs before dev/build).
