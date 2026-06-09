@@ -32,7 +32,7 @@ export function ComponentPreview({ name }: ComponentPreviewProps) {
       className="not-prose group relative mt-4 mb-12 flex flex-col overflow-hidden rounded-xl border"
     >
       {/* preview */}
-      <div className="preview flex h-72 w-full items-center justify-center p-10">
+      <div className="preview flex min-h-72 w-full items-center justify-center p-10">
         <Suspense
           fallback={
             <div className="text-muted-foreground text-sm">Carregando…</div>
