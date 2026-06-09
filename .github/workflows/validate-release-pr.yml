@@ -1,0 +1,67 @@
+name: Validate Release PR
+
+# Gate de pré-merge para PRs com destino à produção (main): valida, na abertura
+# e a cada atualização do PR, que o título segue a convenção de release e que a
+# versão do título bate com os arquivos versionados. É um check obrigatório
+# (branch protection) — sem ele verde, o PR não mergeia.
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate-release-pr:
+    name: validate-release-pr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (head do PR)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Validar título e alinhamento de versões
+        run: |
+          set -euo pipefail
+          TITLE="${{ github.event.pull_request.title }}"
+
+          # 1) Formato do título → track + token de versão (sufixo permitido).
+          if [[ "$TITLE" == release-plugin:* ]]; then
+            KIND=plugin
+          elif [[ "$TITLE" == release:* ]]; then
+            KIND=npm
+          else
+            echo "::error::Título fora da convenção. Use 'release: vX.Y.Z' (npm+docs) ou 'release-plugin: vX.Y.Z' (plugin). Título: $TITLE"
+            exit 1
+          fi
+          VERSION=$(echo "$TITLE" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 | sed 's/^v//')
+          if [ -z "$VERSION" ]; then
+            echo "::error::Título sem o código da versão (vX.Y.Z): $TITLE"
+            exit 1
+          fi
+
+          # 2) Invariante: plugin.json e marketplace.json sempre em sincronia.
+          PJ=$(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")
+          MK=$(node -p "require('./.claude-plugin/marketplace.json').plugins.find(x=>x.name==='blips-ui').version")
+          if [ "$PJ" != "$MK" ]; then
+            echo "::error::plugin.json ($PJ) != marketplace.json ($MK) — versões do plugin fora de sincronia."
+            exit 1
+          fi
+
+          # 3) Versão do título == arquivo versionado do track.
+          if [ "$KIND" = npm ]; then
+            PKG=$(node -p "require('./packages/ui/package.json').version")
+            if [ "$PKG" != "$VERSION" ]; then
+              echo "::error::packages/ui/package.json ($PKG) != versão do título ($VERSION)."
+              exit 1
+            fi
+          else
+            if [ "$PJ" != "$VERSION" ]; then
+              echo "::error::plugin.json ($PJ) != versão do título ($VERSION)."
+              exit 1
+            fi
+          fi
+
+          echo "✓ OK — track=$KIND versão=$VERSION (título e arquivos alinhados)"
