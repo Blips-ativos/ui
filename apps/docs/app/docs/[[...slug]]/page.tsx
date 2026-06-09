@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { ComponentPreview } from "@/components/component-preview";
 import { DocsPager } from "@/components/docs-pager";
 import { DocsToc } from "@/components/docs-toc";
+import { mdxCodeComponents } from "@/components/mdx-code";
 import { source } from "@/lib/source";
 
 export default async function Page(props: {
@@ -35,6 +36,7 @@ export default async function Page(props: {
           <MDX
             components={{
               ...defaultMdxComponents,
+              ...mdxCodeComponents,
               ComponentPreview,
               Tabs,
               Tab,
