@@ -199,7 +199,7 @@ import {
   </SheetTrigger>
   <SheetContent side="right">
     <SheetHeader>
-      <SheetTitle>Settings</SheetTitle>
+      <SheetTitle>Gear</SheetTitle>
       <SheetDescription>Manage your preferences.</SheetDescription>
     </SheetHeader>
     <div className="py-4">Content</div>
@@ -250,7 +250,7 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@b
 **Anatomia:**
 - `Accordion = AccordionPrimitive.Root`
 - `AccordionItem`: `border-b`
-- `AccordionTrigger`: `ChevronDown` com `transition-transform` rotate-180
+- `AccordionTrigger`: `CaretDown` com `transition-transform` rotate-180
 - `AccordionContent`: `animate-accordion-down` / `animate-accordion-up`
 
 ---
@@ -371,7 +371,7 @@ import {
 - Content: `z-50 min-w-[8rem] rounded-md border bg-popover p-1 shadow-md`
 - Item: `relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm`
 - `inset` prop nos items/labels: `pl-8` para alinhamento com checkbox/radio indicators
-- Ícones: `Check`, `ChevronRight`, `Circle` do lucide-react
+- Ícones: `Check`, `ChevronRight`, `Circle` do @phosphor-icons/react
 
 ---
 
@@ -510,7 +510,7 @@ import {
 
 **Anatomia:**
 - `SelectContent` default: `position="popper"`
-- Scroll buttons (up/down) com `ChevronUp`/`ChevronDown`
+- Scroll buttons (up/down) com `ChevronUp`/`CaretDown`
 - `SelectItem` com `Check` indicator no lado esquerdo
 
 ---
@@ -607,7 +607,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@blips
   <Tooltip>
     <TooltipTrigger asChild>
       <Button variant="outline" size="icon">
-        <PlusIcon className="h-4 w-4" />
+        <Plus className="h-4 w-4" />
       </Button>
     </TooltipTrigger>
     <TooltipContent>
@@ -660,7 +660,7 @@ import {
 <Breadcrumb>
   <BreadcrumbList>
     <BreadcrumbItem>
-      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+      <BreadcrumbLink href="/">House</BreadcrumbLink>
     </BreadcrumbItem>
     <BreadcrumbSeparator />
     <BreadcrumbItem>
@@ -678,7 +678,7 @@ import {
 - `Breadcrumb`: `<nav aria-label="breadcrumb">`
 - `BreadcrumbLink`: suporta `asChild` via Radix Slot
 - `BreadcrumbSeparator`: `ChevronRight` por default
-- `BreadcrumbEllipsis`: `MoreHorizontal` para itens colapsados
+- `BreadcrumbEllipsis`: `DotsThree` para itens colapsados
 
 ---
 
@@ -736,12 +736,12 @@ import {
 ```tsx
 // Inline
 <Command>
-  <CommandInput placeholder="Search..." />
+  <CommandInput placeholder="MagnifyingGlass..." />
   <CommandList>
     <CommandEmpty>No results.</CommandEmpty>
     <CommandGroup heading="Suggestions">
       <CommandItem>Calendar</CommandItem>
-      <CommandItem>Search</CommandItem>
+      <CommandItem>MagnifyingGlass</CommandItem>
     </CommandGroup>
   </CommandList>
 </Command>
@@ -759,7 +759,7 @@ import {
 
 **Anatomia:**
 - `CommandDialog` compõe `Dialog` + `DialogContent` + `Command`
-- `CommandInput`: `Search` icon do lucide-react embutido
+- `CommandInput`: `MagnifyingGlass` icon do @phosphor-icons/react embutido
 
 ---
 
@@ -833,9 +833,9 @@ import { ToggleGroup, ToggleGroupItem } from "@blips/ui"
 ```tsx
 // Single
 <ToggleGroup type="single" defaultValue="center">
-  <ToggleGroupItem value="left"><AlignLeft /></ToggleGroupItem>
-  <ToggleGroupItem value="center"><AlignCenter /></ToggleGroupItem>
-  <ToggleGroupItem value="right"><AlignRight /></ToggleGroupItem>
+  <ToggleGroupItem value="left"><TextAlignLeft /></ToggleGroupItem>
+  <ToggleGroupItem value="center"><TextAlignCenter /></ToggleGroupItem>
+  <ToggleGroupItem value="right"><TextAlignRight /></ToggleGroupItem>
 </ToggleGroup>
 
 // Multiple
@@ -902,7 +902,7 @@ import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@blips/ui"
 **Anatomia:**
 - Baseado em `react-resizable-panels`
 - `"use client"` obrigatório
-- `ResizableHandle`: opcional `withHandle` prop para grip visual (`GripVertical` icon)
+- `ResizableHandle`: opcional `withHandle` prop para grip visual (`DotsSixVertical` icon)
 
 ---
 

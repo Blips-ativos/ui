@@ -1,5 +1,5 @@
 # NavigationMenu
-**Categoria:** Compound | **Deps:** `@radix-ui/react-navigation-menu`, `class-variance-authority`, `lucide-react` | **"use client":** Não
+**Categoria:** Compound | **Deps:** `@radix-ui/react-navigation-menu`, `class-variance-authority`, `@phosphor-icons/react` | **"use client":** Não
 
 Exports: NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuContent, NavigationMenuTrigger, NavigationMenuLink, NavigationMenuIndicator, NavigationMenuViewport, navigationMenuTriggerStyle
 

@@ -1,6 +1,6 @@
 # ContextMenu
 
-**Categoria:** Compound | **Deps:** `@radix-ui/react-context-menu`, `lucide-react` | **"use client":** Não
+**Categoria:** Compound | **Deps:** `@radix-ui/react-context-menu`, `@phosphor-icons/react` | **"use client":** Não
 
 ## Exports
 

@@ -1,6 +1,6 @@
 # InputOTP
 
-**Categoria:** Compound | **Deps:** `input-otp`, `lucide-react` | **"use client":** Não
+**Categoria:** Compound | **Deps:** `input-otp`, `@phosphor-icons/react` | **"use client":** Não
 
 ## Exports
 

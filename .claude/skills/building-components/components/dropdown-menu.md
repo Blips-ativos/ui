@@ -1,6 +1,6 @@
 # DropdownMenu
 
-**Categoria:** Compound | **Deps:** `@radix-ui/react-dropdown-menu`, `lucide-react` | **"use client":** Sim
+**Categoria:** Compound | **Deps:** `@radix-ui/react-dropdown-menu`, `@phosphor-icons/react` | **"use client":** Sim
 
 ## Exports
 

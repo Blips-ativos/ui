@@ -1,6 +1,6 @@
 # Dialog
 
-**Categoria:** Compound | **Deps:** `@radix-ui/react-dialog`, `lucide-react` | **"use client":** Sim
+**Categoria:** Compound | **Deps:** `@radix-ui/react-dialog`, `@phosphor-icons/react` | **"use client":** Sim
 
 ## Exports
 
@@ -11,7 +11,7 @@
 ```tsx
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
-import { X } from "lucide-react"
+import { X } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
 const Dialog = DialogPrimitive.Root

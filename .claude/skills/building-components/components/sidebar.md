@@ -1,6 +1,6 @@
 # Sidebar
 
-**Categoria:** Behavioral | **Deps:** `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, `@/hooks/use-mobile`, `@/components/button`, `@/components/input`, `@/components/separator`, `@/components/sheet`, `@/components/skeleton`, `@/components/tooltip` | **"use client":** Sim
+**Categoria:** Behavioral | **Deps:** `@radix-ui/react-slot`, `class-variance-authority`, `@phosphor-icons/react`, `@/hooks/use-mobile`, `@/components/button`, `@/components/input`, `@/components/separator`, `@/components/sheet`, `@/components/skeleton`, `@/components/tooltip` | **"use client":** Sim
 
 ## Exports (24 components + 1 hook)
 SidebarProvider, Sidebar, SidebarTrigger, SidebarRail, SidebarInset, SidebarInput, SidebarHeader, SidebarFooter, SidebarSeparator, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction, SidebarMenuBadge, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, useSidebar
@@ -31,7 +31,7 @@ import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarFooter,
         <SidebarGroupContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton isActive tooltip="Dashboard"><LayoutDashboard /><span>Dashboard</span></SidebarMenuButton>
+              <SidebarMenuButton isActive tooltip="Dashboard"><SquaresFour /><span>Dashboard</span></SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroupContent>

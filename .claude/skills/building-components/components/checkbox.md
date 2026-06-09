@@ -1,7 +1,7 @@
 # Checkbox
 
 **Categoria:** Primitive
-**Dependências:** `@radix-ui/react-checkbox`, `lucide-react`
+**Dependências:** `@radix-ui/react-checkbox`, `@phosphor-icons/react`
 **"use client":** Não
 
 ## Source
@@ -9,7 +9,7 @@
 ```tsx
 import * as React from "react"
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox"
-import { Check } from "lucide-react"
+import { Check } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 

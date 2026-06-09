@@ -1,6 +1,6 @@
 # Sonner (Toaster)
 
-**Categoria:** Composition | **Deps:** `sonner`, `next-themes`, `lucide-react` | **"use client":** Sim
+**Categoria:** Composition | **Deps:** `sonner`, `next-themes`, `@phosphor-icons/react` | **"use client":** Sim
 
 ## Exports
 Toaster

@@ -1,7 +1,7 @@
 # Carousel
 
 **Categoria:** Compound (Behavioral)
-**Dependências:** `embla-carousel-react`, `lucide-react`, `@/components/button`
+**Dependências:** `embla-carousel-react`, `@phosphor-icons/react`, `@/components/button`
 **"use client":** Não
 
 ## Exports

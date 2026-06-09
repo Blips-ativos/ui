@@ -62,9 +62,9 @@ import {
 // Input com ícone à esquerda
 <InputGroup>
   <InputGroupAddon align="inline-start">
-    <SearchIcon />
+    <MagnifyingGlass />
   </InputGroupAddon>
-  <InputGroupInput placeholder="Search..." />
+  <InputGroupInput placeholder="MagnifyingGlass..." />
 </InputGroup>
 
 // Input com botão à direita
@@ -101,7 +101,7 @@ import {
 
 // Input com Kbd (atalho)
 <InputGroup>
-  <InputGroupInput placeholder="Search..." />
+  <InputGroupInput placeholder="MagnifyingGlass..." />
   <InputGroupAddon align="inline-end">
     <Kbd>⌘K</Kbd>
   </InputGroupAddon>
@@ -157,7 +157,7 @@ import { ButtonGroup, ButtonGroupText, ButtonGroupSeparator, buttonGroupVariants
 <ButtonGroup>
   <Button>Primary</Button>
   <ButtonGroupSeparator />
-  <Button size="icon"><ChevronDown /></Button>
+  <Button size="icon"><CaretDown /></Button>
 </ButtonGroup>
 ```
 
@@ -249,7 +249,7 @@ toast.loading("Processing...")
 **Anatomia:**
 - `"use client"` obrigatório
 - Integra `useTheme()` do `next-themes` para theme-awareness
-- Ícones customizados do `lucide-react`:
+- Ícones customizados do `@phosphor-icons/react`:
   - Success: `CircleCheck`
   - Error: `OctagonX`
   - Warning: `TriangleAlert`
@@ -300,7 +300,7 @@ import { Calendar } from "@blips/ui"
 - `"use client"` obrigatório
 - Wrapper do `DayPicker` com `classNames` customizadas
 - `CalendarDayButton`: componente interno com `useRef`/`useEffect` para focus
-- Ícones de navegação: `ChevronLeft`, `ChevronRight`, `ChevronDown`
+- Ícones de navegação: `CaretLeft`, `ChevronRight`, `CaretDown`
 - Usa `buttonVariants` para estilizar os botões de dia
 - Selected: `bg-primary text-primary-foreground`
 - Range: `bg-accent` para dias intermediários

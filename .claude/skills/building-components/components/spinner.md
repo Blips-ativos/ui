@@ -1,11 +1,11 @@
 # Spinner
 
-**Categoria:** Primitive | **Deps:** `lucide-react` | **"use client":** Não
+**Categoria:** Primitive | **Deps:** `@phosphor-icons/react` | **"use client":** Não
 
 ## Source
 
 ```tsx
-import { Loader2Icon } from "lucide-react"
+import { Loader2Icon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 
 function Spinner({ className, ...props }: React.ComponentProps<typeof Loader2Icon>) {

@@ -16,11 +16,11 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@blips/ui"
-import { Search } from "lucide-react"
+import { MagnifyingGlass } from "@phosphor-icons/react"
 
 <InputGroup>
   <InputGroupAddon align="inline-start">
-    <Search className="h-4 w-4" />
+    <MagnifyingGlass className="h-4 w-4" />
   </InputGroupAddon>
   <InputGroupInput placeholder="Buscar..." />
 </InputGroup>

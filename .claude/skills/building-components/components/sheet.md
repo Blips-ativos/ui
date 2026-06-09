@@ -1,6 +1,6 @@
 # Sheet
 
-**Categoria:** Compound | **Deps:** `@radix-ui/react-dialog`, `class-variance-authority`, `lucide-react` | **"use client":** Sim
+**Categoria:** Compound | **Deps:** `@radix-ui/react-dialog`, `class-variance-authority`, `@phosphor-icons/react` | **"use client":** Sim
 
 ## Exports
 Sheet, SheetPortal, SheetOverlay, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetFooter, SheetTitle, SheetDescription

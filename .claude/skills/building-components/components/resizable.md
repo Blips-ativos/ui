@@ -1,5 +1,5 @@
 # Resizable
-**Categoria:** Compound | **Deps:** `react-resizable-panels`, `lucide-react` | **"use client":** Sim
+**Categoria:** Compound | **Deps:** `react-resizable-panels`, `@phosphor-icons/react` | **"use client":** Sim
 
 Exports: ResizablePanelGroup, ResizablePanel, ResizableHandle
 

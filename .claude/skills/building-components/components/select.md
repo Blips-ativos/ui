@@ -1,6 +1,6 @@
 # Select
 
-**Categoria:** Compound | **Deps:** `@radix-ui/react-select`, `lucide-react` | **"use client":** Sim
+**Categoria:** Compound | **Deps:** `@radix-ui/react-select`, `@phosphor-icons/react` | **"use client":** Sim
 
 ## Exports
 Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton

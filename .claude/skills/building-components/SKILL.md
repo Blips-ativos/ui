@@ -24,7 +24,7 @@ Skill para criação de componentes na plataforma Blips. Define os padrões de a
 | Radix UI | Primitives acessíveis headless |
 | CVA | class-variance-authority para variantes |
 | Class merge | `clsx` + `tailwind-merge` via `cn()` |
-| Ícones | lucide-react |
+| Ícones | @phosphor-icons/react |
 | Linter | Biome |
 | Monorepo | pnpm + Turborepo |
 
@@ -42,7 +42,7 @@ Todo componente em `@blips/ui` segue esta estrutura canônica:
 import * as React from "react"
 import * as PrimitiveName from "@radix-ui/react-primitive-name"
 import { cva, type VariantProps } from "class-variance-authority"
-import { IconName } from "lucide-react"
+import { IconName } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 import { OtherComponent } from "@/components/other-component"

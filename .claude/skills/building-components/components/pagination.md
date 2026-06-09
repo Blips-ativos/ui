@@ -1,5 +1,5 @@
 # Pagination
-**Categoria:** Compound | **Deps:** `lucide-react`, `@/components/button` | **"use client":** Não
+**Categoria:** Compound | **Deps:** `@phosphor-icons/react`, `@/components/button` | **"use client":** Não
 
 Exports: Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis
 

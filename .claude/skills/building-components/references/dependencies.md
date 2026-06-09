@@ -82,27 +82,27 @@ Cada componente usa o primitive específico da sua categoria:
 
 ## Terceiros (Non-Radix)
 
-### lucide-react
+### @phosphor-icons/react
 
 ```tsx
-import { ChevronDown, X, Search, Check, Circle } from "lucide-react"
+import { CaretDown, X, MagnifyingGlass, Check, Circle } from "@phosphor-icons/react"
 ```
 
 **Quando usar:** Para ícones em componentes. É a única biblioteca de ícones permitida.
 
 **Ícones mais usados na lib:**
 - `X` — close buttons (Dialog, Sheet)
-- `ChevronDown` — triggers/selects (Accordion, Select, NavigationMenu)
+- `CaretDown` — triggers/selects (Accordion, Select, NavigationMenu)
 - `ChevronRight` — sub-menus, breadcrumbs
-- `ChevronLeft` / `ChevronRight` — navigation (Calendar, Pagination, Carousel)
+- `CaretLeft` / `ChevronRight` — navigation (Calendar, Pagination, Carousel)
 - `Check` — checkboxes, selected items (Checkbox, Select, DropdownMenu)
 - `Circle` — radio indicators
-- `MoreHorizontal` — overflow/ellipsis (Breadcrumb)
-- `Search` — search input (Command)
-- `PanelLeft` — sidebar trigger
-- `GripVertical` — resize handle
+- `DotsThree` — overflow/ellipsis (Breadcrumb)
+- `MagnifyingGlass` — search input (Command)
+- `SidebarSimple` — sidebar trigger
+- `DotsSixVertical` — resize handle
 - `ArrowLeft` / `ArrowRight` — carousel
-- `Loader2` — spinner (Spinner)
+- `CircleNotch` — spinner (Spinner)
 
 **Convenção de tamanho:** `className="h-4 w-4"` ou uso do global `[&_svg]:size-4`
 
@@ -225,7 +225,7 @@ external: [
   "react-day-picker",
   "react-resizable-panels",
   "input-otp",
-  "lucide-react",
+  "@phosphor-icons/react",
 ]
 ```
 

@@ -1,7 +1,7 @@
 # Calendar
 
 **Categoria:** Composition
-**Dependências:** `react-day-picker`, `lucide-react`, `@/components/button`
+**Dependências:** `react-day-picker`, `@phosphor-icons/react`, `@/components/button`
 **"use client":** Sim
 
 ## Source

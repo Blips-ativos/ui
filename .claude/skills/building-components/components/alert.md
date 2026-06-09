@@ -87,7 +87,7 @@ export { Alert, AlertTitle, AlertDescription }
 
 ```tsx
 import { Alert, AlertTitle, AlertDescription } from "@blips/ui"
-import { Terminal, AlertCircle } from "lucide-react"
+import { Terminal, WarningCircle } from "@phosphor-icons/react"
 
 // Default
 <Alert>
@@ -98,7 +98,7 @@ import { Terminal, AlertCircle } from "lucide-react"
 
 // Destructive
 <Alert variant="destructive">
-  <AlertCircle className="h-4 w-4" />
+  <WarningCircle className="h-4 w-4" />
   <AlertTitle>Erro</AlertTitle>
   <AlertDescription>Sua sessão expirou.</AlertDescription>
 </Alert>

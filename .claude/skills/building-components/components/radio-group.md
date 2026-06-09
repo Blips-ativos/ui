@@ -1,5 +1,5 @@
 # RadioGroup
-**Categoria:** Compound | **Deps:** `@radix-ui/react-radio-group`, `lucide-react` | **"use client":** Não
+**Categoria:** Compound | **Deps:** `@radix-ui/react-radio-group`, `@phosphor-icons/react` | **"use client":** Não
 
 Exports: RadioGroup, RadioGroupItem
 

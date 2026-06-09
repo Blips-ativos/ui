@@ -299,7 +299,7 @@ import { Spinner } from "@blips/ui"
 
 **Anatomia interna:**
 - Sem `forwardRef`
-- Usa `Loader2Icon` do `lucide-react`
+- Usa `Loader2Icon` do `@phosphor-icons/react`
 - Base: `animate-spin`
 - Acessibilidade: `role="status"`, `aria-label="Loading"`
 
@@ -354,7 +354,7 @@ import { Checkbox } from "@blips/ui"
 
 **Anatomia interna:**
 - Radix `@radix-ui/react-checkbox`
-- Ícone: `Check` do lucide-react
+- Ícone: `Check` do @phosphor-icons/react
 - Layout: `grid place-content-center`
 - Base: `h-4 w-4 shrink-0 rounded-sm border border-primary`
 - Checked: `data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground`
@@ -445,11 +445,11 @@ import { Toggle } from "@blips/ui"
 
 ```tsx
 <Toggle aria-label="Toggle bold">
-  <Bold className="h-4 w-4" />
+  <TextB className="h-4 w-4" />
 </Toggle>
 
 <Toggle variant="outline">
-  <Italic className="h-4 w-4" />
+  <TextItalic className="h-4 w-4" />
 </Toggle>
 
 // Controlled

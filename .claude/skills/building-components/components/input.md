@@ -103,10 +103,10 @@ const [value, setValue] = React.useState("")
 ### Campo com ícone
 
 ```tsx
-import { Search } from "lucide-react"
+import { MagnifyingGlass } from "@phosphor-icons/react"
 
 <div className="relative">
-  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+  <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
   <Input className="pl-9" placeholder="Buscar..." />
 </div>
 ```
