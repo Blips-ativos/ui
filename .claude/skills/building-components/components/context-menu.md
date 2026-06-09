@@ -8,7 +8,7 @@
 
 ## Uso
 
-### Basic Context Menu
+### Menu de contexto básico
 
 ```tsx
 import {
@@ -41,7 +41,7 @@ import {
 </ContextMenu>
 ```
 
-### Context Menu with Submenu
+### Menu de contexto com submenu
 
 ```tsx
 <ContextMenu>
@@ -61,7 +61,7 @@ import {
 </ContextMenu>
 ```
 
-### Context Menu with Radio Items
+### Menu de contexto com itens de radio
 
 ```tsx
 <ContextMenu>

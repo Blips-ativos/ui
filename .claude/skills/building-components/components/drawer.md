@@ -8,7 +8,7 @@
 
 ## Uso
 
-### Basic Drawer
+### Drawer básico
 
 ```tsx
 import {
@@ -45,7 +45,7 @@ import { Button } from "@blips/ui"
 </Drawer>
 ```
 
-### Drawer with Controlled State
+### Drawer com estado controlado
 
 ```tsx
 const [open, setOpen] = React.useState(false)
@@ -72,7 +72,7 @@ const [open, setOpen] = React.useState(false)
 </Drawer>
 ```
 
-### Drawer with Custom Behavior
+### Drawer com comportamento customizado
 
 ```tsx
 <Drawer shouldScaleBackground>
@@ -95,10 +95,10 @@ const [open, setOpen] = React.useState(false)
 
 ## Recursos
 
-- **Drag Handle**: O conteúdo inclui uma barra de arraste automática para interação amigável no mobile
-- **Scale Background**: A prop `shouldScaleBackground` tem valor padrão `true`, fornecendo feedback visual quando o drawer está aberto
-- **Responsive**: Otimizado para dispositivos mobile e desktop
-- **Accessible**: Construído sobre primitives acessíveis com suporte a teclado
+- **Alça de arraste**: O conteúdo inclui uma barra de arraste automática para interação amigável no mobile
+- **Escalar fundo**: A prop `shouldScaleBackground` tem valor padrão `true`, fornecendo feedback visual quando o drawer está aberto
+- **Responsivo**: Otimizado para dispositivos mobile e desktop
+- **Acessível**: Construído sobre primitives acessíveis com suporte a teclado
 
 ## Props e Variantes
 

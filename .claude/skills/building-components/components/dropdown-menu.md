@@ -129,75 +129,75 @@ const [theme, setTheme] = React.useState("light")
 </DropdownMenu>
 ```
 
-## Props & Variants
+## Props & Variantes
 
 ### DropdownMenuTrigger
-- `children`: ReactNode - Trigger element
-- `asChild`: boolean - Merge with child component props
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Elemento gatilho
+- `asChild`: boolean - Mescla com as props do componente filho
+- `className`: string - Classes CSS customizadas
 
 ### DropdownMenuContent
-- `children`: ReactNode - Menu content
-- `className`: string - Custom CSS classes
-- `align`: 'start' | 'center' | 'end' - Content alignment
-- `side`: 'top' | 'right' | 'bottom' | 'left' - Menu side
-- `sideOffset`: number - Distance from trigger
+- `children`: ReactNode - Conteúdo do menu
+- `className`: string - Classes CSS customizadas
+- `align`: 'start' | 'center' | 'end' - Alinhamento do conteúdo
+- `side`: 'top' | 'right' | 'bottom' | 'left' - Lado do menu
+- `sideOffset`: number - Distância do gatilho
 
 ### DropdownMenuItem
-- `children`: ReactNode - Item content
-- `onSelect`: () => void - Selection callback
-- `className`: string - Custom CSS classes
-- `disabled`: boolean - Disable item
-- `inset`: boolean - Add inset padding (aligns with checkbox indicators)
+- `children`: ReactNode - Conteúdo do item
+- `onSelect`: () => void - Callback de seleção
+- `className`: string - Classes CSS customizadas
+- `disabled`: boolean - Desabilita o item
+- `inset`: boolean - Adiciona recuo interno (alinha com os indicadores de checkbox)
 
 ### DropdownMenuCheckboxItem
-- `checked`: boolean - Checkbox state
-- `onCheckedChange`: (checked: boolean) => void - State change handler
-- `children`: ReactNode - Item content
-- `className`: string - Custom CSS classes
-- `disabled`: boolean - Disable item
+- `checked`: boolean - Estado do checkbox
+- `onCheckedChange`: (checked: boolean) => void - Manipulador de mudança de estado
+- `children`: ReactNode - Conteúdo do item
+- `className`: string - Classes CSS customizadas
+- `disabled`: boolean - Desabilita o item
 
 ### DropdownMenuRadioItem
-- `value`: string - Radio value
-- `children`: ReactNode - Item content
-- `className`: string - Custom CSS classes
-- `disabled`: boolean - Disable item
+- `value`: string - Valor do rádio
+- `children`: ReactNode - Conteúdo do item
+- `className`: string - Classes CSS customizadas
+- `disabled`: boolean - Desabilita o item
 
 ### DropdownMenuLabel
-- `children`: ReactNode - Label text
-- `className`: string - Custom CSS classes
-- `inset`: boolean - Add inset padding
+- `children`: ReactNode - Texto do rótulo
+- `className`: string - Classes CSS customizadas
+- `inset`: boolean - Adiciona recuo interno
 
 ### DropdownMenuSeparator
-- `className`: string - Custom CSS classes
+- `className`: string - Classes CSS customizadas
 
 ### DropdownMenuShortcut
-- `children`: ReactNode - Shortcut text
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Texto do atalho
+- `className`: string - Classes CSS customizadas
 
 ### DropdownMenuRadioGroup
-- `value`: string - Selected value
-- `onValueChange`: (value: string) => void - Change handler
-- `children`: ReactNode - Radio items
+- `value`: string - Valor selecionado
+- `onValueChange`: (value: string) => void - Manipulador de mudança
+- `children`: ReactNode - Itens de rádio
 
 ### DropdownMenuSub
-- `children`: ReactNode - Submenu content
-- `open`: boolean - Open state
-- `onOpenChange`: (open: boolean) => void - State change handler
+- `children`: ReactNode - Conteúdo do submenu
+- `open`: boolean - Estado de aberto
+- `onOpenChange`: (open: boolean) => void - Manipulador de mudança de estado
 
 ### DropdownMenuSubTrigger
-- `children`: ReactNode - Trigger content
-- `className`: string - Custom CSS classes
-- `inset`: boolean - Add inset padding
+- `children`: ReactNode - Conteúdo do gatilho
+- `className`: string - Classes CSS customizadas
+- `inset`: boolean - Adiciona recuo interno
 
 ### DropdownMenuSubContent
-- `children`: ReactNode - Submenu content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do submenu
+- `className`: string - Classes CSS customizadas
 
 ### DropdownMenuGroup
-- `children`: ReactNode - Group items
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Itens do grupo
+- `className`: string - Classes CSS customizadas
 
 ### DropdownMenuPortal
-- `children`: ReactNode - Portal content
-- `forceMount`: boolean - Force mount to DOM
+- `children`: ReactNode - Conteúdo do portal
+- `forceMount`: boolean - Força a montagem no DOM

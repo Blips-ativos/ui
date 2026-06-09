@@ -87,26 +87,26 @@ import { Avatar, AvatarImage, AvatarFallback } from "@blips/ui"
 ## Props & Variants
 
 ### HoverCard
-- `open`: boolean - Controlled open state
-- `onOpenChange`: (open: boolean) => void - Open state change handler
-- `openDelay`: number - Delay in milliseconds before opening (default: 200)
-- `closeDelay`: number - Delay in milliseconds before closing (default: 300)
-- `children`: ReactNode - Card content
+- `open`: boolean - Estado aberto controlado
+- `onOpenChange`: (open: boolean) => void - Manipulador de mudança do estado aberto
+- `openDelay`: number - Atraso em milissegundos antes de abrir (padrão: 200)
+- `closeDelay`: number - Atraso em milissegundos antes de fechar (padrão: 300)
+- `children`: ReactNode - Conteúdo do card
 
 ### HoverCardTrigger
-- `children`: ReactNode - Trigger element
-- `asChild`: boolean - Merge with child component props
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Elemento de gatilho
+- `asChild`: boolean - Mescla com as props do componente filho
+- `className`: string - Classes CSS customizadas
 
 ### HoverCardContent
-- `children`: ReactNode - Content
-- `className`: string - Custom CSS classes
-- `align`: 'start' | 'center' | 'end' - Content alignment (default: center)
-- `side`: 'top' | 'right' | 'bottom' | 'left' - Position relative to trigger (default: bottom)
-- `sideOffset`: number - Distance from trigger (default: 4)
-- `avoidCollisions`: boolean - Prevent content from colliding with viewport edges (default: true)
+- `children`: ReactNode - Conteúdo
+- `className`: string - Classes CSS customizadas
+- `align`: 'start' | 'center' | 'end' - Alinhamento do conteúdo (padrão: center)
+- `side`: 'top' | 'right' | 'bottom' | 'left' - Posição relativa ao gatilho (padrão: bottom)
+- `sideOffset`: number - Distância em relação ao gatilho (padrão: 4)
+- `avoidCollisions`: boolean - Impede que o conteúdo colida com as bordas da viewport (padrão: true)
 
-## Default Styling
+## Estilização padrão
 
 O componente `HoverCardContent` aplica estas classes padrão:
 - `z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2`

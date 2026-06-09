@@ -6,7 +6,7 @@
 SidebarProvider, Sidebar, SidebarTrigger, SidebarRail, SidebarInset, SidebarInput, SidebarHeader, SidebarFooter, SidebarSeparator, SidebarContent, SidebarGroup, SidebarGroupLabel, SidebarGroupAction, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuAction, SidebarMenuBadge, SidebarMenuSkeleton, SidebarMenuSub, SidebarMenuSubItem, SidebarMenuSubButton, useSidebar
 
 ## Context
-SidebarContext with state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar
+SidebarContext com state, open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar
 
 ## Props & Variants
 **Sidebar props:** side (left/right), variant (sidebar/floating/inset), collapsible (offcanvas/icon/none)

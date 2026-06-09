@@ -173,30 +173,30 @@ O pacote `input-otp` fornece vários padrões regex para validação:
 - `REGEXP_ONLY_CHARS`: Apenas letras (a-z, A-Z)
 - `REGEXP_ONLY_DIGITS_AND_CHARS`: Alfanumérico (0-9, a-z, A-Z)
 
-## Props & Variants
+## Props & Variantes
 
 ### InputOTP
-- `maxLength`: number - Maximum OTP length (required)
-- `value`: string - OTP value (controlled)
-- `onChange`: (value: string) => void - Change handler
-- `disabled`: boolean - Disable input
-- `pattern`: RegExp - Regex pattern to validate input
-- `pushPasswordManagerStrategy`: 'increase' | 'append' | undefined - Password manager handling strategy
-- `render`: (props: any) => ReactNode - Custom render function
-- `container`: ElementType - Custom container component
-- `children`: ReactNode - OTP slots and groups
+- `maxLength`: number - Comprimento máximo do OTP (obrigatório)
+- `value`: string - Valor do OTP (controlado)
+- `onChange`: (value: string) => void - Manipulador de mudança
+- `disabled`: boolean - Desabilita o input
+- `pattern`: RegExp - Padrão regex para validar a entrada
+- `pushPasswordManagerStrategy`: 'increase' | 'append' | undefined - Estratégia de tratamento do gerenciador de senhas
+- `render`: (props: any) => ReactNode - Função de renderização customizada
+- `container`: ElementType - Componente de container customizado
+- `children`: ReactNode - Slots e grupos do OTP
 
 ### InputOTPGroup
-- `children`: ReactNode - OTP slots
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Slots do OTP
+- `className`: string - Classes CSS customizadas
 
 Normalmente renderizado como um container flex com espaçamento entre os slots.
 
 ### InputOTPSlot
-- `index`: number - Slot index (0-based, required)
-- `className`: string - Custom CSS classes
-- `disabled`: boolean - Disable slot
-- `hasCaret`: boolean - Show input caret (default: true)
+- `index`: number - Índice do slot (baseado em 0, obrigatório)
+- `className`: string - Classes CSS customizadas
+- `disabled`: boolean - Desabilita o slot
+- `hasCaret`: boolean - Mostra o caret de entrada (padrão: true)
 
 Estilização especial:
 - Mostra um ponto de placeholder quando vazio: `•`
@@ -205,8 +205,8 @@ Estilização especial:
 - Anel de foco acessível na navegação por teclado
 
 ### InputOTPSeparator
-- `children`: ReactNode - Separator content (typically unused)
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do separador (geralmente não utilizado)
+- `className`: string - Classes CSS customizadas
 
 Normalmente renderiza como um separador visual (traço ou espaço) entre grupos.
 

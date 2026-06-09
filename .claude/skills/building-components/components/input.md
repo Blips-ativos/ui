@@ -2,7 +2,7 @@
 
 **Categoria:** Primitive | **Deps:** Nenhuma externa | **"use client":** Não
 
-## Source Code
+## Código-fonte
 
 ```tsx
 import * as React from "react"
@@ -130,35 +130,35 @@ import { Form, FormField, FormItem, FormLabel, FormControl } from "@blips/ui"
 />
 ```
 
-## Props & Variants
+## Props e variantes
 
 ### Input
 
 O componente `Input` aceita todas as props padrão do elemento input HTML:
 
-- `type`: string - Input type (default: 'text')
-  - Common values: 'text', 'email', 'password', 'number', 'date', 'file', 'search', 'tel', 'url'
-- `placeholder`: string - Placeholder text
-- `value`: string - Input value (controlled)
-- `defaultValue`: string - Default value (uncontrolled)
-- `onChange`: (event: ChangeEvent<HTMLInputElement>) => void - Change handler
-- `onFocus`: (event: FocusEvent<HTMLInputElement>) => void - Focus handler
-- `onBlur`: (event: FocusEvent<HTMLInputElement>) => void - Blur handler
-- `disabled`: boolean - Disable input
-- `readOnly`: boolean - Make input read-only
-- `required`: boolean - Mark as required
-- `min`: string | number - Minimum value (for number/date inputs)
-- `max`: string | number - Maximum value (for number/date inputs)
-- `step`: string | number - Step increment (for number/range inputs)
-- `pattern`: string - Validation pattern (for text-like inputs)
-- `maxLength`: number - Maximum character length
-- `minLength`: number - Minimum character length
-- `autoComplete`: string - Autocomplete behavior
-- `autoFocus`: boolean - Auto focus on mount
-- `className`: string - Custom CSS classes
+- `type`: string - Tipo do input (padrão: 'text')
+  - Valores comuns: 'text', 'email', 'password', 'number', 'date', 'file', 'search', 'tel', 'url'
+- `placeholder`: string - Texto de placeholder
+- `value`: string - Valor do input (controlado)
+- `defaultValue`: string - Valor padrão (não controlado)
+- `onChange`: (event: ChangeEvent<HTMLInputElement>) => void - Manipulador de mudança
+- `onFocus`: (event: FocusEvent<HTMLInputElement>) => void - Manipulador de foco
+- `onBlur`: (event: FocusEvent<HTMLInputElement>) => void - Manipulador de blur
+- `disabled`: boolean - Desabilita o input
+- `readOnly`: boolean - Torna o input somente leitura
+- `required`: boolean - Marca como obrigatório
+- `min`: string | number - Valor mínimo (para inputs de número/data)
+- `max`: string | number - Valor máximo (para inputs de número/data)
+- `step`: string | number - Incremento do passo (para inputs de número/range)
+- `pattern`: string - Padrão de validação (para inputs do tipo texto)
+- `maxLength`: number - Comprimento máximo de caracteres
+- `minLength`: number - Comprimento mínimo de caracteres
+- `autoComplete`: string - Comportamento de autocompletar
+- `autoFocus`: boolean - Foco automático ao montar
+- `className`: string - Classes CSS customizadas
 - `ref`: React.Ref<HTMLInputElement> - Forward ref
 
-## Styling
+## Estilização
 
 O componente Input aplica estas classes padrão:
 
@@ -172,7 +172,7 @@ O componente Input aplica estas classes padrão:
 - **Placeholder**: `placeholder:text-muted-foreground` - Cor de placeholder atenuada
 - **Campo de arquivo**: `file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground` - Botão de arquivo estilizado
 
-## Accessibility
+## Acessibilidade
 
 - Elemento input HTML semântico
 - Anel de foco para navegação por teclado

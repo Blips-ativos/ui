@@ -5,7 +5,7 @@
 ## Exports
 Select, SelectGroup, SelectValue, SelectTrigger, SelectContent, SelectLabel, SelectItem, SelectSeparator, SelectScrollUpButton, SelectScrollDownButton
 
-SelectContent defaults to `position="popper"`.
+O SelectContent usa `position="popper"` por padrão.
 
 ## Uso
 

@@ -134,72 +134,72 @@ import {
 ## Props & Variants
 
 ### InputGroup
-- `children`: ReactNode - Group content (addons and inputs)
-- `className`: string - Custom CSS classes
-- `data-slot`: string - Automatically set to 'input-group' for CSS selectors
+- `children`: ReactNode - Conteúdo do grupo (addons e inputs)
+- `className`: string - Classes CSS customizadas
+- `data-slot`: string - Definido automaticamente como 'input-group' para seletores CSS
 
-Features:
-- Uses CSS `:has()` selectors for reactive styling
-- Responsive layout with flexbox
-- Supports inline and block addon alignment
+Recursos:
+- Usa seletores CSS `:has()` para estilização reativa
+- Layout responsivo com flexbox
+- Suporta alinhamento de addon inline e em bloco
 
 ### InputGroupAddon
-- `children`: ReactNode - Addon content (icon, text, button, etc.)
-- `className`: string - Custom CSS classes
-- `align`: 'inline-start' | 'inline-end' | 'block-start' | 'block-end' - Addon position (default: 'inline-start')
+- `children`: ReactNode - Conteúdo do addon (ícone, texto, botão, etc.)
+- `className`: string - Classes CSS customizadas
+- `align`: 'inline-start' | 'inline-end' | 'block-start' | 'block-end' - Posição do addon (padrão: 'inline-start')
 
-Alignment variants:
-- `inline-start`: Left side (leading)
-- `inline-end`: Right side (trailing)
-- `block-start`: Top (for vertical layout)
-- `block-end`: Bottom (for vertical layout)
+Variantes de alinhamento:
+- `inline-start`: Lado esquerdo (à frente)
+- `inline-end`: Lado direito (ao final)
+- `block-start`: Topo (para layout vertical)
+- `block-end`: Base (para layout vertical)
 
 ### InputGroupButton
-- `children`: ReactNode - Button content
-- `className`: string - Custom CSS classes
-- `size`: 'xs' | 'sm' | 'icon-xs' | 'icon-sm' - Button size
-  - `xs`: Extra small text button
-  - `sm`: Small text button
-  - `icon-xs`: Extra small icon-only button
-  - `icon-sm`: Small icon-only button
-- `variant`: 'default' | 'outline' | 'ghost' | 'secondary' - Button variant
-- `disabled`: boolean - Disable button
-- `onClick`: () => void - Click handler
+- `children`: ReactNode - Conteúdo do botão
+- `className`: string - Classes CSS customizadas
+- `size`: 'xs' | 'sm' | 'icon-xs' | 'icon-sm' - Tamanho do botão
+  - `xs`: Botão de texto extra pequeno
+  - `sm`: Botão de texto pequeno
+  - `icon-xs`: Botão somente ícone extra pequeno
+  - `icon-sm`: Botão somente ícone pequeno
+- `variant`: 'default' | 'outline' | 'ghost' | 'secondary' - Variante do botão
+- `disabled`: boolean - Desabilita o botão
+- `onClick`: () => void - Handler de clique
 
 ### InputGroupInput
-- `children`: ReactNode - Input content
-- `className`: string - Custom CSS classes
-- `placeholder`: string - Placeholder text
-- `disabled`: boolean - Disable input
-- `type`: string - Input type
-- All standard HTML input props
+- `children`: ReactNode - Conteúdo do input
+- `className`: string - Classes CSS customizadas
+- `placeholder`: string - Texto de placeholder
+- `disabled`: boolean - Desabilita o input
+- `type`: string - Tipo do input
+- Todas as props padrão de input HTML
 
 ### InputGroupTextarea
-- `children`: ReactNode - Textarea content
-- `className`: string - Custom CSS classes
-- `placeholder`: string - Placeholder text
-- `disabled`: boolean - Disable textarea
-- All standard HTML textarea props
+- `children`: ReactNode - Conteúdo do textarea
+- `className`: string - Classes CSS customizadas
+- `placeholder`: string - Texto de placeholder
+- `disabled`: boolean - Desabilita o textarea
+- Todas as props padrão de textarea HTML
 
 ### InputGroupText
-- `children`: ReactNode - Text content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo de texto
+- `className`: string - Classes CSS customizadas
 
-## CSS Custom Properties
+## Propriedades CSS customizadas
 
-The InputGroup component uses CSS `:has()` selectors to apply reactive styling:
+O componente InputGroup usa seletores CSS `:has()` para aplicar estilização reativa:
 
 ```css
 [data-slot="input-group"]:has([data-group-addon-align="inline-start"]) {
-  /* styles for leading addon */
+  /* estilos para addon à frente */
 }
 
 [data-slot="input-group"]:has([data-group-addon-align="inline-end"]) {
-  /* styles for trailing addon */
+  /* estilos para addon ao final */
 }
 
 [data-slot="input-group"]:has([data-group-addon-align="block-start"]) {
-  /* styles for top addon */
+  /* estilos para addon no topo */
 }
 ```
 

@@ -196,12 +196,12 @@ import { Textarea } from "@blips/ui"
 />
 ```
 
-## Architecture
+## Arquitetura
 
-### Context Providers
+### Provedores de contexto
 
-- **FormFieldContext**: Provides `name` and `control` to child components
-- **FormItemContext**: Manages form item ID generation and validation state
+- **FormFieldContext**: Fornece `name` e `control` aos componentes filhos
+- **FormItemContext**: Gerencia a geração do ID do item de formulário e o estado de validação
 
 ### FormControl Component
 
@@ -210,46 +210,46 @@ O componente `FormControl` usa `Slot` para injetar os atributos `aria-describedb
 ## Props & Variants
 
 ### Form
-- `children`: ReactNode - Form content
-- Props from `react-hook-form`'s `useFormContext`
+- `children`: ReactNode - Conteúdo do formulário
+- Props do `useFormContext` do `react-hook-form`
 
 ### FormField
-- `control`: Control object from `useForm`
-- `name`: string - Field name
-- `render`: (props: FieldRenderProps) => ReactNode - Render function
-- `defaultValue`: any - Default value
+- `control`: objeto Control do `useForm`
+- `name`: string - Nome do campo
+- `render`: (props: FieldRenderProps) => ReactNode - Função de renderização
+- `defaultValue`: any - Valor padrão
 
 ### FormItem
-- `children`: ReactNode - Item content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo do item
+- `className`: string - Classes CSS customizadas
 
 ### FormLabel
-- `children`: ReactNode - Label text
-- `className`: string - Custom CSS classes
-- `htmlFor`: string - Associated input ID
+- `children`: ReactNode - Texto do rótulo
+- `className`: string - Classes CSS customizadas
+- `htmlFor`: string - ID do input associado
 
 ### FormControl
-- `children`: ReactNode - Form control element (uses Slot)
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Elemento de controle do formulário (usa Slot)
+- `className`: string - Classes CSS customizadas
 
 ### FormDescription
-- `children`: ReactNode - Description text
-- `className`: string - Custom CSS classes
-- `id`: string - Associated with aria-describedby
+- `children`: ReactNode - Texto da descrição
+- `className`: string - Classes CSS customizadas
+- `id`: string - Associado ao aria-describedby
 
 ### FormMessage
-- `children`: ReactNode - Custom message content
-- `className`: string - Custom CSS classes
+- `children`: ReactNode - Conteúdo de mensagem customizado
+- `className`: string - Classes CSS customizadas
 
 ### useFormField
-React hook to access form field context:
+Hook React para acessar o contexto do campo de formulário:
 ```tsx
 const { id, name, formItemId, formDescriptionId, formMessageId } = useFormField()
 ```
 
-Returns object with:
-- `id`: string - Generated form item ID
-- `name`: string - Field name
-- `formItemId`: string - Form item container ID
-- `formDescriptionId`: string - Description element ID
-- `formMessageId`: string - Error message element ID
+Retorna um objeto com:
+- `id`: string - ID gerado do item de formulário
+- `name`: string - Nome do campo
+- `formItemId`: string - ID do contêiner do item de formulário
+- `formDescriptionId`: string - ID do elemento de descrição
+- `formMessageId`: string - ID do elemento de mensagem de erro

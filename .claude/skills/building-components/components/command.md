@@ -8,7 +8,7 @@
 
 ## Uso
 
-### Inline Command
+### Command inline
 
 ```tsx
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut } from "@blips/ui"
@@ -25,7 +25,7 @@ import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, Command
 </Command>
 ```
 
-### Command as Dialog (⌘K)
+### Command como Dialog (⌘K)
 
 ```tsx
 import { CommandDialog, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem, CommandShortcut } from "@blips/ui"
