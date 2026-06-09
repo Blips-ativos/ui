@@ -39,14 +39,21 @@ pnpm --filter @blips/ui dev        # tsup --watch
 
 ## Versioning
 
-Two independent release tracks — bump them separately:
+Two independent release tracks — bump them separately. **Always release through
+the `/release` command, never by hand-merging `staging → main`.**
+
+**Mandatory order inside `/release` (don't reorder):** define version → bump the
+track's file(s) → **commit** the bump → **push `staging`** → **only then** open
+the PR with the version in its title. The push must precede `gh pr create` so the
+PR contains the bump commit and its title matches the versioned files (otherwise
+the `verify` job fails at merge).
 
 - **npm (`@blips/ui`) + docs site** — released via the **`/release` Claude
   command** (`.claude/commands/release.md`) + the **`release.yml`** workflow.
-  `/release` reads conventional commits, bumps `packages/ui/package.json`, and
-  opens a PR `staging → main` titled **`release: vX.Y.Z`** (deterministic
-  convention — the workflow parses the version from the title). Merging that PR
-  triggers the workflow: tag `vX.Y.Z` + GitHub Release, publish `@blips/ui` to
+  `/release` reads conventional commits, bumps `packages/ui/package.json`,
+  commits + pushes the bump to `staging`, then opens a PR `staging → main`
+  titled **`release: vX.Y.Z`** (deterministic convention — the workflow parses
+  the version from the title). Merging that PR triggers the workflow: tag `vX.Y.Z` + GitHub Release, publish `@blips/ui` to
   npm via **Trusted Publishing (OIDC — no token; needs npm ≥ 11.5.1 / Node ≥
   22.14)**, and build + deploy the docs (SSG export) to **Firebase Hosting**
   (project `blips-ui`). CI needs the `FIREBASE_SERVICE_ACCOUNT` secret, the
