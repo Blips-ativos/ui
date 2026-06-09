@@ -1,4 +1,3 @@
-"use client";
 import {
   Command,
   CommandEmpty,
@@ -17,6 +16,7 @@ import {
   Smile,
   User,
 } from "lucide-react";
+
 export default function CommandDemo() {
   return (
     <Command className="rounded-lg border shadow-md md:min-w-[450px]">
@@ -25,32 +25,32 @@ export default function CommandDemo() {
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup heading="Suggestions">
           <CommandItem>
-            <Calendar className="mr-2 h-4 w-4" />
+            <Calendar />
             <span>Calendar</span>
           </CommandItem>
           <CommandItem>
-            <Smile className="mr-2 h-4 w-4" />
+            <Smile />
             <span>Search Emoji</span>
           </CommandItem>
-          <CommandItem>
-            <Calculator className="mr-2 h-4 w-4" />
+          <CommandItem disabled>
+            <Calculator />
             <span>Calculator</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Settings">
           <CommandItem>
-            <User className="mr-2 h-4 w-4" />
+            <User />
             <span>Profile</span>
             <CommandShortcut>⌘P</CommandShortcut>
           </CommandItem>
           <CommandItem>
-            <CreditCard className="mr-2 h-4 w-4" />
+            <CreditCard />
             <span>Billing</span>
             <CommandShortcut>⌘B</CommandShortcut>
           </CommandItem>
           <CommandItem>
-            <Settings className="mr-2 h-4 w-4" />
+            <Settings />
             <span>Settings</span>
             <CommandShortcut>⌘S</CommandShortcut>
           </CommandItem>

@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
@@ -9,9 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
-import { useState } from "react";
+import * as React from "react";
+
 export default function DropdownMenuRadioGroupDemo() {
-  const [position, setPosition] = useState("bottom");
+  const [position, setPosition] = React.useState("bottom");
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

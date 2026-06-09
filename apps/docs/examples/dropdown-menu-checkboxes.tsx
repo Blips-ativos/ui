@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
@@ -8,11 +9,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
-import { useState } from "react";
+import * as React from "react";
+
+type Checked = boolean | "indeterminate";
+
 export default function DropdownMenuCheckboxes() {
-  const [showStatusBar, setShowStatusBar] = useState(true);
-  const [showActivityBar, setShowActivityBar] = useState(false);
-  const [showPanel, setShowPanel] = useState(false);
+  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true);
+  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false);
+  const [showPanel, setShowPanel] = React.useState<Checked>(false);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
