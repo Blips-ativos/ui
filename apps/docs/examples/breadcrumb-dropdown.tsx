@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
-import { ChevronDownIcon, SlashIcon } from "lucide-react";
+import { CaretDown, LineVertical } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function BreadcrumbWithDropdown() {
@@ -21,17 +21,17 @@ export default function BreadcrumbWithDropdown() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/">Home</Link>
+            <Link href="/">House</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
-          <SlashIcon />
+          <LineVertical />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
               Components
-              <ChevronDownIcon />
+              <CaretDown />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem>Documentation</DropdownMenuItem>
@@ -41,7 +41,7 @@ export default function BreadcrumbWithDropdown() {
           </DropdownMenu>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
-          <SlashIcon />
+          <LineVertical />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <BreadcrumbPage>Breadcrumb</BreadcrumbPage>

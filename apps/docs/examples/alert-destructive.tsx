@@ -3,12 +3,12 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@blips/ui/components/alert";
-import { AlertCircleIcon } from "lucide-react";
+import { WarningCircle } from "@phosphor-icons/react";
 
 export default function AlertDestructive() {
   return (
     <Alert variant="destructive">
-      <AlertCircleIcon />
+      <WarningCircle />
       <AlertTitle>Error</AlertTitle>
       <AlertDescription>
         Your session has expired. Please log in again.

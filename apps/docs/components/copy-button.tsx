@@ -2,7 +2,7 @@
 
 import { Button } from "@blips/ui/components/button";
 import { cn } from "@blips/ui/lib/utils";
-import { CheckIcon, CopyIcon } from "lucide-react";
+import { Check, Copy } from "@phosphor-icons/react";
 import * as React from "react";
 
 export function CopyButton({
@@ -34,7 +34,7 @@ export function CopyButton({
       {...props}
     >
       <span className="sr-only">Copiar</span>
-      {hasCopied ? <CheckIcon /> : <CopyIcon />}
+      {hasCopied ? <Check /> : <Copy />}
     </Button>
   );
 }

@@ -3,7 +3,7 @@
 import { Button } from "@blips/ui/components/button";
 import { SidebarTrigger } from "@blips/ui/components/sidebar";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
-import { SearchIcon } from "lucide-react";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -28,7 +28,7 @@ export function SiteHeader() {
             onClick={() => setOpenSearch(true)}
             className="text-muted-foreground w-full justify-start gap-2 sm:w-56"
           >
-            <SearchIcon className="size-4" />
+            <MagnifyingGlass className="size-4" />
             <span className="flex-1 text-left">Buscar...</span>
             <kbd className="bg-muted pointer-events-none hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] sm:flex">
               ⌘K

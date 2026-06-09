@@ -1,13 +1,13 @@
 "use client";
 
 import { Toggle } from "@blips/ui/components/toggle";
-import { Italic } from "lucide-react";
+import { TextItalic } from "@phosphor-icons/react";
 
 export default function ToggleWithText() {
   return (
     <Toggle aria-label="Toggle italic">
-      <Italic className="h-4 w-4" />
-      Italic
+      <TextItalic className="h-4 w-4" />
+      TextItalic
     </Toggle>
   );
 }

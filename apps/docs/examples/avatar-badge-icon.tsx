@@ -4,7 +4,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@blips/ui/components/avatar";
-import { PlusIcon } from "lucide-react";
+import { Plus } from "@phosphor-icons/react";
 
 export function AvatarBadgeIconExample() {
   return (
@@ -12,7 +12,7 @@ export function AvatarBadgeIconExample() {
       <AvatarImage src="https://github.com/pranathip.png" alt="@pranathip" />
       <AvatarFallback>PP</AvatarFallback>
       <AvatarBadge>
-        <PlusIcon />
+        <Plus />
       </AvatarBadge>
     </Avatar>
   );

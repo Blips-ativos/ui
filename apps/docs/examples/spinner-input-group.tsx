@@ -6,7 +6,7 @@ import {
   InputGroupTextarea,
 } from "@blips/ui/components/input-group";
 import { Spinner } from "@blips/ui/components/spinner";
-import { ArrowUpIcon } from "lucide-react";
+import { ArrowUp } from "@phosphor-icons/react";
 
 export default function SpinnerInputGroup() {
   return (
@@ -22,7 +22,7 @@ export default function SpinnerInputGroup() {
         <InputGroupAddon align="block-end">
           <Spinner /> Validating...
           <InputGroupButton className="ml-auto" variant="default">
-            <ArrowUpIcon />
+            <ArrowUp />
             <span className="sr-only">Send</span>
           </InputGroupButton>
         </InputGroupAddon>

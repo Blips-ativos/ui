@@ -2,7 +2,7 @@
 
 import { Button } from "@blips/ui/components/button";
 import { ButtonGroup } from "@blips/ui/components/button-group";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "@phosphor-icons/react";
 
 export default function ButtonGroupNested() {
   return (
@@ -26,10 +26,10 @@ export default function ButtonGroupNested() {
       </ButtonGroup>
       <ButtonGroup>
         <Button variant="outline" size="icon-sm" aria-label="Previous">
-          <ArrowLeftIcon />
+          <ArrowLeft />
         </Button>
         <Button variant="outline" size="icon-sm" aria-label="Next">
-          <ArrowRightIcon />
+          <ArrowRight />
         </Button>
       </ButtonGroup>
     </ButtonGroup>

@@ -1,6 +1,6 @@
 import { Button } from "@blips/ui/components/button";
 import { ButtonGroup } from "@blips/ui/components/button-group";
-import { PlusIcon } from "lucide-react";
+import { Plus } from "@phosphor-icons/react";
 
 export default function ButtonGroupSize() {
   return (
@@ -16,7 +16,7 @@ export default function ButtonGroupSize() {
           Group
         </Button>
         <Button variant="outline" size="icon-sm">
-          <PlusIcon />
+          <Plus />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
@@ -24,7 +24,7 @@ export default function ButtonGroupSize() {
         <Button variant="outline">Button</Button>
         <Button variant="outline">Group</Button>
         <Button variant="outline" size="icon">
-          <PlusIcon />
+          <Plus />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
@@ -38,7 +38,7 @@ export default function ButtonGroupSize() {
           Group
         </Button>
         <Button variant="outline" size="icon-lg">
-          <PlusIcon />
+          <Plus />
         </Button>
       </ButtonGroup>
     </div>

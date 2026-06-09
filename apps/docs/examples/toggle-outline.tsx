@@ -1,10 +1,10 @@
 import { Toggle } from "@blips/ui/components/toggle";
-import { Italic } from "lucide-react";
+import { TextItalic } from "@phosphor-icons/react";
 
 export default function ToggleOutline() {
   return (
     <Toggle variant="outline" aria-label="Toggle italic">
-      <Italic />
+      <TextItalic />
     </Toggle>
   );
 }

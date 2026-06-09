@@ -1,16 +1,16 @@
 import { Tabs, TabsList, TabsTrigger } from "@blips/ui/components/tabs";
-import { AppWindowIcon, CodeIcon } from "lucide-react";
+import { AppWindow, Code } from "@phosphor-icons/react";
 
 export function TabsIcons() {
   return (
     <Tabs defaultValue="preview">
       <TabsList>
         <TabsTrigger value="preview">
-          <AppWindowIcon />
+          <AppWindow />
           Preview
         </TabsTrigger>
         <TabsTrigger value="code">
-          <CodeIcon />
+          <Code />
           Code
         </TabsTrigger>
       </TabsList>

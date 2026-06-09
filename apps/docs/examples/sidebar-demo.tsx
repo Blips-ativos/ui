@@ -10,14 +10,14 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@blips/ui/components/sidebar";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, House, Tray, MagnifyingGlass, Gear } from "@phosphor-icons/react";
 
 const items = [
-  { title: "Home", icon: Home },
-  { title: "Inbox", icon: Inbox },
+  { title: "House", icon: House },
+  { title: "Tray", icon: Tray },
   { title: "Calendar", icon: Calendar },
-  { title: "Search", icon: Search },
-  { title: "Settings", icon: Settings },
+  { title: "MagnifyingGlass", icon: MagnifyingGlass },
+  { title: "Gear", icon: Gear },
 ];
 
 export default function SidebarDemo() {

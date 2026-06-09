@@ -13,7 +13,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@blips/ui/components/tooltip";
-import { AudioLinesIcon, PlusIcon } from "lucide-react";
+import { Waveform, Plus } from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function ButtonGroupInputGroup() {
@@ -23,7 +23,7 @@ export default function ButtonGroupInputGroup() {
     <ButtonGroup className="[--radius:9999rem]">
       <ButtonGroup>
         <Button variant="outline" size="icon">
-          <PlusIcon />
+          <Plus />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
@@ -44,7 +44,7 @@ export default function ButtonGroupInputGroup() {
                   className="data-[active=true]:bg-orange-100 data-[active=true]:text-orange-700 dark:data-[active=true]:bg-orange-800 dark:data-[active=true]:text-orange-100"
                   aria-pressed={voiceEnabled}
                 >
-                  <AudioLinesIcon />
+                  <Waveform />
                 </InputGroupButton>
               </TooltipTrigger>
               <TooltipContent>Voice Mode</TooltipContent>

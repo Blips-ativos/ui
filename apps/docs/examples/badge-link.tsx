@@ -1,11 +1,11 @@
 import { Badge } from "@blips/ui/components/badge";
-import { ArrowUpRightIcon } from "lucide-react";
+import { ArrowUpRight } from "@phosphor-icons/react";
 
 export function BadgeAsLink() {
   return (
     <Badge asChild>
       <a href="#link">
-        Open Link <ArrowUpRightIcon data-icon="inline-end" />
+        Open Link <ArrowUpRight data-icon="inline-end" />
       </a>
     </Badge>
   );

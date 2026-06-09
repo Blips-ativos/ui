@@ -16,16 +16,16 @@ import {
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
 import {
-  ArchiveIcon,
-  ArrowLeftIcon,
-  CalendarPlusIcon,
-  ClockIcon,
-  ListFilterIcon,
-  MailCheckIcon,
-  MoreHorizontalIcon,
-  TagIcon,
-  Trash2Icon,
-} from "lucide-react";
+  Archive,
+  ArrowLeft,
+  CalendarPlus,
+  Clock,
+  Funnel,
+  EnvelopeSimple,
+  DotsThree,
+  Tag,
+  Trash,
+} from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function ButtonGroupDemo() {
@@ -35,7 +35,7 @@ export default function ButtonGroupDemo() {
     <ButtonGroup>
       <ButtonGroup className="hidden sm:flex">
         <Button variant="outline" size="icon" aria-label="Go Back">
-          <ArrowLeftIcon />
+          <ArrowLeft />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
@@ -47,37 +47,37 @@ export default function ButtonGroupDemo() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon" aria-label="More Options">
-              <MoreHorizontalIcon />
+              <DotsThree />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <MailCheckIcon />
+                <EnvelopeSimple />
                 Mark as Read
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <ArchiveIcon />
+                <Archive />
                 Archive
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <ClockIcon />
+                <Clock />
                 Snooze
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CalendarPlusIcon />
+                <CalendarPlus />
                 Add to Calendar
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <ListFilterIcon />
+                <Funnel />
                 Add to List
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <TagIcon />
+                  <Tag />
                   Label As...
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
@@ -101,7 +101,7 @@ export default function ButtonGroupDemo() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem variant="destructive">
-                <Trash2Icon />
+                <Trash />
                 Trash
               </DropdownMenuItem>
             </DropdownMenuGroup>

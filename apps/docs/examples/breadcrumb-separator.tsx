@@ -6,7 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@blips/ui/components/breadcrumb";
-import { SlashIcon } from "lucide-react";
+import { LineVertical } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function BreadcrumbWithCustomSeparator() {
@@ -15,11 +15,11 @@ export default function BreadcrumbWithCustomSeparator() {
       <BreadcrumbList>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
-            <Link href="/">Home</Link>
+            <Link href="/">House</Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
-          <SlashIcon />
+          <LineVertical />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
@@ -27,7 +27,7 @@ export default function BreadcrumbWithCustomSeparator() {
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator>
-          <SlashIcon />
+          <LineVertical />
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <BreadcrumbPage>Breadcrumb</BreadcrumbPage>

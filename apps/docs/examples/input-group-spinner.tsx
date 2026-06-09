@@ -5,7 +5,7 @@ import {
   InputGroupText,
 } from "@blips/ui/components/input-group";
 import { Spinner } from "@blips/ui/components/spinner";
-import { LoaderIcon } from "lucide-react";
+import { CircleNotch } from "@phosphor-icons/react";
 
 export default function InputGroupSpinner() {
   return (
@@ -32,7 +32,7 @@ export default function InputGroupSpinner() {
       <InputGroup data-disabled>
         <InputGroupInput placeholder="Refreshing data..." disabled />
         <InputGroupAddon>
-          <LoaderIcon className="animate-spin" />
+          <CircleNotch className="animate-spin" />
         </InputGroupAddon>
         <InputGroupAddon align="inline-end">
           <InputGroupText className="text-muted-foreground">

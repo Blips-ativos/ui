@@ -10,7 +10,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@blips/ui/components/input-group";
-import { ChevronDownIcon, MoreHorizontal } from "lucide-react";
+import { CaretDown, DotsThree } from "@phosphor-icons/react";
 
 export default function InputGroupDropdown() {
   return (
@@ -25,11 +25,11 @@ export default function InputGroupDropdown() {
                 aria-label="More"
                 size="icon-xs"
               >
-                <MoreHorizontal />
+                <DotsThree />
               </InputGroupButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Gear</DropdownMenuItem>
               <DropdownMenuItem>Copy path</DropdownMenuItem>
               <DropdownMenuItem>Open location</DropdownMenuItem>
             </DropdownMenuContent>
@@ -42,7 +42,7 @@ export default function InputGroupDropdown() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <InputGroupButton variant="ghost" className="pr-1.5! text-xs">
-                Search In... <ChevronDownIcon className="size-3" />
+                MagnifyingGlass In... <CaretDown className="size-3" />
               </InputGroupButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="[--radius:0.95rem]">

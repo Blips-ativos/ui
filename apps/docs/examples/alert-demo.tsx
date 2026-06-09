@@ -4,7 +4,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@blips/ui/components/alert";
-import { Terminal } from "lucide-react";
+import { Terminal } from "@phosphor-icons/react";
 export default function AlertDemo() {
   return (
     <Alert>

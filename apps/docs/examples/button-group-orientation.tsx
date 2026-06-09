@@ -1,6 +1,6 @@
 import { Button } from "@blips/ui/components/button";
 import { ButtonGroup } from "@blips/ui/components/button-group";
-import { MinusIcon, PlusIcon } from "lucide-react";
+import { Minus, Plus } from "@phosphor-icons/react";
 
 export default function ButtonGroupOrientation() {
   return (
@@ -10,10 +10,10 @@ export default function ButtonGroupOrientation() {
       className="h-fit"
     >
       <Button variant="outline" size="icon">
-        <PlusIcon />
+        <Plus />
       </Button>
       <Button variant="outline" size="icon">
-        <MinusIcon />
+        <Minus />
       </Button>
     </ButtonGroup>
   );

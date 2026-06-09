@@ -5,7 +5,7 @@ import {
   AvatarGroupCount,
   AvatarImage,
 } from "@blips/ui/components/avatar";
-import { PlusIcon } from "lucide-react";
+import { Plus } from "@phosphor-icons/react";
 
 export function AvatarGroupCountIconExample() {
   return (
@@ -26,7 +26,7 @@ export function AvatarGroupCountIconExample() {
         <AvatarFallback>ER</AvatarFallback>
       </Avatar>
       <AvatarGroupCount>
-        <PlusIcon />
+        <Plus />
       </AvatarGroupCount>
     </AvatarGroup>
   );

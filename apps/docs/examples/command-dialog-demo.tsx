@@ -12,10 +12,10 @@ import {
   Calculator,
   Calendar,
   CreditCard,
-  Settings,
-  Smile,
+  Gear,
+  Smiley,
   User,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 export default function CommandDialogDemo() {
   const [open, setOpen] = useState(false);
@@ -51,15 +51,15 @@ export default function CommandDialogDemo() {
               <span>Calendar</span>
             </CommandItem>
             <CommandItem>
-              <Smile className="mr-2 h-4 w-4" />
-              <span>Search Emoji</span>
+              <Smiley className="mr-2 h-4 w-4" />
+              <span>MagnifyingGlass Emoji</span>
             </CommandItem>
             <CommandItem>
               <Calculator className="mr-2 h-4 w-4" />
               <span>Calculator</span>
             </CommandItem>
           </CommandGroup>
-          <CommandGroup heading="Settings">
+          <CommandGroup heading="Gear">
             <CommandItem>
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
@@ -69,8 +69,8 @@ export default function CommandDialogDemo() {
               <span>Billing</span>
             </CommandItem>
             <CommandItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
+              <Gear className="mr-2 h-4 w-4" />
+              <span>Gear</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>

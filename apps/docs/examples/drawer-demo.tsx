@@ -11,7 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@blips/ui/components/drawer";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus } from "@phosphor-icons/react";
 import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer } from "recharts";
 

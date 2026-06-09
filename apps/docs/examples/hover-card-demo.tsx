@@ -9,7 +9,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@blips/ui/components/hover-card";
-import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@phosphor-icons/react";
 
 export default function HoverCardDemo() {
   return (

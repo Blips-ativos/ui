@@ -6,7 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@blips/ui/components/collapsible";
-import { ChevronsUpDown } from "lucide-react";
+import { CaretUpDown } from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function CollapsibleDemo() {
@@ -24,7 +24,7 @@ export default function CollapsibleDemo() {
         </h4>
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="icon" className="size-8">
-            <ChevronsUpDown />
+            <CaretUpDown />
             <span className="sr-only">Toggle</span>
           </Button>
         </CollapsibleTrigger>

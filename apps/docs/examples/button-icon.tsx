@@ -1,10 +1,10 @@
 import { Button } from "@blips/ui/components/button";
-import { CircleFadingArrowUpIcon } from "lucide-react";
+import { ArrowCircleUp } from "@phosphor-icons/react";
 
 export default function ButtonIcon() {
   return (
     <Button variant="outline" size="icon">
-      <CircleFadingArrowUpIcon />
+      <ArrowCircleUp />
     </Button>
   );
 }

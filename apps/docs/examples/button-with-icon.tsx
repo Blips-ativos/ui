@@ -1,5 +1,5 @@
 import { Button } from "@blips/ui/components/button";
-import { GitBranch } from "lucide-react";
+import { GitBranch } from "@phosphor-icons/react";
 
 export default function ButtonWithIcon() {
   return (

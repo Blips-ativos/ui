@@ -3,7 +3,7 @@ import {
   ButtonGroup,
   ButtonGroupSeparator,
 } from "@blips/ui/components/button-group";
-import { PlusIcon } from "lucide-react";
+import { Plus } from "@phosphor-icons/react";
 
 export default function ButtonGroupSplit() {
   return (
@@ -11,7 +11,7 @@ export default function ButtonGroupSplit() {
       <Button variant="secondary">Button</Button>
       <ButtonGroupSeparator />
       <Button size="icon" variant="secondary">
-        <PlusIcon />
+        <Plus />
       </Button>
     </ButtonGroup>
   );

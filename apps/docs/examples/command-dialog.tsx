@@ -14,10 +14,10 @@ import {
   Calculator,
   Calendar,
   CreditCard,
-  Settings,
-  Smile,
+  Gear,
+  Smiley,
   User,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function CommandDialogDemo() {
@@ -53,8 +53,8 @@ export default function CommandDialogDemo() {
               <span>Calendar</span>
             </CommandItem>
             <CommandItem>
-              <Smile />
-              <span>Search Emoji</span>
+              <Smiley />
+              <span>MagnifyingGlass Emoji</span>
             </CommandItem>
             <CommandItem>
               <Calculator />
@@ -62,7 +62,7 @@ export default function CommandDialogDemo() {
             </CommandItem>
           </CommandGroup>
           <CommandSeparator />
-          <CommandGroup heading="Settings">
+          <CommandGroup heading="Gear">
             <CommandItem>
               <User />
               <span>Profile</span>
@@ -74,8 +74,8 @@ export default function CommandDialogDemo() {
               <CommandShortcut>⌘B</CommandShortcut>
             </CommandItem>
             <CommandItem>
-              <Settings />
-              <span>Settings</span>
+              <Gear />
+              <span>Gear</span>
               <CommandShortcut>⌘S</CommandShortcut>
             </CommandItem>
           </CommandGroup>

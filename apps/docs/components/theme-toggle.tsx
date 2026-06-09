@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@blips/ui/components/button";
-import { MoonIcon, SunIcon } from "lucide-react";
+import { Moon, Sun } from "@phosphor-icons/react";
 import { useTheme } from "next-themes";
 
 export function ThemeToggle() {
@@ -15,8 +15,8 @@ export function ThemeToggle() {
       aria-label="Alternar tema"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
-      <SunIcon className="hidden [html.dark_&]:block" />
-      <MoonIcon className="block [html.dark_&]:hidden" />
+      <Sun className="hidden [html.dark_&]:block" />
+      <Moon className="block [html.dark_&]:hidden" />
     </Button>
   );
 }

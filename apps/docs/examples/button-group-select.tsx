@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@blips/ui/components/select";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRight } from "@phosphor-icons/react";
 import * as React from "react";
 
 const CURRENCIES = [
@@ -48,7 +48,7 @@ export default function ButtonGroupSelect() {
       </ButtonGroup>
       <ButtonGroup>
         <Button aria-label="Send" size="icon" variant="outline">
-          <ArrowRightIcon />
+          <ArrowRight />
         </Button>
       </ButtonGroup>
     </ButtonGroup>

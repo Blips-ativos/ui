@@ -4,19 +4,19 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@blips/ui/components/toggle-group";
-import { Bold, Italic, Underline } from "lucide-react";
+import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react";
 
 export default function ToggleGroupOutline() {
   return (
     <ToggleGroup type="multiple" variant="outline">
       <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <Bold className="h-4 w-4" />
+        <TextB className="h-4 w-4" />
       </ToggleGroupItem>
       <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <Italic className="h-4 w-4" />
+        <TextItalic className="h-4 w-4" />
       </ToggleGroupItem>
       <ToggleGroupItem value="underline" aria-label="Toggle underline">
-        <Underline className="h-4 w-4" />
+        <TextUnderline className="h-4 w-4" />
       </ToggleGroupItem>
     </ToggleGroup>
   );

@@ -7,18 +7,18 @@ import {
 } from "@blips/ui/components/popover";
 import { Separator } from "@blips/ui/components/separator";
 import { Textarea } from "@blips/ui/components/textarea";
-import { BotIcon, ChevronDownIcon } from "lucide-react";
+import { Robot, CaretDown } from "@phosphor-icons/react";
 
 export default function ButtonGroupPopover() {
   return (
     <ButtonGroup>
       <Button variant="outline">
-        <BotIcon /> Copilot
+        <Robot /> Copilot
       </Button>
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" size="icon" aria-label="Open Popover">
-            <ChevronDownIcon />
+            <CaretDown />
           </Button>
         </PopoverTrigger>
         <PopoverContent align="end" className="rounded-xl p-0 text-sm">

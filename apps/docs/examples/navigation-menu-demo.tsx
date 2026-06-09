@@ -10,7 +10,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@blips/ui/components/navigation-menu";
 import { useIsMobile } from "@blips/ui/hooks/use-mobile";
-import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react";
+import { CheckCircle, Question, Circle } from "@phosphor-icons/react";
 import Link from "next/link";
 import type * as React from "react";
 
@@ -59,7 +59,7 @@ export default function NavigationMenuDemo() {
     <NavigationMenu viewport={isMobile}>
       <NavigationMenuList className="flex-wrap">
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Home</NavigationMenuTrigger>
+          <NavigationMenuTrigger>House</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-2 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
@@ -168,19 +168,19 @@ export default function NavigationMenuDemo() {
               <li>
                 <NavigationMenuLink asChild>
                   <Link href="#" className="flex-row items-center gap-2">
-                    <CircleHelpIcon />
+                    <Question />
                     Backlog
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link href="#" className="flex-row items-center gap-2">
-                    <CircleIcon />
+                    <Circle />
                     To Do
                   </Link>
                 </NavigationMenuLink>
                 <NavigationMenuLink asChild>
                   <Link href="#" className="flex-row items-center gap-2">
-                    <CircleCheckIcon />
+                    <CheckCircle />
                     Done
                   </Link>
                 </NavigationMenuLink>

@@ -6,11 +6,11 @@ import {
   InputGroupTextarea,
 } from "@blips/ui/components/input-group";
 import {
-  CopyIcon,
-  CornerDownLeftIcon,
-  FileCodeIcon,
-  RefreshCwIcon,
-} from "lucide-react";
+  Copy,
+  ArrowBendDownLeft,
+  FileCode,
+  ArrowsClockwise,
+} from "@phosphor-icons/react";
 
 export default function InputGroupTextareaExample() {
   return (
@@ -24,19 +24,19 @@ export default function InputGroupTextareaExample() {
         <InputGroupAddon align="block-end" className="border-t">
           <InputGroupText>Line 1, Column 1</InputGroupText>
           <InputGroupButton size="sm" className="ml-auto" variant="default">
-            Run <CornerDownLeftIcon />
+            Run <ArrowBendDownLeft />
           </InputGroupButton>
         </InputGroupAddon>
         <InputGroupAddon align="block-start" className="border-b">
           <InputGroupText className="font-mono font-medium">
-            <FileCodeIcon />
+            <FileCode />
             script.js
           </InputGroupText>
           <InputGroupButton className="ml-auto" size="icon-xs">
-            <RefreshCwIcon />
+            <ArrowsClockwise />
           </InputGroupButton>
           <InputGroupButton variant="ghost" size="icon-xs">
-            <CopyIcon />
+            <Copy />
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>

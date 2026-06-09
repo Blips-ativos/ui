@@ -11,15 +11,15 @@ import {
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
 import {
-  AlertTriangleIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  CopyIcon,
-  ShareIcon,
-  TrashIcon,
-  UserRoundXIcon,
-  VolumeOffIcon,
-} from "lucide-react";
+  Warning,
+  Check,
+  CaretDown,
+  Copy,
+  ShareNetwork,
+  Trash,
+  UserMinus,
+  SpeakerSimpleX,
+} from "@phosphor-icons/react";
 
 export default function ButtonGroupDropdown() {
   return (
@@ -28,40 +28,40 @@ export default function ButtonGroupDropdown() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="pl-2!">
-            <ChevronDownIcon />
+            <CaretDown />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="[--radius:1rem]">
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <VolumeOffIcon />
+              <SpeakerSimpleX />
               Mute Conversation
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <CheckIcon />
+              <Check />
               Mark as Read
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <AlertTriangleIcon />
+              <Warning />
               Report Conversation
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <UserRoundXIcon />
+              <UserMinus />
               Block User
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <ShareIcon />
+              <ShareNetwork />
               Share Conversation
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <CopyIcon />
+              <Copy />
               Copy Conversation
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem variant="destructive">
-              <TrashIcon />
+              <Trash />
               Delete Conversation
             </DropdownMenuItem>
           </DropdownMenuGroup>

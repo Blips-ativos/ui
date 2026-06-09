@@ -4,43 +4,43 @@ import {
   InputGroupInput,
 } from "@blips/ui/components/input-group";
 import {
-  CheckIcon,
-  CreditCardIcon,
-  InfoIcon,
-  MailIcon,
-  SearchIcon,
-  StarIcon,
-} from "lucide-react";
+  Check,
+  CreditCard,
+  Info,
+  EnvelopeSimple,
+  MagnifyingGlass,
+  Star,
+} from "@phosphor-icons/react";
 
 export default function InputGroupIcon() {
   return (
     <div className="grid w-full max-w-sm gap-6">
       <InputGroup>
-        <InputGroupInput placeholder="Search..." />
+        <InputGroupInput placeholder="MagnifyingGlass..." />
         <InputGroupAddon>
-          <SearchIcon />
+          <MagnifyingGlass />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
         <InputGroupInput type="email" placeholder="Enter your email" />
         <InputGroupAddon>
-          <MailIcon />
+          <EnvelopeSimple />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
         <InputGroupInput placeholder="Card number" />
         <InputGroupAddon>
-          <CreditCardIcon />
+          <CreditCard />
         </InputGroupAddon>
         <InputGroupAddon align="inline-end">
-          <CheckIcon />
+          <Check />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
         <InputGroupInput placeholder="Card number" />
         <InputGroupAddon align="inline-end">
-          <StarIcon />
-          <InfoIcon />
+          <Star />
+          <Info />
         </InputGroupAddon>
       </InputGroup>
     </div>
