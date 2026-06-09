@@ -1,30 +1,37 @@
 name: Release
 
-# Disparado quando um PR de release (título `release: vX.Y.Z`) é mergeado na
-# main. A versão é extraída deterministicamente do título do PR. Em seguida:
-#   1. cria a tag anotada vX.Y.Z + GitHub Release;
-#   2. publica o @blips/ui no npm (Trusted Publishing / OIDC, sem token);
-#   3. faz o build SSG do app docs e o deploy no Firebase Hosting.
+# Disparado ao mergear um PR de release na main. O título do PR determina o
+# track (convenção determinística):
+#   - `release: vX.Y.Z`        -> npm (@blips/ui via OIDC) + deploy docs (Firebase) + tag vX.Y.Z
+#   - `release-plugin: vA.B.C` -> só plugin: tag plugin-vA.B.C + release (sem npm/docs)
 #
-# A versão publicada vem de packages/ui/package.json (bumpado pelo /release no
-# PR), então deve coincidir com a versão do título.
+# Estrutura em jobs:
+#   verify  -> valida versões vs título (e a sincronia plugin.json <-> marketplace)
+#   publish -> npm publish + tag/release (track npm)
+#   deploy  -> build SSG + Firebase, só se packages/ui/** ou apps/docs/** mudaram
+#   plugin  -> tag/release do plugin (track plugin)
 on:
   pull_request:
     types: [closed]
     branches: [main]
 
 permissions:
-  contents: write # criar/empurrar a tag e a release
+  contents: write # criar/empurrar tags e releases
   id-token: write # OIDC para o Trusted Publishing no npm
 
 jobs:
-  release:
-    name: Release
-    # Só roda em PR efetivamente mergeado e com o título na convenção.
+  # ─────────────────────────── verificação de versão ───────────────────────────
+  verify:
+    name: Verificação de versão
     if: >-
       github.event.pull_request.merged == true &&
-      startsWith(github.event.pull_request.title, 'release: v')
+      (startsWith(github.event.pull_request.title, 'release: v') ||
+       startsWith(github.event.pull_request.title, 'release-plugin: v'))
     runs-on: ubuntu-latest
+    outputs:
+      kind: ${{ steps.meta.outputs.kind }}
+      version: ${{ steps.meta.outputs.version }}
+      deploy_docs: ${{ steps.meta.outputs.deploy_docs }}
     steps:
       - name: Checkout (merge commit)
         uses: actions/checkout@v4
@@ -32,25 +39,68 @@ jobs:
           ref: ${{ github.event.pull_request.merge_commit_sha }}
           fetch-depth: 0
 
-      - name: Extrair versão do título do PR
-        id: ver
+      - name: Parse + validação
+        id: meta
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
           TITLE="${{ github.event.pull_request.title }}"
-          VERSION="${TITLE#release: v}"
+          if [[ "$TITLE" == "release: v"* ]]; then
+            KIND=npm; VERSION="${TITLE#release: v}"
+          elif [[ "$TITLE" == "release-plugin: v"* ]]; then
+            KIND=plugin; VERSION="${TITLE#release-plugin: v}"
+          else
+            echo "Título fora da convenção: $TITLE" >&2; exit 1
+          fi
           if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Título fora da convenção 'release: vX.Y.Z': $TITLE" >&2
-            exit 1
+            echo "Versão inválida no título: $VERSION" >&2; exit 1
           fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
 
-      - name: Conferir package.json == versão do título
-        run: |
-          PKG=$(node -p "require('./packages/ui/package.json').version")
-          if [ "$PKG" != "${{ steps.ver.outputs.version }}" ]; then
-            echo "packages/ui/package.json ($PKG) != título (${{ steps.ver.outputs.version }})" >&2
+          # Invariante: plugin.json e marketplace.json sempre em sincronia.
+          PJ=$(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")
+          MK=$(node -p "require('./.claude-plugin/marketplace.json').plugins.find(x=>x.name==='blips-ui').version")
+          if [ "$PJ" != "$MK" ]; then
+            echo "plugin.json ($PJ) != marketplace.json ($MK) — versões do plugin fora de sincronia" >&2
             exit 1
           fi
+
+          if [ "$KIND" = npm ]; then
+            PKG=$(node -p "require('./packages/ui/package.json').version")
+            if [ "$PKG" != "$VERSION" ]; then
+              echo "packages/ui/package.json ($PKG) != título ($VERSION)" >&2; exit 1
+            fi
+          else
+            if [ "$PJ" != "$VERSION" ]; then
+              echo "plugin.json ($PJ) != título ($VERSION)" >&2; exit 1
+            fi
+          fi
+
+          # Deploy do docs só se o pacote ui ou o docs mudaram neste PR.
+          DEPLOY=false
+          if [ "$KIND" = npm ]; then
+            FILES=$(gh pr view "${{ github.event.pull_request.number }}" \
+              -R "${{ github.repository }}" --json files --jq '.files[].path')
+            if echo "$FILES" | grep -Eq '^(packages/ui/|apps/docs/)'; then DEPLOY=true; fi
+          fi
+
+          echo "kind=$KIND" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "deploy_docs=$DEPLOY" >> "$GITHUB_OUTPUT"
+          echo "track=$KIND  versão=$VERSION  deploy_docs=$DEPLOY"
+
+  # ─────────────────────────────── npm publish ────────────────────────────────
+  publish:
+    name: npm publish
+    needs: verify
+    if: needs.verify.outputs.kind == 'npm'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (merge commit)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -60,11 +110,11 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24 # >= 22.14.0, exigido pelo Trusted Publishing
+          node-version: 24 # >= 22.14.0 (Trusted Publishing)
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      - name: Garantir npm com suporte a OIDC
+      - name: Garantir npm com OIDC
         run: npm install -g npm@latest # >= 11.5.1
 
       - name: Install
@@ -73,32 +123,70 @@ jobs:
       - name: Build @blips/ui
         run: pnpm --filter @blips/ui build
 
-      - name: Publicar no npm (Trusted Publishing / OIDC)
+      - name: Publicar no npm (OIDC)
         run: npm publish --access public
         working-directory: packages/ui
 
-      - name: Criar tag e release
+      - name: Tag + release (npm)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          set -euo pipefail
+          PREV=$(git tag -l "v*" --sort=-version:refname | head -1)
+          TAG="v${{ needs.verify.outputs.version }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          PREV_TAG=$(git tag -l "v*" --sort=-version:refname | head -1)
-          git tag -a "${{ steps.ver.outputs.tag }}" -m "Release ${{ steps.ver.outputs.tag }}"
-          git push origin "${{ steps.ver.outputs.tag }}"
-          if [ -n "$PREV_TAG" ]; then
-            gh release create "${{ steps.ver.outputs.tag }}" \
-              --title "${{ steps.ver.outputs.tag }}" \
-              --generate-notes --notes-start-tag "$PREV_TAG"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+          if [ -n "$PREV" ]; then
+            gh release create "$TAG" --title "$TAG" --generate-notes --notes-start-tag "$PREV"
           else
-            gh release create "${{ steps.ver.outputs.tag }}" \
-              --title "${{ steps.ver.outputs.tag }}" --generate-notes
+            gh release create "$TAG" --title "$TAG" --generate-notes
           fi
+
+      # Caso "ambos": o PR npm trouxe também um bump do plugin.
+      - name: Tag do plugin se a versão for nova (ambos)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PV=$(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")
+          if ! git rev-parse "plugin-v$PV" >/dev/null 2>&1; then
+            git tag -a "plugin-v$PV" -m "Plugin release plugin-v$PV"
+            git push origin "plugin-v$PV"
+            gh release create "plugin-v$PV" --title "plugin-v$PV" --generate-notes || true
+          fi
+
+  # ───────────────────────────── deploy do docs ───────────────────────────────
+  deploy:
+    name: Deploy docs (Firebase)
+    needs: verify
+    if: needs.verify.outputs.deploy_docs == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (merge commit)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
 
       - name: Build docs (SSG export)
         run: pnpm --filter @blips/docs build
 
-      - name: Deploy docs no Firebase Hosting
+      - name: Deploy no Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
@@ -106,3 +194,33 @@ jobs:
           projectId: ${{ vars.FIREBASE_PROJECT_ID }}
           entryPoint: apps/docs
           channelId: live
+
+  # ─────────────────────────────── plugin track ───────────────────────────────
+  plugin:
+    name: Release do plugin
+    needs: verify
+    if: needs.verify.outputs.kind == 'plugin'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (merge commit)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+
+      - name: Tag + release (plugin)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PREV=$(git tag -l "plugin-v*" --sort=-version:refname | head -1)
+          TAG="plugin-v${{ needs.verify.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Plugin release $TAG"
+          git push origin "$TAG"
+          if [ -n "$PREV" ]; then
+            gh release create "$TAG" --title "$TAG" --generate-notes --notes-start-tag "$PREV"
+          else
+            gh release create "$TAG" --title "$TAG" --generate-notes
+          fi

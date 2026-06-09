@@ -1,5 +1,5 @@
 ---
-description: Cria o PR de release (staging → main) com a convenção de nome que dispara a tag e o deploy
+description: Abre o PR de release (staging → main). Escolhe o escopo (npm+docs, plugin ou ambos); o nome do PR dispara tag/publish/deploy no merge.
 allowed-tools: Bash(git *), Bash(gh *), Bash(jq *), Bash(node *), Edit, AskUserQuestion
 ---
 
@@ -8,96 +8,91 @@ allowed-tools: Bash(git *), Bash(gh *), Bash(jq *), Bash(node *), Edit, AskUserQ
 Branch atual:
 !`git branch --show-current`
 
-Commits em staging que não estão em main (apenas commits, ignora não commitados):
+Commits em staging que não estão em main:
 !`git fetch origin main staging --quiet && git log --oneline origin/main..origin/staging`
 
-Última tag existente:
-!`git tag -l "v*" --sort=-version:refname | head -1`
+Última tag npm / plugin:
+!`echo "npm:    $(git tag -l 'v*' --sort=-version:refname | head -1)"; echo "plugin: $(git tag -l 'plugin-v*' --sort=-version:refname | head -1)"`
 
-Versão atual do @blips/ui:
-!`node -p "require('./packages/ui/package.json').version"`
+Versões atuais:
+!`echo "@blips/ui:      $(node -p "require('./packages/ui/package.json').version")"; echo "plugin.json:    $(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")"; echo "marketplace:    $(node -p "require('./.claude-plugin/marketplace.json').plugins.find(x=>x.name==='blips-ui').version")"`
 
-## Sua Tarefa: abrir o PR de release
+## Sua Tarefa
 
-O fluxo aqui é **determinístico pelo nome do PR**: este comando só cria o PR
-`staging → main` com o título `release: vX.Y.Z`. A **tag**, a **publicação no
-npm** e o **deploy do docs no Firebase** são feitos pelo workflow
-`.github/workflows/release.yml` **ao mergear esse PR na `main`**.
+Há **dois tracks de release independentes**, dirigidos pelo título do PR:
 
-### 1. Validações Iniciais
+| Track | Versiona | Título do PR | No merge (workflow) |
+| --- | --- | --- | --- |
+| **npm + docs** | `packages/ui/package.json` | `release: vX.Y.Z` | publish npm (OIDC) + deploy docs (Firebase) + tag `vX.Y.Z` |
+| **plugin** | `plugin.json` + entrada do `marketplace.json` | `release-plugin: vX.Y.Z` | tag `plugin-vX.Y.Z` + release (sem npm/docs) |
+
+Os títulos são **load-bearing** — o `.github/workflows/release.yml` extrai a versão e o track deles. Não altere o formato.
+
+### 1. Validações
 
 - [ ] Está na branch `staging`
-- [ ] Existem commits em staging que não estão em main
+- [ ] Há commits em staging que não estão em main
 
-**IMPORTANTE**: ignore arquivos não commitados — o release considera só commits.
-Se alguma validação falhar, informe e pare.
+Ignore arquivos não commitados. Se falhar, informe e pare.
 
-### 2. Analisar Commits e Recomendar Versão
+### 2. Escolher o escopo
 
-Analise os commits pendentes por conventional commits:
+Use `AskUserQuestion`: **"O que liberar neste release?"** → `npm + docs`, `plugin` ou `ambos`.
 
-| Tipo de commit | Incremento |
+### 3. Recomendar versão(ões) por conventional commits
+
+Para cada track escolhido, analise os commits pendentes (para o plugin, foque
+nos que tocam `plugins/**` e `.claude-plugin/**`):
+
+| Tipo | Incremento |
 | --- | --- |
-| `fix:`, `perf:`, `refactor:`, `style:`, `docs:`, `chore:`, `test:` | **PATCH** (x.y.Z) |
-| `feat:` | **MINOR** (x.Y.0) |
-| `BREAKING CHANGE:` ou `!:` (ex.: `feat!:`) | **MAJOR** (X.0.0) |
+| `fix:`, `perf:`, `refactor:`, `style:`, `docs:`, `chore:`, `test:` | **PATCH** |
+| `feat:` | **MINOR** |
+| `BREAKING CHANGE:` / `!:` | **MAJOR** |
 
-Prioridade: qualquer `BREAKING`/`!:` → MAJOR; senão qualquer `feat:` → MINOR;
-senão → PATCH. Calcule a partir da última tag (ou da versão do package.json se
-não houver tag).
+Prioridade: `BREAKING`/`!:` → MAJOR; senão `feat:` → MINOR; senão PATCH.
+Calcule a partir da última tag do track (`v*` para npm, `plugin-v*` para plugin)
+ou da versão atual do arquivo. Confirme com `AskUserQuestion` (recomendada primeiro).
 
-### 3. Perguntar a Versão
+### 4. Bump dos arquivos do(s) track(s) escolhido(s)
 
-Use `AskUserQuestion` com as 3 opções calculadas (PATCH/MINOR/MAJOR), a
-recomendada primeiro e marcada como "(Recomendado)".
+- **npm**: edite `packages/ui/package.json` → `"version": "X.Y.Z"`.
+- **plugin**: edite **os dois em sincronia** — `plugins/blips-ui/.claude-plugin/plugin.json`
+  e a entrada `blips-ui` em `.claude-plugin/marketplace.json` → mesma `version`.
+  (O workflow falha o release do plugin se os dois não baterem.)
 
-### 4. Bump da versão do pacote
-
-A versão publicada vem do `packages/ui/package.json`, então atualize-a para a
-versão escolhida (sem o `v`) e commite na `staging`:
-
-```
-# edite packages/ui/package.json -> "version": "X.Y.Z"
-git add packages/ui/package.json
-git commit -m "chore(release): vX.Y.Z"
-git push origin staging
-```
-
-### 5. Criar o Pull Request
-
-Título **obrigatoriamente** na convenção que o workflow consome:
+Commite e empurre na staging:
 
 ```
-gh pr create --base main --head staging \
-  --title "release: vX.Y.Z" \
-  --body "<lista dos commits incluídos>"
+git add -A && git commit -m "chore(release): <resumo das versões>" && git push origin staging
 ```
 
-> O workflow valida `startsWith(title, 'release: v')` e extrai a versão do
-> título. Não mude esse formato.
+### 5. Criar o PR (título conforme o escopo)
+
+- **npm + docs** → `gh pr create --base main --head staging --title "release: vX.Y.Z" --body "<commits>"`
+- **plugin** → `gh pr create --base main --head staging --title "release-plugin: vX.Y.Z" --body "<commits>"`
+- **ambos** → use o título **`release: vX.Y.Z`** (do npm). O bump do plugin vai junto
+  no mesmo PR; ao mergear, o workflow publica npm/docs **e** cria a tag `plugin-vA.B.C`
+  porque a versão do plugin mudou.
 
 ### 6. Merge (opcional)
 
-Pergunte se deve mergear agora. Se sim:
-
-```
-gh pr merge <número> --merge
-```
-
-Ao mergear, o workflow cria a tag `vX.Y.Z` + release, publica o `@blips/ui` no
-npm e faz o deploy do docs no Firebase Hosting — não crie a tag manualmente.
+Pergunte se deve mergear. Se sim: `gh pr merge <número> --merge`. **Não crie tags
+manualmente** — o workflow faz tudo no merge.
 
 ### 7. Resultado
 
 ```
 ## ✅ PR de release criado
 
-- **Versão**: vX.Y.Z
+- **Escopo**: <npm+docs | plugin | ambos>
+- **Versões**: @blips/ui vX.Y.Z / plugin vA.B.C (conforme escopo)
 - **PR**: <url>
-- **Ao mergear**: tag vX.Y.Z + release + publish npm + deploy docs (Firebase)
+- **Ao mergear**: <ações do workflow para o escopo>
 ```
 
 ## Tratamento de Erros
 
-- PR já existente para `staging → main`: reutilize-o (e ajuste o título/bump se a versão mudou).
-- Conflitos ou comando falhando: mostre o erro e pare.
+- PR `staging → main` já aberto: reutilize/ajuste o título e o bump.
+- Plugin fora de sincronia (`plugin.json` ≠ `marketplace.json`): corrija antes de abrir o PR.
+- Conflitos / comando falhando: mostre o erro e pare.
