@@ -79,8 +79,8 @@ the `verify` job fails at merge).
 - In components import `cn` from the **relative** `../lib/utils`, never the
   `@/lib/utils` alias — the tsup build has no path alias and it breaks the bundle.
 - Component pattern: function components (no `forwardRef`) with `data-slot`
-  attributes and **CVA** variants. Use the **`building-components` skill**
-  (`.claude/skills/building-components/`) when creating components.
+  attributes and **CVA** variants. Use the **`blips-ui:building` skill**
+  (`plugins/blips-ui/skills/building/`) when creating components.
 - **Icons: `@phosphor-icons/react` is the standard** (weight `regular`, the
   default — don't pass `weight`). Never import `lucide-react` — a Biome
   `noRestrictedImports` rule blocks it. Use Phosphor names (`CaretDown`, `X`,

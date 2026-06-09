@@ -1,5 +1,5 @@
 ---
-name: ui
+name: building
 description: "Padrões, APIs e convenções da biblioteca de componentes Blips UI (@blips/ui) — shadcn/ui + Radix. Use esta skill sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização. Isso inclui: editar arquivos .tsx que usam componentes de @blips/ui, construir com Tailwind CSS, trabalhar com react-hook-form, TanStack Table, Recharts ou primitivas Radix. Até mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout) se beneficiam desta skill para garantir que as convenções da biblioteca sejam seguidas. Dispara em qualquer tarefa de UI: criação de componente, layout de página, construção de formulário, data table, gráfico, modal, sheet, sidebar, estilização, design responsivo, acessibilidade, loading states, empty states ou refatoração de UI."
 ---
 
