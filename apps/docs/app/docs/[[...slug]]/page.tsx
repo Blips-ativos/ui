@@ -1,12 +1,7 @@
-import { Step, Steps } from "fumadocs-ui/components/steps";
-import { Tab, Tabs } from "fumadocs-ui/components/tabs";
-import defaultMdxComponents from "fumadocs-ui/mdx";
-import { DocsBody } from "fumadocs-ui/page";
 import { notFound } from "next/navigation";
-import { ComponentPreview } from "@/components/component-preview";
 import { DocsPager } from "@/components/docs-pager";
 import { DocsToc } from "@/components/docs-toc";
-import { mdxCodeComponents } from "@/components/mdx-code";
+import { mdxComponents } from "@/components/mdx-components";
 import { source } from "@/lib/source";
 
 export default async function Page(props: {
@@ -32,19 +27,9 @@ export default async function Page(props: {
             {page.data.description}
           </p>
         ) : null}
-        <DocsBody className="mt-8">
-          <MDX
-            components={{
-              ...defaultMdxComponents,
-              ...mdxCodeComponents,
-              ComponentPreview,
-              Tabs,
-              Tab,
-              Steps,
-              Step,
-            }}
-          />
-        </DocsBody>
+        <div data-slot="docs" className="mt-8">
+          <MDX components={mdxComponents} />
+        </div>
         <div className="mt-10">
           <DocsPager tree={source.pageTree} url={page.url} />
         </div>
