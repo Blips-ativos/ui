@@ -20,6 +20,7 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={inter.className}>
         <RootProvider
+          theme={{ defaultTheme: "light", enableSystem: false }}
           i18n={{
             locale: "pt-BR",
             translations: {

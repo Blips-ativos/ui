@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@blips/ui/components/button";
 import React, { Suspense, useState } from "react";
 import { registry } from "@/lib/__registry__";
 
@@ -13,56 +14,71 @@ export function ComponentPreview({ name }: ComponentPreviewProps) {
 
   if (!entry) {
     return (
-      <div className="text-sm text-muted-foreground my-6 rounded-lg border p-4">
-        Component preview <code>{name}</code> not found in registry.
-      </div>
+      <p className="text-muted-foreground mt-6 text-sm">
+        Preview{" "}
+        <code className="bg-muted rounded px-[0.3rem] py-[0.2rem] font-mono text-sm">
+          {name}
+        </code>{" "}
+        não encontrado no registry.
+      </p>
     );
   }
 
   const Component = entry.component;
 
   return (
-    <div className="my-6 not-prose">
-      <div className="relative rounded-lg border bg-background">
-        <div className="flex min-h-[200px] items-center justify-center p-8">
-          <Suspense
-            fallback={
-              <div className="text-muted-foreground text-sm">
-                Loading...
-              </div>
-            }
-          >
-            <Component />
-          </Suspense>
-        </div>
-      </div>
-      <div className="mt-2">
-        <button
-          type="button"
-          onClick={() => setShowCode(!showCode)}
-          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+    <div
+      data-slot="component-preview"
+      className="not-prose group relative mt-4 mb-12 flex flex-col overflow-hidden rounded-xl border"
+    >
+      {/* preview */}
+      <div className="preview flex h-72 w-full items-center justify-center p-10">
+        <Suspense
+          fallback={
+            <div className="text-muted-foreground text-sm">Carregando…</div>
+          }
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <polyline points="16 18 22 12 16 6" />
-            <polyline points="8 6 2 12 8 18" />
-          </svg>
-          {showCode ? "Hide code" : "View code"}
-        </button>
-        {showCode && (
-          <div className="mt-2 max-h-[400px] overflow-auto rounded-lg border bg-secondary/50">
-            <pre className="p-4 text-sm">
-              <code>{entry.source}</code>
-            </pre>
+          <Component />
+        </Suspense>
+      </div>
+
+      {/* code */}
+      <div
+        data-slot="code"
+        className="relative border-t [&_[data-rehype-pretty-code-figure]]:m-0! [&_[data-rehype-pretty-code-figure]]:rounded-none [&_[data-rehype-pretty-code-figure]]:border-0"
+      >
+        {showCode ? (
+          <div
+            data-rehype-pretty-code-figure=""
+            className="[&_pre]:max-h-96 [&_pre]:overflow-auto"
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: build-time shiki output
+            dangerouslySetInnerHTML={{ __html: entry.highlightedSource }}
+          />
+        ) : (
+          <div className="relative max-h-32 overflow-hidden">
+            <div
+              data-rehype-pretty-code-figure=""
+              // biome-ignore lint/security/noDangerouslySetInnerHtml: build-time shiki output
+              dangerouslySetInnerHTML={{ __html: entry.highlightedSource }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center pb-4">
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(to top, var(--color-code), color-mix(in oklab, var(--color-code) 60%, transparent), transparent)",
+                }}
+              />
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                className="bg-background hover:bg-muted relative z-10 rounded-lg shadow-none"
+                onClick={() => setShowCode(true)}
+              >
+                Ver código
+              </Button>
+            </div>
           </div>
         )}
       </div>

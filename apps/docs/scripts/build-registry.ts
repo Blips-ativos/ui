@@ -1,10 +1,34 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { codeToHtml } from "shiki";
 
 const EXAMPLES_DIR = path.resolve(__dirname, "../examples");
 const OUTPUT_FILE = path.resolve(__dirname, "../lib/__registry__.ts");
 
-function buildRegistry() {
+// Highlight example source the same way the MDX code blocks are highlighted
+// (dual github themes + data-line markers), so the shared @layer CSS styles it.
+function highlight(source: string) {
+  return codeToHtml(source, {
+    lang: "tsx",
+    themes: { light: "github-light", dark: "github-dark" },
+    transformers: [
+      {
+        pre(node) {
+          node.properties.class =
+            "no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none !bg-transparent";
+        },
+        code(node) {
+          node.properties["data-line-numbers"] = "";
+        },
+        line(node) {
+          node.properties["data-line"] = "";
+        },
+      },
+    ],
+  });
+}
+
+async function buildRegistry() {
   if (!fs.existsSync(EXAMPLES_DIR)) {
     fs.mkdirSync(EXAMPLES_DIR, { recursive: true });
   }
@@ -15,17 +39,17 @@ function buildRegistry() {
     .sort();
 
   const imports: string[] = [];
-  const entries: string[] = [];
 
   for (const file of files) {
     const name = file.replace(/\.tsx$/, "");
     const source = fs.readFileSync(path.join(EXAMPLES_DIR, file), "utf-8");
-    const escaped = JSON.stringify(source);
+    const highlighted = await highlight(source);
 
     imports.push(
       `  "${name}": {`,
       `    component: React.lazy(() => import("@/examples/${name}")),`,
-      `    source: ${escaped},`,
+      `    source: ${JSON.stringify(source)},`,
+      `    highlightedSource: ${JSON.stringify(highlighted)},`,
       `  },`
     );
   }
@@ -37,6 +61,7 @@ import React from "react";
 interface RegistryEntry {
   component: React.LazyExoticComponent<React.ComponentType>;
   source: string;
+  highlightedSource: string;
 }
 
 export const registry: Record<string, RegistryEntry> = {
