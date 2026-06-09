@@ -62,10 +62,17 @@ membros da equipe recebam o prompt de instalação automaticamente:
 
 São dois tracks de release independentes — incremente cada um separadamente:
 
-- **npm (`@blips/ui`)** — versionado com **changesets**. Adicione um changeset
-  por alteração (`pnpm changeset`), depois `pnpm version-packages` aplica o bump
-  no `package.json` e gera o changelog, e `pnpm release` faz o build e publica
-  no npm.
+- **npm (`@blips/ui`) + site de docs** — release pelo comando **`/release`**
+  (`.claude/commands/release.md`) + o workflow **`release.yml`**. O `/release`
+  analisa os conventional commits, faz o bump do `packages/ui/package.json` e
+  abre um PR `staging → main` com título **`release: vX.Y.Z`** (convenção
+  determinística — o workflow extrai a versão do título). Ao mergear esse PR, o
+  workflow cria a tag `vX.Y.Z` + release, publica o `@blips/ui` no npm via
+  **Trusted Publishing (OIDC, sem token; exige npm ≥ 11.5.1 / Node ≥ 22.14)** e
+  faz o build (export SSG) + deploy do docs no **Firebase Hosting** (projeto
+  `blips-ui`). O CI precisa do secret `FIREBASE_SERVICE_ACCOUNT`, da variable
+  `FIREBASE_PROJECT_ID` e do trusted publisher do npm registrado para o
+  workflow `release.yml`.
 - **Plugin do marketplace (`blips-ui`)** — o `version` está
   definido no **`plugin.json`** e na **entrada do `marketplace.json`**. Como
   é `version` explícito, **é obrigatório incrementá-lo a cada release** (mantendo

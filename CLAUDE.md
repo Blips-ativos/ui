@@ -33,17 +33,25 @@ pnpm registry:build   # build @blips/ui shadcn registry
 pnpm --filter @blips/ui build      # tsup
 pnpm --filter @blips/ui dev        # tsup --watch
 
-# Release (changesets)
-pnpm changeset && pnpm version-packages && pnpm release
+# Release: run the `/release` Claude command (opens the release PR).
+# Local manual publish (rarely needed): pnpm release
 ```
 
 ## Versioning
 
 Two independent release tracks — bump them separately:
 
-- **npm (`@blips/ui`)** — versioned with **changesets**. Add a changeset per
-  change (`pnpm changeset`), then `pnpm version-packages` bumps `package.json` +
-  writes the changelog, and `pnpm release` builds and publishes to npm.
+- **npm (`@blips/ui`) + docs site** — released via the **`/release` Claude
+  command** (`.claude/commands/release.md`) + the **`release.yml`** workflow.
+  `/release` reads conventional commits, bumps `packages/ui/package.json`, and
+  opens a PR `staging → main` titled **`release: vX.Y.Z`** (deterministic
+  convention — the workflow parses the version from the title). Merging that PR
+  triggers the workflow: tag `vX.Y.Z` + GitHub Release, publish `@blips/ui` to
+  npm via **Trusted Publishing (OIDC — no token; needs npm ≥ 11.5.1 / Node ≥
+  22.14)**, and build + deploy the docs (SSG export) to **Firebase Hosting**
+  (project `blips-ui`). CI needs the `FIREBASE_SERVICE_ACCOUNT` secret, the
+  `FIREBASE_PROJECT_ID` var, and the npm trusted publisher registered for
+  workflow `release.yml`.
 - **Marketplace plugin (`blips-ui`)** — has an explicit
   `version` in **both** `plugins/blips-ui/.claude-plugin/plugin.json` **and** its
   entry in `.claude-plugin/marketplace.json`. Because `version` is explicit, you
@@ -67,6 +75,10 @@ Two independent release tracks — bump them separately:
 - Internal imports use **`@blips/*`** (this repo), not `@workspace/*`.
 - **Two registry build scripts** must stay in sync: `packages/ui/scripts/build-registry.js`
   (package) and `apps/docs/scripts/build-registry.ts` (docs site, runs before dev/build).
+- **`apps/docs` is a static export** (`output: "export"` → `out/`): keep it
+  fully SSG (no API routes / SSR / dynamic). Deployed to Firebase Hosting
+  (`apps/docs/firebase.json`). MDX is styled via `components/mdx-components.tsx`
+  (shadcn-style map), **not** fumadocs' `prose`.
 - Biome formatting: double quotes, semicolons, 2-space indent, line width 80,
   `es5` trailing commas.
 - React peer range: `^17 || ^18 || ^19`.
