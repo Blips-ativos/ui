@@ -25,7 +25,7 @@ A `@blips/ui` usa **Tailwind CSS v4** com configuração CSS-first via `@theme` 
 
 Todos os componentes usam estes tokens. NUNCA usar cores Tailwind diretas (`bg-blue-500`).
 
-### Light Theme (Default)
+### Tema Claro (Padrão)
 
 | Token | Valor | Uso |
 |---|---|---|
@@ -49,7 +49,7 @@ Todos os componentes usam estes tokens. NUNCA usar cores Tailwind diretas (`bg-b
 | `input` | `hsl(240 5.9% 90%)` | Bordas de inputs |
 | `ring` | `hsl(240 5.9% 10%)` | Focus rings |
 
-### Dark Theme
+### Tema Escuro
 
 | Token | Valor |
 |---|---|
@@ -66,7 +66,7 @@ Todos os componentes usam estes tokens. NUNCA usar cores Tailwind diretas (`bg-b
 | `input` | `hsl(240 3.7% 15.9%)` |
 | `ring` | `hsl(240 4.9% 83.9%)` |
 
-### Border Radius
+### Raio de Borda
 
 | Token | Valor |
 |---|---|
@@ -81,7 +81,7 @@ Todos os componentes usam estes tokens. NUNCA usar cores Tailwind diretas (`bg-b
 
 Tokens exclusivos do componente Sidebar, definidos via CSS custom properties:
 
-### Light
+### Claro
 
 ```css
 :root {
@@ -96,7 +96,7 @@ Tokens exclusivos do componente Sidebar, definidos via CSS custom properties:
 }
 ```
 
-### Dark
+### Escuro
 
 ```css
 .dark {
