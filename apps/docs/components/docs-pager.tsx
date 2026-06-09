@@ -1,9 +1,8 @@
-import type * as PageTree from "fumadocs-core/page-tree";
-import { findNeighbour } from "fumadocs-core/server";
+import { findNeighbour, type Root } from "fumadocs-core/page-tree";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Link from "next/link";
 
-export function DocsPager({ tree, url }: { tree: PageTree.Root; url: string }) {
+export function DocsPager({ tree, url }: { tree: Root; url: string }) {
   const { previous, next } = findNeighbour(tree, url);
 
   if (!previous && !next) return null;
