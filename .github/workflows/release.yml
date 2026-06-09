@@ -1,19 +1,33 @@
 name: Release
 
-# Disparado ao mergear um PR de release na main. O título do PR determina o
-# track (convenção determinística):
-#   - `release: vX.Y.Z`        -> npm (@blips/ui via OIDC) + deploy docs (Firebase) + tag vX.Y.Z
-#   - `release-plugin: vA.B.C` -> só plugin: tag plugin-vA.B.C + release (sem npm/docs)
+# Dois gatilhos:
+#   - pull_request closed na main: título `release: vX.Y.Z` ou `release-plugin: vA.B.C`
+#   - workflow_dispatch (manual): inputs kind + version — útil para o primeiro
+#     release (quando o workflow ainda não estava na main no merge) ou re-runs.
 #
-# Estrutura em jobs:
-#   verify  -> valida versões vs título (e a sincronia plugin.json <-> marketplace)
-#   publish -> npm publish + tag/release (track npm)
-#   deploy  -> build SSG + Firebase, só se packages/ui/** ou apps/docs/** mudaram
-#   plugin  -> tag/release do plugin (track plugin)
+# Tracks (determinados pelo título do PR ou pelo input `kind`):
+#   - npm    -> publish @blips/ui (OIDC) + deploy docs (Firebase) + tag vX.Y.Z
+#               (+ tag plugin-vA.B.C se a versão do plugin for nova — caso "ambos")
+#   - plugin -> tag plugin-vA.B.C + release (sem npm/docs)
+#
+# As versões vêm dos arquivos versionados (bumpados pelo /release):
+#   - npm    -> packages/ui/package.json
+#   - plugin -> plugins/blips-ui/.claude-plugin/plugin.json + .claude-plugin/marketplace.json
 on:
   pull_request:
     types: [closed]
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: "Track a publicar"
+        type: choice
+        options: [npm, plugin]
+        default: npm
+      version:
+        description: "Versão X.Y.Z (tem que bater com os arquivos versionados no ref)"
+        required: true
+        type: string
 
 permissions:
   contents: write # criar/empurrar tags e releases
@@ -24,70 +38,77 @@ jobs:
   verify:
     name: Verificação de versão
     if: >-
-      github.event.pull_request.merged == true &&
-      (startsWith(github.event.pull_request.title, 'release: v') ||
-       startsWith(github.event.pull_request.title, 'release-plugin: v'))
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       (startsWith(github.event.pull_request.title, 'release: v') ||
+        startsWith(github.event.pull_request.title, 'release-plugin: v')))
     runs-on: ubuntu-latest
     outputs:
       kind: ${{ steps.meta.outputs.kind }}
       version: ${{ steps.meta.outputs.version }}
       deploy_docs: ${{ steps.meta.outputs.deploy_docs }}
     steps:
-      - name: Checkout (merge commit)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
           fetch-depth: 0
 
       - name: Parse + validação
         id: meta
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT: ${{ github.event_name }}
         run: |
           set -euo pipefail
-          TITLE="${{ github.event.pull_request.title }}"
-          if [[ "$TITLE" == "release: v"* ]]; then
-            KIND=npm; VERSION="${TITLE#release: v}"
-          elif [[ "$TITLE" == "release-plugin: v"* ]]; then
-            KIND=plugin; VERSION="${TITLE#release-plugin: v}"
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            KIND="${{ inputs.kind }}"
+            VERSION="${{ inputs.version }}"
           else
-            echo "Título fora da convenção: $TITLE" >&2; exit 1
+            TITLE="${{ github.event.pull_request.title }}"
+            if [[ "$TITLE" == "release: v"* ]]; then
+              KIND=npm; VERSION="${TITLE#release: v}"
+            elif [[ "$TITLE" == "release-plugin: v"* ]]; then
+              KIND=plugin; VERSION="${TITLE#release-plugin: v}"
+            else
+              echo "Título fora da convenção: $TITLE" >&2; exit 1
+            fi
           fi
           if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-            echo "Versão inválida no título: $VERSION" >&2; exit 1
+            echo "Versão inválida: $VERSION" >&2; exit 1
           fi
 
           # Invariante: plugin.json e marketplace.json sempre em sincronia.
           PJ=$(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")
           MK=$(node -p "require('./.claude-plugin/marketplace.json').plugins.find(x=>x.name==='blips-ui').version")
           if [ "$PJ" != "$MK" ]; then
-            echo "plugin.json ($PJ) != marketplace.json ($MK) — versões do plugin fora de sincronia" >&2
-            exit 1
+            echo "plugin.json ($PJ) != marketplace.json ($MK) — fora de sincronia" >&2; exit 1
           fi
 
           if [ "$KIND" = npm ]; then
             PKG=$(node -p "require('./packages/ui/package.json').version")
-            if [ "$PKG" != "$VERSION" ]; then
-              echo "packages/ui/package.json ($PKG) != título ($VERSION)" >&2; exit 1
-            fi
+            [ "$PKG" = "$VERSION" ] || { echo "packages/ui/package.json ($PKG) != versão ($VERSION)" >&2; exit 1; }
           else
-            if [ "$PJ" != "$VERSION" ]; then
-              echo "plugin.json ($PJ) != título ($VERSION)" >&2; exit 1
-            fi
+            [ "$PJ" = "$VERSION" ] || { echo "plugin.json ($PJ) != versão ($VERSION)" >&2; exit 1; }
           fi
 
-          # Deploy do docs só se o pacote ui ou o docs mudaram neste PR.
+          # Deploy do docs: por padrão em todo release npm; no PR, só se
+          # packages/ui/** ou apps/docs/** mudaram.
           DEPLOY=false
           if [ "$KIND" = npm ]; then
-            FILES=$(gh pr view "${{ github.event.pull_request.number }}" \
-              -R "${{ github.repository }}" --json files --jq '.files[].path')
-            if echo "$FILES" | grep -Eq '^(packages/ui/|apps/docs/)'; then DEPLOY=true; fi
+            if [ "$EVENT" = "workflow_dispatch" ]; then
+              DEPLOY=true
+            else
+              FILES=$(gh pr view "${{ github.event.pull_request.number }}" \
+                -R "${{ github.repository }}" --json files --jq '.files[].path')
+              if echo "$FILES" | grep -Eq '^(packages/ui/|apps/docs/)'; then DEPLOY=true; fi
+            fi
           fi
 
           echo "kind=$KIND" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "deploy_docs=$DEPLOY" >> "$GITHUB_OUTPUT"
-          echo "track=$KIND  versão=$VERSION  deploy_docs=$DEPLOY"
+          echo "track=$KIND  versão=$VERSION  deploy_docs=$DEPLOY  evento=$EVENT"
 
   # ─────────────────────────────── npm publish ────────────────────────────────
   publish:
@@ -96,10 +117,10 @@ jobs:
     if: needs.verify.outputs.kind == 'npm'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (merge commit)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
           fetch-depth: 0
 
       - name: Setup pnpm
@@ -144,7 +165,7 @@ jobs:
             gh release create "$TAG" --title "$TAG" --generate-notes
           fi
 
-      # Caso "ambos": o PR npm trouxe também um bump do plugin.
+      # Caso "ambos": a versão do plugin também foi bumpada no mesmo release.
       - name: Tag do plugin se a versão for nova (ambos)
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -164,10 +185,10 @@ jobs:
     if: needs.verify.outputs.deploy_docs == 'true'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (merge commit)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -202,10 +223,10 @@ jobs:
     if: needs.verify.outputs.kind == 'plugin'
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (merge commit)
+      - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
           fetch-depth: 0
 
       - name: Tag + release (plugin)
