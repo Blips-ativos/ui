@@ -39,6 +39,10 @@ Os títulos são **load-bearing** — o `.github/workflows/release.yml` extrai a
 > O PR **tem que conter o commit do bump** — por isso o push vem **antes** de
 > `gh pr create`. Nunca abra o PR com a versão antes de commitar+pushar o bump,
 > senão o título não bate com os arquivos e o job `verify` falha no merge.
+>
+> **Toda PR `staging → main` é um release versionado.** Não mergeie mudanças
+> avulsas (CI, hotfix, infra) direto na `main` fora de uma PR de release com a
+> versão no título — elas entram no próximo release.
 
 ### 1. Validações
 
