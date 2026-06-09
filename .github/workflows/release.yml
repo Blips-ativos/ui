@@ -1,43 +1,56 @@
 name: Release
 
-# Publica o @blips/ui no npm via changesets, autenticando por
-# Trusted Publishing (OIDC) — sem NPM_TOKEN de longa duração.
+# Disparado quando um PR de release (título `release: vX.Y.Z`) é mergeado na
+# main. A versão é extraída deterministicamente do título do PR. Em seguida:
+#   1. cria a tag anotada vX.Y.Z + GitHub Release;
+#   2. publica o @blips/ui no npm (Trusted Publishing / OIDC, sem token);
+#   3. faz o build SSG do app docs e o deploy no Firebase Hosting.
 #
-# Pré-requisitos (uma vez):
-#  - Registrar o trusted publisher em npmjs.com → @blips/ui →
-#    Settings → Trusted Publisher: organização=Blips-ativos, repositório=ui,
-#    workflow=release.yml, ação=`npm publish`.
-#  - Settings → Actions → General → permitir "Read and write" e
-#    "Allow GitHub Actions to create and approve pull requests".
-#
-# Fluxo (two-step):
-#  1. PRs de feature incluem um changeset (`pnpm changeset`).
-#  2. Ao mergear na `main`, abre/atualiza o PR "Version Packages".
-#  3. Ao mergear o "Version Packages" PR, roda `pnpm release`
-#     (build + `changeset publish`) e publica no npm + cria as tags.
+# A versão publicada vem de packages/ui/package.json (bumpado pelo /release no
+# PR), então deve coincidir com a versão do título.
 on:
-  push:
-    branches:
-      - main
-
-concurrency:
-  group: release-${{ github.ref }}
-  cancel-in-progress: false
+  pull_request:
+    types: [closed]
+    branches: [main]
 
 permissions:
-  contents: write # criar o branch/commit de versão e as tags
-  pull-requests: write # abrir/atualizar o PR "Version Packages"
-  id-token: write # OIDC: necessário para o Trusted Publishing
+  contents: write # criar/empurrar a tag e a release
+  id-token: write # OIDC para o Trusted Publishing no npm
 
 jobs:
   release:
     name: Release
+    # Só roda em PR efetivamente mergeado e com o título na convenção.
+    if: >-
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.title, 'release: v')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout (merge commit)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # changesets precisa do histórico completo
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+          fetch-depth: 0
+
+      - name: Extrair versão do título do PR
+        id: ver
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          VERSION="${TITLE#release: v}"
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "Título fora da convenção 'release: vX.Y.Z': $TITLE" >&2
+            exit 1
+          fi
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Conferir package.json == versão do título
+        run: |
+          PKG=$(node -p "require('./packages/ui/package.json').version")
+          if [ "$PKG" != "${{ steps.ver.outputs.version }}" ]; then
+            echo "packages/ui/package.json ($PKG) != título (${{ steps.ver.outputs.version }})" >&2
+            exit 1
+          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -51,21 +64,45 @@ jobs:
           cache: pnpm
           registry-url: https://registry.npmjs.org
 
-      # `changeset publish` chama o `npm publish` global, que detecta o
-      # ambiente OIDC automaticamente. Exige npm >= 11.5.1.
-      - name: Ensure npm supports OIDC
-        run: npm install -g npm@latest
+      - name: Garantir npm com suporte a OIDC
+        run: npm install -g npm@latest # >= 11.5.1
 
-      - name: Install dependencies
+      - name: Install
         run: pnpm install --frozen-lockfile
 
-      - name: Create Release Pull Request or Publish
-        uses: changesets/action@v1
-        with:
-          version: pnpm version-packages
-          publish: pnpm release
-          commit: "chore(release): version packages"
-          title: "chore(release): version packages"
+      - name: Build @blips/ui
+        run: pnpm --filter @blips/ui build
+
+      - name: Publicar no npm (Trusted Publishing / OIDC)
+        run: npm publish --access public
+        working-directory: packages/ui
+
+      - name: Criar tag e release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # Sem NPM_TOKEN: a autenticação do publish é via OIDC (id-token).
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          PREV_TAG=$(git tag -l "v*" --sort=-version:refname | head -1)
+          git tag -a "${{ steps.ver.outputs.tag }}" -m "Release ${{ steps.ver.outputs.tag }}"
+          git push origin "${{ steps.ver.outputs.tag }}"
+          if [ -n "$PREV_TAG" ]; then
+            gh release create "${{ steps.ver.outputs.tag }}" \
+              --title "${{ steps.ver.outputs.tag }}" \
+              --generate-notes --notes-start-tag "$PREV_TAG"
+          else
+            gh release create "${{ steps.ver.outputs.tag }}" \
+              --title "${{ steps.ver.outputs.tag }}" --generate-notes
+          fi
+
+      - name: Build docs (SSG export)
+        run: pnpm --filter @blips/docs build
+
+      - name: Deploy docs no Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ${{ vars.FIREBASE_PROJECT_ID }}
+          entryPoint: apps/docs
+          channelId: live
