@@ -52,13 +52,19 @@ Two independent release tracks — bump them separately:
   (project `blips-ui`). CI needs the `FIREBASE_SERVICE_ACCOUNT` secret, the
   `FIREBASE_PROJECT_ID` var, and the npm trusted publisher registered for
   workflow `release.yml`.
-- **Marketplace plugin (`blips-ui`)** — has an explicit
-  `version` in **both** `plugins/blips-ui/.claude-plugin/plugin.json` **and** its
-  entry in `.claude-plugin/marketplace.json`. Because `version` is explicit, you
-  **must bump it on every release** (keep both files in sync) — without the bump
-  the Claude Code cache keeps the stale version and users get no update. The
-  marketplace repo is `Blips-ativos/ui` (private): use the `BernardoBlips` `gh`
-  account or `GITHUB_TOKEN` for push and background auto-updates.
+- **Marketplace plugin (`blips-ui`)** — also released via **`/release`** (pick
+  scope `plugin`), but on its **own track**: it bumps the `version` in **both**
+  `plugins/blips-ui/.claude-plugin/plugin.json` **and** its entry in
+  `.claude-plugin/marketplace.json` (must stay in sync — the workflow fails the
+  plugin release otherwise) and opens a PR titled **`release-plugin: vX.Y.Z`**.
+  Merging it tags **`plugin-vX.Y.Z`** + a GitHub Release — **no npm/docs**
+  (decoupled by the PR-title prefix; `release-plugin:` doesn't match the npm
+  trigger `release: v`). The plugin is git-distributed: the bump landing on
+  `main` is what makes it live, so **always bump on every release** or the
+  Claude Code cache keeps the stale version. Marketplace repo is `Blips-ativos/ui`
+  (push with the `BernardoBlips` `gh` account / `GITHUB_TOKEN`). For a combined
+  release, `/release` scope `ambos` rides the plugin bump in the `release: v…`
+  PR and the workflow tags `plugin-v…` too.
 
 ## Conventions & gotchas
 

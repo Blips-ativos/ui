@@ -73,13 +73,16 @@ São dois tracks de release independentes — incremente cada um separadamente:
   `blips-ui`). O CI precisa do secret `FIREBASE_SERVICE_ACCOUNT`, da variable
   `FIREBASE_PROJECT_ID` e do trusted publisher do npm registrado para o
   workflow `release.yml`.
-- **Plugin do marketplace (`blips-ui`)** — o `version` está
-  definido no **`plugin.json`** e na **entrada do `marketplace.json`**. Como
-  é `version` explícito, **é obrigatório incrementá-lo a cada release** (mantendo
-  os dois arquivos em sincronia) — sem o bump, o Claude Code mantém o cache e os
-  usuários não recebem a atualização. Para iteração rápida, é possível omitir
-  `version` e deixar o Claude Code usar o commit SHA (todo push novo vira
-  atualização).
+- **Plugin do marketplace (`blips-ui`)** — também liberado pelo **`/release`**
+  (escopo `plugin`), mas em **track próprio**: bumpa o `version` no **`plugin.json`**
+  e na **entrada do `marketplace.json`** (têm que ficar em sincronia — o workflow
+  falha o release do plugin caso contrário) e abre um PR titulado
+  **`release-plugin: vX.Y.Z`**. No merge, cria a tag **`plugin-vX.Y.Z`** + release,
+  **sem npm/docs** (desacoplado pelo prefixo do título). Como o plugin é
+  distribuído por git, é o bump chegando na `main` que o torna válido — então
+  **incremente a cada release**, senão o cache do Claude Code mantém a versão
+  antiga. Para release combinado, o escopo `ambos` leva o bump do plugin no PR
+  `release: vX.Y.Z` e o workflow também cria a tag `plugin-v…`.
 
 ### Iteração local
 
