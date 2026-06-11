@@ -210,9 +210,12 @@ jobs:
         run: pnpm --filter @blips/docs build
 
       - name: Deploy no Firebase Hosting
+        # Sem `repoToken`: num deploy `live` no merge não há PR para comentar,
+        # e o repoToken só liga a integração GitHub (createCheck/comment) — que
+        # exige `checks: write` e dava 403 "Resource not accessible by
+        # integration". Sem ele, a action faz deploy puro só com o service account.
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: ${{ vars.FIREBASE_PROJECT_ID }}
           entryPoint: apps/docs
