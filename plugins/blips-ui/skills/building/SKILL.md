@@ -22,6 +22,11 @@ Classifique o que está construindo:
 | **Página/seção completa** | Dashboard, layout com sidebar | `blocks/<bloco>.md` |
 | **Alteração pequena** | Trocar variante, corrigir espaçamento, adicionar prop | `references/<componente>.md` para verificar API |
 
+**Página/seção NOVA sem direção visual declarada?** Antes de continuar,
+invoque **blips-ui:designing** (direção de densidade/profundidade/layout/tom é
+pré-requisito — sem ela, todo dashboard sai igual). Mudança pequena em tela
+existente: siga a direção já estabelecida na tela.
+
 ### Passo 2: Listar Componentes Envolvidos
 
 Nomeie cada componente que será utilizado. Para cada um, declare:
@@ -168,6 +173,16 @@ Estes padrões aparecem frequentemente entre componentes. Internalize-os:
 
 ## Regras
 
+Os critérios canônicos de conformidade (construção de componentes, estados de
+UI, acessibilidade, tipografia, formulários, movimento, formatação pt-BR e
+fatos da lib) vivem nas **references da skill `blips-ui:reviewing`** — fonte
+única. Dois mordem com frequência ao implementar:
+`reviewing/references/motion.md` (durações, transform/opacity, reduced-motion —
+animação é craft) e a **completude de código** em `component-standards.md`
+(entregue o componente inteiro; nada de `// ...` ou "resto segue o padrão"). As
+listas abaixo são o resumo
+operacional durante a construção, não o critério de aceite.
+
 ### FAÇA
 
 - Leia o arquivo de referência relevante antes de usar qualquer componente
@@ -203,3 +218,20 @@ Na biblioteca `@blips/ui`:
 - `packages/ui/src/hooks/` — Hooks customizados (use-file-upload, use-mobile)
 
 Componentes compostos (data tables, comboboxes de entidade, etc.) e utilitários de domínio (máscaras de input) vivem no app que consome a biblioteca.
+
+---
+
+## Antes de declarar pronto (obrigatório)
+
+Construção concluída ≠ trabalho concluído. Ao terminar a tela/componente:
+
+1. Invoque a skill **blips-ui:reviewing** sobre os arquivos que você tocou
+   (ela roda o check mecânico + o revisor com os critérios canônicos).
+2. **Bloqueantes encontrados → corrija e revise de novo.** Não negocie com o
+   gate: quem implementou racionaliza o próprio desvio — por isso o critério é
+   externo.
+3. Só reporte "pronto" com o veredito da review (`Bloqueantes: 0`), citando-o.
+
+Sem a skill reviewing disponível (plugin não instalado no ambiente): rode ao
+menos o checklist FAÇA/NÃO FAÇA acima e declare explicitamente que a review
+canônica não foi executada.
