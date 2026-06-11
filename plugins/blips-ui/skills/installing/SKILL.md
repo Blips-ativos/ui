@@ -1,6 +1,6 @@
 ---
 name: installing
-description: "Use quando um repositório React/Next.js for instalar, configurar ou adotar a @blips/ui pela primeira vez — pedidos como 'instala a lib da blips', 'configura o @blips/ui', 'adota o design system Blips', 'padroniza a UI desse projeto', setup de Tailwind/tema/fontes/ícones para a lib, ou preparação de CLAUDE.md/rules de UI num repo. Use também ao notar sintomas de adoção errada: import do barrel @blips/ui em React 18/19, tailwind.config.js sendo criado, tokens de tema copiados à mão, lucide-react instalado junto da lib, ou @source defensivo no CSS."
+description: "Use quando um repositório React/Next.js for instalar, configurar ou adotar a @blips/ui pela primeira vez — pedidos como 'instala a lib da blips', 'configura o @blips/ui', 'adota o design system Blips', 'padroniza a UI desse projeto', setup de Tailwind/tema/fontes/ícones para a lib, ou preparação do CLAUDE.md de UI num repo. Use também ao notar sintomas de adoção errada: import do barrel @blips/ui em React 18/19, tailwind.config.js sendo criado, tokens de tema copiados à mão, lucide-react instalado junto da lib, ou @source defensivo no CSS."
 ---
 
 # Adotando a @blips/ui em um repositório
@@ -14,7 +14,7 @@ decisão abaixo tem evidência — **siga o procedimento em vez de redescobrir**
 50k tokens por repo, e produz convenções divergentes entre repos).
 
 **Adoção completa = setup técnico + preparação do repo para agentes.** As duas
-coisas, sempre — um repo "adotado" sem CLAUDE.md/rules de UI vai derivar das
+coisas, sempre — um repo "adotado" sem a seção de UI no CLAUDE.md vai derivar das
 convenções na primeira tarefa de UI feita sem contexto.
 
 **Instalação é ADITIVA.** O que existe e funciona (outra lib de UI, design
@@ -32,7 +32,7 @@ aponte a skill certa.
 3. **Instalar e configurar** — seguindo a reference à risca
 4. **Aplicar num exemplo visível** — a tela/componente que o usuário pediu
 5. **Validar** — build + inspeção do CSS/HTML gerado (seção Validação)
-6. **Implantar padrões de agente** — `assets/` → CLAUDE.md + `.claude/rules/`
+6. **Implantar padrões de agente** — seção de UI no CLAUDE.md (templates) + ponteiros para as skills
 7. **Verificação final** — red flags zerados, relatório ao usuário
 
 ## Passo 1: Detectar a stack
@@ -126,7 +126,7 @@ apresentar custos reais e não estimativas.
 | Repo com design system interno (globals próprio) | Importe o globals da lib ANTES do globals interno — os tokens do app vencem o cascade (visual atual intacto) e os componentes da lib herdam o tema local. O duplo `@import "tailwindcss"` é dedupado pelo v4 (verificado) |
 | App com tema próprio sem tokens de fonte | O globals da lib define `--font-sans: Inter` e carrega as fontes Google — telas existentes mudam de fonte. Sinalize o efeito ao usuário; NÃO "resolva" copiando/neutralizando tokens |
 | `moduleResolution: "node"` no tsconfig | Não resolve subpath exports → migre para `"bundler"` (padrão Next 15+; mudança mínima, valide com tsc). Detalhe na reference do Next |
-| `lucide-react` JÁ usado pelo legado | Mantenha (remover quebra o app). Ban do Biome `noRestrictedImports` SÓ em repo sem lucide legado — senão quebra o lint inteiro. Rule de ícones: Phosphor obrigatório em código novo |
+| `lucide-react` JÁ usado pelo legado | Mantenha (remover quebra o app). Ban do Biome `noRestrictedImports` SÓ em repo sem lucide legado — senão quebra o lint inteiro. Na seção do CLAUDE.md: Phosphor obrigatório em código novo |
 
 ## Validação (obrigatória antes de reportar sucesso)
 
@@ -145,6 +145,13 @@ Os caminhos exatos por stack estão nas references.
 
 ## Passo 6: Padrões de agente (parte obrigatória da adoção)
 
+**Este repo NÃO recebe rules de UI.** Decisão de arquitetura: os critérios
+canônicos vivem nas references da skill **blips-ui:reviewing** (fonte única,
+versionada com o plugin — sem cópias para driftar; a lição do vendoring do
+shadcn). Se o usuário pedir "crie as rules", explique o modelo e aplique o
+abaixo. Rules pré-existentes do time (`component-construction.md`,
+`page-structure.md`) não são suas: não crie, não edite, não remova.
+
 1. **CLAUDE.md**: escolha o template em `assets/claude-md/` pelo arquétipo do
    repo (são templates fechados — não redija a seção do zero):
 
@@ -154,31 +161,21 @@ Os caminhos exatos por stack estão nas references.
    | App único Next.js | `single-next.md` | `CLAUDE.md` da raiz |
    | Monorepo | `monorepo-app.md` **+** `monorepo-root.md` | seção completa no `apps/<app>/CLAUDE.md` (crie se não existir, no formato do time: "leia a raiz primeiro") + bullet de ponteiro na seção de stack do `CLAUDE.md` da raiz |
 
-   Os templates são delimitados por `<!-- blips-ui:claude-md:start/end -->` —
-   em re-execução, **atualize o conteúdo entre os marcadores** em vez de
-   duplicar a seção. **Nunca apague nem reescreva conteúdo fora dos
-   marcadores** — preserve todas as seções existentes. Sem CLAUDE.md? Crie um
-   só com a seção do template.
-
-   Duas exceções obrigatórias à regra dos marcadores:
-   - **Reconciliação**: se uma linha EXISTENTE do CLAUDE.md contradiz
-     frontalmente a adoção (ex.: manda subpath num repo React 17, ou padroniza
-     lucide), edite SÓ essa linha para a versão correta — deixar a contradição
-     instruiria agentes a quebrar o build.
-   - **Verdade do repo**: o template não pode afirmar o que o repo não é. Na
-     rota de coexistência Tailwind v3, substitua os bullets de "v4 CSS-first"
-     pela realidade do repo (a reference de Tailwind v3 dá o texto).
-2. **Rules**: copie `assets/rules/*.md` para `.claude/rules/` **na raiz do
-   repo** (monorepo incluso — convenção do time), ajustando os blocos de
-   adaptação à stack. Em monorepos, prefixe os globs de `paths` com o caminho
-   do app (ex.: page-structure → `"apps/web/app/**/*"`).
-   **`page-structure.md` só entra em repos Next.js App Router** (em SPA Vite,
-   não copie). `component-construction.md` entra sempre, verbatim — é o guia
-   consensual do time (idêntico em blips-flow, blips-frontend e blips-atlas).
-3. Ajuste os exemplos das rules à regra de imports do repo (React 17 → barrel,
-   variante já indicada no template single-vite).
-4. Se o repo JÁ tem alguma dessas rules (ex.: `component-construction.md`),
-   não a sobrescreva — só adicione as que faltam.
+2. **Marcadores versionados**: o marcador de abertura leva a versão do plugin
+   — `<!-- blips-ui:claude-md:start vX.Y.Z -->` (leia a versão no
+   `.claude-plugin/plugin.json` que acompanha o plugin instalado; sem acesso,
+   use a data ISO). Em **re-execução**: localize os marcadores; miolo intacto
+   → substitua pelo template novo; miolo editado à mão → apresente o diff e
+   reconcilie com o usuário — **nunca sobrescreva calado**.
+3. **Fora dos marcadores, não toque** — com duas exceções obrigatórias:
+   - **Reconciliação**: linha existente que contradiz frontalmente a adoção
+     (ex.: manda subpath num repo React 17, padroniza lucide) — edite SÓ essa
+     linha; deixá-la instruiria agentes a quebrar o build.
+   - **Verdade do repo**: o template não pode afirmar o que o repo não é (ex.:
+     rota de coexistência Tailwind v3 → substitua os bullets de Tailwind pela
+     realidade, ver `references/tailwind-v3-preexistente.md`).
+4. Ajuste os exemplos da seção à regra de imports do repo (React 17 → barrel,
+   variante indicada no template single-vite).
 
 Depois da adoção, a construção de telas/componentes é guiada pela skill
 **blips-ui:building** (referência completa de componentes) — aponte isso ao usuário.

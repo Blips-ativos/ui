@@ -6,23 +6,21 @@ Adapte: o caminho do CSS global se não for app/globals.css.
 Rota de coexistência Tailwind v3 (ver references/tailwind-v3-preexistente.md):
 substitua os bullets de Tailwind v4 pela realidade do repo — o template não
 pode afirmar o que o repo não é.
+Preencha vX.Y.Z no marcador com a versão do plugin blips-ui.
 -->
 
-<!-- blips-ui:claude-md:start -->
+<!-- blips-ui:claude-md:start vX.Y.Z -->
 ## UI — @blips/ui
 
 A interface usa a biblioteca de componentes da Blips (`@blips/ui` — shadcn/ui
-+ Radix + Tailwind v4). Regras detalhadas em `.claude/rules/` — leia a rule do
-tema antes de mexer em UI:
++ Radix + Tailwind v4).
 
-| Tema | Rule |
-| --- | --- |
-| Construção de componentes (guia do time) | `.claude/rules/component-construction.md` |
-| Imports de componentes | `.claude/rules/component-imports.md` |
-| Ícones (Phosphor) | `.claude/rules/icon-usage.md` |
-| Formulários (RHF + Zod) | `.claude/rules/form-construction.md` |
-| Tailwind v4 / tema | `.claude/rules/tailwind-styling.md` |
-| Estrutura de páginas (App Router) | `.claude/rules/page-structure.md` |
+Com o plugin **blips-ui** instalado, o ciclo de UI é guiado por skills (os
+padrões canônicos vivem nelas — este repo NÃO usa rules de UI):
+
+- Construção de telas/componentes: skill `blips-ui:building`.
+- Validação antes de declarar pronto: skill `blips-ui:reviewing` (critérios
+  de construção, estados, acessibilidade e formatação).
 
 Essencial:
 

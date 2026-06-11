@@ -8,7 +8,7 @@ Não crie uma seção nova na raiz só para isso.
 
 <!-- blips-ui:claude-md-root:start -->
 - **UI** (`apps/web`): `@blips/ui` (design system Blips — shadcn/Radix +
-  Tailwind v4). Convenções completas em `apps/web/CLAUDE.md` (seção
-  "UI — @blips/ui") e nas rules de UI em `.claude/rules/` (globs escopados ao
-  app). Docs: https://blips-ui.web.app
+  Tailwind v4). Convenções em `apps/web/CLAUDE.md` (seção "UI — @blips/ui");
+  padrões canônicos nas skills `blips-ui:building`/`blips-ui:reviewing`.
+  Docs: https://blips-ui.web.app
 <!-- blips-ui:claude-md-root:end -->

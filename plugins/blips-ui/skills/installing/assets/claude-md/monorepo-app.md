@@ -6,30 +6,24 @@ específico deste app"). Par com monorepo-root.md (ponteiro na raiz).
 Premissa: app Next.js App Router (todos os web apps dos monorepos Blips hoje).
 Para um app Vite em monorepo, use o bloco de infra do single-vite.md.
 Adapte: `web` no --filter e os caminhos ao app real.
-ATENÇÃO: as rules ficam em .claude/rules/ NA RAIZ do repo (convenção do time),
-com os globs de `paths` prefixados pelo app (ex.: page-structure →
-"apps/web/app/**/*").
 Rota de coexistência Tailwind v3 (ver references/tailwind-v3-preexistente.md):
 substitua os bullets de Tailwind v4 pela realidade do repo — o template não
 pode afirmar o que o repo não é.
+Preencha vX.Y.Z no marcador com a versão do plugin blips-ui.
 -->
 
-<!-- blips-ui:claude-md:start -->
+<!-- blips-ui:claude-md:start vX.Y.Z -->
 ## UI — @blips/ui
 
-A interface deste app usa a biblioteca de componentes da Blips (`@blips/ui` —
-shadcn/ui + Radix + Tailwind v4). Regras detalhadas nas rules de UI em
-`.claude/rules/` (raiz do repo, globs escopados a este app) — leia a rule do
-tema antes de mexer em UI:
+A interface usa a biblioteca de componentes da Blips (`@blips/ui` — shadcn/ui
++ Radix + Tailwind v4).
 
-| Tema | Rule (na raiz do repo) |
-| --- | --- |
-| Construção de componentes (guia do time) | `.claude/rules/component-construction.md` |
-| Imports de componentes | `.claude/rules/component-imports.md` |
-| Ícones (Phosphor) | `.claude/rules/icon-usage.md` |
-| Formulários (RHF + Zod) | `.claude/rules/form-construction.md` |
-| Tailwind v4 / tema | `.claude/rules/tailwind-styling.md` |
-| Estrutura de páginas (App Router) | `.claude/rules/page-structure.md` |
+Com o plugin **blips-ui** instalado, o ciclo de UI é guiado por skills (os
+padrões canônicos vivem nelas — este repo NÃO usa rules de UI):
+
+- Construção de telas/componentes: skill `blips-ui:building`.
+- Validação antes de declarar pronto: skill `blips-ui:reviewing` (critérios
+  de construção, estados, acessibilidade e formatação).
 
 Essencial:
 

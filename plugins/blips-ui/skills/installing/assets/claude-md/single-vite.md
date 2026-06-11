@@ -7,22 +7,21 @@ Adapte: o caminho do CSS de entrada se não for src/index.css; em repos React
 Rota de coexistência Tailwind v3 (ver references/tailwind-v3-preexistente.md):
 substitua os bullets de Tailwind v4 pela realidade do repo — o template não
 pode afirmar o que o repo não é.
+Preencha vX.Y.Z no marcador com a versão do plugin blips-ui.
 -->
 
-<!-- blips-ui:claude-md:start -->
+<!-- blips-ui:claude-md:start vX.Y.Z -->
 ## UI — @blips/ui
 
 A interface usa a biblioteca de componentes da Blips (`@blips/ui` — shadcn/ui
-+ Radix + Tailwind v4). Regras detalhadas em `.claude/rules/` — leia a rule do
-tema antes de mexer em UI:
++ Radix + Tailwind v4).
 
-| Tema | Rule |
-| --- | --- |
-| Construção de componentes (guia do time) | `.claude/rules/component-construction.md` |
-| Imports de componentes | `.claude/rules/component-imports.md` |
-| Ícones (Phosphor) | `.claude/rules/icon-usage.md` |
-| Formulários (RHF + Zod) | `.claude/rules/form-construction.md` |
-| Tailwind v4 / tema | `.claude/rules/tailwind-styling.md` |
+Com o plugin **blips-ui** instalado, o ciclo de UI é guiado por skills (os
+padrões canônicos vivem nelas — este repo NÃO usa rules de UI):
+
+- Construção de telas/componentes: skill `blips-ui:building`.
+- Validação antes de declarar pronto: skill `blips-ui:reviewing` (critérios
+  de construção, estados, acessibilidade e formatação).
 
 Essencial:
 
@@ -30,7 +29,7 @@ Essencial:
   (subpath por componente; nunca o barrel `@blips/ui`).
   <!-- React 17: troque a linha acima por:
   - Componentes: `import { Button } from "@blips/ui"` (barrel — obrigatório
-    em React 17; ver `.claude/rules/component-imports.md`). -->
+    em React 17: subpath falha o typecheck contra @types/react@17). -->
 - Ícones: `@phosphor-icons/react`, weight padrão (`regular`). Nunca
   `lucide-react`.
 - Tailwind v4 é CSS-first: tema único via `@import "@blips/ui/globals.css"`.

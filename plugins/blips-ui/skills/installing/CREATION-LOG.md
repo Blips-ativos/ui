@@ -110,3 +110,18 @@ corretas para o contexto, decididas sem o usuário. REFACTOR aplicado:
 - `assets/rules/icon-usage.md`: ban Biome condicionado à ausência de lucide
   legado.
 - Templates de CLAUDE.md: nota da variante de coexistência v3.
+
+### 2026-06-10 — Pivô zero-rules (review em vez de vendoring)
+
+Decisão: o repo adotante NÃO recebe mais rules de UI — os padrões canônicos
+passam a viver nas references da skill `blips-ui:reviewing` (fonte única,
+versionada com o plugin), aplicados por review pós-construção com handoff
+obrigatório no fim da `building`. Racional: pesquisa de vendoring (shadcn — 8
+anos de issues sem base registrada) + bug nativo das rules por path (não
+carregam no Write, issue #23478) + carregamento sempre-presente do CLAUDE.md.
+Mudanças: Passo 6 reescrito (só CLAUDE.md, marcadores VERSIONADOS
+`blips-ui:claude-md:start vX.Y.Z`, reconciliação por diff em re-run);
+`assets/rules/` removido (conteúdo virou references da reviewing); templates
+com bloco de ponteiros building/reviewing no lugar da tabela de rules; Rota B
+do tailwind-v3 adapta a seção do CLAUDE.md; evals 1/3 reescritos (inclui o
+teste "usuário pede rules → explica o modelo e não cria").

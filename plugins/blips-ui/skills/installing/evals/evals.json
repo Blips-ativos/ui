@@ -23,7 +23,7 @@
       "id": 1,
       "eval_name": "next-existing-claude-md",
       "prompt": "Vamos adotar a biblioteca @blips/ui (está no npm) neste app da central de ajuda. Faça o setup completo da lib e, além do técnico, prepare o repositório para agentes de código: atualize o CLAUDE.md e crie as rules em .claude/ para que qualquer agente siga os padrões de UI da Blips aqui (imports, ícones, formulários, tailwind). Cuidado para não perder o que já está documentado no CLAUDE.md. Use o Button da lib na página inicial como exemplo e valide com o build.",
-      "expected_output": "App Next.js com @blips/ui configurada (transpilePackages, Tailwind v4 via PostCSS, globals importado no layout), CLAUDE.md mesclado preservando todo o conteúdo existente + seção de UI Blips, .claude/rules/ com os padrões (imports por subpath, Phosphor, forms RHF+Zod, Tailwind v4 CSS-first), Button na home, build verde.",
+      "expected_output": "App Next.js com @blips/ui configurada (transpilePackages, Tailwind v4 via PostCSS, globals importado no layout), CLAUDE.md mesclado preservando todo o conteúdo existente + seção de UI entre marcadores versionados com ponteiros para blips-ui:building/reviewing; NENHUMA rule criada (modelo zero-rules explicado, já que o pedido menciona rules); Button na home; build verde.",
       "files": [
         "fixtures/fixture-next"
       ],
@@ -33,7 +33,7 @@
         "Tailwind v4 via @tailwindcss/postcss em postcss config e NENHUM tailwind.config.{js,ts} foi criado (v4 é CSS-first)",
         "Existe um CSS global importado no app/layout.tsx que importa @blips/ui/globals.css (fonte única de tema/tokens)",
         "CLAUDE.md preserva integralmente o conteúdo original (visão geral, comandos, convenções, fluxo de trabalho) e ganha seção sobre UI com @blips/ui",
-        ".claude/rules/ (ou equivalente em .claude/) criadas cobrindo: imports por subpath, ícones Phosphor (sem lucide-react), formulários e Tailwind v4 CSS-first",
+        "NENHUM arquivo criado em .claude/rules/ mesmo com o pedido mencionando 'rules' — a seção do CLAUDE.md (entre marcadores blips-ui:claude-md versionados) aponta para as skills blips-ui:building e blips-ui:reviewing, e o relatório explica o modelo zero-rules",
         "A página inicial usa Button importado por subpath @blips/ui/components/button",
         "pnpm build passa (re-executável pelo grader no diretório do projeto)"
       ]
@@ -59,7 +59,7 @@
       "id": 3,
       "eval_name": "monorepo-next-adoption",
       "prompt": "Adote a @blips/ui no monorepo da central de notificações (o app web fica em apps/web). Faça o setup completo no lugar certo do workspace, use o Button da lib na página inicial do web e prepare o repositório para agentes de código seguindo as convenções da Blips (CLAUDE.md e rules de UI). Valide com o build.",
-      "expected_output": "Monorepo pnpm: @blips/ui instalada no apps/web (não na raiz), transpilePackages/postcss/globals no app, CLAUDE.md da raiz ganha só o bullet de ponteiro (template monorepo-root) e apps/web/CLAUDE.md a seção completa (template monorepo-app), rules na raiz com globs prefixados (apps/web/...), Button por subpath na home, build verde via --filter.",
+      "expected_output": "Monorepo pnpm: @blips/ui instalada no apps/web (não na raiz), transpilePackages/postcss/globals no app, CLAUDE.md da raiz ganha só o bullet de ponteiro (template monorepo-root) e apps/web/CLAUDE.md a seção completa (template monorepo-app), NENHUMA rule criada (padrões vivem nas skills building/reviewing, ponteiros na seção), Button por subpath na home, build verde via --filter.",
       "files": [
         "fixtures/fixture-monorepo"
       ],
@@ -70,7 +70,7 @@
         "CSS global do app importa @blips/ui/globals.css e está importado no apps/web/app/layout.tsx",
         "CLAUDE.md da RAIZ: conteúdo original preservado (Stack, Comandos, Convenções, Fluxo) + ponteiro curto para a UI do app — SEM a seção completa de UI na raiz",
         "apps/web/CLAUDE.md: conteúdo original preservado (Layout, Comandos, Convenções do app) + seção completa 'UI — @blips/ui'",
-        "Rules de UI em .claude/rules/ NA RAIZ do repo, incluindo page-structure.md com glob de paths prefixado pelo app (apps/web/...)",
+        "NENHUM arquivo criado em .claude/rules/ — a seção do apps/web/CLAUDE.md (marcadores versionados) aponta para blips-ui:building e blips-ui:reviewing",
         "Página inicial do web usa Button importado por subpath @blips/ui/components/button",
         "pnpm build na raiz do workspace passa (delegando ao app)"
       ]

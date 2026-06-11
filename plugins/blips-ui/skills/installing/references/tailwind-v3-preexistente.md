@@ -63,8 +63,8 @@ de telas fora de questão, tema do app já usa os mesmos nomes de token.
    (`shadow-xs`, `outline-hidden`, modificadores `/90`) não são geradas —
    degradação apenas cosmética. Verifique o render dos componentes usados.
 5. Adapte os artefatos de agente para a VERDADE do repo (o template canônico
-   afirmaria v4 CSS-first — falso aqui): na seção do CLAUDE.md e na rule
-   `tailwind-styling.md`, troque os bullets de Tailwind por: pipeline v3
+   afirmaria v4 CSS-first — falso aqui): na seção de UI do CLAUDE.md, troque
+   os bullets de Tailwind por: pipeline v3
    mantido, lib estilizada via content scan, tokens resolvem para o tema do
    app, e **proibições** — não importar o globals da lib, não criar pipeline
    v4 paralelo, não "consertar" o setup de passagem. Registre o caminho de
