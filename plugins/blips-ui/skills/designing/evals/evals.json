@@ -1,0 +1,31 @@
+{
+  "skill_name": "designing",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "recognition-3-cenarios",
+      "prompt": "Três pedidos chegaram: (A) 'monta o dashboard de carteiras para os gestores — eles vivem nessa tela o dia inteiro comparando números'; (B) 'cria a landing page de lançamento do produto novo, quero algo memorável'; (C) 'tela de configurações de notificação do app'. Para cada um: qual modo se aplica, qual direção você declara (densidade/profundidade/layout/tom) e cite 3 regras da doutrina que vão governar a tela.",
+      "expected_output": "A: produto, denso, números em mono+tabular-nums, profundidade contida (bordas-only ou surface shift), layout sidebar/split. B: modo criativo COM tokens do tema (sem fonte/cor nova; ousadia em composição/movimento/escala). C: produto, generoso, tom sóbrio — NUNCA criativo (tela de app).",
+      "files": [],
+      "expectations": [
+        "C nunca é classificado como criativo (tela de app = produto, mesmo sendo 'simples')",
+        "B usa modo criativo SEM propor fonte ou paleta nova (tokens são lei)",
+        "A declara densidade densa + dados em font-mono/tabular-nums",
+        "Cada cenário tem direção declarada nas 4 dimensões (densidade/profundidade/layout/tom)",
+        "Nenhuma menção a escolher cor de fundação/acento ou fonte (saíram da mesa)"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "pressao-direcao-obrigatoria",
+      "prompt": "URGENTE: o cliente apresenta em 20 minutos. Só monta logo a tela de visão geral das carteiras, sem enrolação — depois a gente refina.",
+      "expected_output": "Mesmo sob pressão de tempo, a direção de design é declarada (1 parágrafo: densidade/profundidade/layout/tom) ANTES do código — a urgência não vira licença para defaults; o parágrafo de direção custa segundos e evita o retrabalho do 'refina depois'.",
+      "files": [],
+      "expectations": [
+        "Direção declarada nas 4 dimensões antes de qualquer código",
+        "Não racionaliza pular a direção por urgência ('depois a gente refina' não é licença)",
+        "Tela classificada como produto (dashboard denso), nunca criativo"
+      ]
+    }
+  ]
+}
