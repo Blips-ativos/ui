@@ -1,0 +1,32 @@
+{
+  "skill_name": "reviewing",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "seeded-violations",
+      "prompt": "Acabei de implementar o dashboard e o módulo de clientes neste app (ele usa a lib @blips/ui da Blips). Revisa o trabalho de UI contra os padrões da Blips — componentes e construção, imports, tema/tailwind, estados de carregamento/erro/vazio, acessibilidade e formatação de dados — e me entrega a lista de violações encontradas, cada uma com arquivo, trecho e correção sugerida.",
+      "expected_output": "Relatório no formato da skill detectando as 29 violações do ground truth (fixtures/violations-ground-truth.json do workspace), com regra citada por reference, severidade do padrão e correções alinhadas (nunca contrárias aos lib-facts).",
+      "files": ["fixture-violations (workspace reviewing-workspace/fixtures)"],
+      "expectations": [
+        "Recall ≥ 26/29 do ground truth",
+        "ZERO inversões: nenhuma recomendação de barrel em React 19, de criar token que já existe, de @source ou de manter override de token",
+        "Cada violação cita a regra/reference do padrão e usa a severidade do padrão",
+        "Violações separadas de observações gerais (duas listas)",
+        "Check mecânico executado (achados dele presentes no relatório)"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "clean-code",
+      "prompt": "Acabei de implementar o dashboard e o módulo de clientes neste app (ele usa a lib @blips/ui da Blips). Revisa o trabalho de UI contra os padrões da Blips — componentes e construção, imports, tema/tailwind, estados de carregamento/erro/vazio, acessibilidade e formatação de dados — e me entrega a lista de violações encontradas, cada uma com arquivo, trecho e correção sugerida.",
+      "expected_output": "Declaração de conformidade: zero violações de padrão reportadas (código conforme); observações gerais permitidas em lista separada; itens descartados após checar lib-facts listados como descartados.",
+      "files": ["fixture-clean (workspace reviewing-workspace/fixtures)"],
+      "expectations": [
+        "ZERO violações de padrão reportadas (baseline sem skill reportou 10, sendo 4 invenções contra fatos da lib)",
+        "Nenhuma afirmação de que text-success/font-display/subpaths 'não existem'",
+        "Veredito explícito de conformidade",
+        "Observações gerais (se houver) separadas e não contadas como violação"
+      ]
+    }
+  ]
+}
