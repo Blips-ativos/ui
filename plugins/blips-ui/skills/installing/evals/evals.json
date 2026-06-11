@@ -1,0 +1,79 @@
+{
+  "skill_name": "installing",
+  "evals": [
+    {
+      "id": 0,
+      "eval_name": "vite-fresh-adoption",
+      "prompt": "a gente vai padronizar a UI dos projetos da empresa com a lib de componentes da blips — o pacote é @blips/ui no npm. instala e configura ela nesse projeto vite (estilos, tema, fontes, ícones, o que precisar) e troca o botão e o card da tela inicial pelos componentes da lib pra eu ver funcionando. no final roda o build e garante que tá passando",
+      "expected_output": "App Vite com @blips/ui instalada e funcionando: Tailwind v4 configurado (plugin @tailwindcss/vite ou PostCSS), CSS de entrada importando @blips/ui/globals.css, tela inicial usando Button/Card importados por subpath (@blips/ui/components/*), ícones Phosphor, build verde.",
+      "files": [
+        "fixtures/fixture-vite"
+      ],
+      "expectations": [
+        "@blips/ui está em dependencies do package.json e no lockfile (instalação real)",
+        "Tailwind v4 integrado pela rota do bundler (@tailwindcss/vite no vite.config OU @tailwindcss/postcss em postcss.config) e NENHUM tailwind.config.{js,ts} foi criado (v4 é CSS-first)",
+        "O CSS de entrada do app importa @blips/ui/globals.css (fonte única de tema/tokens) em vez de copiar tokens/tema manualmente",
+        "Componentes importados por subpath @blips/ui/components/<nome> (não pelo barrel @blips/ui)",
+        "A tela inicial usa Button e Card da lib no lugar do button/card HTML originais",
+        "Ícones, se usados, vêm de @phosphor-icons/react; lucide-react NÃO está nas dependências",
+        "pnpm build passa (re-executável pelo grader no diretório do projeto)"
+      ]
+    },
+    {
+      "id": 1,
+      "eval_name": "next-existing-claude-md",
+      "prompt": "Vamos adotar a biblioteca @blips/ui (está no npm) neste app da central de ajuda. Faça o setup completo da lib e, além do técnico, prepare o repositório para agentes de código: atualize o CLAUDE.md e crie as rules em .claude/ para que qualquer agente siga os padrões de UI da Blips aqui (imports, ícones, formulários, tailwind). Cuidado para não perder o que já está documentado no CLAUDE.md. Use o Button da lib na página inicial como exemplo e valide com o build.",
+      "expected_output": "App Next.js com @blips/ui configurada (transpilePackages, Tailwind v4 via PostCSS, globals importado no layout), CLAUDE.md mesclado preservando todo o conteúdo existente + seção de UI entre marcadores versionados com ponteiros para blips-ui:building/reviewing; NENHUMA rule criada (modelo zero-rules explicado, já que o pedido menciona rules); Button na home; build verde.",
+      "files": [
+        "fixtures/fixture-next"
+      ],
+      "expectations": [
+        "@blips/ui está em dependencies do package.json e no lockfile (instalação real)",
+        "next.config contém transpilePackages incluindo '@blips/ui' (os exports de componentes apontam para source .tsx)",
+        "Tailwind v4 via @tailwindcss/postcss em postcss config e NENHUM tailwind.config.{js,ts} foi criado (v4 é CSS-first)",
+        "Existe um CSS global importado no app/layout.tsx que importa @blips/ui/globals.css (fonte única de tema/tokens)",
+        "CLAUDE.md preserva integralmente o conteúdo original (visão geral, comandos, convenções, fluxo de trabalho) e ganha seção sobre UI com @blips/ui",
+        "NENHUM arquivo criado em .claude/rules/ mesmo com o pedido mencionando 'rules' — a seção do CLAUDE.md (entre marcadores blips-ui:claude-md versionados) aponta para as skills blips-ui:building e blips-ui:reviewing, e o relatório explica o modelo zero-rules",
+        "A página inicial usa Button importado por subpath @blips/ui/components/button",
+        "pnpm build passa (re-executável pelo grader no diretório do projeto)"
+      ]
+    },
+    {
+      "id": 2,
+      "eval_name": "vite-react17-legacy",
+      "prompt": "esse portal é legado e ainda roda react 17, mas o time quer começar a usar a @blips/ui aqui desde já. configura a lib nesse repo do jeito certo e me mostra um exemplo simples renderizando (um Button e um Alert da lib na tela de pendências). o build precisa continuar passando",
+      "expected_output": "App Vite com React 17 mantido (peer range ^17 da lib atendida, sem upgrade forçado de React), @blips/ui + Tailwind v4 configurados, Button e Alert renderizando na tela, build verde.",
+      "files": [
+        "fixtures/fixture-vite-react17"
+      ],
+      "expectations": [
+        "@blips/ui está em dependencies do package.json e no lockfile (instalação real)",
+        "React permanece na linha 17.x em dependencies (a peer range da lib aceita ^17 — não houve upgrade forçado de React)",
+        "Tailwind v4 integrado pela rota do bundler (@tailwindcss/vite OU @tailwindcss/postcss) e NENHUM tailwind.config.{js,ts} foi criado",
+        "O CSS de entrada do app importa @blips/ui/globals.css (fonte única de tema/tokens)",
+        "A tela de pendências renderiza Button e Alert importados pela rota correta para React 17: o barrel @blips/ui (subpath falha o tsc contra @types/react@17 — verificado)",
+        "pnpm build passa (re-executável pelo grader no diretório do projeto)"
+      ]
+    },
+    {
+      "id": 3,
+      "eval_name": "monorepo-next-adoption",
+      "prompt": "Adote a @blips/ui no monorepo da central de notificações (o app web fica em apps/web). Faça o setup completo no lugar certo do workspace, use o Button da lib na página inicial do web e prepare o repositório para agentes de código seguindo as convenções da Blips (CLAUDE.md e rules de UI). Valide com o build.",
+      "expected_output": "Monorepo pnpm: @blips/ui instalada no apps/web (não na raiz), transpilePackages/postcss/globals no app, CLAUDE.md da raiz ganha só o bullet de ponteiro (template monorepo-root) e apps/web/CLAUDE.md a seção completa (template monorepo-app), NENHUMA rule criada (padrões vivem nas skills building/reviewing, ponteiros na seção), Button por subpath na home, build verde via --filter.",
+      "files": [
+        "fixtures/fixture-monorepo"
+      ],
+      "expectations": [
+        "@blips/ui está em dependencies do apps/web/package.json (não do package.json da raiz) e no pnpm-lock.yaml do workspace",
+        "apps/web/next.config contém transpilePackages incluindo '@blips/ui'",
+        "Tailwind v4 via @tailwindcss/postcss em postcss config do app; NENHUM tailwind.config.{js,ts} criado (nem na raiz nem no app)",
+        "CSS global do app importa @blips/ui/globals.css e está importado no apps/web/app/layout.tsx",
+        "CLAUDE.md da RAIZ: conteúdo original preservado (Stack, Comandos, Convenções, Fluxo) + ponteiro curto para a UI do app — SEM a seção completa de UI na raiz",
+        "apps/web/CLAUDE.md: conteúdo original preservado (Layout, Comandos, Convenções do app) + seção completa 'UI — @blips/ui'",
+        "NENHUM arquivo criado em .claude/rules/ — a seção do apps/web/CLAUDE.md (marcadores versionados) aponta para blips-ui:building e blips-ui:reviewing",
+        "Página inicial do web usa Button importado por subpath @blips/ui/components/button",
+        "pnpm build na raiz do workspace passa (delegando ao app)"
+      ]
+    }
+  ]
+}
