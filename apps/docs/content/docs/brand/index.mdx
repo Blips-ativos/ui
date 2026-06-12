@@ -1,0 +1,53 @@
+---
+title: Marca
+description: Logos, símbolo, cores e diretrizes da marca Blips, com download dos arquivos oficiais.
+---
+
+A identidade da Blips gira em torno do **b-mark** e do amarelo `#FCBA28`. Use os
+ativos oficiais abaixo — não redesenhe nem recolora o símbolo.
+
+## Logo
+
+O componente `<Logo/>` (do pacote `@blips/brand`) renderiza a marca em SVG
+inline, vetorial e recolorível. Três variantes:
+
+<ComponentPreview name="logo-full" />
+
+A variante `mark` herda a cor via `currentColor` — combine com utilitárias de
+texto do tema:
+
+<ComponentPreview name="logo-recolor" />
+
+<ComponentPreview name="logo-mark" />
+
+<ComponentPreview name="logo-mark-circle" />
+
+### API
+
+| Prop | Valores | Padrão |
+| --- | --- | --- |
+| `variant` | `full` · `mark` · `mark-circle` | `full` |
+| `title` | texto do `aria-label` (use `aria-hidden` se decorativo) | `"Blips"` |
+| ...`svg` | todas as props de `<svg>` (`className`, `width`, etc.) | — |
+
+No `full`, o círculo e o "b" são fixos (amarelo + branco) e o wordmark usa
+`currentColor`, então o texto adapta a light/dark sozinho.
+
+## Cores
+
+<ColorTokens />
+
+## Downloads
+
+<BrandAssets />
+
+## Diretrizes de uso
+
+- **Clear-space:** mantenha uma margem livre ao redor do logo de pelo menos a
+  altura do "b".
+- **Fundos:** logo de texto preto sobre fundos claros, texto branco sobre fundos
+  escuros; o círculo amarelo + b branco funcionam em ambos.
+- **Contraste:** garanta contraste suficiente entre o símbolo e o fundo.
+- **Não faça:** distorcer/esticar, recolorir o círculo amarelo, rotacionar,
+  aplicar sombras/efeitos, ou reconstruir o "b" à mão — use o `<Logo/>` ou os
+  arquivos oficiais.

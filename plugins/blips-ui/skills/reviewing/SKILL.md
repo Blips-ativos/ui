@@ -72,6 +72,15 @@ O `scripts/check.mjs` cobre o subconjunto **auto-verificável** dessas dimensõe
 (imports, ícones, tailwind, formatação, a11y, anti-slop, tipografia, motion,
 construção). O revisor de julgamento cobre o resto.
 
+### Dois modos de review
+
+- **Conformidade** (default): "segue os padrões?" — as dimensões acima, gate
+  bloqueante/aviso. É o que roda em PR/finalização de UI.
+- **Crítica** (`references/critique.md`): "é *bem desenhado*?" — qualidade
+  scored em 5 dimensões (Coerência/Hierarquia/Execução/Funcionalidade/
+  Restrição-ou-Distinção, 0-10 com evidência). Invocado pelo **loop da
+  blips-ui:designing** após a building entregar. Inteiramente julgamento.
+
 ## Formato do relatório (use exatamente este)
 
 ```

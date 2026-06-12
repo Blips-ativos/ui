@@ -17,16 +17,18 @@ const NAV_ITEMS = [
     match: "/docs/components",
   },
   { label: "Skills", href: "/docs/skills", match: "/docs/skills" },
+  { label: "Marca", href: "/docs/brand", match: "/docs/brand" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
   const { setOpenSearch } = useSearchContext();
   const pathname = usePathname();
 
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 h-(--header-height) border-b backdrop-blur">
       <div className="flex h-full items-center gap-2 px-4 lg:px-6">
-        <SidebarTrigger className="lg:hidden" />
+        {/* gatilho da sidebar só existe quando há SidebarProvider (docs) */}
+        {hasSidebar ? <SidebarTrigger className="lg:hidden" /> : null}
         <Link href="/" className="flex items-center" aria-label="Blips">
           <Image
             src="/blips-logo.png"

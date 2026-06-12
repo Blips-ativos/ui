@@ -82,3 +82,14 @@ LIÇÃO (verify adversarial pegou): autores marcavam regras como
 mina o núcleo "verificável" da skill. Fix-up alinhou cada marcação ao contrato
 real (princípio: literal alta-precisão = bloqueante; heurístico/verify = aviso;
 o resto = julgamento). SKILL.md agora lista as 9 references.
+
+## 2026-06-11 — modo CRÍTICA (qualidade), além da conformidade
+
+Nova `references/critique.md`: crítica scored em 5 dimensões (Coerência/
+Hierarquia/Execução/Funcionalidade/Restrição-ou-Distinção, 0-10 com evidência),
+adaptada do open-design (design-templates/critique + discovery.ts). É o gate de
+QUALIDADE ("é bem desenhado?"), distinto do gate de CONFORMIDADE ("segue as
+regras?"). Inteiramente julgamento (não é check.mjs). Bandas mapeadas ao nosso
+vocabulário: 0-4 bloqueante, 5-6 aviso, 7-10 ok. Invocado pelo loop da
+blips-ui:designing após a building entregar (nunca auto-crítica no mesmo turno).
+SKILL.md ganhou a seção "Dois modos de review" (conformidade default × crítica).

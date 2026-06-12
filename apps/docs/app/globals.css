@@ -79,6 +79,11 @@
 
 /* ---- shadcn docs polish (ported) ---- */
 @layer base {
+  /* altura padrão do header — o SidebarProvider (docs) re-seta o mesmo valor;
+     aqui garante a altura na home, que não tem provider. */
+  :root {
+    --header-height: 3.5rem;
+  }
   ::selection {
     @apply bg-selection text-selection-foreground;
   }
@@ -184,5 +189,82 @@
     padding-block: 0.1rem;
     font-family: var(--font-mono);
     font-size: 0.8rem;
+  }
+}
+
+/* ---- landing "/" (Bold statement: load orquestrado seco + textura) ---- */
+@layer components {
+  /* Reveal por subida curta e seca — entrada de UI (≤300ms). Stagger via --d. */
+  @keyframes blips-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Reveal "carimbo" do macro-tipo: máscara que abre da esquerda. */
+  @keyframes blips-stamp {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  /* Marquee de telemetria: trilho com conteúdo duplicado desliza -50%. */
+  @keyframes blips-marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* delay do stagger vem por `style={{ animationDelay }}` inline (tipado). */
+  .landing-reveal {
+    animation: blips-rise 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .landing-stamp {
+    animation: blips-stamp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .landing-marquee-track {
+    display: flex;
+    width: max-content;
+    animation: blips-marquee 40s linear infinite;
+  }
+
+  /* pausa o marquee no hover/foco — controle de "stop" (WCAG 2.2.2) */
+  .landing-marquee:hover .landing-marquee-track,
+  .landing-marquee:focus-within .landing-marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Scanlines analógicas SOBRE os tokens — camada fixa, adapta light/dark. */
+  .landing-scanlines {
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent 0 2px,
+      color-mix(in oklab, var(--foreground) 4%, transparent) 2px 4px
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-reveal,
+  .landing-stamp {
+    animation: none;
+    opacity: 1;
+    clip-path: none;
+  }
+  .landing-marquee-track {
+    animation: none;
   }
 }

@@ -9,6 +9,8 @@ import { cn } from "@blips/ui/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { BrandAssets } from "@/components/brand/brand-assets";
+import { ColorTokens } from "@/components/brand/color-tokens";
 import { CodeBlockCommand } from "@/components/code-block-command";
 import { ComponentPreview } from "@/components/component-preview";
 import { CopyButton } from "@/components/copy-button";
@@ -334,7 +336,10 @@ export const mdxComponents = {
   Tabs: ({ className, ...props }: React.ComponentProps<typeof Tabs>) => (
     <Tabs className={cn("relative mt-6 w-full", className)} {...props} />
   ),
-  TabsList: ({ className, ...props }: React.ComponentProps<typeof TabsList>) => (
+  TabsList: ({
+    className,
+    ...props
+  }: React.ComponentProps<typeof TabsList>) => (
     <TabsList
       className={cn(
         "justify-start gap-4 rounded-none bg-transparent px-0",
@@ -375,4 +380,6 @@ export const mdxComponents = {
   ),
   ComponentPreview,
   Kbd,
+  ColorTokens,
+  BrandAssets,
 };
