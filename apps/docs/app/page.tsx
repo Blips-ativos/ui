@@ -42,8 +42,8 @@ export default function HomePage() {
             ))}
           </ul>
         </nav>
-        <span className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.18em] tabular-nums">
-          v2.0.1 · © Blips
+        <span className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.18em]">
+          © Blips
         </span>
       </footer>
     </div>

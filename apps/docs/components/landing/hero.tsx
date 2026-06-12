@@ -19,7 +19,7 @@ export function Hero() {
           {/* strike amarelo: o único acento do hero, além do CTA */}
           <span className="h-1 w-12 bg-primary" aria-hidden />
           <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.28em]">
-            Design System — v2.0.1
+            Design System
           </p>
         </div>
 
