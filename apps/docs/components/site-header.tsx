@@ -17,6 +17,7 @@ const NAV_ITEMS = [
     match: "/docs/components",
   },
   { label: "Skills", href: "/docs/skills", match: "/docs/skills" },
+  { label: "Marca", href: "/docs/brand", match: "/docs/brand" },
 ];
 
 export function SiteHeader() {
