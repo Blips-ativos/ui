@@ -34,7 +34,7 @@ export default function HomePage() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.18em] transition-colors hover:text-foreground"
+                  className="text-[11px] text-muted-foreground uppercase tracking-[0.18em] transition-colors hover:text-foreground"
                 >
                   {link.label}
                 </Link>
@@ -42,7 +42,7 @@ export default function HomePage() {
             ))}
           </ul>
         </nav>
-        <span className="font-mono text-[11px] text-muted-foreground/70 uppercase tracking-[0.18em]">
+        <span className="text-[11px] text-muted-foreground/70 uppercase tracking-[0.18em]">
           © Blips
         </span>
       </footer>

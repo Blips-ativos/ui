@@ -18,20 +18,20 @@ export function Hero() {
         >
           {/* strike amarelo: o único acento do hero, além do CTA */}
           <span className="h-1 w-12 bg-primary" aria-hidden />
-          <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-[0.28em]">
+          <p className="text-[11px] text-muted-foreground uppercase tracking-[0.28em]">
             Design System
           </p>
         </div>
 
         <h1
-          className="landing-stamp mt-6 font-display font-bold text-foreground text-[clamp(3.5rem,11vw,11rem)] uppercase leading-[0.9] tracking-tighter"
+          className="landing-stamp mt-6 font-bold text-foreground text-[clamp(3.5rem,11vw,11rem)] uppercase leading-[0.9] tracking-tighter"
           style={{ animationDelay: "80ms" }}
         >
           Blips UI
         </h1>
 
         <p
-          className="landing-reveal mt-6 max-w-xl font-mono text-muted-foreground text-xs uppercase tracking-[0.18em] sm:text-sm"
+          className="landing-reveal mt-6 max-w-xl text-muted-foreground text-xs uppercase tracking-[0.18em] sm:text-sm"
           style={{ animationDelay: "260ms" }}
         >
           Radix · Tailwind v4 · Acessível · 54 componentes
@@ -41,11 +41,7 @@ export function Hero() {
           className="landing-reveal mt-10"
           style={{ animationDelay: "360ms" }}
         >
-          <Button
-            asChild
-            size="lg"
-            className="rounded-none font-mono text-xs uppercase tracking-[0.18em]"
-          >
+          <Button asChild size="lg">
             <Link href="/docs">Explorar componentes →</Link>
           </Button>
         </div>

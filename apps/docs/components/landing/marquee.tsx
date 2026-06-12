@@ -61,7 +61,7 @@ function Row() {
       {COMPONENTS.map((name) => (
         <span
           key={name}
-          className="px-5 font-mono text-muted-foreground/70 text-xs uppercase tracking-[0.18em]"
+          className="px-5 text-muted-foreground/70 text-xs uppercase tracking-[0.18em]"
         >
           {name}
         </span>
