@@ -241,6 +241,12 @@
     animation: blips-marquee 40s linear infinite;
   }
 
+  /* pausa o marquee no hover/foco — controle de "stop" (WCAG 2.2.2) */
+  .landing-marquee:hover .landing-marquee-track,
+  .landing-marquee:focus-within .landing-marquee-track {
+    animation-play-state: paused;
+  }
+
   /* Scanlines analógicas SOBRE os tokens — camada fixa, adapta light/dark. */
   .landing-scanlines {
     background-image: repeating-linear-gradient(

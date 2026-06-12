@@ -73,7 +73,7 @@ function Row() {
 export function Marquee() {
   return (
     <section
-      className="overflow-hidden border-b border-border py-4"
+      className="landing-marquee overflow-hidden border-b border-border py-4"
       aria-hidden
     >
       {/* duas metades idênticas → loop sem emenda (track desliza -50%) */}
