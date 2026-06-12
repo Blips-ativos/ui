@@ -17,7 +17,8 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./assets/*": "./assets/*"
+    "./assets/*": "./assets/*",
+    "./package.json": "./package.json"
   },
   "files": [
     "dist",

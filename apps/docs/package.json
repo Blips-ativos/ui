@@ -3,13 +3,14 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "tsx scripts/build-registry.ts && next dev --webpack",
-    "build": "tsx scripts/build-registry.ts && next build --webpack",
+    "dev": "tsx scripts/sync-brand-assets.ts && tsx scripts/build-registry.ts && next dev --webpack",
+    "build": "tsx scripts/sync-brand-assets.ts && tsx scripts/build-registry.ts && next build --webpack",
     "start": "next start",
     "lint": "biome lint .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@blips/brand": "workspace:*",
     "@blips/tailwind-config": "workspace:*",
     "@blips/ui": "workspace:*",
     "@hookform/resolvers": "^5.2.2",
