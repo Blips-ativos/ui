@@ -10,6 +10,34 @@ preset; **aqui o tema é lei e não se mexe**. A ousadia mora em **composição,
 escala e movimento** — JAMAIS em trocar cor ou fonte. Cada preset é autocontido:
 escolha UM por superfície e comprometa-se (não alterne nem misture dois).
 
+## Dials (calibração numérica da direção criativa)
+
+Antes de escolher o preset, calibre 3 dials (a ousadia é **graduável** no
+criativo — em produto, ignore: a doutrina de produto já fixa a contenção).
+Adaptado dos `DESIGN_VARIANCE/MOTION_INTENSITY/VISUAL_DENSITY` do open-design.
+
+- **Expressividade** `1` (simetria perfeita) … `10` (composição ousada/quebra de grid)
+- **Movimento** `1` (estático) … `10` (cinético/físico, page-load orquestrado)
+- **Densidade** `1` (galeria/arejado) … `10` (denso/informacional)
+
+**Tabela de inferência (sinal no pedido → valores):**
+
+| Sinal | Expr. | Mov. | Dens. |
+| --- | --- | --- | --- |
+| "minimalista / clean / editorial / Linear-style" | 5-6 | 3-4 | 2-3 |
+| "premium / institucional / lançamento de marca" | 7-8 | 5-7 | 3-4 |
+| "ousado / Awwwards / showcase / agência" | 9-10 | 8-10 | 3-4 |
+| "landing/marketing (default)" | 7-9 | 6-8 | 3-5 |
+| "confiança / regulado / sóbrio" | 3-4 | 2-3 | 4-5 |
+
+**Presets prontos** (Expr./Mov./Dens.): Minimal editorial `5/3/3` · Bold
+statement `9/7/3` · Soft depth `7/6/4`. Declare os 3 valores no `<plano-de-design>`
+e justifique a partir do sinal — nunca use o baseline em silêncio.
+
+Limite: mesmo `Movimento 10`, valem as regras de `reviewing/references/motion.md`
+(transform/opacity, `prefers-reduced-motion`, sem scroll-jank) — ousadia ≠
+quebrar acessibilidade.
+
 ## Invariante de tema (vale para os QUATRO presets — leia uma vez)
 
 > **Cor** = amarelo Blips `#fcba28` (`bg-primary`/`text-primary`, fg `#000000`)

@@ -60,3 +60,23 @@ SKILL.md ganhou: tabela "do pedido à direção" (NL→dimensão, do design-brie
 a fórmula 80/20 anti-genérico, e ponteiros para as 3 references + para as
 references de craft da reviewing (fonte única dos números). Fronteira explícita
 archetypes ↔ creative-presets (vocabulário vs COMO binário; canônica vence).
+
+## 2026-06-11 — designing vira DIRETORA do arco (fluxo open-design)
+
+Deep research do fluxo de PLANEJAMENTO do open-design (discovery.ts/directions.ts —
+o processo real não está nas skills-stub). Achado: o open-design DESLIGA
+brand-extraction + direction-picker quando há design system ativo — nós sempre
+temos. Então 2 das 3 máquinas colapsam (são o tema fixo); o que sobra e foi
+duplicado:
+- **Modos** (Planejar/Redesenhar/Polir) — porta de entrada por estado do trabalho.
+- **Fluxo de planejamento multi-turno**: Design Read (1 linha + ask-vs-infer:
+  no máx 1 pergunta, só se genuinamente ambíguo) → Direção (produto=4 dims /
+  criativo=dials) → Variações (2-3 quando explorando) → `<plano-de-design>`
+  (seções + 20% distintivo + estados) → handoff → **loop de crítica**.
+- **Dials** (Expressividade/Movimento/Densidade) com tabela de inferência +
+  presets, em creative-presets.md — híbrido: só no modo criativo (produto
+  mantém as 4 dimensões).
+- **Modo Redesenhar**: Preservar×Reformular + levers em ordem de impacto +
+  "nunca muda em silêncio".
+Decisões (usuário): designing = diretora do arco completo; crítica scored mora
+na reviewing (fonte única); dials híbridos por superfície.
