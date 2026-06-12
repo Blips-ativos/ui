@@ -79,6 +79,11 @@
 
 /* ---- shadcn docs polish (ported) ---- */
 @layer base {
+  /* altura padrão do header — o SidebarProvider (docs) re-seta o mesmo valor;
+     aqui garante a altura na home, que não tem provider. */
+  :root {
+    --header-height: 3.5rem;
+  }
   ::selection {
     @apply bg-selection text-selection-foreground;
   }

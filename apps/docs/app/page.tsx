@@ -2,8 +2,8 @@ import { Logo } from "@blips/brand";
 import Link from "next/link";
 
 import { Hero } from "@/components/landing/hero";
-import { LandingNav } from "@/components/landing/landing-nav";
 import { Marquee } from "@/components/landing/marquee";
+import { SiteHeader } from "@/components/site-header";
 
 const FOOTER_LINKS = [
   { label: "Documentação", href: "/docs" },
@@ -20,7 +20,7 @@ export default function HomePage() {
         className="landing-scanlines pointer-events-none fixed inset-0 z-0"
         aria-hidden
       />
-      <LandingNav />
+      <SiteHeader hasSidebar={false} />
       <main className="relative z-10 flex min-h-0 flex-1 flex-col">
         <Hero />
         <Marquee />
