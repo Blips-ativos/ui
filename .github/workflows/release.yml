@@ -207,7 +207,9 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build docs (SSG export)
-        run: pnpm --filter @blips/docs build
+        # @blips/brand é consumido pelo barrel (→ dist), então precisa ser
+        # buildado antes do Next resolver `import { Logo } from "@blips/brand"`.
+        run: pnpm --filter @blips/brand build && pnpm --filter @blips/docs build
 
       - name: Deploy no Firebase Hosting
         # Sem `repoToken`: num deploy `live` no merge não há PR para comentar,
