@@ -4,14 +4,14 @@ import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-border">
+    <section className="relative flex flex-1 flex-col justify-center overflow-hidden border-b border-border">
       {/* b-mark estrutural sangrando a borda — motivo neutro, baixa presença */}
       <Logo
         variant="mark"
         aria-hidden
         className="pointer-events-none absolute top-1/2 -right-[8%] hidden h-[150%] w-auto -translate-y-1/2 text-foreground/[0.05] md:block"
       />
-      <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6 sm:py-32 lg:py-40">
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
         <div
           className="landing-reveal flex items-center gap-3"
           style={{ animationDelay: "0ms" }}
