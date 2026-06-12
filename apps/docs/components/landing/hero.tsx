@@ -1,5 +1,8 @@
+"use client";
+
 import { Logo } from "@blips/brand";
 import { Button } from "@blips/ui/components/button";
+import { CaretRightIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export function Hero() {
@@ -24,17 +27,17 @@ export function Hero() {
         </div>
 
         <h1
-          className="landing-stamp mt-6 font-bold text-foreground text-[clamp(3.5rem,11vw,11rem)] uppercase leading-[0.9] tracking-tighter"
+          className="landing-stamp mt-6 font-bold font-sans text-foreground text-[clamp(3.5rem,11vw,11rem)] uppercase leading-[0.9] tracking-tighter"
           style={{ animationDelay: "80ms" }}
         >
-          Blips UI
+          Blips <span className="text-primary font-thin">UI</span>
         </h1>
 
         <p
-          className="landing-reveal mt-6 max-w-xl text-muted-foreground text-xs uppercase tracking-[0.18em] sm:text-sm"
+          className="landing-reveal mt-6 max-w-xl text-muted-foreground text-xs sm:text-sm"
           style={{ animationDelay: "260ms" }}
         >
-          Radix · Tailwind v4 · Acessível · 54 componentes
+          Radix · Tailwind v4 · Acessível
         </p>
 
         <div
@@ -42,7 +45,10 @@ export function Hero() {
           style={{ animationDelay: "360ms" }}
         >
           <Button asChild size="lg">
-            <Link href="/docs">Explorar componentes →</Link>
+            <Link href="/docs">
+              Explorar componentes
+              <CaretRightIcon />
+            </Link>
           </Button>
         </div>
       </div>
