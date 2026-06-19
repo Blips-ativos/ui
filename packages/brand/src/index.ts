@@ -16,3 +16,9 @@ export {
   MARK_CORE_CENTER,
   MARK_CORE_PATH,
 } from "./mark-parts";
+export {
+  MARK_INNER_STROKE_PATH,
+  MARK_INNER_STROKE_WIDTH,
+  MARK_STROKE_PATH,
+  MARK_STROKE_WIDTH,
+} from "./mark-stroke";
