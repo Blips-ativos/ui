@@ -39,7 +39,7 @@ pnpm --filter @blips/ui dev        # tsup --watch
 
 ## Versioning
 
-Two independent release tracks — bump them separately. **Always release through
+Three independent release tracks — bump them separately. **Always release through
 the `/release` command, never by hand-merging `staging → main`.**
 
 **Mandatory order inside `/release` (don't reorder):** define version → bump the
@@ -72,6 +72,15 @@ the `verify` job fails at merge).
   (push with the `BernardoBlips` `gh` account / `GITHUB_TOKEN`). For a combined
   release, `/release` scope `ambos` rides the plugin bump in the `release: v…`
   PR and the workflow tags `plugin-v…` too.
+- **Brand package (`@blips/brand`)** — released via **`/release`** (pick scope
+  `brand`) on its **own track**: bumps `packages/brand/package.json` and opens a
+  PR titled **`release-brand: vX.Y.Z`**. Merging it builds `@blips/brand`,
+  publishes it to npm via **Trusted Publishing (OIDC)**, and tags
+  **`brand-vX.Y.Z`** — **no docs/plugin** (decoupled by the PR-title prefix).
+  Needs its own **npm trusted publisher** registered for workflow `release.yml`
+  (scope `@blips`); the very first publish may need a manual `npm publish` if the
+  package doesn't exist yet. Consumed inside the monorepo via `workspace:*` (no
+  publish needed there); publishing is only for **other repos** to use it.
 
 ## Conventions & gotchas
 
