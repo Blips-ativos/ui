@@ -11,3 +11,8 @@ export {
   MARK_PATH,
   MARK_VIEWBOX,
 } from "./logo-paths";
+export {
+  MARK_BODY_PATH,
+  MARK_CORE_CENTER,
+  MARK_CORE_PATH,
+} from "./mark-parts";
