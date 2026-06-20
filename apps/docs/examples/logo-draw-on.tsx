@@ -10,26 +10,31 @@ import {
 } from "@blips/brand";
 
 // Os traços (linhas-guia abertas) são a MÁSCARA: animados com trim-path
-// (stroke-dashoffset, com pathLength={1}) sobre a marca real preenchida. O b
-// espirala primeiro; o círculo interno traça em seguida. No fim, 100% idêntico.
+// (stroke-dashoffset, com pathLength={1}) sobre a marca real preenchida. O b e o
+// círculo interno traçam JUNTOS (mesma janela 0→30%); na saída o círculo interno
+// some primeiro (ordem inversa). No fim, 100% idêntico.
 const css = `
   .blips-drawon-b,
   .blips-drawon-inner { stroke-dasharray: 1; stroke-dashoffset: 1; }
   .blips-drawon-b { animation: blips-draw-b 4.5s cubic-bezier(0.33, 1, 0.68, 1) infinite; }
   .blips-drawon-inner { animation: blips-draw-inner 4.5s cubic-bezier(0.33, 1, 0.68, 1) infinite; }
+
   /* entra desenhando do começo (dashoffset 1→0) → segura → SAI apagando também
      a partir do começo (dashoffset 0→-1: a borda inicial avança e "come" o
      traço). O círculo interno sai primeiro (ordem inversa). */
+
   @keyframes blips-draw-b {
     0% { stroke-dashoffset: 1; }
-    30%, 68% { stroke-dashoffset: 0; }
+    30%, 50% { stroke-dashoffset: 0; }
     96%, 100% { stroke-dashoffset: -1; }
   }
+    
   @keyframes blips-draw-inner {
-    0%, 28% { stroke-dashoffset: 1; }
-    44%, 54% { stroke-dashoffset: 0; }
-    68%, 100% { stroke-dashoffset: -1; }
+    0%, 7% { stroke-dashoffset: 1; }
+    30%, 57% { stroke-dashoffset: 0; }
+    96%, 100% { stroke-dashoffset: -1; }
   }
+    
   @media (prefers-reduced-motion: reduce) {
     .blips-drawon-b, .blips-drawon-inner { animation: none; stroke-dashoffset: 0; }
   }

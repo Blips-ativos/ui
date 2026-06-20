@@ -24,12 +24,12 @@ export const MARK_STROKE_PATH =
 export const MARK_STROKE_WIDTH = 270;
 
 /**
- * Traço do círculo interno (anel central) — path aberto (círculo, início no
- * topo), também animável por trim-path. Largura de máscara:
- * {@link MARK_INNER_STROKE_WIDTH}.
+ * Traço do círculo interno (anel central) — path aberto (círculo, início em
+ * -135° / base-esquerda ~7:30, sentido anti-horário), também animável por
+ * trim-path. Largura de máscara: {@link MARK_INNER_STROKE_WIDTH}.
  */
 export const MARK_INNER_STROKE_PATH =
-  "M 515 762.5 A 147.5 147.5 0 1 1 515 1057.5 A 147.5 147.5 0 1 1 515 762.5";
+  "M 410.7 1014.3 A 147.5 147.5 0 1 0 619.3 805.7 A 147.5 147.5 0 1 0 410.7 1014.3";
 
 /** Largura de máscara do traço do círculo interno (cobre o anel central a 100%). */
 export const MARK_INNER_STROKE_WIDTH = 120;
