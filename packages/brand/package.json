@@ -17,6 +17,16 @@
         "default": "./dist/index.cjs"
       }
     },
+    "./logo-loader": {
+      "import": {
+        "types": "./dist/logo-loader.d.ts",
+        "default": "./dist/logo-loader.js"
+      },
+      "require": {
+        "types": "./dist/logo-loader.d.cts",
+        "default": "./dist/logo-loader.cjs"
+      }
+    },
     "./assets/*": "./assets/*",
     "./package.json": "./package.json"
   },
