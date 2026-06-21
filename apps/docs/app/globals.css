@@ -1,11 +1,15 @@
-/* Theme, tokens, Tailwind entry and content sources all live in the
-   @blips/ui package globals (single source of truth). Fumadocs v15 ships a
-   Tailwind v4-native preset: `shadcn.css` maps its --fd-* colors onto the
-   shadcn tokens we define, and `preset.css` is properly cascade-layered so
-   it no longer overrides our component utilities. */
+/* Theme, tokens e o entry do Tailwind vêm do globals do @blips/ui (fonte única).
+   Fumadocs v15 traz um preset Tailwind v4-native: `shadcn.css` mapeia as cores
+   --fd-* nos tokens shadcn que definimos, e `preset.css` é cascade-layered, então
+   não sobrescreve as utilitárias dos componentes. */
 @import "@blips/ui/globals.css";
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
+
+/* Content source DESTE app — a lib não conhece o layout de quem a consome, então
+   cada app declara o próprio @source. Cobre apps/docs/** (.next/out/node_modules
+   são ignorados via .gitignore). Caminho relativo a apps/docs/app/globals.css. */
+@source "../**/*.{ts,tsx}";
 
 /* shadcn data-attribute variants (used by docs pages/examples) */
 @custom-variant data-open {

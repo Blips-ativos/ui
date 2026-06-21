@@ -33,6 +33,52 @@ texto do tema:
 No `full`, o círculo e o "b" são fixos (amarelo + branco) e o wordmark usa
 `currentColor`, então o texto adapta a light/dark sozinho.
 
+## Animação — draw-on
+
+O b-mark se **preenche e drena** (efeito _trim-path_ / "draw in/out"): a cor
+entra como uma _progress bar_ ao longo da espinha da marca, dentro de um sulco
+recessado (a marca em `muted` com _inner shadow_), segura, e drena de volta — em
+loop.
+
+<ComponentPreview name="logo-draw-on" />
+
+Empacotado como **`<LogoLoader>`** (`@blips/brand/logo-loader`) — o exemplo
+mostra os três estados:
+
+| Estado | Como |
+| --- | --- |
+| **Indeterminado** | sem props — preenche e drena em loop |
+| **Determinado** | `progress={0..100}` — preenche proporcional (transição suave) |
+| **Inativo** | `disabled` — marca cheia e estática em `muted` |
+
+Cor via `text-*` (padrão `text-primary`); tamanho via `className` (padrão `size-12`).
+
+O truque para ficar **100% idêntico** ao símbolo oficial: os traços não _são_ a
+logo — eles são uma **máscara animada** sobre o `MARK_PATH` real preenchido.
+Conforme a máscara cresce (via `stroke-dashoffset` com `pathLength={1}`), revela
+a marca de verdade, então toda a espessura é a oficial e o frame cheio é exato.
+A máscara usa `stroke-linecap: butt` (frente reta → 1% de progresso = 1% real) e
+a linha-guia do "b" é estendida nas pontas para o cap reto cobrir as terminações
+arredondadas no 100%; o excesso é recortado pela própria marca.
+
+As duas linhas-guia (de `@blips/brand`) — amarelo = traço do "b"
+(`MARK_STROKE_PATH`), escuro = círculo interno (`MARK_INNER_STROKE_PATH`):
+
+<ComponentPreview name="logo-stroke-guides" />
+
+### Exports
+
+| Export | Tipo | Papel |
+| --- | --- | --- |
+| `MARK_STROKE_PATH` | `string` | traço do "b" (haste → espiral), path aberto |
+| `MARK_STROKE_WIDTH` | `number` | largura de máscara do "b" (`270`) |
+| `MARK_INNER_STROKE_PATH` | `string` | traço do círculo interno, path aberto |
+| `MARK_INNER_STROKE_WIDTH` | `number` | largura de máscara do círculo interno (`120`) |
+
+Combine com `MARK_PATH` e `MARK_VIEWBOX`. Respeite `prefers-reduced-motion`
+(desative a animação e deixe a marca preenchida). Os dois traços podem preencher
+juntos ou com um leve _stagger_ — aqui o círculo interno entra logo depois.
+
 ## Cores
 
 <ColorTokens />

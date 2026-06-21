@@ -2,11 +2,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Content sources — scan this package's own files and every app that
-   consumes it (shadcn monorepo pattern). Paths are relative to this file
-   (packages/ui/src/globals.css). */
+/* Content source — escaneia apenas os componentes DESTE pacote. Como o Tailwind
+   v4 ignora node_modules por padrão, é este @source que faz as classes da lib
+   serem geradas no consumidor (resolve para node_modules/@blips/ui/** quando
+   publicado). Caminho relativo a este arquivo (packages/ui/src/globals.css).
+   Cada app consumidor declara o próprio @source no seu CSS-entry — a lib não
+   deve conhecer o layout de quem a consome. */
 @source "../**/*.{ts,tsx}";
-@source "../../../apps/**/*.{ts,tsx}";
 
 @custom-variant dark (&:is(.dark *));
 
