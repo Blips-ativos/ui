@@ -25,6 +25,14 @@ type LogoLoaderProps = Omit<React.ComponentProps<"svg">, "children"> & {
   progress?: number;
   /** Marca cheia e estática em `muted` — estado inativo. */
   disabled?: boolean;
+  /**
+   * Classe do "sulco"/track (a marca recessada de fundo). Por padrão o track usa
+   * `fill: var(--muted, …)` com fallback neutro (token cru — resolve mesmo sem o
+   * consumidor varrer `@blips/brand` no `@source`; o fallback evita o preto se o
+   * tema não definir `--muted`). Passe, ex., `fill-foreground/10` para customizar
+   * — a classe vem do código do consumidor, então é escaneada.
+   */
+  trackClassName?: string;
 };
 
 /**
@@ -35,13 +43,15 @@ type LogoLoaderProps = Omit<React.ComponentProps<"svg">, "children"> & {
  * - **Determinado** (`progress` 0–100): preenche proporcional ao valor.
  * - **`disabled`**: marca cheia e estática em `muted`.
  *
- * Cor via `text-*` (padrão `text-primary`), tamanho via `className`
- * (padrão `size-12`). Respeita `prefers-reduced-motion`.
+ * Preenchimento via `text-*` (padrão `text-primary`), tamanho via `className`
+ * (padrão `size-12`). O track usa `var(--muted)` por padrão — customize com
+ * `trackClassName`. Respeita `prefers-reduced-motion`.
  */
 function LogoLoader({
   progress,
   disabled,
   className,
+  trackClassName,
   "aria-label": ariaLabel,
   ...props
 }: LogoLoaderProps) {
@@ -147,11 +157,17 @@ function LogoLoader({
           </mask>
         ) : null}
       </defs>
-      {/* sulco recessado em muted (no disabled, é a marca cheia estática) */}
+      {/* sulco recessado (no disabled, é a marca cheia estática). O fill vem do
+          token cru var(--muted) com fallback neutro — robusto sem o consumidor
+          varrer @blips/brand (a classe fill-muted não seria gerada lá → preto),
+          e o fallback cobre consumidores sem o tema (sem --muted). */}
       <path
         d={MARK_PATH}
         fillRule="evenodd"
-        className="fill-muted"
+        className={trackClassName}
+        style={
+          trackClassName ? undefined : { fill: "var(--muted, oklch(0.92 0 0))" }
+        }
         filter={`url(#${grooveId})`}
       />
       {/* preenchimento revelado pela máscara (oculto no disabled) */}
