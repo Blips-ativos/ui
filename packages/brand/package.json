@@ -1,6 +1,6 @@
 {
   "name": "@blips/brand",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Blips brand assets — logos, b-mark, favicon, icons e o componente <Logo/>",
   "type": "module",
   "main": "./dist/index.cjs",
