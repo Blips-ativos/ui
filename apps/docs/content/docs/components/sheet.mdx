@@ -16,11 +16,14 @@ npm install @blips/ui
 ```tsx
 import {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetSection,
+  SheetSectionTitle,
   SheetTitle,
   SheetTrigger,
 } from "@blips/ui/components/sheet"
@@ -34,9 +37,12 @@ import {
       <SheetTitle>Você tem certeza absoluta?</SheetTitle>
       <SheetDescription>Esta ação não pode ser desfeita.</SheetDescription>
     </SheetHeader>
+    <SheetBody>{/* conteúdo */}</SheetBody>
   </SheetContent>
 </Sheet>
 ```
+
+O `SheetContent` não tem padding próprio: o `SheetHeader` e o `SheetFooter` já trazem o seu, e **todo conteúdo entre eles deve ficar dentro de um `SheetBody`** — é ele que dá o padding interno e o scroll. Não coloque conteúdo solto direto no `SheetContent`.
 
 ## Exemplos
 
@@ -46,6 +52,57 @@ Use a prop `side` no `SheetContent` para definir a borda da tela onde o sheet ap
 
 <ComponentPreview name="sheet-side" />
 
+### Corpo rolável e seções
+
+Use `SheetBody` para o corpo com scroll próprio (cabeçalho e rodapé ficam fixos) e `SheetSection` + `SheetSectionTitle` para agrupar o conteúdo em blocos separados por borda. Ao conter `SheetSection`, o `SheetBody` zera o próprio padding e cada seção controla o seu.
+
+<ComponentPreview name="sheet-sections" />
+
+## Anatomia
+
+```tsx
+<Sheet>
+  <SheetTrigger />
+  <SheetContent>
+    <SheetHeader>
+      <SheetTitle />
+      <SheetDescription />
+    </SheetHeader>
+    <SheetBody>
+      <SheetSection>
+        <SheetSectionTitle />
+        {/* conteúdo da seção */}
+      </SheetSection>
+    </SheetBody>
+    <SheetFooter />
+  </SheetContent>
+</Sheet>
+```
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI Dialog](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference).
+A maior parte das props vem do [Radix UI Dialog](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference). Os componentes de layout abaixo são da `@blips/ui`.
+
+### SheetBody
+
+Corpo rolável entre o cabeçalho e o rodapé — `flex-1 overflow-auto p-4`. Quando contém `SheetSection`, remove o próprio padding (`has-data-[slot=sheet-section]:p-0`) e delega o espaçamento às seções.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
+
+### SheetSection
+
+Bloco de conteúdo agrupado dentro do `SheetBody` — `border-t p-4`. Cada seção tem uma borda no topo, separando a primeira do cabeçalho e cada seção seguinte da anterior.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
+
+### SheetSectionTitle
+
+Rótulo de uma `SheetSection` — `text-sm font-medium text-muted-foreground`.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |

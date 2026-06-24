@@ -1,6 +1,6 @@
 {
   "name": "@blips/ui",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Blips UI Component Library",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -38,6 +38,8 @@
     "./components/dialog": "./src/components/dialog.tsx",
     "./components/drawer": "./src/components/drawer.tsx",
     "./components/dropdown-menu": "./src/components/dropdown-menu.tsx",
+    "./components/empty": "./src/components/empty.tsx",
+    "./components/field": "./src/components/field.tsx",
     "./components/hover-card": "./src/components/hover-card.tsx",
     "./components/input": "./src/components/input.tsx",
     "./components/input-otp": "./src/components/input-otp.tsx",

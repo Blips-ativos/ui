@@ -280,11 +280,14 @@ export { Separator } from "./components/separator";
 // Sheet
 export {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetSection,
+  SheetSectionTitle,
   SheetTitle,
   SheetTrigger,
 } from "./components/sheet";
@@ -357,6 +360,30 @@ export {
   ChartTooltipContent,
   type ChartConfig,
 } from "./components/chart";
+
+// Empty
+export {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "./components/empty";
+
+// Field
+export {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from "./components/field";
 
 // Form
 export {

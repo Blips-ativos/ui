@@ -44,8 +44,7 @@ Common customizations:
 ### Basic Empty State with Icon
 
 ```tsx
-import { IconFolderCode } from "@tabler/icons-react"
-import { ArrowUpRight } from "@phosphor-icons/react"
+import { ArrowUpRight, FolderPlus } from "@phosphor-icons/react"
 import { Button } from "@blips/ui/components/button"
 import {
   Empty,
@@ -61,7 +60,7 @@ function EmptyDemo() {
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconFolderCode />
+          <FolderPlus />
         </EmptyMedia>
         <EmptyTitle>No Projects Yet</EmptyTitle>
         <EmptyDescription>
@@ -88,7 +87,7 @@ function EmptyDemo() {
 ### Outline Variant (Dashed Border)
 
 ```tsx
-import { IconCloud } from "@tabler/icons-react"
+import { CloudArrowUp } from "@phosphor-icons/react"
 import { Button } from "@blips/ui/components/button"
 import {
   Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle,
@@ -99,7 +98,7 @@ function EmptyOutline() {
     <Empty className="border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconCloud />
+          <CloudArrowUp />
         </EmptyMedia>
         <EmptyTitle>Cloud Storage Empty</EmptyTitle>
         <EmptyDescription>
@@ -117,8 +116,7 @@ function EmptyOutline() {
 ### Background Gradient Variant
 
 ```tsx
-import { IconBell } from "@tabler/icons-react"
-import { ArrowsClockwise } from "@phosphor-icons/react"
+import { ArrowsClockwise, Bell } from "@phosphor-icons/react"
 import { Button } from "@blips/ui/components/button"
 import {
   Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle,
@@ -129,7 +127,7 @@ function EmptyBackground() {
     <Empty className="h-full bg-gradient-to-b from-muted/50 from-30% to-background">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconBell />
+          <Bell />
         </EmptyMedia>
         <EmptyTitle>No Notifications</EmptyTitle>
         <EmptyDescription>
@@ -150,7 +148,7 @@ function EmptyBackground() {
 ### Minimal (Icon Only, No Actions)
 
 ```tsx
-import { IconInbox } from "@tabler/icons-react"
+import { Tray } from "@phosphor-icons/react"
 import {
   Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle,
 } from "@blips/ui/components/empty"
@@ -160,7 +158,7 @@ function EmptyMinimal() {
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconInbox />
+          <Tray />
         </EmptyMedia>
         <EmptyTitle>No messages</EmptyTitle>
         <EmptyDescription>
@@ -187,8 +185,7 @@ function EmptyMinimal() {
 ### empty-demo
 
 ```tsx
-import { IconFolderCode } from "@tabler/icons-react"
-import { ArrowUpRight } from "@phosphor-icons/react"
+import { ArrowUpRight, FolderPlus } from "@phosphor-icons/react"
 
 import { Button } from "@blips/ui/components/button"
 import {
@@ -205,7 +202,7 @@ export default function EmptyDemo() {
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconFolderCode />
+          <FolderPlus />
         </EmptyMedia>
         <EmptyTitle>No Projects Yet</EmptyTitle>
         <EmptyDescription>
@@ -237,12 +234,7 @@ export default function EmptyDemo() {
 ### empty-icon
 
 ```tsx
-import {
-  IconBookmark,
-  IconHeart,
-  IconInbox,
-  IconStar,
-} from "@tabler/icons-react"
+import { Bookmark, Heart, Star, Tray } from "@phosphor-icons/react"
 
 import {
   Empty,
@@ -258,7 +250,7 @@ export default function EmptyIcon() {
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <IconInbox />
+            <Tray />
           </EmptyMedia>
           <EmptyTitle>No messages</EmptyTitle>
           <EmptyDescription>
@@ -270,7 +262,7 @@ export default function EmptyIcon() {
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <IconStar />
+            <Star />
           </EmptyMedia>
           <EmptyTitle>No favorites</EmptyTitle>
           <EmptyDescription>
@@ -282,7 +274,7 @@ export default function EmptyIcon() {
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <IconHeart />
+            <Heart />
           </EmptyMedia>
           <EmptyTitle>No likes yet</EmptyTitle>
           <EmptyDescription>
@@ -294,7 +286,7 @@ export default function EmptyIcon() {
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <IconBookmark />
+            <Bookmark />
           </EmptyMedia>
           <EmptyTitle>No bookmarks</EmptyTitle>
           <EmptyDescription>
@@ -465,7 +457,7 @@ export default function EmptyInputGroup() {
 ### empty-outline
 
 ```tsx
-import { IconCloud } from "@tabler/icons-react"
+import { CloudArrowUp } from "@phosphor-icons/react"
 
 import { Button } from "@blips/ui/components/button"
 import {
@@ -482,7 +474,7 @@ export default function EmptyOutline() {
     <Empty className="border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconCloud />
+          <CloudArrowUp />
         </EmptyMedia>
         <EmptyTitle>Cloud Storage Empty</EmptyTitle>
         <EmptyDescription>
@@ -502,8 +494,7 @@ export default function EmptyOutline() {
 ### empty-background
 
 ```tsx
-import { IconBell } from "@tabler/icons-react"
-import { ArrowsClockwise } from "@phosphor-icons/react"
+import { ArrowsClockwise, Bell } from "@phosphor-icons/react"
 
 import { Button } from "@blips/ui/components/button"
 import {
@@ -520,7 +511,7 @@ export default function EmptyMuted() {
     <Empty className="h-full bg-gradient-to-b from-muted/50 from-30% to-background">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <IconBell />
+          <Bell />
         </EmptyMedia>
         <EmptyTitle>No Notifications</EmptyTitle>
         <EmptyDescription>

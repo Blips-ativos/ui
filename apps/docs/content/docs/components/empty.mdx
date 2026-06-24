@@ -1,0 +1,134 @@
+---
+title: Empty
+description: Exibe um estado vazio, sem resultados ou de erro.
+---
+
+<ComponentPreview name="empty-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@blips/ui/components/empty"
+```
+
+```tsx
+<Empty>
+  <EmptyHeader>
+    <EmptyMedia variant="icon">
+      <FolderPlus />
+    </EmptyMedia>
+    <EmptyTitle>Nenhum projeto ainda</EmptyTitle>
+    <EmptyDescription>
+      Você ainda não criou nenhum projeto.
+    </EmptyDescription>
+  </EmptyHeader>
+  <EmptyContent>
+    <Button size="sm">Criar projeto</Button>
+  </EmptyContent>
+</Empty>
+```
+
+A anatomia é sempre a mesma — **mídia + título + descrição + ação** — para que
+todos os estados vazios do produto fiquem consistentes. A área de ação
+(`EmptyContent`) é opcional.
+
+## Exemplos
+
+### Sem resultados de busca
+
+Use uma mensagem distinta do vazio inicial: deixe claro que houve uma busca e
+ofereça uma saída (limpar filtros, ajustar termos).
+
+<ComponentPreview name="empty-search" />
+
+### Erro de carregamento
+
+Para falhas, combine uma mídia de alerta com uma ação de **tentar novamente**. A
+lógica de _retry_ fica no consumidor — o componente cuida apenas da anatomia.
+
+<ComponentPreview name="empty-error" />
+
+### Contorno tracejado
+
+Aplique `className="border border-dashed"` na raiz para delimitar o estado vazio
+dentro de um card ou seção.
+
+<ComponentPreview name="empty-outline" />
+
+## Acessibilidade
+
+- `EmptyTitle` e `EmptyDescription` formam o texto anunciado pelo leitor de
+  tela; mantenha o título curto e a descrição objetiva.
+- Quando o estado vazio representar o resultado de uma operação assíncrona
+  (busca, carregamento), anuncie a região com `role="status"` no contêiner que
+  envolve o `Empty`, para que a troca de conteúdo seja percebida.
+- A ação (botão/link) deve ser focável e descrever o que acontece ao acioná-la.
+
+## Referência da API
+
+### Empty
+
+Contêiner raiz. Centraliza o conteúdo em coluna, com espaçamento e cantos
+arredondados.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
+
+### EmptyHeader
+
+Agrupa mídia, título e descrição. Largura máxima `sm`, centralizado.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
+
+### EmptyMedia
+
+Contêiner da mídia (ícone, avatar, ilustração).
+
+| Prop        | Tipo                | Padrão      |
+| ----------- | ------------------- | ----------- |
+| `variant`   | `"default" \| "icon"` | `"default"` |
+| `className` | `string`            | -           |
+
+`variant="icon"` aplica um quadrado de 32px com fundo `muted` e dimensiona o
+ícone interno; `variant="default"` exibe o conteúdo cru (útil para avatares e
+ilustrações).
+
+### EmptyTitle
+
+Título do estado vazio.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
+
+### EmptyDescription
+
+Texto de apoio. Estiliza links (`<a>`) automaticamente.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
+
+### EmptyContent
+
+Área de ações abaixo do cabeçalho. Largura máxima `sm`, centralizado.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |

@@ -95,6 +95,42 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+function SheetBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-body"
+      className={cn(
+        "flex-1 overflow-auto p-4 has-data-[slot=sheet-section]:p-0",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function SheetSection({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-section"
+      className={cn("gap-4 border-t p-4", className)}
+      {...props}
+    />
+  )
+}
+
+function SheetSectionTitle({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-section-title"
+      className={cn("mb-4 text-sm font-medium text-muted-foreground", className)}
+      {...props}
+    />
+  )
+}
+
 function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
@@ -137,6 +173,9 @@ export {
   SheetClose,
   SheetContent,
   SheetHeader,
+  SheetBody,
+  SheetSection,
+  SheetSectionTitle,
   SheetFooter,
   SheetTitle,
   SheetDescription,
