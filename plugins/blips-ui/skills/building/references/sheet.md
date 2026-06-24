@@ -12,7 +12,7 @@ Import: `@blips/ui/components/sheet`
 | `SheetContent` | The sliding panel. Renders in a Portal with an overlay. Supports `side` and `showCloseButton` props. |
 | `SheetHeader` | Header section inside the sheet. Flex column with padding. |
 | `SheetBody` | Scrollable body section. Uses `flex-1 overflow-auto` with special handling for `SheetSection` children. |
-| `SheetSection` | Bordered section within `SheetBody`. Renders with bottom border and padding. |
+| `SheetSection` | Bordered section within `SheetBody`. Renders with a top border and padding (separates the first section from the header and each section from the previous one). |
 | `SheetSectionTitle` | Title for a `SheetSection`. Styled as muted foreground text. |
 | `SheetFooter` | Footer section with `mt-auto` to pin to bottom. Renders with top border. |
 | `SheetTitle` | Accessible title. Wraps Radix `Dialog.Title`. |
@@ -49,19 +49,19 @@ Import: `@blips/ui/components/sheet`
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `className` | `string` | -- | Base: `flex flex-col gap-1.5 p-6`. |
+| `className` | `string` | -- | Base: `flex flex-col gap-1.5 p-4`. |
 
 ### SheetBody
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `className` | `string` | -- | Base: `flex-1 overflow-auto p-6`. Removes padding when containing `SheetSection` children (`has-data-[slot=sheet-section]:p-0`). |
+| `className` | `string` | -- | Base: `flex-1 overflow-auto p-4`. Removes padding when containing `SheetSection` children (`has-data-[slot=sheet-section]:p-0`). |
 
 ### SheetSection
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `className` | `string` | -- | Base: `gap-4 border-b p-6 last:border-b-0`. |
+| `className` | `string` | -- | Base: `gap-4 border-t p-4`. |
 
 ### SheetSectionTitle
 
@@ -73,7 +73,7 @@ Import: `@blips/ui/components/sheet`
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `className` | `string` | -- | Base: `mt-auto flex flex-col gap-2 border-t p-6`. |
+| `className` | `string` | -- | Base: `mt-auto flex flex-col gap-2 p-4`. |
 
 ### SheetTitle
 
@@ -97,6 +97,7 @@ import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"
 import {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
@@ -119,7 +120,7 @@ export default function SheetDemo() {
             Make changes to your profile here. Click save when you're done.
           </SheetDescription>
         </SheetHeader>
-        <div className="grid flex-1 auto-rows-min gap-6 px-4">
+        <SheetBody className="grid auto-rows-min gap-6">
           <div className="grid gap-3">
             <Label htmlFor="name">Name</Label>
             <Input id="name" defaultValue="Pedro Duarte" />
@@ -128,7 +129,7 @@ export default function SheetDemo() {
             <Label htmlFor="username">Username</Label>
             <Input id="username" defaultValue="@peduarte" />
           </div>
-        </div>
+        </SheetBody>
         <SheetFooter>
           <Button type="submit">Save changes</Button>
           <SheetClose asChild>
@@ -230,6 +231,7 @@ import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"
 import {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
@@ -252,7 +254,7 @@ export default function SheetDemo() {
             Make changes to your profile here. Click save when you&apos;re done.
           </SheetDescription>
         </SheetHeader>
-        <div className="grid flex-1 auto-rows-min gap-6 px-4">
+        <SheetBody className="grid auto-rows-min gap-6">
           <div className="grid gap-3">
             <Label htmlFor="sheet-demo-name">Name</Label>
             <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
@@ -261,7 +263,7 @@ export default function SheetDemo() {
             <Label htmlFor="sheet-demo-username">Username</Label>
             <Input id="sheet-demo-username" defaultValue="@peduarte" />
           </div>
-        </div>
+        </SheetBody>
         <SheetFooter>
           <Button type="submit">Save changes</Button>
           <SheetClose asChild>
@@ -284,6 +286,7 @@ import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"
 import {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
@@ -294,8 +297,6 @@ import {
 } from "@blips/ui/components/sheet"
 
 const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
-
-type SheetSide = (typeof SHEET_SIDES)[number]
 
 export default function SheetSide() {
   return (
@@ -313,7 +314,7 @@ export default function SheetSide() {
                 done.
               </SheetDescription>
             </SheetHeader>
-            <div className="grid gap-4 py-4">
+            <SheetBody className="grid gap-4">
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="name" className="text-right">
                   Name
@@ -326,7 +327,7 @@ export default function SheetSide() {
                 </Label>
                 <Input id="username" value="@peduarte" className="col-span-3" />
               </div>
-            </div>
+            </SheetBody>
             <SheetFooter>
               <SheetClose asChild>
                 <Button type="submit">Save changes</Button>

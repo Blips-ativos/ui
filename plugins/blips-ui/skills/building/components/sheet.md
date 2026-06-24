@@ -49,7 +49,7 @@ Use `SheetSection` e `SheetSectionTitle` **apenas quando o conteúdo se benefici
 | `SheetTitle`        | Título do painel                      |
 | `SheetDescription`  | Descrição/subtítulo do painel         |
 | `SheetBody`         | Container scrollable para o conteúdo  |
-| `SheetSection`      | Seção com padding e borda inferior    |
+| `SheetSection`      | Seção com padding e borda no topo     |
 | `SheetSectionTitle` | Título de cada seção                  |
 | `SheetFooter`       | Rodapé para ações (botões)            |
 | `SheetClose`        | Botão para fechar o painel            |
@@ -248,7 +248,7 @@ Para outros lados, ajuste o seletor:
 ```
 
 - Container com `overflow-auto` para scroll
-- Aplica padding `p-6` quando NÃO contém `SheetSection`
+- Aplica padding `p-4` quando NÃO contém `SheetSection`
 - Remove padding automaticamente quando contém `SheetSection`
 - Deve envolver todo o conteúdo scrollável
 
@@ -261,8 +261,8 @@ Para outros lados, ajuste o seletor:
 </SheetSection>
 ```
 
-- Padding automático (`p-6`)
-- Borda inferior automática (exceto última seção)
+- Padding automático (`p-4`)
+- Borda no topo automática (separa a primeira seção do header e cada seção da anterior)
 - Use para agrupar informações relacionadas
 
 ### 6. SheetSectionTitle
