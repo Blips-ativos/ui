@@ -52,8 +52,8 @@ NÃO Quicksand** — para "anunciar" use `font-display`. Logo: `text-success`,
 
 ## Componentes
 
-- A lib tem ~50 componentes (Button, Card, Dialog, Alert, Skeleton, Spinner,
-  Sheet, Table, Form, Sonner/Toaster...). O `Button` NÃO tem prop `loading`
+- A lib tem ~52 componentes (Button, Card, Dialog, Alert, Skeleton, Spinner,
+  Sheet, Table, Form, Field, Empty, Sonner/Toaster...). O `Button` NÃO tem prop `loading`
   (spinner manual + disabled é o padrão atual).
 - `DialogContent` da lib JÁ embute o botão X de fechar — close customizado
   duplica; `DialogClose` existe para custom triggers.
