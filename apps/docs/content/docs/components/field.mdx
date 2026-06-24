@@ -1,0 +1,165 @@
+---
+title: Field
+description: Primitivo de composição de campos de formulário, sem acoplar a nenhuma biblioteca de formulário.
+---
+
+<ComponentPreview name="field-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from "@blips/ui/components/field"
+```
+
+```tsx
+<FieldGroup>
+  <Field>
+    <FieldLabel htmlFor="name">Nome</FieldLabel>
+    <Input id="name" placeholder="João da Silva" />
+    <FieldDescription>Como devemos te chamar.</FieldDescription>
+  </Field>
+</FieldGroup>
+```
+
+O `Field` cuida da **associação acessível** entre rótulo, controle, descrição e
+erro, além do espaçamento e dos layouts (vertical, horizontal e responsivo). Ele
+não valida nem controla estado — isso fica com o consumidor (HTML nativo,
+TanStack Form, _server actions_ etc.).
+
+## Form vs Field
+
+A biblioteca tem **dois pontos de entrada** para formulários — escolha pelo
+contexto:
+
+| Use **`Form`** quando…                              | Use **`Field`** quando…                                        |
+| --------------------------------------------------- | -------------------------------------------------------------- |
+| O formulário usa **react-hook-form + Zod**          | O formulário **não** usa react-hook-form                       |
+| Você quer `FormField`/`Controller` e validação      | É config, filtros, editor, protótipo ou HTML nativo            |
+| Precisa de `aria-invalid`/mensagem automáticos      | Você controla o estado de erro manualmente (`FieldError`)      |
+
+São caminhos **independentes** — `Field` não substitui `Form` nem altera os
+formulários existentes baseados em `Form`. Dentro do react-hook-form você ainda
+pode compor `Field*` via `Controller` (veja abaixo), usando `data-invalid` e
+`FieldError` para refletir o `fieldState`.
+
+## Exemplos
+
+### Campos básicos
+
+`Field` empilha rótulo, controle e descrição com espaçamento consistente. A
+descrição pode vir antes ou depois do controle.
+
+<ComponentPreview name="field-input" />
+
+### Estado de erro (sem react-hook-form)
+
+Marque `data-invalid` no `Field` e `aria-invalid` no controle; use `FieldError`
+com `errors` (array, deduplicado automaticamente) ou `children`.
+
+<ComponentPreview name="field-error" />
+
+### Layout horizontal
+
+`orientation="horizontal"` posiciona o controle ao lado do rótulo. Com
+`FieldContent`, o texto ocupa o espaço e o controle (switch, checkbox) alinha à
+direita.
+
+<ComponentPreview name="field-switch" />
+
+### Cartões de escolha
+
+Envolva um `Field` horizontal em `FieldLabel` dentro de um `RadioGroup` para
+transformar a opção inteira em alvo de clique.
+
+<ComponentPreview name="field-choice-card" />
+
+### Orientação responsiva
+
+`orientation="responsive"` é vertical no mobile e horizontal a partir do
+breakpoint de contêiner `@md` do `FieldGroup`.
+
+<ComponentPreview name="field-responsive" />
+
+## Acessibilidade
+
+- Associe `FieldLabel` ao controle via `htmlFor`/`id` — clicar no rótulo foca o
+  controle e o leitor de tela anuncia rótulo + descrição.
+- Para grupos de controles relacionados (checkbox/radio), use `FieldSet` +
+  `FieldLegend` para expô-los como um único grupo com legenda.
+- Em estado inválido, marque `aria-invalid` no controle e renderize
+  `FieldError` (que usa `role="alert"`) para que a mensagem seja anunciada.
+- `FieldTitle` é um rótulo **apenas visual** (não é `<label>`); use-o para
+  títulos de exibição (ex.: cartões de escolha), não para rotular um controle.
+
+## Referência da API
+
+### Field
+
+Contêiner do campo. Renderiza `div[role="group"]`.
+
+| Prop          | Tipo                                          | Padrão       |
+| ------------- | --------------------------------------------- | ------------ |
+| `orientation` | `"vertical" \| "horizontal" \| "responsive"` | `"vertical"` |
+| `data-invalid`| `boolean`                                     | -            |
+| `className`   | `string`                                      | -            |
+
+### FieldLabel
+
+Rótulo construído sobre `Label`. Suporta o padrão de cartão de escolha (campo
+aninhado).
+
+### FieldTitle
+
+Título leve (não é `<label>`) para cabeçalhos apenas de exibição.
+
+### FieldDescription
+
+Texto de apoio do campo. Estiliza links (`<a>`) automaticamente.
+
+### FieldError
+
+Exibe o erro com `role="alert"`.
+
+| Prop       | Tipo                                       | Padrão |
+| ---------- | ------------------------------------------ | ------ |
+| `errors`   | `Array<{ message?: string } \| undefined>` | -      |
+| `children` | `React.ReactNode`                          | -      |
+
+Com um único erro, renderiza texto simples; com vários, uma lista `<ul>`.
+`children` tem precedência sobre `errors`.
+
+### FieldGroup
+
+Agrupa campos verticalmente com `gap` consistente. Habilita _container queries_
+(`@container`) para a orientação responsiva.
+
+### FieldSet / FieldLegend
+
+`<fieldset>` semântico e sua `<legend>`. `FieldLegend` aceita
+`variant="legend" | "label"`.
+
+### FieldSeparator
+
+Separador horizontal entre grupos, com conteúdo de texto opcional.
+
+### FieldContent
+
+Wrapper de conteúdo flexível para layouts horizontais (texto à esquerda,
+controle à direita).
