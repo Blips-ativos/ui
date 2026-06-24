@@ -368,6 +368,20 @@ export {
   EmptyTitle,
 } from "./components/empty";
 
+// Field
+export {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from "./components/field";
+
 // Form
 export {
   Form,

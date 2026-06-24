@@ -321,6 +321,24 @@
       ]
     },
     {
+      "name": "field",
+      "type": "registry:ui",
+      "description": "A composition primitive for accessible form fields, decoupled from any form library.",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "registryDependencies": [
+        "label",
+        "separator"
+      ],
+      "files": [
+        {
+          "path": "default/ui/field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "form",
       "type": "registry:ui",
       "description": "Building forms with React Hook Form and Zod.",
