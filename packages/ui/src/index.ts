@@ -280,11 +280,14 @@ export { Separator } from "./components/separator";
 // Sheet
 export {
   Sheet,
+  SheetBody,
   SheetClose,
   SheetContent,
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetSection,
+  SheetSectionTitle,
   SheetTitle,
   SheetTrigger,
 } from "./components/sheet";
