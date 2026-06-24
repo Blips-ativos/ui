@@ -358,6 +358,16 @@ export {
   type ChartConfig,
 } from "./components/chart";
 
+// Empty
+export {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "./components/empty";
+
 // Form
 export {
   Form,

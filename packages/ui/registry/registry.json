@@ -307,6 +307,20 @@
       ]
     },
     {
+      "name": "empty",
+      "type": "registry:ui",
+      "description": "Use to display empty states, no results, or error states.",
+      "dependencies": [
+        "class-variance-authority"
+      ],
+      "files": [
+        {
+          "path": "default/ui/empty.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "form",
       "type": "registry:ui",
       "description": "Building forms with React Hook Form and Zod.",
