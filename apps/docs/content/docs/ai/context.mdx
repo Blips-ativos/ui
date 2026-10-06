@@ -1,0 +1,138 @@
+---
+title: Context
+description: Indicador de uso da janela de contexto do modelo, com detalhe de tokens e custo estimado ao passar o mouse.
+---
+
+<ComponentPreview name="ai-context-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `context` não exige peer opcional em runtime: o cálculo de custo usa o `tokenlens`, que já vem como
+dependência do `@blips/ai`. Do `ai` ele importa só o tipo `LanguageModelUsage`; como o pacote publica o
+código-fonte, instale o `ai` para o TypeScript resolver o tipo:
+
+```bash
+pnpm add -D ai
+```
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Context,
+  ContextCacheUsage,
+  ContextContent,
+  ContextContentBody,
+  ContextContentFooter,
+  ContextContentHeader,
+  ContextInputUsage,
+  ContextOutputUsage,
+  ContextReasoningUsage,
+  ContextTrigger,
+} from "@blips/ai/components/context"
+```
+
+```tsx
+<Context
+  maxTokens={128_000}
+  usedTokens={usage.totalTokens ?? 0}
+  usage={usage}
+  modelId="openai:gpt-5"
+>
+  <ContextTrigger />
+  <ContextContent>
+    <ContextContentHeader />
+    <ContextContentBody>
+      <ContextInputUsage />
+      <ContextOutputUsage />
+      <ContextReasoningUsage />
+      <ContextCacheUsage />
+    </ContextContentBody>
+    <ContextContentFooter />
+  </ContextContent>
+</Context>
+```
+
+O `Context` é um [Hover Card](/docs/components/hover-card) da `@blips/ui`. O `ContextTrigger` mostra o
+percentual usado e um anel de progresso; o conteúdo abre ao passar o mouse, sem atraso.
+
+O componente é apresentacional: `usedTokens`, `maxTokens` e `usage` vêm do app. Com o AI SDK, `usage` é o
+`LanguageModelUsage` devolvido pela chamada; com outro backend, monte um objeto no mesmo formato a partir
+das métricas que ele enviar.
+
+As linhas `ContextInputUsage`, `ContextOutputUsage`, `ContextReasoningUsage` e `ContextCacheUsage` somem
+quando o valor correspondente é zero ou ausente. Raciocínio vem de `usage.outputTokenDetails.reasoningTokens`
+e cache de `usage.inputTokenDetails.cacheReadTokens`.
+
+### Custo
+
+O custo é estimado pelo catálogo embutido do [tokenlens](https://github.com/xn1cklas/tokenlens), a partir
+de `modelId` no formato `provedor:modelo` (ex.: `openai:gpt-5`). Sem `modelId`, ou com um modelo fora do
+catálogo (como um nome de deployment do LiteLLM), o custo aparece como `$0.00`.
+
+## Exemplos
+
+### Textos em pt-BR
+
+Os rótulos e a formatação padrão estão em inglês (`en-US`, `USD`, "Total cost", "Input", "Output"...),
+como no original. Para traduzir, passe `children`: cada parte passa a desenhar o seu conteúdo no lugar do
+padrão.
+
+<ComponentPreview name="ai-context-custom" />
+
+## Referência da API
+
+### Context
+
+Aceita as props do `HoverCard` da `@blips/ui` (`open`, `defaultOpen`, `onOpenChange`...).
+
+| Prop         | Tipo                 | Padrão      |
+| ------------ | -------------------- | ----------- |
+| `usedTokens` | `number`             | obrigatório |
+| `maxTokens`  | `number`             | obrigatório |
+| `usage`      | `LanguageModelUsage` | —           |
+| `modelId`    | `string`             | —           |
+
+### ContextTrigger
+
+Sem `children`, renderiza um `Button` `variant="ghost"` da `@blips/ui` como trigger e aceita as props dele.
+Com `children`, desenha o conteúdo dentro do trigger padrão (`<a>`) e ignora as props de `Button`.
+
+| Prop         | Tipo               | Padrão |
+| ------------ | ------------------ | ------ |
+| `delay`      | `number` (ms)      | `0`    |
+| `closeDelay` | `number` (ms)      | `0`    |
+| `children`   | `ReactNode`        | percentual + anel |
+
+### ContextContent
+
+Props do `HoverCardContent` da `@blips/ui`. `className` também aceita função do estado.
+
+### ContextContentHeader, ContextContentBody, ContextContentFooter
+
+Props de `<div>`. Sem `children`, o header mostra percentual, `usados / total` e uma barra de
+[Progress](/docs/components/progress); o footer mostra o custo total. O body só tem padding.
+
+### ContextInputUsage, ContextOutputUsage, ContextReasoningUsage, ContextCacheUsage
+
+Props de `<div>`. Sem `children`, mostram tokens e custo da categoria, ou nada quando o valor é zero. Com
+`children`, desenham os `children` no lugar.
+
+## Origem
+
+Adaptado do componente [Context](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudanças da Blips: primitivas Base UI da `@blips/ui` e tokens da `@blips/ui`. O `Context` não
+aceita mais `openDelay`/`closeDelay` (no Base UI os atrasos ficam no trigger, como `delay` e `closeDelay`),
+e raciocínio e cache passam a ler os campos de detalhe do `LanguageModelUsage`
+(`outputTokenDetails.reasoningTokens`, `inputTokenDetails.cacheReadTokens`), que existem no `ai` 6 e 7.

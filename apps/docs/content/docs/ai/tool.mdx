@@ -1,0 +1,159 @@
+---
+title: Tool
+description: Cartão recolhível de uma chamada de ferramenta do agente, com status, parâmetros e resultado.
+---
+
+<ComponentPreview name="ai-tool-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai shiki
+pnpm add -D ai
+```
+
+O `ToolInput` e o `ToolOutput` destacam o JSON com o [CodeBlock](/docs/ai/code-block), que usa o [Shiki](https://shiki.style). Por isso o `shiki` é obrigatório para este componente, mesmo sendo peer opcional do pacote. O `ai` entra só pelos tipos (`ToolUIPart`, `DynamicToolUIPart`): nada dele roda no navegador, mas o TypeScript precisa do pacote para resolver as props. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolInput,
+  ToolOutput,
+} from "@blips/ai/components/tool"
+```
+
+```tsx
+<Tool>
+  <ToolHeader type="tool-buscar_contratos" state="output-available" />
+  <ToolContent>
+    <ToolInput input={{ cnpj: "12.345.678/0001-90" }} />
+    <ToolOutput output={resultado} errorText={undefined} />
+  </ToolContent>
+</Tool>
+```
+
+O componente é apresentacional: ele não chama a ferramenta. Com o AI SDK, cada part `tool-<nome>` ou `dynamic-tool` da mensagem já tem `type`, `state`, `input`, `output` e `errorText` no formato que o `Tool` espera:
+
+```tsx
+import type { ToolPart } from "@blips/ai/components/tool"
+
+function ParteDeFerramenta({ part }: { part: ToolPart }) {
+  return (
+    <Tool>
+      {part.type === "dynamic-tool" ? (
+        <ToolHeader type={part.type} state={part.state} toolName={part.toolName} />
+      ) : (
+        <ToolHeader type={part.type} state={part.state} />
+      )}
+      <ToolContent>
+        <ToolInput input={part.input} />
+        <ToolOutput output={part.output} errorText={part.errorText} />
+      </ToolContent>
+    </Tool>
+  )
+}
+```
+
+Com eventos próprios (por exemplo, o início e o fim de uma tool call no AgentOS), monte um objeto com esses campos no app e passe para o `Tool`.
+
+### Nome exibido
+
+Sem `title`, o `ToolHeader` deriva o nome do `type`: `tool-buscar_contratos` vira `buscar_contratos`. Para `type="dynamic-tool"`, informe `toolName`, que passa a ser o nome exibido.
+
+### Textos em inglês
+
+Os rótulos de status ("Running", "Completed", "Error"...) e os títulos das seções ("Parameters", "Result", "Error") vêm em inglês, como no upstream, e não têm prop para trocar. Se a tela precisar de tudo em pt-BR, monte o cabeçalho com `CollapsibleTrigger` e `Badge` da `@blips/ui` dentro do `Tool`.
+
+## Exemplos
+
+### Estados
+
+Cada `state` da tool call tem ícone e rótulo próprios.
+
+<ComponentPreview name="ai-tool-estados" />
+
+| `state`              | Rótulo              |
+| -------------------- | ------------------- |
+| `input-streaming`    | Pending             |
+| `input-available`    | Running             |
+| `approval-requested` | Awaiting Approval   |
+| `approval-responded` | Responded           |
+| `output-available`   | Completed           |
+| `output-error`       | Error               |
+| `output-denied`      | Denied              |
+
+### Erro e ferramenta dinâmica
+
+Com `errorText`, o `ToolOutput` muda o título para "Error" e pinta o bloco com a cor `destructive`. O exemplo usa `type="dynamic-tool"` com `toolName`.
+
+<ComponentPreview name="ai-tool-erro" />
+
+### Com aprovação
+
+Para ferramentas que pedem autorização antes de rodar, coloque um [Confirmation](/docs/ai/confirmation) dentro do `ToolContent`.
+
+<ComponentPreview name="ai-confirmation-tool" />
+
+## Referência da API
+
+### Tool
+
+Raiz do cartão, sobre o [Collapsible](/docs/components/collapsible) da `@blips/ui`. Aceita as props do `Collapsible` (`open`, `defaultOpen`, `onOpenChange` etc.). `className` aceita string ou função do estado, como no Base UI.
+
+### ToolHeader
+
+Gatilho com ícone, nome, badge de status e seta.
+
+| Prop        | Tipo                                     | Padrão                 |
+| ----------- | ---------------------------------------- | ---------------------- |
+| `type`      | `` `tool-${string}` \| "dynamic-tool" `` | obrigatória            |
+| `state`     | `ToolPart["state"]`                      | obrigatória            |
+| `toolName`  | `string`                                 | obrigatória com `dynamic-tool` |
+| `title`     | `string`                                 | nome derivado do `type` |
+| `className` | `string`                                 |                        |
+
+### ToolContent
+
+Painel que abre e fecha. Aceita as props do `CollapsibleContent`.
+
+### ToolInput
+
+Mostra os parâmetros como JSON formatado. Aceita as props de `div`.
+
+| Prop    | Tipo                | Padrão      |
+| ------- | ------------------- | ----------- |
+| `input` | `ToolPart["input"]` | obrigatória |
+
+### ToolOutput
+
+Mostra o resultado ou o erro. Não renderiza nada sem `output` e sem `errorText`. Aceita as props de `div`.
+
+| Prop        | Tipo                    | Padrão      |
+| ----------- | ----------------------- | ----------- |
+| `output`    | `ToolPart["output"]`    | obrigatória |
+| `errorText` | `ToolPart["errorText"]` | obrigatória |
+
+Objeto vira JSON formatado, string vai para o `CodeBlock` como JSON e um elemento React é renderizado como está.
+
+### getStatusBadge
+
+`getStatusBadge(state)` devolve o `Badge` de status usado no cabeçalho, para reaproveitar em cabeçalhos próprios.
+
+### ToolPart
+
+Tipo `ToolUIPart | DynamicToolUIPart`, reexportado do `ai`.
+
+## Origem
+
+Adaptado do componente [Tool](https://elements.ai-sdk.dev/components/tool) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible e pelo Badge da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e as cores pelos tokens da `@blips/ui`.

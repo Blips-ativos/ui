@@ -13,6 +13,14 @@ pnpm monorepo. Components mirror shadcn/ui on **Base UI** primitives
 
 - `packages/ui/` — `@blips/ui` library. Source in `src/{components,hooks,lib}`,
   `globals.css`, barrel `src/index.ts`. Built with **tsup** (ESM+CJS+dts).
+- `packages/ai/` — `@blips/ai`: componentes de interface de agente (port do AI
+  Elements, Apache-2.0, + wrappers do libraries.dev, MIT) que **compõem** a
+  `@blips/ui` (peer `^3`). Só subpaths (`@blips/ai/components/*`, `@blips/ai/fx/*`),
+  **sem barrel**: um barrel puxaria os peers opcionais (streamdown, shiki…).
+  CSS próprio `@blips/ai/styles.css` (só `@source`), importado depois do
+  `@blips/ui/globals.css`. Arquivo portado começa com cabeçalho de origem;
+  licença `MIT AND Apache-2.0` com `THIRD_PARTY_NOTICES.md`. Specs em
+  `docs/superpowers/specs/2026-10-06-blips-ai-fase-*.md`.
 - `packages/tailwind-config/` — `@blips/tailwind-config`, shared Tailwind v4 config.
 - `apps/docs/` — fumadocs documentation site.
 - `plugins/` — Claude Code plugin marketplace (`blips-ui`); not app code.
@@ -86,6 +94,13 @@ the `verify` job fails at merge).
   (scope `@blips`); the very first publish may need a manual `npm publish` if the
   package doesn't exist yet. Consumed inside the monorepo via `workspace:*` (no
   publish needed there); publishing is only for **other repos** to use it.
+- **AI package (`@blips/ai`)** — released via **`/release`** (pick scope `ai`) on
+  its **own track**: bumps `packages/ai/package.json` and opens a PR titled
+  **`release-ai: vX.Y.Z`**. Merging it builds and publishes `@blips/ai` via
+  **Trusted Publishing (OIDC)** and tags **`ai-vX.Y.Z`** — no docs/plugin. Needs
+  its own npm trusted publisher (scope `@blips`, workflow `release.yml`); the
+  first publish may need a manual `npm publish`. If a release needs a newer
+  `@blips/ui`, publish the UI first (peer `^3`).
 
 ## Conventions & gotchas
 

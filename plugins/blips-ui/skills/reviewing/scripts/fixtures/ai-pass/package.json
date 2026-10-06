@@ -1,0 +1,26 @@
+{
+  "name": "fixture-ai-pass",
+  "private": true,
+  "description": "Fixture da blips-ui:reviewing: app com @blips/ai que segue as regras (check.mjs sem achados de blips-ai).",
+  "dependencies": {
+    "@ai-sdk/react": "^4.0.0",
+    "@blips/ai": "^0.1.0",
+    "@blips/ui": "^3.0.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "@streamdown/cjk": "^1.0.4",
+    "@streamdown/code": "^2.0.0",
+    "@streamdown/math": "^1.0.3",
+    "@streamdown/mermaid": "^1.0.3",
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "shiki": "^4.5.0",
+    "streamdown": "^2.7.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.0.0",
+    "ai": "^7.0.128",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.0"
+  }
+}

@@ -1,7 +1,8 @@
 name: Release
 
 # Dois gatilhos:
-#   - pull_request closed na main: título `release: vX.Y.Z` ou `release-plugin: vA.B.C`
+#   - pull_request closed na main: título `release: vX.Y.Z`, `release-plugin: vA.B.C`,
+#     `release-brand: vX.Y.Z` ou `release-ai: vX.Y.Z`
 #   - workflow_dispatch (manual): inputs kind + version — útil para o primeiro
 #     release (quando o workflow ainda não estava na main no merge) ou re-runs.
 #
@@ -9,6 +10,7 @@ name: Release
 #   - npm    -> publish @blips/ui (OIDC) + deploy docs (Firebase) + tag vX.Y.Z
 #               (+ tag plugin-vA.B.C se a versão do plugin for nova — caso "ambos")
 #   - plugin -> tag plugin-vA.B.C + release (sem npm/docs)
+#   - ai     -> publish @blips/ai (OIDC) + tag ai-vX.Y.Z (sem docs)
 #
 # As versões vêm dos arquivos versionados (bumpados pelo /release):
 #   - npm    -> packages/ui/package.json
@@ -22,7 +24,7 @@ on:
       kind:
         description: "Track a publicar"
         type: choice
-        options: [npm, plugin, brand]
+        options: [npm, plugin, brand, ai]
         default: npm
       version:
         description: "Versão X.Y.Z (tem que bater com os arquivos versionados no ref)"
@@ -42,7 +44,8 @@ jobs:
       (github.event.pull_request.merged == true &&
        (startsWith(github.event.pull_request.title, 'release: v') ||
         startsWith(github.event.pull_request.title, 'release-plugin: v') ||
-        startsWith(github.event.pull_request.title, 'release-brand: v')))
+        startsWith(github.event.pull_request.title, 'release-brand: v') ||
+        startsWith(github.event.pull_request.title, 'release-ai: v')))
     runs-on: ubuntu-latest
     outputs:
       kind: ${{ steps.meta.outputs.kind }}
@@ -73,10 +76,12 @@ jobs:
               KIND=plugin
             elif [[ "$TITLE" == release-brand:* ]]; then
               KIND=brand
+            elif [[ "$TITLE" == release-ai:* ]]; then
+              KIND=ai
             elif [[ "$TITLE" == release:* ]]; then
               KIND=npm
             else
-              echo "Título fora da convenção (use 'release: vX.Y.Z', 'release-plugin: vX.Y.Z' ou 'release-brand: vX.Y.Z'): $TITLE" >&2; exit 1
+              echo "Título fora da convenção (use 'release: vX.Y.Z', 'release-plugin: vX.Y.Z', 'release-brand: vX.Y.Z' ou 'release-ai: vX.Y.Z'): $TITLE" >&2; exit 1
             fi
             VERSION=$(echo "$TITLE" | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+' | head -1 | sed 's/^v//')
             if [ -z "$VERSION" ]; then
@@ -100,6 +105,9 @@ jobs:
           elif [ "$KIND" = brand ]; then
             BR=$(node -p "require('./packages/brand/package.json').version")
             [ "$BR" = "$VERSION" ] || { echo "packages/brand/package.json ($BR) != versão ($VERSION)" >&2; exit 1; }
+          elif [ "$KIND" = ai ]; then
+            AI=$(node -p "require('./packages/ai/package.json').version")
+            [ "$AI" = "$VERSION" ] || { echo "packages/ai/package.json ($AI) != versão ($VERSION)" >&2; exit 1; }
           else
             [ "$PJ" = "$VERSION" ] || { echo "plugin.json ($PJ) != versão ($VERSION)" >&2; exit 1; }
           fi
@@ -305,6 +313,59 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" -m "Brand release $TAG"
+          git push origin "$TAG"
+          if [ -n "$PREV" ]; then
+            gh release create "$TAG" --title "$TAG" --generate-notes --notes-start-tag "$PREV"
+          else
+            gh release create "$TAG" --title "$TAG" --generate-notes
+          fi
+
+  # ─────────────────────────────── ai track ───────────────────────────────────
+  publish-ai:
+    name: npm publish @blips/ai
+    needs: verify
+    if: needs.verify.outputs.kind == 'ai'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24 # >= 22.14.0 (Trusted Publishing)
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      - name: Garantir npm com OIDC
+        run: npm install -g npm@latest # >= 11.5.1
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @blips/ai
+        run: pnpm --filter @blips/ai build
+
+      - name: Publicar no npm (OIDC)
+        run: npm publish --access public
+        working-directory: packages/ai
+
+      - name: Tag + release (ai)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          PREV=$(git tag -l "ai-v*" --sort=-version:refname | head -1)
+          TAG="ai-v${{ needs.verify.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "AI release $TAG"
           git push origin "$TAG"
           if [ -n "$PREV" ]; then
             gh release create "$TAG" --title "$TAG" --generate-notes --notes-start-tag "$PREV"

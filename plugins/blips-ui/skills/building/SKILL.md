@@ -1,6 +1,6 @@
 ---
 name: building
-description: "Padrões, APIs e convenções da biblioteca de componentes Blips UI (@blips/ui) — shadcn/ui sobre Base UI (v3.x) ou Radix (v2.x), com instruções separadas para cada versão. Use esta skill sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização. Isso inclui: editar arquivos .tsx que usam componentes de @blips/ui, construir com Tailwind CSS, trabalhar com react-hook-form, TanStack Table, Recharts ou primitivas Base UI/Radix. Até mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout) se beneficiam desta skill para garantir que as convenções da biblioteca sejam seguidas. Dispara em qualquer tarefa de UI: criação de componente, layout de página, construção de formulário, data table, gráfico, modal, sheet, sidebar, estilização, design responsivo, acessibilidade, loading states, empty states ou refatoração de UI."
+description: "Padrões, APIs e convenções da biblioteca Blips UI (@blips/ui) — shadcn/ui sobre Base UI (v3.x) ou Radix (v2.x), com instruções separadas para cada versão — e da @blips/ai (componentes de interface de agente sobre a v3.x). Use sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização —, inclusive mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout). Cobre .tsx com @blips/ui, Tailwind CSS, react-hook-form, TanStack Table, Recharts, primitivas Base UI/Radix, loading/empty states, acessibilidade e design responsivo. Dispara também em UI de IA: chat, agente, streaming, raciocínio, tool call, prompt input, fontes e citações, AI Elements ou @blips/ai."
 ---
 
 # Construindo Componentes UI
@@ -44,6 +44,7 @@ Classifique o que está construindo:
 | **Padrão composto** | Combobox, formulário em Sheet, Data Table | `components/<padrão>.md` |
 | **Página/seção completa** | Dashboard, layout com sidebar | `blocks/<bloco>.md` |
 | **Alteração pequena** | Trocar variante, corrigir espaçamento, adicionar prop | `references/<componente>.md` para verificar API |
+| **Interface de IA** | Chat com agente, resposta em streaming, raciocínio, tool call, prompt | `components/ai-chat.md` + `references/ai/<componente>.md` (só v3.x) |
 
 **Página/seção NOVA sem direção visual declarada?** Antes de continuar,
 invoque **blips-ui:designing** (direção de densidade/profundidade/layout/tom é
@@ -104,6 +105,35 @@ Diferenças transversais entre as versões: [`references/v2-vs-v3.md`](reference
 
 Cada arquivo contém: caminho de importação e conteúdo comum primeiro; depois as seções `## v3.x — Base UI` e `## v2.x — Radix`, cada uma com sub-componentes, props, exemplos e notas daquela versão. Quando a API é igual nas duas, o arquivo diz "API igual na v2.x e na v3.x." e traz um único exemplo.
 
+
+### Componentes de IA (@blips/ai)
+
+Pacote à parte, `@blips/ai`, que **compõe** a @blips/ui v3.x (exige `@blips/ui`
+^3 e React 19; num repo v2.x não existe). Sem barrel: import sempre por subpath
+(`@blips/ai/components/<nome>` ou `@blips/ai/fx/<nome>`). Os componentes são
+apresentacionais: recebem `parts`/`state`/`status` prontos, e o mapeamento do
+AI SDK ou de eventos próprios (ex.: AgentOS do Agno) fica no app. Alguns exigem
+peers opcionais (Streamdown, Shiki, `ai` para tipos): cada reference diz quais.
+Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-chat.md).
+
+| Componente | Import | Reference | Quando usar |
+|---|---|---|---|
+| Message (IA) | `@blips/ai/components/message` | [references/ai/message.md](references/ai/message.md) | Resposta do modelo em markdown com streaming (`MessageResponse`), ações e ramos; casca `Message` reexportada da @blips/ui |
+| Shimmer | `@blips/ai/components/shimmer` | [references/ai/shimmer.md](references/ai/shimmer.md) | Texto de status animado ("Pensando…") |
+| Conversation | `@blips/ai/components/conversation` | [references/ai/conversation.md](references/ai/conversation.md) | Lista da conversa que gruda no fim, estado vazio, botão de rolar, exportar markdown |
+| Suggestion | `@blips/ai/components/suggestion` | [references/ai/suggestion.md](references/ai/suggestion.md) | Sugestões de pergunta clicáveis |
+| PromptInput | `@blips/ai/components/prompt-input` | [references/ai/prompt-input.md](references/ai/prompt-input.md) | Campo de prompt com envio/parar, anexos, menus e seletor de modelo |
+| Context | `@blips/ai/components/context` | [references/ai/context.md](references/ai/context.md) | Uso da janela de contexto e custo em tokens |
+| CodeBlock | `@blips/ai/components/code-block` | [references/ai/code-block.md](references/ai/code-block.md) | Código com realce (Shiki), copiar, números de linha |
+| Reasoning | `@blips/ai/components/reasoning` | [references/ai/reasoning.md](references/ai/reasoning.md) | Raciocínio do modelo, recolhível, com duração |
+| ChainOfThought | `@blips/ai/components/chain-of-thought` | [references/ai/chain-of-thought.md](references/ai/chain-of-thought.md) | Passos do agente (buscas, imagens, etapas) em linha do tempo |
+| Tool | `@blips/ai/components/tool` | [references/ai/tool.md](references/ai/tool.md) | Chamada de ferramenta com estado, parâmetros e resultado |
+| Confirmation | `@blips/ai/components/confirmation` | [references/ai/confirmation.md](references/ai/confirmation.md) | Aprovação humana de ferramenta (aprovar/recusar) |
+| Sources | `@blips/ai/components/sources` | [references/ai/sources.md](references/ai/sources.md) | Lista recolhível das fontes consultadas |
+| InlineCitation | `@blips/ai/components/inline-citation` | [references/ai/inline-citation.md](references/ai/inline-citation.md) | Citação no meio do texto com cartão e carrossel de fontes |
+| BorderBeam | `@blips/ai/fx/border-beam` | [references/ai/border-beam.md](references/ai/border-beam.md) | Feixe animado na borda (ex.: prompt enquanto o agente trabalha) |
+| ThinkingOrbs | `@blips/ai/fx/thinking-orbs` | [references/ai/thinking-orbs.md](references/ai/thinking-orbs.md) | Orbe animado pequeno (escala de texto) de "agente pensando" |
+
 ---
 
 ## Nível 2: Componentes (padrões compostos)
@@ -115,6 +145,12 @@ Cada arquivo contém: caminho de importação e conteúdo comum primeiro; depois
 | Combobox | [components/combobox.md](components/combobox.md) | Select com busca/filtro, dropdowns com dados da API |
 | Dialog | [components/dialog.md](components/dialog.md) | Modais, confirmações (AlertDialog), formulários rápidos |
 | Sheet | [components/sheet.md](components/sheet.md) | Painéis laterais, visualizações detalhadas, formulários complexos |
+
+### Interface de IA (@blips/ai, só v3.x)
+
+| Padrão | Arquivo | Quando usar |
+|--------|---------|-------------|
+| Tela de chat | [components/ai-chat.md](components/ai-chat.md) | Conversa com agente: Conversation + Message + MessageResponse + Reasoning + Tool + Sources + PromptInput + Suggestion + Shimmer, com dados do AI SDK (`useChat`) ou de eventos próprios (AgentOS) |
 
 ### Formulários (react-hook-form + Zod)
 
@@ -185,6 +221,7 @@ Cada arquivo contém: caminho de importação e conteúdo comum primeiro; depois
 | Visualização de dados | **Chart** | Recharts + ChartContainer, temas via variáveis CSS |
 | Navegação do app | **Sidebar** | Colapsável, menus, grupos, modo ícone |
 | Listagem de dados | **Data Table** | TanStack Table, suporte server-side |
+| Chat com agente/LLM | **Conversation + Message (@blips/ai)** | Streaming, raciocínio, ferramentas e fontes sobre a casca `Message`/`Bubble` da @blips/ui (`components/ai-chat.md`) |
 
 ---
 
@@ -248,6 +285,7 @@ Na biblioteca `@blips/ui`:
 
 - `packages/ui/src/components/` — Componentes base shadcn (Base UI na v3.x, Radix na v2.x)
 - `packages/ui/src/hooks/` — Hooks customizados (use-file-upload, use-mobile)
+- `packages/ai/src/components/` e `packages/ai/src/fx/` — `@blips/ai` (componentes de IA e efeitos visuais)
 
 Componentes compostos (data tables, comboboxes de entidade, etc.) e utilitários de domínio (máscaras de input) vivem no app que consome a biblioteca.
 

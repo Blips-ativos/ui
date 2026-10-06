@@ -1,5 +1,5 @@
 ---
-description: Abre o PR de release (staging → main). Escolhe o escopo (npm+docs, plugin, brand ou ambos); o nome do PR dispara tag/publish/deploy no merge.
+description: Abre o PR de release (staging → main). Escolhe o escopo (npm+docs, plugin, brand, ai ou ambos); o nome do PR dispara tag/publish/deploy no merge.
 allowed-tools: Bash(git *), Bash(gh *), Bash(jq *), Bash(node *), Edit, AskUserQuestion
 ---
 
@@ -12,20 +12,21 @@ Commits em staging que não estão em main:
 !`git fetch origin main staging --quiet && git log --oneline origin/main..origin/staging`
 
 Última tag npm / plugin / brand:
-!`echo "npm:    $(git tag -l 'v*' --sort=-version:refname | grep -vE 'plugin-|brand-' | head -1)"; echo "plugin: $(git tag -l 'plugin-v*' --sort=-version:refname | head -1)"; echo "brand:  $(git tag -l 'brand-v*' --sort=-version:refname | head -1)"`
+!`echo "npm:    $(git tag -l 'v*' --sort=-version:refname | grep -vE 'plugin-|brand-|ai-' | head -1)"; echo "ai:     $(git tag -l 'ai-v*' --sort=-version:refname | head -1)"; echo "plugin: $(git tag -l 'plugin-v*' --sort=-version:refname | head -1)"; echo "brand:  $(git tag -l 'brand-v*' --sort=-version:refname | head -1)"`
 
 Versões atuais:
-!`echo "@blips/ui:      $(node -p "require('./packages/ui/package.json').version")"; echo "@blips/brand:   $(node -p "require('./packages/brand/package.json').version")"; echo "plugin.json:    $(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")"; echo "marketplace:    $(node -p "require('./.claude-plugin/marketplace.json').plugins.find(x=>x.name==='blips-ui').version")"`
+!`echo "@blips/ui:      $(node -p "require('./packages/ui/package.json').version")"; echo "@blips/brand:   $(node -p "require('./packages/brand/package.json').version")"; echo "@blips/ai:      $(node -p "require('./packages/ai/package.json').version")"; echo "plugin.json:    $(node -p "require('./plugins/blips-ui/.claude-plugin/plugin.json').version")"; echo "marketplace:    $(node -p "require('./.claude-plugin/marketplace.json').plugins.find(x=>x.name==='blips-ui').version")"`
 
 ## Sua Tarefa
 
-Há **três tracks de release independentes**, dirigidos pelo título do PR:
+Há **quatro tracks de release independentes**, dirigidos pelo título do PR:
 
 | Track | Versiona | Título do PR | No merge (workflow) |
 | --- | --- | --- | --- |
 | **npm + docs** | `packages/ui/package.json` | `release: vX.Y.Z` | publish npm (OIDC) + deploy docs (Firebase) + tag `vX.Y.Z` |
 | **plugin** | `plugin.json` + entrada do `marketplace.json` | `release-plugin: vX.Y.Z` | tag `plugin-vX.Y.Z` + release (sem npm/docs) |
 | **brand** | `packages/brand/package.json` | `release-brand: vX.Y.Z` | publish `@blips/brand` no npm (OIDC) + tag `brand-vX.Y.Z` (sem docs) |
+| **ai** | `packages/ai/package.json` | `release-ai: vX.Y.Z` | publish `@blips/ai` no npm (OIDC) + tag `ai-vX.Y.Z` (sem docs) |
 
 Os títulos são **load-bearing** — o `.github/workflows/release.yml` extrai a versão e o track deles. Não altere o formato.
 
@@ -54,7 +55,7 @@ Ignore arquivos não commitados. Se falhar, informe e pare.
 
 ### 2. Escolher o escopo
 
-Use `AskUserQuestion`: **"O que liberar neste release?"** → `npm + docs`, `plugin`, `brand` ou `ambos` (npm+plugin). O track **brand** é independente: pode ir sozinho num `release-brand:` ou combinado com o npm no mesmo PR (o workflow publica `@blips/brand` se a versão dele for nova).
+Use `AskUserQuestion`: **"O que liberar neste release?"** → `npm + docs`, `plugin`, `brand`, `ai` ou `ambos` (npm+plugin). O track **brand** é independente: pode ir sozinho num `release-brand:` ou combinado com o npm no mesmo PR (o workflow publica `@blips/brand` se a versão dele for nova).
 
 ### 3. Recomendar versão(ões) por conventional commits
 
@@ -69,7 +70,7 @@ nos que tocam `plugins/**` e `.claude-plugin/**`):
 
 Prioridade: `BREAKING`/`!:` → MAJOR; senão `feat:` → MINOR; senão PATCH.
 Calcule a partir da última tag do track (`v*` para npm, `plugin-v*` para plugin,
-`brand-v*` para brand — para o brand, foque nos commits que tocam `packages/brand/**`)
+`brand-v*` para brand, `ai-v*` para ai — para o brand, foque nos commits que tocam `packages/brand/**`; para o ai, nos que tocam `packages/ai/**`)
 ou da versão atual do arquivo. Confirme com `AskUserQuestion` (recomendada primeiro).
 
 ### 4. Bump → commit → push (NESTA ORDEM, antes de qualquer PR)
@@ -79,6 +80,7 @@ ou da versão atual do arquivo. Confirme com `AskUserQuestion` (recomendada prim
   e a entrada `blips-ui` em `.claude-plugin/marketplace.json` → mesma `version`.
   (O workflow falha o release do plugin se os dois não baterem.)
 - **brand**: edite `packages/brand/package.json` → `"version": "X.Y.Z"`.
+- **ai**: edite `packages/ai/package.json` → `"version": "X.Y.Z"`. Se a release do `@blips/ai` exigir uma `@blips/ui` nova (peer `^3`), publique a `@blips/ui` antes.
 
 Commite **e empurre** na staging — o push é **pré-requisito** do passo 5:
 
@@ -95,6 +97,7 @@ arquivos versionados:
 - **npm + docs** → `gh pr create --base main --head staging --title "release: vX.Y.Z" --body "<commits>"`
 - **plugin** → `gh pr create --base main --head staging --title "release-plugin: vX.Y.Z" --body "<commits>"`
 - **brand** → `gh pr create --base main --head staging --title "release-brand: vX.Y.Z" --body "<commits>"`
+- **ai** → `gh pr create --base main --head staging --title "release-ai: vX.Y.Z" --body "<commits>"`
 - **ambos** → use o título **`release: vX.Y.Z`** (do npm). O bump do plugin vai junto
   no mesmo PR; ao mergear, o workflow publica npm/docs **e** cria a tag `plugin-vA.B.C`
   porque a versão do plugin mudou.

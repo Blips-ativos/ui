@@ -1,0 +1,172 @@
+---
+title: Message
+description: Resposta do assistente em markdown com streaming, ações, ramos de resposta e o helper que alinha a mensagem pelo papel.
+---
+
+<ComponentPreview name="ai-message-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk
+```
+
+O `MessageResponse` renderiza markdown com o [Streamdown](https://streamdown.ai) e carrega os plugins de código, matemática, Mermaid e CJK, por isso os cinco pacotes são obrigatórios para este componente. O pacote `ai` é opcional: só entra como tipo (`UIMessage["role"]` no `messageAlign`).
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { Bubble, BubbleContent } from "@blips/ui/components/bubble"
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+  messageAlign,
+} from "@blips/ai/components/message"
+```
+
+```tsx
+{messages.map((message) => (
+  <Message key={message.id} align={messageAlign(message.role)}>
+    <MessageContent>
+      {message.role === "user" ? (
+        <Bubble>
+          <BubbleContent>{message.text}</BubbleContent>
+        </Bubble>
+      ) : (
+        <MessageResponse>{message.text}</MessageResponse>
+      )}
+    </MessageContent>
+  </Message>
+))}
+```
+
+`Message`, `MessageContent`, `MessageAvatar`, `MessageHeader`, `MessageFooter` e `MessageGroup` são os da [Message da @blips/ui](/docs/components/message), reexportados com a mesma identidade: não existe uma segunda família de mensagem. O `@blips/ai` acrescenta só as partes de IA. Para o balão do usuário, use o [Bubble](/docs/components/bubble).
+
+No AI Elements o lado vinha de `from={role}`; aqui o `Message` recebe `align`, e o `messageAlign(role)` faz a tradução (`"user"` → `"end"`, o resto → `"start"`).
+
+## Exemplos
+
+### Streaming
+
+Passe o texto parcial como `children` e `isAnimating` enquanto a resposta chega. O Streamdown fecha o markdown incompleto (negrito, listas, blocos de código) a cada pedaço. A demo simula o streaming com um timer, sem chamar API.
+
+<ComponentPreview name="ai-message-streaming" />
+
+```tsx
+<MessageResponse isAnimating={status === "streaming"}>
+  {texto}
+</MessageResponse>
+```
+
+O `MessageResponse` é memorizado: só renderiza de novo quando `children` ou `isAnimating` mudam.
+
+### Ramos de resposta
+
+`MessageBranch` guarda várias versões de uma resposta (por exemplo, depois de "gerar de novo") e o `MessageBranchSelector` navega entre elas. Com um ramo só, o seletor não aparece.
+
+<ComponentPreview name="ai-message-branch" />
+
+```tsx
+<MessageBranch defaultBranch={versoes.length - 1}>
+  <MessageBranchContent>
+    {versoes.map((v) => (
+      <Message key={v.id}>
+        <MessageContent>
+          <MessageResponse>{v.text}</MessageResponse>
+        </MessageContent>
+      </Message>
+    ))}
+  </MessageBranchContent>
+  <MessageToolbar>
+    <MessageBranchSelector>
+      <MessageBranchPrevious />
+      <MessageBranchPage />
+      <MessageBranchNext />
+    </MessageBranchSelector>
+  </MessageToolbar>
+</MessageBranch>
+```
+
+### Ações
+
+`MessageActions` agrupa botões de ícone. Com `tooltip`, o `MessageAction` mostra o texto no hover e o usa como rótulo acessível; sem tooltip, passe `label`. O exemplo do topo da página mostra copiar, gerar de novo e avaliar.
+
+## Referência da API
+
+### messageAlign
+
+```ts
+messageAlign(role: UIMessage["role"]): "start" | "end"
+```
+
+Devolve `"end"` para `"user"` e `"start"` para os outros papéis.
+
+### MessageResponse
+
+Aceita as props do `Streamdown`. As mais usadas:
+
+| Prop                      | Tipo                        | Padrão        |
+| ------------------------- | --------------------------- | ------------- |
+| `children`                | `string`                    |               |
+| `isAnimating`             | `boolean`                   | `false`       |
+| `mode`                    | `"static" \| "streaming"`   | `"streaming"` |
+| `parseIncompleteMarkdown` | `boolean`                   | `true`        |
+| `className`               | `string`                    |               |
+
+Os plugins (`code`, `math`, `mermaid`, `cjk`) já vêm configurados.
+
+### MessageActions
+
+Linha `flex` com `gap-1`. Aceita as props de `div`.
+
+### MessageAction
+
+Aceita as props do [Button](/docs/components/button).
+
+| Prop      | Tipo                  | Padrão      |
+| --------- | --------------------- | ----------- |
+| `tooltip` | `string`              |             |
+| `label`   | `string`              |             |
+| `variant` | variantes do `Button` | `"ghost"`   |
+| `size`    | tamanhos do `Button`  | `"icon-sm"` |
+
+O texto de `label` (ou, na falta dele, `tooltip`) vai num `sr-only` dentro do botão.
+
+### MessageBranch
+
+| Prop             | Tipo                            | Padrão |
+| ---------------- | ------------------------------- | ------ |
+| `defaultBranch`  | `number`                        | `0`    |
+| `onBranchChange` | `(branchIndex: number) => void` |        |
+
+Aceita as props de `div`. Os componentes `MessageBranch*` precisam estar dentro dele.
+
+### MessageBranchContent
+
+Cada filho que é elemento React vira um ramo; só o ramo atual fica visível.
+
+### MessageBranchSelector
+
+Aceita as props do [ButtonGroup](/docs/components/button-group). Some quando há um ramo só.
+
+### MessageBranchPrevious e MessageBranchNext
+
+Aceitam as props do `Button`. Sem `children`, mostram `CaretLeftIcon` e `CaretRightIcon`. A navegação dá a volta: do último ramo vai para o primeiro.
+
+### MessageBranchPage
+
+Mostra "`n` de `total`". Aceita as props do `ButtonGroupText`.
+
+### MessageToolbar
+
+Linha com `justify-between` e `mt-4` para seletor de ramos e ações. Aceita as props de `div`.
+
+## Origem
+
+Adaptado do [Message do AI Elements](https://github.com/vercel/ai-elements) (Apache-2.0, Vercel). Na Blips, a casca da mensagem é a da `@blips/ui`, os ícones são Phosphor e as primitivas são Base UI.

@@ -1,0 +1,133 @@
+---
+title: Code Block
+description: Bloco de código com realce de sintaxe do Shiki, cabeçalho com nome do arquivo, botão de copiar e seletor de linguagem.
+---
+
+<ComponentPreview name="ai-code-block-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai shiki
+```
+
+O `code-block` exige o peer opcional `shiki` (^4): ele é importado de forma estática, então quem importa o
+`code-block` — ou o [Tool](/docs/ai/tool), que o usa por baixo — precisa ter o `shiki` instalado.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockCopyButton,
+  CodeBlockFilename,
+  CodeBlockHeader,
+  CodeBlockTitle,
+} from "@blips/ai/components/code-block"
+```
+
+```tsx
+<CodeBlock code={code} language="python">
+  <CodeBlockHeader>
+    <CodeBlockTitle>
+      <CodeBlockFilename>agente.py</CodeBlockFilename>
+    </CodeBlockTitle>
+    <CodeBlockActions>
+      <CodeBlockCopyButton aria-label="Copiar código" />
+    </CodeBlockActions>
+  </CodeBlockHeader>
+</CodeBlock>
+```
+
+O `CodeBlock` desenha o código cru na hora e troca pela versão realçada quando o Shiki termina de carregar.
+Os highlighters (um por linguagem) e os tokens ficam em cache no módulo, então o mesmo trecho não é
+processado de novo. Os temas são fixos: `github-light` e `github-dark`, este último aplicado sob a classe
+`.dark` da `@blips/ui`.
+
+Os `children` do `CodeBlock` entram antes do código — é ali que vai o `CodeBlockHeader`. O
+`CodeBlockCopyButton` lê o código do `CodeBlock` mais próximo e mostra um ícone de confirmação por
+`timeout` ms depois de copiar.
+
+Para markdown em streaming com blocos de código, use o `MessageResponse` da [Message](/docs/ai/message),
+que realça código pelo `@streamdown/code`. O `CodeBlock` é para quando o código chega como dado separado
+(saída de ferramenta, trecho gerado, exemplo fixo).
+
+## Exemplos
+
+### Números de linha
+
+<ComponentPreview name="ai-code-block-line-numbers" />
+
+### Seletor de linguagem
+
+`CodeBlockLanguageSelector` é o [Select](/docs/components/select) da `@blips/ui` com estilo compacto para o
+cabeçalho. Ele só controla o valor: o app escolhe o `code` e a `language` correspondentes.
+
+<ComponentPreview name="ai-code-block-language-selector" />
+
+## Referência da API
+
+### CodeBlock
+
+Aceita as props de `<div>`.
+
+| Prop              | Tipo                                    | Padrão      |
+| ----------------- | --------------------------------------- | ----------- |
+| `code`            | `string`                                | obrigatório |
+| `language`        | `BundledLanguage` (do `shiki`)          | obrigatório |
+| `showLineNumbers` | `boolean`                               | `false`     |
+| `children`        | `ReactNode` — renderizado antes do código | —         |
+
+### CodeBlockCopyButton
+
+Props do `Button` da `@blips/ui` (padrão `variant="ghost"`, `size="icon"`), exceto `onCopy` e `onError`
+nativos, que mudam de assinatura.
+
+| Prop       | Tipo                     | Padrão                     |
+| ---------- | ------------------------ | -------------------------- |
+| `onCopy`   | `() => void`             | —                          |
+| `onError`  | `(error: Error) => void` | —                          |
+| `timeout`  | `number` (ms)            | `2000`                     |
+| `children` | `ReactNode`              | ícone de copiar/confirmado |
+
+Sem a Clipboard API, `onError` recebe `Error("Clipboard API not available")`.
+
+### CodeBlockLanguageSelector
+
+| Componente                          | Base                                                                     |
+| ----------------------------------- | ------------------------------------------------------------------------ |
+| `CodeBlockLanguageSelector`         | `Select` (`value`, `onValueChange(value, eventDetails)`, `items`...)     |
+| `CodeBlockLanguageSelectorTrigger`  | `SelectTrigger` `size="sm"`, sem borda; `className` aceita função do estado |
+| `CodeBlockLanguageSelectorValue`    | `SelectValue`                                                            |
+| `CodeBlockLanguageSelectorContent`  | `SelectContent` com `align="end"` e `alignItemWithTrigger={false}`       |
+| `CodeBlockLanguageSelectorItem`     | `SelectItem`                                                             |
+
+### Partes de layout
+
+| Componente           | Descrição                                                                 |
+| -------------------- | ------------------------------------------------------------------------- |
+| `CodeBlockContainer` | Moldura com borda; prop `language: string` vira `data-language`           |
+| `CodeBlockHeader`    | Faixa superior com borda inferior e fundo `muted`                         |
+| `CodeBlockTitle`     | Agrupa ícone e nome do arquivo                                            |
+| `CodeBlockFilename`  | `<span>` em fonte mono                                                    |
+| `CodeBlockActions`   | Agrupa as ações à direita                                                 |
+| `CodeBlockContent`   | Só o código realçado: `{ code, language, showLineNumbers? }`, sem moldura |
+
+`highlightCode(code, language, callback?)` também é exportada: devolve os tokens do cache ou `null` e chama
+`callback` quando o realce termina.
+
+## Origem
+
+Adaptado do componente [Code Block](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudanças da Blips: `Button` e `Select` da `@blips/ui` (Base UI), ícones Phosphor e
+`CodeBlockCopyButtonProps` sem os handlers nativos de `onCopy`/`onError` do `<button>` — aqui `onCopy` é
+`() => void` e `onError` é `(error: Error) => void`. O `CodeBlockLanguageSelectorContent` desliga
+`alignItemWithTrigger` para manter o popup ancorado à direita, como no original.

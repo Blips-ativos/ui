@@ -1,0 +1,440 @@
+"use client";
+
+// Adaptado de vercel/ai-elements (packages/elements/src/context.tsx @ 6a9d5b1),
+// Copyright 2023 Vercel, Inc., Apache License 2.0.
+// Modificado pela Blips: primitivas Base UI da @blips/ui, ícones Phosphor e tokens da @blips/ui.
+
+import { Button } from "@blips/ui/components/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@blips/ui/components/hover-card";
+import { Progress } from "@blips/ui/components/progress";
+import { cn } from "@blips/ui/lib/utils";
+import type { LanguageModelUsage } from "ai";
+import type { ComponentProps } from "react";
+import { createContext, useContext, useMemo } from "react";
+import { getUsage } from "tokenlens";
+
+const PERCENT_MAX = 100;
+const ICON_RADIUS = 10;
+const ICON_VIEWBOX = 24;
+const ICON_CENTER = 12;
+const ICON_STROKE_WIDTH = 2;
+
+type ModelId = string;
+
+interface ContextSchema {
+  usedTokens: number;
+  maxTokens: number;
+  usage?: LanguageModelUsage;
+  modelId?: ModelId;
+}
+
+const ContextContext = createContext<ContextSchema | null>(null);
+
+const useContextValue = () => {
+  const context = useContext(ContextContext);
+
+  if (!context) {
+    throw new Error("Context components must be used within Context");
+  }
+
+  return context;
+};
+
+export type ContextProps = ComponentProps<typeof HoverCard> & ContextSchema;
+
+export const Context = ({
+  usedTokens,
+  maxTokens,
+  usage,
+  modelId,
+  ...props
+}: ContextProps) => {
+  const contextValue = useMemo(
+    () => ({ maxTokens, modelId, usage, usedTokens }),
+    [maxTokens, modelId, usage, usedTokens]
+  );
+
+  return (
+    <ContextContext.Provider value={contextValue}>
+      <HoverCard {...props} />
+    </ContextContext.Provider>
+  );
+};
+
+const ContextIcon = () => {
+  const { usedTokens, maxTokens } = useContextValue();
+  const circumference = 2 * Math.PI * ICON_RADIUS;
+  const usedPercent = usedTokens / maxTokens;
+  const dashOffset = circumference * (1 - usedPercent);
+
+  return (
+    <svg
+      aria-label="Model context usage"
+      height="20"
+      role="img"
+      style={{ color: "currentcolor" }}
+      viewBox={`0 0 ${ICON_VIEWBOX} ${ICON_VIEWBOX}`}
+      width="20"
+    >
+      <circle
+        cx={ICON_CENTER}
+        cy={ICON_CENTER}
+        fill="none"
+        opacity="0.25"
+        r={ICON_RADIUS}
+        stroke="currentColor"
+        strokeWidth={ICON_STROKE_WIDTH}
+      />
+      <circle
+        cx={ICON_CENTER}
+        cy={ICON_CENTER}
+        fill="none"
+        opacity="0.7"
+        r={ICON_RADIUS}
+        stroke="currentColor"
+        strokeDasharray={`${circumference} ${circumference}`}
+        strokeDashoffset={dashOffset}
+        strokeLinecap="round"
+        strokeWidth={ICON_STROKE_WIDTH}
+        style={{ transform: "rotate(-90deg)", transformOrigin: "center" }}
+      />
+    </svg>
+  );
+};
+
+// No Base UI os atrasos de abrir/fechar ficam no trigger (no Radix ficavam na
+// raiz); o padrão 0/0 do upstream foi movido para cá.
+export type ContextTriggerProps = ComponentProps<typeof Button> &
+  Pick<ComponentProps<typeof HoverCardTrigger>, "closeDelay" | "delay">;
+
+export const ContextTrigger = ({
+  children,
+  closeDelay = 0,
+  delay = 0,
+  ...props
+}: ContextTriggerProps) => {
+  const { usedTokens, maxTokens } = useContextValue();
+  const usedPercent = usedTokens / maxTokens;
+  const renderedPercent = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 1,
+    style: "percent",
+  }).format(usedPercent);
+
+  if (children) {
+    return (
+      <HoverCardTrigger closeDelay={closeDelay} delay={delay}>
+        {children}
+      </HoverCardTrigger>
+    );
+  }
+
+  // O botão vira o próprio trigger via `render` (como o Slot do Radix fazia), em
+  // vez de ficar aninhado dentro do <a> padrão do PreviewCard.
+  return (
+    <HoverCardTrigger
+      closeDelay={closeDelay}
+      delay={delay}
+      render={<Button type="button" variant="ghost" {...props} />}
+    >
+      <span className="font-medium text-muted-foreground">
+        {renderedPercent}
+      </span>
+      <ContextIcon />
+    </HoverCardTrigger>
+  );
+};
+
+export type ContextContentProps = ComponentProps<typeof HoverCardContent>;
+
+// No Base UI, `className` pode ser função do estado; resolve antes de mesclar
+// para não perder a classe do consumidor (o clsx descarta funções).
+export const ContextContent = ({
+  className,
+  ...props
+}: ContextContentProps) => (
+  <HoverCardContent
+    className={(state) =>
+      cn(
+        "min-w-60 divide-y overflow-hidden p-0",
+        typeof className === "function" ? className(state) : className
+      )
+    }
+    {...props}
+  />
+);
+
+export type ContextContentHeaderProps = ComponentProps<"div">;
+
+export const ContextContentHeader = ({
+  children,
+  className,
+  ...props
+}: ContextContentHeaderProps) => {
+  const { usedTokens, maxTokens } = useContextValue();
+  const usedPercent = usedTokens / maxTokens;
+  const displayPct = new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 1,
+    style: "percent",
+  }).format(usedPercent);
+  const used = new Intl.NumberFormat("en-US", {
+    notation: "compact",
+  }).format(usedTokens);
+  const total = new Intl.NumberFormat("en-US", {
+    notation: "compact",
+  }).format(maxTokens);
+
+  return (
+    <div className={cn("w-full space-y-2 p-3", className)} {...props}>
+      {children ?? (
+        <>
+          <div className="flex items-center justify-between gap-3 text-xs">
+            <p>{displayPct}</p>
+            <p className="font-mono text-muted-foreground">
+              {used} / {total}
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Progress className="bg-muted" value={usedPercent * PERCENT_MAX} />
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export type ContextContentBodyProps = ComponentProps<"div">;
+
+export const ContextContentBody = ({
+  children,
+  className,
+  ...props
+}: ContextContentBodyProps) => (
+  <div className={cn("w-full p-3", className)} {...props}>
+    {children}
+  </div>
+);
+
+export type ContextContentFooterProps = ComponentProps<"div">;
+
+export const ContextContentFooter = ({
+  children,
+  className,
+  ...props
+}: ContextContentFooterProps) => {
+  const { modelId, usage } = useContextValue();
+  const costUSD = modelId
+    ? getUsage({
+        modelId,
+        usage: {
+          input: usage?.inputTokens ?? 0,
+          output: usage?.outputTokens ?? 0,
+        },
+      }).costUSD?.totalUSD
+    : undefined;
+  const totalCost = new Intl.NumberFormat("en-US", {
+    currency: "USD",
+    style: "currency",
+  }).format(costUSD ?? 0);
+
+  return (
+    <div
+      className={cn(
+        "flex w-full items-center justify-between gap-3 bg-secondary p-3 text-xs",
+        className
+      )}
+      {...props}
+    >
+      {children ?? (
+        <>
+          <span className="text-muted-foreground">Total cost</span>
+          <span>{totalCost}</span>
+        </>
+      )}
+    </div>
+  );
+};
+
+const TokensWithCost = ({
+  tokens,
+  costText,
+}: {
+  tokens?: number;
+  costText?: string;
+}) => (
+  <span>
+    {tokens === undefined
+      ? "—"
+      : new Intl.NumberFormat("en-US", {
+          notation: "compact",
+        }).format(tokens)}
+    {costText ? (
+      <span className="ml-2 text-muted-foreground">• {costText}</span>
+    ) : null}
+  </span>
+);
+
+export type ContextInputUsageProps = ComponentProps<"div">;
+
+export const ContextInputUsage = ({
+  className,
+  children,
+  ...props
+}: ContextInputUsageProps) => {
+  const { usage, modelId } = useContextValue();
+  const inputTokens = usage?.inputTokens ?? 0;
+
+  if (children) {
+    return children;
+  }
+
+  if (!inputTokens) {
+    return null;
+  }
+
+  const inputCost = modelId
+    ? getUsage({
+        modelId,
+        usage: { input: inputTokens, output: 0 },
+      }).costUSD?.totalUSD
+    : undefined;
+  const inputCostText = new Intl.NumberFormat("en-US", {
+    currency: "USD",
+    style: "currency",
+  }).format(inputCost ?? 0);
+
+  return (
+    <div
+      className={cn("flex items-center justify-between text-xs", className)}
+      {...props}
+    >
+      <span className="text-muted-foreground">Input</span>
+      <TokensWithCost costText={inputCostText} tokens={inputTokens} />
+    </div>
+  );
+};
+
+export type ContextOutputUsageProps = ComponentProps<"div">;
+
+export const ContextOutputUsage = ({
+  className,
+  children,
+  ...props
+}: ContextOutputUsageProps) => {
+  const { usage, modelId } = useContextValue();
+  const outputTokens = usage?.outputTokens ?? 0;
+
+  if (children) {
+    return children;
+  }
+
+  if (!outputTokens) {
+    return null;
+  }
+
+  const outputCost = modelId
+    ? getUsage({
+        modelId,
+        usage: { input: 0, output: outputTokens },
+      }).costUSD?.totalUSD
+    : undefined;
+  const outputCostText = new Intl.NumberFormat("en-US", {
+    currency: "USD",
+    style: "currency",
+  }).format(outputCost ?? 0);
+
+  return (
+    <div
+      className={cn("flex items-center justify-between text-xs", className)}
+      {...props}
+    >
+      <span className="text-muted-foreground">Output</span>
+      <TokensWithCost costText={outputCostText} tokens={outputTokens} />
+    </div>
+  );
+};
+
+export type ContextReasoningUsageProps = ComponentProps<"div">;
+
+export const ContextReasoningUsage = ({
+  className,
+  children,
+  ...props
+}: ContextReasoningUsageProps) => {
+  const { usage, modelId } = useContextValue();
+  // Campo de detalhe: existe no ai 6 e 7 (o `reasoningTokens` de topo saiu no 7).
+  const reasoningTokens = usage?.outputTokenDetails?.reasoningTokens ?? 0;
+
+  if (children) {
+    return children;
+  }
+
+  if (!reasoningTokens) {
+    return null;
+  }
+
+  const reasoningCost = modelId
+    ? getUsage({
+        modelId,
+        usage: { reasoningTokens },
+      }).costUSD?.totalUSD
+    : undefined;
+  const reasoningCostText = new Intl.NumberFormat("en-US", {
+    currency: "USD",
+    style: "currency",
+  }).format(reasoningCost ?? 0);
+
+  return (
+    <div
+      className={cn("flex items-center justify-between text-xs", className)}
+      {...props}
+    >
+      <span className="text-muted-foreground">Reasoning</span>
+      <TokensWithCost costText={reasoningCostText} tokens={reasoningTokens} />
+    </div>
+  );
+};
+
+export type ContextCacheUsageProps = ComponentProps<"div">;
+
+export const ContextCacheUsage = ({
+  className,
+  children,
+  ...props
+}: ContextCacheUsageProps) => {
+  const { usage, modelId } = useContextValue();
+  // Campo de detalhe: existe no ai 6 e 7 (o `cachedInputTokens` saiu no 7).
+  const cacheTokens = usage?.inputTokenDetails?.cacheReadTokens ?? 0;
+
+  if (children) {
+    return children;
+  }
+
+  if (!cacheTokens) {
+    return null;
+  }
+
+  const cacheCost = modelId
+    ? getUsage({
+        modelId,
+        usage: { cacheReads: cacheTokens, input: 0, output: 0 },
+      }).costUSD?.totalUSD
+    : undefined;
+  const cacheCostText = new Intl.NumberFormat("en-US", {
+    currency: "USD",
+    style: "currency",
+  }).format(cacheCost ?? 0);
+
+  return (
+    <div
+      className={cn("flex items-center justify-between text-xs", className)}
+      {...props}
+    >
+      <span className="text-muted-foreground">Cache</span>
+      <TokensWithCost costText={cacheCostText} tokens={cacheTokens} />
+    </div>
+  );
+};

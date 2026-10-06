@@ -1,0 +1,21 @@
+{
+  "title": "IA",
+  "pages": [
+    "index",
+    "conversation",
+    "message",
+    "prompt-input",
+    "suggestion",
+    "shimmer",
+    "reasoning",
+    "chain-of-thought",
+    "tool",
+    "confirmation",
+    "sources",
+    "inline-citation",
+    "code-block",
+    "context",
+    "border-beam",
+    "thinking-orbs"
+  ]
+}

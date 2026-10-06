@@ -1,6 +1,6 @@
 ---
 name: installing
-description: "Use quando um repositório React/Next.js for instalar, configurar ou adotar a @blips/ui pela primeira vez — pedidos como 'instala a lib da blips', 'configura o @blips/ui', 'adota o design system Blips', 'padroniza a UI desse projeto', setup de Tailwind/tema/fontes/ícones para a lib, ou preparação do CLAUDE.md de UI num repo. Use também ao notar sintomas de adoção errada: import do barrel @blips/ui em React 18/19, tailwind.config.js sendo criado, tokens de tema copiados à mão, lucide-react instalado junto da lib, ou @source defensivo no CSS."
+description: "Use quando um repositório React/Next.js for instalar, configurar ou adotar a @blips/ui (ou a @blips/ai, os componentes de IA sobre ela) pela primeira vez — pedidos como 'instala a lib da blips', 'configura o @blips/ui', 'adota o design system Blips', 'padroniza a UI desse projeto', 'instala o @blips/ai', 'quero os componentes de chat/agente', setup de Tailwind/tema/fontes/ícones/peers para a lib, ou preparação do CLAUDE.md de UI num repo. Use também ao notar sintomas de adoção errada: import do barrel @blips/ui em React 18/19, import de '@blips/ai' sem subpath, peers da @blips/ai faltando (streamdown, shiki, ai), tailwind.config.js sendo criado, tokens de tema copiados à mão, lucide-react instalado junto da lib, ou @source defensivo no CSS."
 ---
 
 # Adotando a @blips/ui em um repositório
@@ -52,6 +52,7 @@ trilha certa. Diferenças de API: `../building/references/v2-vs-v3.md`.
 5. **Validar** — build + inspeção do CSS/HTML gerado (seção Validação)
 6. **Implantar padrões de agente** — seção de UI no CLAUDE.md (templates) + ponteiros para as skills
 7. **Verificação final** — red flags zerados, relatório ao usuário
+8. **(Se pedirem componentes de IA) @blips/ai** — depois dos passos 1–5, siga `references/blips-ai.md` (seção abaixo)
 
 ## Passo 1: Detectar a stack
 
@@ -162,6 +163,25 @@ apresentar custos reais e não estimativas.
 | `moduleResolution: "node"` no tsconfig | Não resolve subpath exports → migre para `"bundler"` (padrão Next 15+; mudança mínima, valide com tsc). Detalhe na reference do Next |
 | `lucide-react` JÁ usado pelo legado | Mantenha (remover quebra o app). Ban do Biome `noRestrictedImports` SÓ em repo sem lucide legado — senão quebra o lint inteiro. Na seção do CLAUDE.md: Phosphor obrigatório em código novo |
 
+## @blips/ai (componentes de IA) — instalação aditiva
+
+Pacote irmão com conversa, resposta em streaming, raciocínio, ferramentas,
+fontes, prompt e efeitos (AI Elements + libraries.dev sobre a v3.x).
+Procedimento completo e verificado em **`references/blips-ai.md`** — leia
+antes de instalar. Resumo do contrato:
+
+| Item | Regra |
+| --- | --- |
+| Gate | `@blips/ui` **^3** e React **19**. Repo 2.x ou React < 19: pare e alinhe com o usuário (não migre por conta própria) |
+| Instalação | `pnpm add @blips/ai` + os **peers do componente** que o app importar (tabela na reference: `message`/`reasoning` → `streamdown` + `@streamdown/{code,math,mermaid,cjk}`; `code-block`/`tool` → `shiki`; `ai` para os tipos de `conversation`, `message`, `tool`, `confirmation`, `context`, `prompt-input`) |
+| `ai` | Só tipos (`import type`), mas o `tsc` do app precisa dele: sem `ai`, TS2307 dentro de `node_modules/@blips/ai/src` (verificado). `devDependencies` se o app não usa o runtime do AI SDK |
+| CSS | `@import "@blips/ui/globals.css";` **depois** `@import "@blips/ai/styles.css";` (só `@source` do pacote). Com `message`/`reasoning`, também os `@source` do Streamdown (legítimos: conteúdo fora da auto-detecção) |
+| Next | `transpilePackages: ["@blips/ui", "@blips/ai"]` |
+| Imports | Só subpath: `@blips/ai/components/<x>` e `@blips/ai/fx/<x>`. Não existe barrel `@blips/ai` |
+
+Depois de instalar, a tela de chat é guiada por `components/ai-chat.md` da
+skill **blips-ui:building**.
+
 ## Validação (obrigatória antes de reportar sucesso)
 
 1. `pnpm build` — precisa passar de verdade (não pule typecheck se o script tiver).
@@ -225,4 +245,7 @@ Depois da adoção, a construção de telas/componentes é guiada pela skill
 - `recharts` do app em major diferente da lib (2 com lib v3.x, ou 3 com lib v2.x)
 - `@source` adicionado "por garantia"
 - CLAUDE.md do repo reescrito/perdendo seções na mesclagem
+- `import … from "@blips/ai"` (barrel não existe) ou @blips/ai num repo `@blips/ui` 2.x / React < 19
+- Componente da @blips/ai importado sem os peers dele declarados no `package.json` do app
+- `@blips/ai/styles.css` ausente ou importado antes do globals da @blips/ui; `transpilePackages` sem `"@blips/ai"`
 - Sucesso reportado sem rodar o build

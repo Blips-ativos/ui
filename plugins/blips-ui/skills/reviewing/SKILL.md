@@ -1,6 +1,6 @@
 ---
 name: reviewing
-description: "Use ao FINALIZAR qualquer trabalho de UI em repos que usam @blips/ui — antes de declarar pronto/commitar — e quando pedirem para revisar interface: 'revisa essa tela', 'tá nos padrões da blips?', 'faz o review do componente', review de PR com mudanças de UI, ou auditoria de conformidade de um app. Também ao suspeitar de violações: imports do barrel, lucide-react, cores hardcoded, telas sem loading/empty/erro, dialogs sem título, dinheiro formatado à mão."
+description: "Use ao FINALIZAR qualquer trabalho de UI em repos que usam @blips/ui (e @blips/ai, os componentes de IA) — antes de declarar pronto/commitar — e quando pedirem para revisar interface: 'revisa essa tela', 'tá nos padrões da blips?', 'faz o review do componente', 'revisa o chat do agente', review de PR com mudanças de UI, ou auditoria de conformidade de um app. Também ao suspeitar de violações: imports do barrel, lucide-react, cores hardcoded, telas sem loading/empty/erro, dialogs sem título, dinheiro formatado à mão, import de '@blips/ai' sem subpath, peers da @blips/ai faltando ou bolha/lista de chat recriada à mão."
 ---
 
 # Revisando UI contra os padrões Blips
@@ -66,7 +66,9 @@ dúvida, no próprio `node_modules/@blips/ui/src/`).
    (determinístico: imports, lucide, tailwind.config, tokens copiados/hardcoded,
    `hsl(var(`, Intl sem locale, Dialog sem Title, icon-button sem label, deps
    fantasmas e, conforme `blipsUi.track`, a dimensão `api-versao` — `asChild`/`render`,
-   `data-state`, sufixo `Icon`, props removidas, componentes só-v3). Saída JSON; trate
+   `data-state`, sufixo `Icon`, props removidas, componentes só-v3; com `@blips/ai` no
+   app, a dimensão `blips-ai` — subpath, peers por componente, `ai` só tipo, chat
+   recriado, CSS na ordem, gate v3/React 19). Saída JSON; trate
    cada item como candidato confirmado (os `verify:true` pedem confirmação).
 3. **Despachar o revisor de julgamento** — subagente com o prompt
    `agents/ui-reviewer.md`, apontando o escopo e as references. Cobre o que
@@ -97,10 +99,12 @@ reference da dimensão que está revisando ANTES do código.
 | Movimento | `references/motion.md` | durações, transform/opacity, reduced-motion, loops/WCAG |
 | Formatação | `references/data-formatting.md` | BRL/datas/pt-BR (8 convenções) |
 | Anti-genérico | `references/anti-slop.md` | "AI slop" P0/P1/P2: hexes banidos, emoji-ícone, fórmula 80/20 |
+| IA (@blips/ai) | `references/blips-ai.md` | só com `@blips/ai` no app: subpath (sem barrel), peers por componente, `ai` só tipo, não recriar bolha/mensagem/lista de chat, CSS na ordem, gate v3.x/React 19 |
 
 O `scripts/check.mjs` cobre o subconjunto **auto-verificável** dessas dimensões
 (imports, ícones, api-versao, tailwind, formatação, a11y, anti-slop, tipografia,
-motion, construção). O revisor de julgamento cobre o resto.
+motion, construção, blips-ai). Prova das regras de IA: `scripts/fixtures/ai-pass`
+(0 achados) e `scripts/fixtures/ai-fail` (acusa cada regra). O revisor de julgamento cobre o resto.
 
 ### Dois modos de review
 
@@ -139,6 +143,9 @@ as violações; é informação útil, não gate)
 - Severidade inventada em vez da do padrão
 - Violação e observação geral misturadas na mesma lista
 - Reportar "conforme" sem ter rodado o check mecânico
+- Mandar importar de `"@blips/ai"` (barrel não existe) ou acusar `Message` importado de
+  `@blips/ai/components/message` (é o mesmo `Message` da @blips/ui, reexportado)
+- Acusar o `@source` do Streamdown como "@source defensivo" (é exigido pelo pacote)
 
 Construção de telas é guiada pela skill **blips-ui:building** (as correções
 sugeridas devem apontar para os componentes/padrões dela).

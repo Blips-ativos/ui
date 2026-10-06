@@ -2,12 +2,14 @@
 /**
  * Check mecânico da blips-ui:reviewing — bateria determinística de violações.
  * Uso: node check.mjs <dir-do-app>
- * Saída: JSON { react, blipsUi: {version, track}, findings: [{file, line, rule, dimension, severity}] }
+ * Saída: JSON { react, blipsUi: {version, track}, blipsAi: {version, declared},
+ *   findings: [{file, line, rule, dimension, severity}] }
  * Trilha da lib: "v2" (Radix) | "v3" (Base UI) | null (não detectada). Checks de API
  * (asChild/render, data-state, sufixo Icon, componentes só-v3) dependem da trilha.
  * Heurísticas marcadas com verify:true exigem confirmação do revisor.
  * Dimensões: imports, icones, api-versao, tailwind, formatacao, a11y, anti-slop,
- * tipografia, motion, construcao. Severidades: "bloqueante" | "aviso".
+ * tipografia, motion, construcao e blips-ai (só quando o app tem @blips/ai:
+ * subpath, peers por componente, `ai` só tipo, chat recriado, CSS na ordem). Severidades: "bloqueante" | "aviso".
  * Princípio: checks de alta precisão (literais) são bloqueante; heurísticos
  * (verify:true) são aviso — o revisor promove a bloqueante se confirmar.
  */
@@ -111,6 +113,127 @@ const RADIX_STATE_RE =
   /data-\[state=(open|closed|checked|unchecked|indeterminate|active|inactive|on|off|delayed-open|instant-open)\]|\[data-state=["']?(open|closed|checked|unchecked|indeterminate|active|on|off)/;
 const BASEUI_STATE_RE =
   /\b(group-|peer-|has-|in-)?data-(open|closed|checked|unchecked|popup-open|panel-open|pressed|starting-style|ending-style)(\/[\w-]+)?:/;
+
+// --- @blips/ai (componentes de IA sobre a @blips/ui v3.x) ---
+// Regras: import por subpath (não existe barrel), peers opcionais declarados por
+// componente importado, `ai` só como tipo, e não recriar bolha/mensagem/lista de
+// chat que a @blips/ui (Message/Bubble) e a @blips/ai (Conversation/MessageResponse)
+// já têm. Só roda quando o app declara (ou tem instalada) a @blips/ai.
+const aiPkgPath = join(root, "node_modules", "@blips", "ai", "package.json");
+const aiPkg = (() => {
+  if (!existsSync(aiPkgPath)) return null;
+  try {
+    return JSON.parse(readFileSync(aiPkgPath, "utf8"));
+  } catch {
+    return null;
+  }
+})();
+const hasAi = Boolean(deps["@blips/ai"]) || aiPkg !== null;
+const blipsAi = {
+  version: aiPkg?.version ?? (deps["@blips/ai"] || null),
+  declared: Boolean(deps["@blips/ai"]),
+};
+// Peers por subpath (fase 1). Com node_modules/@blips/ai presente, o mapa é
+// recalculado a partir do fonte instalado (aiPeersFor), então novos componentes
+// entram sem mexer aqui.
+const STREAMDOWN = [
+  "streamdown",
+  "@streamdown/code",
+  "@streamdown/math",
+  "@streamdown/mermaid",
+  "@streamdown/cjk",
+];
+const AI_PEERS_STATIC = {
+  "components/chain-of-thought": [],
+  "components/code-block": ["shiki"],
+  "components/confirmation": ["ai"],
+  "components/context": ["ai"],
+  "components/conversation": ["ai"],
+  "components/inline-citation": [],
+  "components/message": [...STREAMDOWN, "ai"],
+  "components/prompt-input": ["ai"],
+  "components/reasoning": [...STREAMDOWN],
+  "components/shimmer": [],
+  "components/sources": [],
+  "components/suggestion": [],
+  "components/tool": ["shiki", "ai"],
+  "fx/border-beam": [],
+  "fx/thinking-orbs": [],
+};
+const aiExports = aiPkg?.exports
+  ? Object.keys(aiPkg.exports)
+      .filter((k) => k.startsWith("./"))
+      .map((k) => k.slice(2))
+  : null;
+const moduleRoot = (spec) =>
+  spec.startsWith("@")
+    ? spec.split("/").slice(0, 2).join("/")
+    : spec.split("/")[0];
+const aiPeerCache = new Map();
+// Peers opcionais que o subpath importa, seguindo imports relativos do pacote.
+function aiPeersFor(subpath) {
+  if (!aiPkg) return AI_PEERS_STATIC[subpath] ?? [];
+  if (aiPeerCache.has(subpath)) return aiPeerCache.get(subpath);
+  const optional = new Set(Object.keys(aiPkg.peerDependenciesMeta ?? {}));
+  const target = aiPkg.exports?.[`./${subpath}`];
+  const found = new Set();
+  const seen = new Set();
+  const base = join(root, "node_modules", "@blips", "ai");
+  const visit = (abs) => {
+    if (seen.has(abs) || !existsSync(abs)) return;
+    seen.add(abs);
+    const src = readFileSync(abs, "utf8");
+    for (const m of src.matchAll(/from\s+["']([^"']+)["']/g)) {
+      const spec = m[1];
+      if (spec.startsWith(".")) {
+        const rel = join(abs, "..", spec);
+        for (const ext of ["", ".tsx", ".ts", "/index.tsx", "/index.ts"])
+          if (existsSync(rel + ext) && statSync(rel + ext).isFile()) {
+            visit(rel + ext);
+            break;
+          }
+      } else if (optional.has(moduleRoot(spec))) found.add(moduleRoot(spec));
+    }
+  };
+  if (typeof target === "string") visit(join(base, target));
+  const peers = target ? [...found] : (AI_PEERS_STATIC[subpath] ?? []);
+  aiPeerCache.set(subpath, peers);
+  return peers;
+}
+// Tipos do `ai` que aparecem nas props da @blips/ai: importá-los sem `type`
+// cria import de runtime de um pacote que o app pode nem ter em produção.
+const AI_TYPE_NAMES = new Set([
+  "UIMessage",
+  "UIMessagePart",
+  "UIDataTypes",
+  "UITools",
+  "UIToolInvocation",
+  "ChatStatus",
+  "ChatTransport",
+  "ChatRequestOptions",
+  "CreateUIMessage",
+  "ToolUIPart",
+  "DynamicToolUIPart",
+  "TextUIPart",
+  "ReasoningUIPart",
+  "SourceUrlUIPart",
+  "SourceDocumentUIPart",
+  "FileUIPart",
+  "StepStartUIPart",
+  "DataUIPart",
+  "LanguageModelUsage",
+  "InferUITools",
+  "ToolSet",
+]);
+// Nomes de componente que indicam bolha/mensagem/lista de chat recriada à mão.
+const CHAT_REBUILD_RE =
+  /(?:function|const|let)\s+(ChatBubble|MessageBubble|ChatMessage|ChatMessageItem|MessageItem|MessageList|ChatList|ChatMessages|ChatHistory|ChatWindow|Bubble|Message|Conversation)\b\s*[=(:<]/;
+// Arquivo que compõe a casca oficial (não está recriando nada).
+const CHAT_COMPOSE_RE =
+  /from\s+["'](@blips\/ui\/components\/(message|bubble|message-scroller)|@blips\/ai\/components\/(message|conversation))["']/;
+const aiImports = new Map(); // subpath -> {file, line}
+const aiCssImports = []; // {file, line}
+let aiUndeclaredReported = false;
 
 // deps embutidas na lib que o app só pode importar se declarar como diretas
 const LIB_TRANSITIVES = [
@@ -217,7 +340,9 @@ for (const abs of files) {
   lines.forEach((l, i) => {
     const n = i + 1;
     if (ext === "css") {
-      if (/^\s*@source\b/.test(l))
+      // @source para o Streamdown (usado pela @blips/ai) é legítimo: conteúdo
+      // fora da auto-detecção, exigido pelo README do pacote.
+      if (/^\s*@source\b/.test(l) && !/streamdown/.test(l))
         add(
           file,
           n,
@@ -273,6 +398,108 @@ for (const abs of files) {
         "icones",
         "bloqueante"
       );
+
+    // --- @blips/ai: imports ---
+    if (/(?:from\s+|import\s+)["']@blips\/ai["']/.test(l))
+      add(
+        file,
+        n,
+        'import do barrel "@blips/ai" — não existe; usar @blips/ai/components/<x> ou @blips/ai/fx/<x>',
+        "blips-ai",
+        "bloqueante"
+      );
+    const aiSub = l.match(/(?:from\s+|import\s+)["']@blips\/ai\/([^"']+)["']/);
+    if (aiSub) {
+      const sub = aiSub[1];
+      if (!deps["@blips/ai"] && !aiUndeclaredReported) {
+        aiUndeclaredReported = true;
+        add(
+          file,
+          n,
+          "import de @blips/ai sem a dependência no package.json do app",
+          "blips-ai",
+          "bloqueante"
+        );
+      }
+      if (/^(src|dist)\//.test(sub))
+        add(
+          file,
+          n,
+          `import de caminho interno (@blips/ai/${sub}) — usar o subpath publicado`,
+          "blips-ai",
+          "bloqueante"
+        );
+      else if (
+        sub !== "styles.css" &&
+        sub !== "package.json" &&
+        !(aiExports ?? Object.keys(AI_PEERS_STATIC)).includes(sub)
+      )
+        add(
+          file,
+          n,
+          `subpath @blips/ai/${sub} não existe nos exports do pacote`,
+          "blips-ai",
+          "bloqueante"
+        );
+      else if (sub !== "styles.css" && !aiImports.has(sub))
+        aiImports.set(sub, { file, line: n });
+    }
+    if (hasAi) {
+      if (/<Message\b[^>]*\sfrom=/.test(l))
+        add(
+          file,
+          n,
+          "<Message from=…> é API do AI Elements — na @blips/ui o lado é align={messageAlign(role)}",
+          "blips-ai",
+          "bloqueante"
+        );
+      if (/from\s+["'][^"']*components\/ai-elements\//.test(l))
+        add(
+          file,
+          n,
+          "cópia do AI Elements (components/ai-elements) num app com @blips/ai — usar @blips/ai/components/<x> (uma família de chat só)",
+          "blips-ai",
+          "bloqueante"
+        );
+      if (
+        /from\s+["'](react-markdown|marked|markdown-to-jsx|markdown-it)["']/.test(
+          l
+        )
+      )
+        add(
+          file,
+          n,
+          "renderizador de markdown próprio num app com @blips/ai — resposta do modelo é MessageResponse (Streamdown)",
+          "blips-ai",
+          "aviso",
+          true
+        );
+      if (/scrollIntoView\(|scrollTop\s*=\s*[^;]*scrollHeight/.test(l))
+        add(
+          file,
+          n,
+          "rolagem de chat à mão (scrollIntoView/scrollTop) — usar Conversation da @blips/ai (gruda no fim) ou MessageScroller da @blips/ui",
+          "blips-ai",
+          "aviso",
+          true
+        );
+      if (
+        /\b(role|from|sender|author)\s*===?\s*["'](user|assistant)["']/.test(
+          l
+        ) &&
+        /\b(bg-|justify-end|ml-auto|ms-auto|self-end|items-end|flex-row-reverse|rounded-)/.test(
+          l
+        )
+      )
+        add(
+          file,
+          n,
+          "balão/alinhamento de mensagem por role à mão — usar Message align={messageAlign(role)} + Bubble da @blips/ui",
+          "blips-ai",
+          "aviso",
+          true
+        );
+    }
 
     // --- API por trilha da lib (v2.x Radix × v3.x Base UI) ---
     if (isV3) {
@@ -638,6 +865,73 @@ for (const abs of files) {
       }
     }
   }
+  // --- @blips/ai: checks de arquivo inteiro ---
+  if (ext === "css") {
+    const aiCss = lines.findIndex((l) =>
+      /@import\s+["']@blips\/ai\/styles\.css["']/.test(l)
+    );
+    if (aiCss !== -1) {
+      const uiCss = lines.findIndex((l) =>
+        /@import\s+["']@blips\/ui\/globals\.css["']/.test(l)
+      );
+      aiCssImports.push({ file, line: aiCss + 1 });
+      if (uiCss > aiCss)
+        add(
+          file,
+          aiCss + 1,
+          "@blips/ai/styles.css importado antes de @blips/ui/globals.css — a @blips/ui (Tailwind + tema) vem primeiro",
+          "blips-ai",
+          "bloqueante"
+        );
+    }
+  }
+  if (/\.(tsx|ts|jsx|js|mjs)$/.test(file)) {
+    const importsAiUi = /from\s+["']@blips\/ai\//.test(text);
+    for (const m of text.matchAll(
+      /import\s+(type\s+)?\{([^}]*)\}\s*from\s*["']ai["']/g
+    )) {
+      if (m[1]) continue; // import type { … } — correto
+      const valueNames = m[2]
+        .split(",")
+        .map((x) => x.trim())
+        .filter((x) => x && !x.startsWith("type "))
+        .map((x) => x.split(/\s+as\s+/)[0]);
+      const ln = text.slice(0, m.index).split("\n").length;
+      const typeAsValue = valueNames.filter((x) => AI_TYPE_NAMES.has(x));
+      const runtime = valueNames.filter((x) => !AI_TYPE_NAMES.has(x));
+      if (typeAsValue.length)
+        add(
+          file,
+          ln,
+          `tipo do "ai" importado como valor (${typeAsValue.join(", ")}) — usar import type (o @blips/ai só consome tipos do AI SDK)`,
+          "blips-ai",
+          "aviso"
+        );
+      if (hasAi && importsAiUi && runtime.length)
+        add(
+          file,
+          ln,
+          `runtime do "ai" (${runtime.join(", ")}) num arquivo de UI da @blips/ai — os componentes são apresentacionais; confirme que é a camada de dados (transport/useChat) e não lógica dentro do componente`,
+          "blips-ai",
+          "aviso",
+          true
+        );
+    }
+    if (hasAi && /\.(tsx|jsx)$/.test(file)) {
+      const rebuild = text.match(CHAT_REBUILD_RE);
+      if (rebuild && !CHAT_COMPOSE_RE.test(text)) {
+        const ln = text.slice(0, rebuild.index).split("\n").length;
+        add(
+          file,
+          ln,
+          `${rebuild[1]} definido sem compor Message/Bubble (@blips/ui) nem Conversation/MessageResponse (@blips/ai) — bolha/mensagem/lista de chat recriada`,
+          "blips-ai",
+          "aviso",
+          true
+        );
+      }
+    }
+  }
   if (/<DialogContent/.test(text) && !/DialogTitle/.test(text))
     add(
       file,
@@ -693,12 +987,58 @@ for (const abs of files) {
   }
 }
 
+// --- @blips/ai: checks do app inteiro (depois de varrer os arquivos) ---
+if (hasAi) {
+  if (isV2)
+    add(
+      "package.json",
+      0,
+      "@blips/ai exige @blips/ui ^3 (v3.x — Base UI); repo está na v2.x",
+      "blips-ai",
+      "bloqueante"
+    );
+  if (reactMajor && reactMajor < 19)
+    add(
+      "package.json",
+      0,
+      `@blips/ai exige React 19 (peer react ^19); repo em React ${reactMajor}`,
+      "blips-ai",
+      "bloqueante"
+    );
+  if (aiImports.size && !aiCssImports.length)
+    add(
+      "(css)",
+      0,
+      "@blips/ai/styles.css não importado em nenhum CSS — sem ele o Tailwind não gera as classes dos componentes de IA (importe depois de @blips/ui/globals.css)",
+      "blips-ai",
+      "bloqueante"
+    );
+  for (const [sub, at] of aiImports) {
+    const missing = aiPeersFor(sub).filter((peer) => !deps[peer]);
+    if (missing.length)
+      add(
+        at.file,
+        at.line,
+        `@blips/ai/${sub} exige peers não declarados no package.json do app: ${missing.join(", ")}${missing.includes("ai") ? " (ai: só tipos, mas o tsc compila o fonte .tsx do pacote; devDependency basta)" : ""}`,
+        "blips-ai",
+        "bloqueante"
+      );
+  }
+}
+
 const summary = {};
 for (const f of findings)
   summary[f.dimension] = (summary[f.dimension] ?? 0) + 1;
 console.log(
   JSON.stringify(
-    { react: reactMajor, blipsUi, total: findings.length, summary, findings },
+    {
+      react: reactMajor,
+      blipsUi,
+      blipsAi,
+      total: findings.length,
+      summary,
+      findings,
+    },
     null,
     2
   )

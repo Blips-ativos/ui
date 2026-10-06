@@ -1,0 +1,59 @@
+---
+title: IA
+description: Componentes de interface de agente — conversa, resposta em streaming, raciocínio, ferramentas e efeitos visuais.
+---
+
+O `@blips/ai` reúne os componentes para construir interfaces de agente sobre a `@blips/ui` v3: conversa,
+resposta em markdown com streaming, raciocínio, chamadas de ferramenta, citações, campo de prompt e efeitos
+visuais. Ele **compõe** as primitivas da `@blips/ui` (o `Message` e o `Bubble` são os da `@blips/ui`) e não
+traz uma segunda família de mensagem.
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Exige `@blips/ui` ^3 e React 19. Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+No Next.js, adicione os dois pacotes em `transpilePackages`:
+
+```ts
+const config = { transpilePackages: ["@blips/ui", "@blips/ai"] };
+```
+
+Não existe barrel: importe cada componente pelo subpath (`@blips/ai/components/<nome>`,
+`@blips/ai/fx/<nome>`). Alguns componentes exigem peers opcionais — cada página diz quais.
+
+| Peer opcional | Exigido por |
+|---|---|
+| `streamdown`, `@streamdown/code`, `@streamdown/math`, `@streamdown/mermaid`, `@streamdown/cjk` | `message` (resposta em markdown) |
+| `shiki` | `code-block`, `tool` |
+| `ai` | só tipos (`UIMessage`, `ToolUIPart`…), nenhum código de runtime. Como o pacote publica o fonte `.tsx`, em projetos TypeScript instale como devDependency: `pnpm add -D ai` |
+
+### Estilos do Streamdown
+
+Quem usa o `MessageResponse` (componente `message`) precisa que o Tailwind do app varra o Streamdown e importe o CSS dele. Ajuste os caminhos `../` conforme a posição do seu CSS em relação ao `node_modules`:
+
+```css
+@import "streamdown/styles.css";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+/* repita para @streamdown/math, @streamdown/mermaid e @streamdown/cjk se estiverem instalados */
+```
+
+## Componentes apresentacionais
+
+Os componentes recebem `status`, `state` e `parts` por props. A tradução de eventos — do AI SDK (`useChat`)
+ou de um backend próprio, como o AgentOS do Agno — fica no seu app.
+
+## Origem e licença
+
+Os componentes de `components/` são adaptados do [AI Elements](https://github.com/vercel/ai-elements)
+(Apache-2.0, Vercel); os de `fx/` envolvem pacotes do [libraries.dev](https://github.com/Jakubantalik/Libraries.dev)
+(MIT). O pacote publica `LICENSE` e `THIRD_PARTY_NOTICES.md`.

@@ -1,0 +1,125 @@
+---
+title: Confirmation
+description: Pedido de autorização para uma tool call, com mensagens diferentes para pedido, aprovação e recusa.
+---
+
+<ComponentPreview name="ai-confirmation-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
+
+O `ai` entra só pelos tipos (`ToolUIPart["state"]`): nada dele roda no navegador, mas o TypeScript precisa do pacote para resolver as props. Nenhum outro peer opcional é exigido. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Confirmation,
+  ConfirmationAccepted,
+  ConfirmationAction,
+  ConfirmationActions,
+  ConfirmationRejected,
+  ConfirmationRequest,
+  ConfirmationTitle,
+} from "@blips/ai/components/confirmation"
+```
+
+```tsx
+<Confirmation approval={part.approval} state={part.state}>
+  <ConfirmationTitle>
+    <ConfirmationRequest>Autoriza a abertura do chamado?</ConfirmationRequest>
+    <ConfirmationAccepted>Você autorizou.</ConfirmationAccepted>
+    <ConfirmationRejected>Você recusou.</ConfirmationRejected>
+  </ConfirmationTitle>
+  <ConfirmationActions>
+    <ConfirmationAction variant="outline" onClick={() => responder(false)}>
+      Recusar
+    </ConfirmationAction>
+    <ConfirmationAction onClick={() => responder(true)}>
+      Autorizar
+    </ConfirmationAction>
+  </ConfirmationActions>
+</Confirmation>
+```
+
+O componente é apresentacional: ele só decide o que mostrar a partir de `approval` e `state`. Com o AI SDK, esses campos vêm da part de ferramenta, e a resposta volta pelo `addToolApprovalResponse` do `useChat`:
+
+```tsx
+const { addToolApprovalResponse } = useChat()
+
+const responder = (approved: boolean) => {
+  if (part.approval) {
+    addToolApprovalResponse({ id: part.approval.id, approved })
+  }
+}
+```
+
+Com eventos próprios (por exemplo, uma pausa do agente no AgentOS aguardando confirmação), monte `approval` e `state` no app e envie a resposta pelo canal do seu backend.
+
+### O que aparece em cada estado
+
+| `state`                                             | `approval`              | Renderiza                                  |
+| --------------------------------------------------- | ----------------------- | ------------------------------------------ |
+| `input-streaming`, `input-available`                | qualquer                | nada                                       |
+| qualquer                                            | `undefined`             | nada                                       |
+| `approval-requested`                                | `{ id }`                | `ConfirmationRequest` e `ConfirmationActions` |
+| `approval-responded`, `output-available`, `output-denied` | `{ id, approved: true }`  | `ConfirmationAccepted`                     |
+| `approval-responded`, `output-available`, `output-denied` | `{ id, approved: false }` | `ConfirmationRejected`                     |
+
+## Exemplos
+
+### Dentro de um Tool
+
+O lugar natural do `Confirmation` é dentro do `ToolContent` de um [Tool](/docs/ai/tool) em `approval-requested`.
+
+<ComponentPreview name="ai-confirmation-tool" />
+
+## Referência da API
+
+### Confirmation
+
+Raiz, desenhada como [Alert](/docs/components/alert) da `@blips/ui`. Aceita as props do `Alert`.
+
+| Prop       | Tipo                                                       | Padrão      |
+| ---------- | ---------------------------------------------------------- | ----------- |
+| `state`    | `ToolUIPart["state"]`                                      | obrigatória |
+| `approval` | `{ id: string; approved?: boolean; reason?: string }`      |             |
+
+### ConfirmationTitle
+
+Texto da confirmação, sobre o `AlertDescription`. Aceita as props dele.
+
+### ConfirmationRequest
+
+Mostra `children` só em `approval-requested`.
+
+### ConfirmationAccepted
+
+Mostra `children` quando `approval.approved` é `true` e o estado é `approval-responded`, `output-available` ou `output-denied`.
+
+### ConfirmationRejected
+
+Mostra `children` quando `approval.approved` é `false` e o estado é `approval-responded`, `output-available` ou `output-denied`.
+
+### ConfirmationActions
+
+Linha de botões alinhada à direita, visível só em `approval-requested`. Aceita as props de `div`.
+
+### ConfirmationAction
+
+[Button](/docs/components/button) da `@blips/ui` com `type="button"` e altura de 32px. Aceita as props do `Button`, inclusive `variant`.
+
+## Origem
+
+Adaptado do componente [Confirmation](https://elements.ai-sdk.dev/components/confirmation) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Alert e pelo Button da `@blips/ui` (Base UI) e as cores pelos tokens da `@blips/ui`.

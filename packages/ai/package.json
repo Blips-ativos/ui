@@ -1,0 +1,110 @@
+{
+  "name": "@blips/ai",
+  "version": "0.1.0",
+  "description": "Componentes de interface de agente da Blips (AI Elements + libraries.dev) sobre a @blips/ui",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./components/chain-of-thought": "./src/components/chain-of-thought.tsx",
+    "./components/code-block": "./src/components/code-block.tsx",
+    "./components/confirmation": "./src/components/confirmation.tsx",
+    "./components/context": "./src/components/context.tsx",
+    "./components/conversation": "./src/components/conversation.tsx",
+    "./components/inline-citation": "./src/components/inline-citation.tsx",
+    "./components/message": "./src/components/message.tsx",
+    "./components/prompt-input": "./src/components/prompt-input.tsx",
+    "./components/reasoning": "./src/components/reasoning.tsx",
+    "./components/shimmer": "./src/components/shimmer.tsx",
+    "./components/sources": "./src/components/sources.tsx",
+    "./components/suggestion": "./src/components/suggestion.tsx",
+    "./components/tool": "./src/components/tool.tsx",
+    "./fx/border-beam": "./src/fx/border-beam.tsx",
+    "./fx/thinking-orbs": "./src/fx/thinking-orbs.tsx",
+    "./styles.css": "./styles.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "styles.css",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit -p .",
+    "prepack": "pnpm build"
+  },
+  "peerDependencies": {
+    "@blips/ui": "^3.0.0",
+    "@streamdown/cjk": "^1.0.0",
+    "@streamdown/code": "^2.0.0",
+    "@streamdown/math": "^1.0.0",
+    "@streamdown/mermaid": "^1.0.0",
+    "ai": ">=6.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "shiki": "^4.0.0",
+    "streamdown": "^2.7.0"
+  },
+  "peerDependenciesMeta": {
+    "ai": {
+      "optional": true
+    },
+    "shiki": {
+      "optional": true
+    },
+    "streamdown": {
+      "optional": true
+    },
+    "@streamdown/cjk": {
+      "optional": true
+    },
+    "@streamdown/code": {
+      "optional": true
+    },
+    "@streamdown/math": {
+      "optional": true
+    },
+    "@streamdown/mermaid": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@phosphor-icons/react": "^2.1.10",
+    "border-beam": "^1.4.1",
+    "class-variance-authority": "^0.7.1",
+    "motion": "^14.0.0",
+    "nanoid": "^6.0.2",
+    "thinking-orbs": "^0.3.2",
+    "tokenlens": "^1.3.1",
+    "use-stick-to-bottom": "^1.1.6"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Blips-ativos/ui.git",
+    "directory": "packages/ai"
+  },
+  "license": "MIT AND Apache-2.0",
+  "devDependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@blips/ui": "workspace:^",
+    "@streamdown/cjk": "^1.0.4",
+    "@streamdown/code": "^2.0.0",
+    "@streamdown/math": "^1.0.3",
+    "@streamdown/mermaid": "^1.0.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "ai": "^7.0.128",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "shiki": "^4.5.0",
+    "streamdown": "^2.7.0",
+    "tailwindcss": "^4.0.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  }
+}

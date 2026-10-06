@@ -1,0 +1,7 @@
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+
+/* Streamdown renderiza com classes Tailwind próprias, fora da auto-detecção. */
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";

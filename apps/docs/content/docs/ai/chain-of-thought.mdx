@@ -1,0 +1,117 @@
+---
+title: Chain of Thought
+description: Lista recolhível de etapas que o agente percorreu, com status, resultados de busca e imagens.
+---
+
+<ComponentPreview name="ai-chain-of-thought-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Este componente não exige nenhum peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  ChainOfThought,
+  ChainOfThoughtContent,
+  ChainOfThoughtHeader,
+  ChainOfThoughtImage,
+  ChainOfThoughtSearchResult,
+  ChainOfThoughtSearchResults,
+  ChainOfThoughtStep,
+} from "@blips/ai/components/chain-of-thought"
+```
+
+```tsx
+<ChainOfThought defaultOpen>
+  <ChainOfThoughtHeader>Raciocínio do agente</ChainOfThoughtHeader>
+  <ChainOfThoughtContent>
+    <ChainOfThoughtStep label="Buscando o contrato" status="complete" />
+    <ChainOfThoughtStep label="Consultando o financeiro" status="active" />
+    <ChainOfThoughtStep label="Redigindo a resposta" status="pending" />
+  </ChainOfThoughtContent>
+</ChainOfThought>
+```
+
+Use o `ChainOfThought` quando o agente expõe etapas nomeadas (buscas, consultas, decisões). Para um texto corrido de raciocínio, use o [Reasoning](/docs/ai/reasoning). Para mostrar a entrada e a saída de uma chamada de ferramenta, use o [Tool](/docs/ai/tool).
+
+As etapas são dados do app: monte a lista a partir das parts da mensagem (AI SDK) ou dos eventos do seu backend e marque como `active` a etapa em andamento.
+
+O texto padrão do cabeçalho vem em inglês ("Chain of Thought"), como no upstream. Em telas pt-BR, passe `children` ao `ChainOfThoughtHeader`.
+
+## Exemplos
+
+### Com imagem
+
+`ChainOfThoughtImage` emoldura um gráfico, imagem ou qualquer conteúdo visual gerado na etapa, com legenda opcional.
+
+<ComponentPreview name="ai-chain-of-thought-imagem" />
+
+## Referência da API
+
+### ChainOfThought
+
+Raiz. Guarda o estado aberto ou fechado e aceita as props de `div`.
+
+| Prop           | Tipo                      | Padrão  |
+| -------------- | ------------------------- | ------- |
+| `open`         | `boolean`                 |         |
+| `defaultOpen`  | `boolean`                 | `false` |
+| `onOpenChange` | `(open: boolean) => void` |         |
+
+### ChainOfThoughtHeader
+
+Gatilho com ícone de cérebro e seta. Aceita as props do `CollapsibleTrigger`.
+
+| Prop       | Tipo        | Padrão               |
+| ---------- | ----------- | -------------------- |
+| `children` | `ReactNode` | `"Chain of Thought"` |
+
+### ChainOfThoughtContent
+
+Painel que abre e fecha com o cabeçalho. Aceita as props do `CollapsibleContent`.
+
+### ChainOfThoughtStep
+
+Uma etapa. Aceita as props de `div`; `children` aparece abaixo do rótulo e da descrição.
+
+| Prop          | Tipo                                    | Padrão       |
+| ------------- | --------------------------------------- | ------------ |
+| `label`       | `ReactNode`                             | obrigatória  |
+| `description` | `ReactNode`                             |              |
+| `icon`        | `Icon` (componente do Phosphor)         | `DotIcon`    |
+| `status`      | `"complete" \| "active" \| "pending"`   | `"complete"` |
+
+`active` usa a cor de texto principal, `complete` a cor atenuada e `pending` a cor atenuada a 50%.
+
+### ChainOfThoughtSearchResults
+
+Linha que agrupa resultados de busca. Aceita as props de `div`.
+
+### ChainOfThoughtSearchResult
+
+Um resultado, desenhado como [Badge](/docs/components/badge) `secondary`. Aceita as props do `Badge`.
+
+### ChainOfThoughtImage
+
+Moldura para conteúdo visual. Aceita as props de `div`.
+
+| Prop      | Tipo     | Padrão |
+| --------- | -------- | ------ |
+| `caption` | `string` |        |
+
+## Origem
+
+Adaptado do componente [Chain of Thought](https://elements.ai-sdk.dev/components/chain-of-thought) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible e pelo Badge da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor (a prop `icon` recebe um ícone do Phosphor, não um `LucideIcon`) e as cores pelos tokens da `@blips/ui`.

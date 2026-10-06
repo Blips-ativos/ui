@@ -6,7 +6,7 @@ const withMDX = createMDX();
 
 const config = {
   reactStrictMode: true,
-  transpilePackages: ["@blips/ui"],
+  transpilePackages: ["@blips/ui", "@blips/ai"],
   // SSG total: exporta HTML estático para o Firebase Hosting. Não há rotas de
   // API nem nada dinâmico, então todas as rotas são pré-renderizadas em `out/`.
   output: "export",
