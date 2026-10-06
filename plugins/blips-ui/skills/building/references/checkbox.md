@@ -122,7 +122,15 @@ Visual: `shadow-xs`, foco `ring-[3px] ring-ring/50`. Ícone `Check` (`size-3.5`)
 import { Checkbox } from "@blips/ui/components/checkbox"
 import { Label } from "@blips/ui/components/label"
 
-export function Termos() {
+export function Termos({
+  todos,
+  alguns,
+  marcarTodos,
+}: {
+  todos: boolean
+  alguns: boolean
+  marcarTodos: (marcar: boolean) => void
+}) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">

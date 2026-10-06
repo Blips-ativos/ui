@@ -84,7 +84,7 @@ Seletores que miram `data-[state=…]` param de funcionar nos componentes migrad
 | `data-[state=indeterminate]` | `data-indeterminate` |
 | `data-[state=active]` (Tabs) | `data-active` |
 | `data-[state=on]` (Toggle) | `data-pressed` / `aria-pressed` |
-| `data-[orientation=vertical]` | `data-vertical` / `data-horizontal` |
+| `data-[orientation=vertical]` | continua igual (o Base UI também emite `data-orientation`); a lib ganhou as variantes `data-vertical:` / `data-horizontal:` como atalho |
 | `group-data-[state=open]` no trigger do Collapsible/Accordion | `group-data-panel-open` |
 | `data-[state=open]` em trigger de menu/popover | `data-popup-open` / `aria-expanded` |
 | `peer-data-[state=checked]` | `peer-data-checked` |
@@ -158,8 +158,8 @@ O `globals.css` adota a paleta do preset shadcn (base neutra), com uma exceção
 | `--primary` | `#fcba28` | `#fcba28` (mantido) |
 | `--primary-foreground` | `#000000` | `oklch(0.421 0.095 57.708)` (yellow-900, contraste 5,05:1, AA) |
 | `--foreground` (claro) | preto puro | `oklch(0.145 0 0)` |
-| `--chart-1` … `--chart-5` | — | escala yellow-300 … yellow-800, igual nos dois temas |
-| Raios | `sm` … `2xl` | mesmos valores, mais `--radius-3xl` e `--radius-4xl` |
+| `--chart-1` … `--chart-5` | paleta padrão do shadcn, diferente em cada tema | escala yellow-300 … yellow-800, igual nos dois temas |
+| Raios | `sm` … `2xl` (soma/subtração sobre `--radius`) | mesmos valores com o `--radius` padrão (a escala agora multiplica `--radius`), mais `--radius-3xl` e `--radius-4xl` |
 
 Se você sobrescrevia tokens no CSS do app, confira se os nomes ainda batem. Nenhum token foi renomeado.
 
@@ -169,17 +169,17 @@ Se você sobrescrevia tokens no CSS do app, confira se os nomes ainda batem. Nen
 | --- | --- |
 | [Attachment](/docs/components/attachment) | Arquivo anexado com estado de envio e ações |
 | [Bubble](/docs/components/bubble) | Balão de mensagem com variantes e reações |
-| Combobox | Campo com busca e lista de opções (Base UI) |
+| [Combobox](/docs/components/combobox) | Campo com busca e lista de opções (Base UI) |
 | [Direction](/docs/components/direction) | `DirectionProvider` e `useDirection` para RTL |
 | [Item](/docs/components/item) | Linha com mídia, título, descrição e ações |
 | [Marker](/docs/components/marker) | Linha de status ou evento numa conversa |
 | [Message](/docs/components/message) | Layout de mensagem com avatar, cabeçalho e rodapé |
 | [Message Scroller](/docs/components/message-scroller) | Lista de mensagens com autoscroll |
-| Native Select | `<select>` nativo com o estilo da lib |
+| [Native Select](/docs/components/native-select) | `<select>` nativo com o estilo da lib |
 | [Questionnaire](/docs/components/questionnaire) | Perguntas em sequência com escolhas e navegação |
-| Toast | Notificações do Base UI, alternativa ao Sonner |
+| [Toast](/docs/components/toast) | Notificações do Base UI, alternativa ao Sonner |
 
-Exports novos em componentes que já existiam: `AlertAction`, `ProgressTrack`, `ProgressIndicator`, `ProgressLabel`, `ProgressValue`, `DrawerSwipeHandle`, `NavigationMenuPositioner` e `useCarousel`. Eles estão disponíveis pelo subpath (`@blips/ui/components/<nome>`), não pelo barrel.
+Exports novos em componentes que já existiam: `AlertAction`, `ProgressTrack`, `ProgressIndicator`, `ProgressLabel`, `ProgressValue`, `DrawerSwipeHandle`, `NavigationMenuPositioner` e `useCarousel`. Eles saem pelo subpath (`@blips/ui/components/<nome>`) e também pelo barrel.
 
 ## Toast e Sonner
 
@@ -221,7 +221,7 @@ Componentes que não aparecem na tabela (Empty, Kbd, Skeleton, Table, Textarea, 
 | Chart | Exige recharts 3. Nova prop `initialDimension`. Tipos de `ChartTooltipContent`/`ChartLegendContent` seguem o recharts 3. O tooltip mostra valor 0. |
 | Checkbox | `checked="indeterminate"` sai; use `indeterminate`. `onCheckedChange(checked: boolean, eventDetails)`. Root é `<span role="checkbox">` com input oculto. |
 | Collapsible | Trigger: `asChild` → `render`. Content: `forceMount` → `keepMounted`. Variável `--collapsible-panel-height`. |
-| Command | `CommandDialog` usa o Dialog do Base UI; título e descrição padrão em inglês, passe `title`/`description`. `CommandItem` mostra um check automático com `data-checked=true`. |
+| Command | `CommandDialog` usa o Dialog do Base UI e **não envolve mais os filhos em `<Command>`**: coloque o `<Command>` dentro dele. `showCloseButton` passou a ser `false` por padrão (na v2 o X aparecia sempre); passe `showCloseButton` para manter. Título e descrição padrão em inglês, passe `title`/`description`. `CommandItem` mostra um check automático com `data-checked=true`. |
 | Context Menu | `ContextMenuTrigger`: `asChild` → `render`. Item: `onSelect` → `onClick`. `ContextMenuLabel` precisa ficar dentro de `ContextMenuGroup`. |
 | Dialog | Trigger/Close: `asChild` → `render`. Content perde as props de foco/dismiss do Radix e ganha `initialFocus`/`finalFocus`. `DialogOverlay` é o `Backdrop`. |
 | Drawer | `vaul` → Base UI. `direction` → `swipeDirection` (`"down" \| "up" \| "left" \| "right"`). Saem `shouldScaleBackground`, `dismissible`, `handleOnly` e afins. A alça agora é opcional (`showSwipeHandle` ou `DrawerSwipeHandle`). `DrawerContent` precisa estar dentro do `Drawer` da lib. Seletores `data-[vaul-drawer-direction=*]` → `data-[swipe-direction=*]`. |
@@ -240,7 +240,7 @@ Componentes que não aparecem na tabela (Empty, Kbd, Skeleton, Table, Textarea, 
 | Progress | Novos `ProgressTrack`, `ProgressIndicator`, `ProgressLabel`, `ProgressValue`. O `className` do `Progress` vai para o contêiner, não para a barra: estilize a barra com `[&_[data-slot=progress-track]]:h-2`. `value={null}` = indeterminado. |
 | Radio Group | `onValueChange(value: unknown, eventDetails)`: pode precisar de cast. `value` do item aceita qualquer tipo. |
 | Scroll Area | Saem `type` e `scrollHideDelay`. Use `data-hovering`/`data-scrolling` para a visibilidade. |
-| Select | `SelectValue` não tem `placeholder`: passe o texto como children. Prefira a prop `items` no Root para o rótulo aparecer antes de abrir. `position="popper"` → `alignItemWithTrigger={false}`. `SelectLabel` dentro de `SelectGroup`. `value` aceita qualquer tipo. |
+| Select | `SelectValue` mantém `placeholder` (não passe o texto como children: children estáticos substituem o valor selecionado). Prefira a prop `items` no Root para o rótulo aparecer antes de abrir. `position="popper"` → `alignItemWithTrigger={false}`. `SelectLabel` dentro de `SelectGroup`. `value` aceita qualquer tipo. |
 | Separator | Sai `decorative`; o separador é sempre semântico. Para algo só visual, passe `role="none"`. |
 | Sheet | Trigger/Close: `asChild` → `render`. Content perde as props de foco/dismiss do Radix. Animação via `data-starting-style`/`data-ending-style`. |
 | Sidebar | `asChild` → `render` em `SidebarMenuButton`, `SidebarMenuAction`, `SidebarMenuSubButton`, `SidebarGroupLabel` e `SidebarGroupAction`. O `SidebarProvider` não envolve mais um `TooltipProvider`: os tooltips do menu abrem com o atraso padrão. `Sidebar` aceita `dir`. |

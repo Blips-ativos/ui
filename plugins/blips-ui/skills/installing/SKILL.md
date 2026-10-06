@@ -152,6 +152,7 @@ apresentar custos reais e não estimativas.
 | --- | --- |
 | Ícone Phosphor em **Server Component** | Importe de `@phosphor-icons/react/dist/ssr` (o entrypoint padrão usa Context e quebra em RSC) |
 | React 17 | Sem `Command`, `Toaster` (sonner) e `Resizable` — deps transitivas pedem React 18+. Peer warnings dessas três no install são esperados e inofensivos (vale nas duas trilhas) |
+| v3.x em React 17/18 | `Questionnaire` e `MessageScroller` vêm de `@shadcn/react`, que declara peer `react >=19` (opcional: o install não falha). Em React 17 eles quebram em runtime (`React.useId` não existe); em React 18 a faixa do peer não é atendida e `ref` não chega como prop. Use-os só em React 19 |
 | Ícones na v3.x | Use os nomes com sufixo `Icon` (`CaretDownIcon`); os sem sufixo estão `@deprecated` no Phosphor 2.1.10. Na v2.x os dois funcionam — prefira o sufixo em código novo |
 | pnpm 10 avisa "Ignored build scripts: esbuild" | Inofensivo — o binário vem por optionalDependencies |
 | Fontes | Já vêm por `@import url(...)` no globals da lib. Opcional: `<link rel="preconnect">` para fonts.googleapis.com/fonts.gstatic.com |

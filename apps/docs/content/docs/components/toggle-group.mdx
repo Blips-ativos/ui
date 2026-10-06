@@ -105,7 +105,7 @@ Consulte a documentação do [Base UI Toggle Group](https://base-ui.com/react/co
 - **`rovingFocus` e `loop`** viraram `loopFocus`.
 - **`spacing` padrão mudou de `0` para `2`**: os itens saem separados. Para o visual grudado de antes, passe `spacing={0}`.
 - **Estado do item**: `data-pressed` / `aria-pressed` no lugar de `data-state="on"`.
-- **Nova prop `orientation`** para grupos verticais.
+- **`orientation="vertical"` agora empilha os itens.** Na v2 a prop já existia (vinha do Radix), mas só mudava a navegação por teclado; o layout continuava horizontal.
 
 ```tsx
 // v2

@@ -40,6 +40,9 @@ function ToggleGroup({
       data-size={size}
       data-spacing={spacing}
       data-orientation={orientation}
+      // Desvio Blips do base-mira: o CLI não repassa orientation à primitiva, que então
+      // fica "horizontal" (setas ←/→ na navegação por teclado e data-orientation errado).
+      orientation={orientation}
       style={{ "--gap": spacing } as React.CSSProperties}
       className={cn(
         "group/toggle-group flex w-fit flex-row items-center gap-[--spacing(var(--gap))] rounded-md data-[size=sm]:rounded-[min(var(--radius-md),8px)] data-vertical:flex-col data-vertical:items-stretch",

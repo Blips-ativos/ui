@@ -25,7 +25,7 @@ Primitivas: `@base-ui/react/toggle-group` (raiz) e `@base-ui/react/toggle` (item
 | `value` / `defaultValue` | `string[]` | — | **Sempre array**, também no modo único (`["bold"]`). |
 | `onValueChange` | `(value: string[], eventDetails) => void` | — | Array também no modo único; vazio = desmarcou. |
 | `spacing` | `number` | **`2`** | Itens separados por padrão; `spacing={0}` gruda. |
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Prop da lib: vira `data-orientation` e empilha os itens (`flex-col`). |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Repassada à primitiva (setas ↑/↓ no vertical) e usada pela lib para empilhar os itens (`flex-col`) e acertar os cantos com `spacing={0}`. |
 | `loopFocus` | `boolean` | `true` | Substitui `loop`/`rovingFocus` do Radix. |
 | `variant`, `size`, `disabled` | | | |
 
@@ -40,6 +40,7 @@ import {
   TextItalicIcon,
   TextUnderlineIcon,
 } from "@phosphor-icons/react";
+import * as React from "react";
 import {
   ToggleGroup,
   ToggleGroupItem,
@@ -90,7 +91,6 @@ export function Formatacao() {
 - `type="single"`/`type="multiple"` não existe: use (ou omita) `multiple`.
 - `value="bold"` (string) não marca nada: use `["bold"]`.
 - Quem vinha da v2 com itens grudados precisa passar `spacing={0}` (o padrão mudou de 0 para 2).
-- `orientation` é tratada pela lib (layout e `data-orientation`) e não é repassada à primitiva: a navegação por setas continua a do padrão horizontal.
 
 ## v2.x — Radix
 
@@ -108,6 +108,7 @@ Item ligado: `data-state="on" | "off"`.
 
 ```tsx
 import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
+import * as React from "react"
 import {
   ToggleGroup,
   ToggleGroupItem,

@@ -357,7 +357,7 @@ return (
             >
               <span className="text-xs text-muted-foreground">{chartConfig[chart].label}</span>
               <span className="text-lg leading-none font-bold sm:text-3xl">
-                {total[key as keyof typeof total].toLocaleString()}
+                {total[key as keyof typeof total].toLocaleString("pt-BR")}
               </span>
             </button>
           )
@@ -460,7 +460,7 @@ For donut with center text, add `<Label>` inside `<Pie>`:
         return (
           <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
             <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
-              {totalVisitors.toLocaleString()}
+              {totalVisitors.toLocaleString("pt-BR")}
             </tspan>
             <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
               Visitors

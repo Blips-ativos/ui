@@ -40,6 +40,7 @@ Exports: `Item`, `ItemMedia`, `ItemContent`, `ItemTitle`, `ItemDescription`,
 
 ```tsx
 import { CaretRightIcon, ShieldCheckIcon } from "@phosphor-icons/react";
+import * as React from "react";
 import {
   Avatar,
   AvatarFallback,
@@ -57,7 +58,15 @@ import {
   ItemTitle,
 } from "@blips/ui/components/item";
 
-export function Itens() {
+type Pessoa = {
+  id: string;
+  nome: string;
+  email: string;
+  foto: string;
+  iniciais: string;
+};
+
+export function Itens({ pessoas }: { pessoas: Pessoa[] }) {
   return (
     <div className="flex w-full max-w-md flex-col gap-6">
       <Item variant="outline">

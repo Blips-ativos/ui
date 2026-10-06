@@ -137,6 +137,7 @@ Primitiva: `@radix-ui/react-popover`.
 Estado: `data-state="open" | "closed"`. CSS vars: `--radix-popover-trigger-width`, `--radix-popover-content-available-height`, `--radix-popover-content-transform-origin`.
 
 ```tsx
+import * as React from "react"
 import { Button } from "@blips/ui/components/button"
 import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"

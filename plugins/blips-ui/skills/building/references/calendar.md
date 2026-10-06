@@ -105,7 +105,7 @@ export function Periodo() {
 
 - `--cell-size` padrão `--spacing(8)`; hoje e intervalo usam `bg-accent`.
 - `CalendarDayButton` não recebe `locale`: `data-day` e o dropdown de mês formatam com `"default"`.
-- Override da grade: `classNames.table`.
+- Override da grade: `classNames.month_grid` (é a chave do react-day-picker v9). A lib v2 passa uma chave `table` que o v9 ignora, então `classNames.table` não tem efeito.
 - Com `captionLayout="dropdown"`, os selects têm borda (`border-input shadow-xs`) e foco com ring.
 - Ícones `CaretLeft`/`CaretRight`/`CaretDown`.
 - Date picker: `PopoverTrigger asChild` + `Button`.

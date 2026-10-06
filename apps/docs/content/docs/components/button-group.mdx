@@ -228,6 +228,6 @@ export function ButtonGroupTextDemo() {
   </DropdownMenuTrigger>
   ```
 
-- **Separador com atributos do Base UI.** O `ButtonGroupSeparator` usa o `Separator` do Base UI, que expõe `data-horizontal` e `data-vertical`. Um `className` com `data-[orientation=vertical]:…` deve virar `data-vertical:…`.
+- **Separador do Base UI.** O `ButtonGroupSeparator` usa o `Separator` do Base UI, que continua emitindo `data-orientation`. Seletores `data-[orientation=vertical]:…` seguem valendo; `data-vertical:…` e `data-horizontal:…` são atalhos da lib para o mesmo atributo.
 - **Pontas por `data-slot`.** O arredondamento agora mira filhos com `data-slot` em vez de `:first-child` e `:last-child`. Um filho customizado sem `data-slot` mantém o próprio raio e não entra na emenda das bordas.
 - **`ButtonGroupText` ganhou `data-slot="button-group-text"`** e ficou com `px-2.5 text-xs/relaxed`, sem `shadow-xs`.

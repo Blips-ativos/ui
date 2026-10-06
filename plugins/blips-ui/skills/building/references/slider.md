@@ -34,6 +34,7 @@ Estado: `data-horizontal`/`data-vertical`, `data-disabled` (no Control), `data-d
 Vertical: `orientation="vertical"` + altura no pai (o Control tem `min-h-40`).
 
 ```tsx
+import * as React from "react";
 import { Slider } from "@blips/ui/components/slider";
 
 export function Sliders() {
@@ -63,7 +64,7 @@ export function Sliders() {
 ### Armadilhas
 
 - `onValueCommit` não existe: `onValueCommitted`.
-- `data-[orientation=vertical]:` e `data-[disabled]:` não casam: `data-vertical:`, `data-disabled:`.
+- Prefira `data-vertical:` / `data-disabled:` (convenção da v3). `data-[orientation=vertical]:` e `data-[disabled]:` vindos da v2 ainda casam, porque o Base UI também emite `data-orientation` e `data-disabled` (este sem valor).
 
 ## v2.x — Radix
 
@@ -80,6 +81,7 @@ Visual: track `h-1.5 rounded-full`; thumb `size-4 rounded-full border-primary sh
 Estado: `data-orientation`, `data-disabled`.
 
 ```tsx
+import * as React from "react"
 import { Slider } from "@blips/ui/components/slider"
 
 export function Sliders() {

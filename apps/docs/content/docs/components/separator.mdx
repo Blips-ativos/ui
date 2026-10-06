@@ -53,7 +53,7 @@ Consulte a documentação do [Base UI Separator](https://base-ui.com/react/compo
 ## Migrando da v2
 
 - **`decorative` foi removida.** No Base UI o separador é sempre semântico (`role="separator"` + `aria-orientation`). Para um separador puramente visual, passe `role="none"` ou `aria-hidden`.
-- **Atributos de estado**: `data-[orientation=horizontal|vertical]` virou `data-horizontal` / `data-vertical`.
+- **Atributos de estado**: o Base UI continua emitindo `data-orientation`, então `data-[orientation=vertical]:` segue funcionando. A lib ganhou as variantes `data-horizontal:` / `data-vertical:` como atalho para esses seletores.
 - **Vertical** usa `self-stretch` em vez de `h-full`.
 - **`asChild` não existe**: use `render`.
 

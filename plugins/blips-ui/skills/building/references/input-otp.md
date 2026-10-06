@@ -37,6 +37,7 @@ Diferenças visuais e de padrão:
 
 ```tsx
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import * as React from "react";
 import { Field, FieldLabel } from "@blips/ui/components/field";
 import {
   InputOTP,
@@ -45,7 +46,11 @@ import {
   InputOTPSlot,
 } from "@blips/ui/components/input-otp";
 
-export function CodigoDeVerificacao() {
+export function CodigoDeVerificacao({
+  verificar,
+}: {
+  verificar: (codigo: string) => void;
+}) {
   const [codigo, setCodigo] = React.useState("");
 
   return (
@@ -57,7 +62,7 @@ export function CodigoDeVerificacao() {
         pattern={REGEXP_ONLY_DIGITS}
         value={codigo}
         onChange={setCodigo}
-        onComplete={(v) => verificar(v)}
+        onComplete={verificar}
         containerClassName="gap-2"
       >
         <InputOTPGroup>

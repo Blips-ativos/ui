@@ -38,9 +38,10 @@ Primitiva: `@base-ui/react/select`. `Select` é um alias direto de `Select.Root`
 | `itemToStringLabel`, `itemToStringValue`, `isItemEqualToValue` | | Para valores objeto. |
 | `name`, `required`, `disabled`, `readOnly`, `inputRef` | | |
 
-**SelectValue**: não tem `placeholder`. O placeholder é o rótulo de um item com
-`value: null` em `items`, ou o `children` (texto ou função `(value) => ReactNode`).
-Estilo do placeholder: `data-placeholder:` no trigger.
+**SelectValue**: `placeholder` (nó exibido quando não há valor) e `children`
+(texto ou função `(value) => ReactNode` para formatar o valor). Precedência: o
+`children` vence, depois o rótulo de um item com `value: null` em `items`, e só
+então o `placeholder`. Estilo do placeholder: `data-placeholder:` no trigger.
 
 **SelectContent**
 
@@ -57,6 +58,7 @@ Visual: trigger `h-7` (sm `h-6`), `text-xs/relaxed`, ícones `size-3.5`; itens `
 Estado: `data-open`/`data-closed`, `data-disabled`, `data-highlighted` (item), `data-placeholder` (trigger).
 
 ```tsx
+import * as React from "react";
 import {
   Select,
   SelectContent,
@@ -127,7 +129,7 @@ Múltipla escolha com resumo no trigger:
 
 ### Armadilhas
 
-- `<SelectValue placeholder="…" />` não existe: use item `value: null` em `items` ou `children`.
+- `<SelectValue placeholder="…" />` existe, mas é ignorado se houver `children` ou um item `value: null` em `items`. E sem `items` o trigger mostra o `value` cru (ex.: `maca`) em vez do rótulo até o popup abrir pela primeira vez: passe `items`.
 - `position="popper"` não existe: `alignItemWithTrigger={false}`.
 - `SelectLabel` solto (fora de `SelectGroup`) quebra.
 - `--radix-select-trigger-width` virou `--anchor-width`; `data-[state=open]:` virou `data-open:`.
@@ -146,12 +148,13 @@ Primitiva: `@radix-ui/react-select`.
 `align` (`"center"`), `side`, `sideOffset`, `avoidCollisions`. Com `"popper"`, o
 viewport usa `--radix-select-trigger-width`.
 
-`SelectLabel` (`Select.Label`) pode ficar solto ou dentro de `SelectGroup`.
+`SelectLabel` (`Select.Label`) também **precisa ficar dentro de `SelectGroup`**: solto, o Radix lança "`SelectLabel` must be used within `SelectGroup`".
 
 Visual: trigger `h-9` (sm `h-8`), `text-sm`, `shadow-xs`.
 Estado: `data-state="open" | "closed"`, `data-placeholder`, `data-disabled`, `data-highlighted`.
 
 ```tsx
+import * as React from "react"
 import {
   Select,
   SelectContent,

@@ -53,7 +53,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 import { toast } from "sonner";
 import { Button } from "@blips/ui/components/button";
 
-export function AcoesComToast() {
+export function AcoesComToast({
+  desfazer,
+  enviarContrato,
+}: {
+  desfazer: () => void;
+  enviarContrato: () => Promise<unknown>;
+}) {
   return (
     <div className="flex flex-wrap gap-2">
       <Button
@@ -61,7 +67,7 @@ export function AcoesComToast() {
         onClick={() =>
           toast.success("Cliente salvo", {
             description: "Os dados já aparecem na listagem.",
-            action: { label: "Desfazer", onClick: () => desfazer() },
+            action: { label: "Desfazer", onClick: desfazer },
           })
         }
       >

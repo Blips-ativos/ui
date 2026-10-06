@@ -666,6 +666,7 @@ NavMain uses SidebarMenuAction for collapse trigger (separate from main button):
       <Button
         variant="ghost"
         size="icon"
+        aria-label="Mais opções"
         className="h-7 w-7 data-popup-open:bg-accent"
       />
     }
@@ -901,7 +902,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
       <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
-        <Button className="h-8 w-8" variant="ghost" size="icon" onClick={toggleSidebar}>
+        <Button className="h-8 w-8" variant="ghost" size="icon" aria-label="Alternar sidebar" onClick={toggleSidebar}>
           <SidebarSimpleIcon />
         </Button>
         <Separator orientation="vertical" className="mr-2 h-4" />

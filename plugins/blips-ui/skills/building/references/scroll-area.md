@@ -47,11 +47,19 @@ export function ListaDeVersoes() {
 }
 ```
 
-Barra que só aparece ao rolar ou passar o mouse:
+Barra que só aparece ao rolar ou passar o mouse: o `ScrollArea` já desenha a
+barra vertical e não repassa `className` a ela (um `<ScrollBar />` a mais criaria
+uma segunda barra vertical). Mire a barra embutida pelo `data-slot`, a partir do
+`ScrollArea`:
 
 ```tsx
-<ScrollBar className="opacity-0 transition-opacity data-hovering:opacity-100 data-scrolling:opacity-100" />
+<ScrollArea className="h-72 [&_[data-slot=scroll-area-scrollbar]]:opacity-0 [&_[data-slot=scroll-area-scrollbar]]:transition-opacity [&_[data-slot=scroll-area-scrollbar][data-hovering]]:opacity-100 [&_[data-slot=scroll-area-scrollbar][data-scrolling]]:opacity-100">
+  {/* conteúdo */}
+</ScrollArea>
 ```
+
+Na barra horizontal, que você mesmo adiciona, o `className` funciona direto:
+`<ScrollBar orientation="horizontal" className="opacity-0 transition-opacity data-hovering:opacity-100 data-scrolling:opacity-100" />`.
 
 ## v2.x — Radix
 

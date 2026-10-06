@@ -53,7 +53,7 @@ Nas duas versões os imports são por subpath (`@blips/ui/components/<x>`) e os
 | Ícones Phosphor | nomes sem sufixo: `CaretDown`, `Check`, `X` | nomes com sufixo `Icon`: `CaretDownIcon`, `CheckIcon`, `XIcon` (os sem sufixo estão `@deprecated` no Phosphor 2.1.10) |
 | Densidade | new-york: `text-sm`, Button `h-9`, Card `p-6`, Dialog `p-6` / `sm:max-w-lg` | base-mira compacto: `text-xs/relaxed`, Button `h-7`, Card `--card-spacing` 16px, Dialog `p-4` / `sm:max-w-sm` |
 | Bordas/sombras | `border` + `shadow-*` | `ring-1 ring-foreground/10`, menos sombra |
-| Padding de ícone em Button/Badge | automático (`has-[>svg]:px-*`) | marque o ícone com `data-icon="inline-start"` ou `data-icon="inline-end"` |
+| Padding de ícone em Button/Badge | Button: automático (`has-[>svg]:px-*`); Badge: padding fixo `px-2` | marque o ícone com `data-icon="inline-start"` ou `data-icon="inline-end"` |
 | `data-variant`/`data-size` no Button | presentes | removidos (`data-slot="button"` continua) |
 | `type` padrão do Button | o do HTML (`submit` dentro de `<form>`) | `type="button"` (definido pelo Base UI) — botão de envio precisa de `type="submit"` explícito |
 

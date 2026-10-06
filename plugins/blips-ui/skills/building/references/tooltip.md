@@ -32,7 +32,7 @@ Primitiva: `@base-ui/react/tooltip`.
 Sem `<TooltipProvider>` ancestral o Base UI usa o atraso padrão dele (cerca de
 600 ms). O `SidebarProvider` da v3 **não** fornece mais um Provider.
 
-Estado: `data-open`, `data-closed`, `data-[state=delayed-open]`. CSS vars: `--transform-origin`, `--anchor-width`, `--available-height`.
+Estado: `data-open`, `data-closed`, `data-instant` (abriu/fechou sem animação), `data-side`, `data-starting-style`/`data-ending-style`. O Base UI não emite `data-state`: as classes `data-[state=delayed-open]:` que sobraram no `TooltipContent` da lib são inertes, não as use. CSS vars: `--transform-origin`, `--anchor-width`, `--available-height`.
 
 ```tsx
 import { PlusIcon } from "@phosphor-icons/react";

@@ -515,6 +515,7 @@ const handleViewItem = (item: Item) => {
     <Button
       variant="outline"
       size="icon"
+      aria-label="Ver detalhes"
       onClick={() => handleViewItem(row.original)}
     >
       <EyeIcon />

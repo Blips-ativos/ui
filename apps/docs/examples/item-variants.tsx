@@ -12,17 +12,17 @@ import {
 const variants = [
   {
     variant: "default",
-    label: "Default",
+    label: "Padrão",
     text: "Fundo transparente, sem borda.",
   },
   {
     variant: "outline",
-    label: "Outline",
+    label: "Contorno",
     text: "Borda visível ao redor do item.",
   },
   {
     variant: "muted",
-    label: "Muted",
+    label: "Suave",
     text: "Fundo suave para destaque discreto.",
   },
 ] as const;

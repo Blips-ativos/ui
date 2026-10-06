@@ -106,6 +106,7 @@ function ContactsForm({ formRef, onSubmit }: FormProps) {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label="Remover item"
                         onClick={() => {
                           field.onChange(field.value.filter((_, i) => i !== index))
                         }}
@@ -208,6 +209,7 @@ function duplicateItem<T>(field: { value: T[]; onChange: (v: T[]) => void }, ind
               type="button"
               variant="ghost"
               size="icon"
+              aria-label="Duplicar item"
               onClick={() => duplicateItem(field, index)}
             >
               <CopyIcon className="h-4 w-4" />
@@ -217,6 +219,7 @@ function duplicateItem<T>(field: { value: T[]; onChange: (v: T[]) => void }, ind
                 type="button"
                 variant="ghost"
                 size="icon"
+                aria-label="Remover item"
                 onClick={() => removeItem(field, index)}
               >
                 <TrashIcon className="h-4 w-4 text-destructive" />

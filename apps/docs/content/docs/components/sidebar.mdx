@@ -96,7 +96,7 @@ Os tooltips e as partes polimórficas passaram para o Base UI.
 - `asChild` saiu de `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarMenuButton`, `SidebarMenuAction` e `SidebarMenuSubButton`. Use `render`.
 - O `SidebarProvider` não cria mais um `TooltipProvider delayDuration={0}`. Para o comportamento antigo, use `<TooltipProvider delay={0}>` na raiz.
 - `SidebarMenuAction` com `showOnHover` agora fica visível por `aria-expanded`, não por `data-[state=open]`.
-- O `SidebarTrigger` usa `size="icon-sm"` (fica 4px maior) e o ícone `Sidebar` do Phosphor.
+- O `SidebarTrigger` usa `size="icon-sm"` (`size-6`, 4px menor que o `size-7` da v2) e o ícone `Sidebar` do Phosphor.
 - A `Sidebar` aceita `dir`, repassado ao sheet no mobile.
 - Visual mais compacto: textos do menu em `text-xs`, `SidebarGroup` com `px-2 py-1` e `SidebarMenu` com `gap-px`.
 

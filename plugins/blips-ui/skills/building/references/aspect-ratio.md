@@ -21,7 +21,7 @@ Não usa primitiva: é uma `div` simples (`React.ComponentProps<"div"> & { ratio
 | `ratio` | `number` | **obrigatório** | Proporção (`16 / 9`, `4 / 3`, `1`). Sem ela, não compila. |
 | `className` | `string` | — | Vai direto para o elemento com a proporção (`relative aspect-(--ratio)`). |
 
-A proporção vem do CSS `aspect-ratio` via variável `--ratio`. Não sobrescreva `--ratio`/`aspect-ratio` por `style`. Não há `asChild` nem `render`.
+A proporção vem do CSS `aspect-ratio` via variável `--ratio`, definida no `style` do próprio componente. **Não passe `style`**: o `{...props}` vem depois e substitui o objeto inteiro, apagando o `--ratio` (a caixa perde a proporção). Estilize por `className`. Não há `asChild` nem `render`.
 
 ```tsx
 import { AspectRatio } from "@blips/ui/components/aspect-ratio";

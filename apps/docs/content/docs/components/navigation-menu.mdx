@@ -72,7 +72,7 @@ A primitiva passou de Radix para [Base UI Navigation Menu](https://base-ui.com/r
 
 - `asChild` saiu do `NavigationMenuLink` e do `NavigationMenuTrigger`. Use `render`. A prop `active` do link continua valendo.
 - A prop `viewport` do `NavigationMenu` está **obsoleta e não tem efeito**. O conteúdo sempre aparece no popup posicionado; o modo `viewport={false}` da v2, com o conteúdo logo abaixo do item, deixou de existir.
-- O `NavigationMenu` ganhou `align`. Para personalizar o popup, componha com `NavigationMenuPositioner` (`side`, `sideOffset`, `align`, `alignOffset`). Só renderize `NavigationMenuViewport` ao montar o seu próprio positioner; ao lado do padrão ele duplica o viewport.
+- O `NavigationMenu` ganhou `align`, repassado ao `NavigationMenuPositioner` que ele já renderiza. `NavigationMenuPositioner` e `NavigationMenuViewport` são exportados para quem monta o root direto com o primitivo do Base UI; dentro do `NavigationMenu` da lib eles duplicam o popup.
 - `value`/`onValueChange` do root recebem `(value, eventDetails)`. `delayDuration` e `skipDelayDuration` viram `delay` e `closeDelay`.
 - Seletores `data-[state=open]` viram `data-popup-open`/`data-open`.
 

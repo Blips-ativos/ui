@@ -99,7 +99,7 @@ Para navegar com o `<Link />` do Next.js, troque o elemento passado em `render` 
 
 - `PaginationLink` agora renderiza `<Button nativeButton={false} render={<a />}>` (Base UI) em vez de um `<a>` com `buttonVariants`. As props de `<a>` (`href`, `onClick`…) continuam valendo, e o elemento final continua sendo um `<a>`.
 - `PaginationPrevious` e `PaginationNext` ganharam a prop `text` (padrão `"Previous"`/`"Next"`) para traduzir o rótulo.
-- Os ícones agora são `CaretLeftIcon`, `CaretRightIcon` e `DotsThreeIcon`, e não giram mais em RTL.
+- Os ícones são os mesmos, agora pelos nomes com sufixo: `CaretLeftIcon`, `CaretRightIcon` e `DotsThreeIcon`.
 - Visual: `PaginationContent` passou de `gap-1` para `gap-0.5`, `PaginationEllipsis` de `size-9` para `size-7`, e os tamanhos vêm do `Button` da v3 (`icon` é `size-7` e `default` é `h-7`).
 
 ```tsx

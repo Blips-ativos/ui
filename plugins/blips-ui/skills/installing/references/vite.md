@@ -112,7 +112,9 @@ A lib suporta React 17 (peer `^17`), com três diferenças **verificadas**:
 2. **Não use `Command`, `Toaster` (sonner) e `Resizable`** — as deps dessas
    três pedem React 18+. Os peer warnings no install referem-se a elas; os
    demais componentes funcionam (smoke test com `renderToStaticMarkup` em
-   React 17.0.2 verificado).
+   React 17.0.2 verificado). Na **v3.x**, some-se a essas `Questionnaire` e
+   `MessageScroller`: vêm de `@shadcn/react` (peer `react >=19`) e chamam
+   `React.useId`, que não existe no React 17.
 
 3. **Não atualize o React** para "resolver" os warnings — a adoção da lib não
    exige upgrade; isso é decisão à parte do time.

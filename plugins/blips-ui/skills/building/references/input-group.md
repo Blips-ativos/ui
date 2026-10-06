@@ -32,10 +32,10 @@ Exports (iguais nas duas versões): `InputGroup`, `InputGroupAddon`,
 ## v3.x — Base UI
 
 - `InputGroupButton` repassa ao `Button` Base UI: troque o elemento com `render` (sem `asChild`). Para usá-lo como gatilho de Tooltip/Dropdown/Popover, passe-o no `render` do trigger.
-- Tamanhos: grupo `h-7`; texto do addon `text-xs/relaxed`; ícones do addon `size-3.5`; padding `pl-2`/`pr-2`. `InputGroupButton`: `xs` `h-5`, `sm` herda o Button (`h-6`), `icon-xs` `size-6`, `icon-sm` `size-7`.
+- Tamanhos: grupo `h-7`; texto do addon `text-xs/relaxed`; ícones do addon `size-3.5`; padding `pl-2`/`pr-2`. `InputGroupButton`: `xs` `h-5`, `sm` fica com a altura padrão do Button (`h-7`: o `InputGroupButton` não repassa `size` ao `Button`), `icon-xs` `size-6`, `icon-sm` `size-7`.
 - Foco: `border-ring` + `ring-2 ring-ring/30`.
 - `Kbd` dentro do addon ganha estilo automático.
-- Além do clique, Enter/Espaço no addon também focam o input (extensão Blips para acessibilidade).
+- Só o clique no addon foca o input (e só um `<input>`: com `InputGroupTextarea` o clique não move o foco). Não há atalho de teclado no addon, de propósito: roubar o foco no Espaço impediria Checkbox/Switch do Base UI dentro do addon de alternar.
 
 ```tsx
 import {

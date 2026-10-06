@@ -61,7 +61,7 @@ Nomeie cada componente que será utilizado. Para cada um, declare:
 ### Passo 3: Ler Antes de Escrever
 
 Leia os arquivos de referência relevantes. Só então escreva código. Isso previne:
-- Usar props/variantes erradas (ex: `sm:max-w-lg` em vez de `sm:data-[side=right]:max-w-lg` no Sheet)
+- Usar props/variantes erradas (ex.: na v3.x, `sm:max-w-lg` em vez de `sm:data-[side=right]:max-w-lg` no Sheet)
 - Usar a API da versão errada (ex: `asChild` num repo v3, `render` num repo v2)
 - Perder convenções do projeto (ex: esquecer prop `modal` no Popover dentro de Sheet)
 - Reinventar padrões que já existem no codebase
@@ -196,7 +196,7 @@ Estes padrões aparecem frequentemente entre componentes. Internalize-os:
 - **Form em Sheet**: Envolva `SheetBody`/`SheetFooter` em `<form className="flex flex-1 flex-col overflow-hidden">`. Dialog não precisa disso.
 - **FormRef**: Quando o botão de submit está fora do formulário (ex: SheetFooter), use `formRef.current?.requestSubmit()`.
 - **Popover em Sheet/Dialog**: Sempre adicione a prop `modal` no Popover para corrigir scroll.
-- **Largura do Sheet**: Use `sm:data-[side=right]:max-w-lg` (não `sm:max-w-lg`).
+- **Largura do Sheet**: na v3.x, use `sm:data-[side=right]:max-w-lg` (o `SheetContent` emite `data-side` e a largura base vem de `data-[side=right]:sm:max-w-sm`, que um `sm:max-w-lg` solto não vence). Na v2.x, use `sm:max-w-lg`: o `SheetContent` Radix não emite `data-side`, então `sm:data-[side=right]:` nunca casa.
 - **Estados vazios**: Sempre trate estados vazios/nulos (CommandEmpty, verificações de no-data).
 
 ---
@@ -223,7 +223,7 @@ operacional durante a construção, não o critério de aceite.
 - Use `formRef` quando o botão de submit estiver fora do formulário
 - Use `satisfies ChartConfig` para segurança de tipos
 - Adicione `min-h-[VALUE]` no ChartContainer
-- Adicione `accessibilityLayer` nos componentes raiz dos gráficos
+- Adicione `accessibilityLayer` nos componentes raiz dos gráficos (v2.x/recharts 2; na v3.x o recharts 3 já liga por padrão)
 - Use a prop `tooltip` no SidebarMenuButton para modo ícone
 - Defina `meta.title` em todas as colunas da tabela
 - Use paginação server-side para listas > 100 itens

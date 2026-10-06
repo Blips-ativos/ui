@@ -48,26 +48,23 @@ function InputGroupAddon({
   align = "inline-start",
   ...props
 }: React.ComponentProps<"div"> & VariantProps<typeof inputGroupAddonVariants>) {
-  // Clicar (ou Enter/Espaço) no addon foca o input do grupo, exceto quando o
-  // alvo é um botão. O handler de teclado é delta Blips (a11y do biome).
-  const focusInput = (e: React.SyntheticEvent<HTMLDivElement>) => {
-    if ((e.target as HTMLElement).closest("button")) {
-      return;
-    }
-    e.currentTarget.parentElement?.querySelector("input")?.focus();
-  };
-
   return (
+    // Clicar no addon foca o input do grupo, exceto quando o alvo é um botão.
+    // Sem onKeyDown de propósito: o div não é focável, então só receberia
+    // teclas borbulhadas de controles internos — e roubar o foco no keydown
+    // do Espaço impede o Checkbox/Switch do Base UI (que alternam no keyup)
+    // de alternar.
+    // biome-ignore lint/a11y/useKeyWithClickEvents: atalho de mouse; o input já é alcançável por Tab
     <div
       role="group"
       data-slot="input-group-addon"
       data-align={align}
       className={cn(inputGroupAddonVariants({ align }), className)}
-      onClick={focusInput}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          focusInput(e);
+      onClick={(e) => {
+        if ((e.target as HTMLElement).closest("button")) {
+          return;
         }
+        e.currentTarget.parentElement?.querySelector("input")?.focus();
       }}
       {...props}
     />

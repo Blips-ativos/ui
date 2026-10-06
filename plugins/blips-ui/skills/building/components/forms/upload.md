@@ -154,6 +154,7 @@ function FileUploadField({
                 variant="ghost"
                 size="sm"
                 onClick={() => removeFile(file.id)}
+                aria-label="Remover arquivo"
               >
                 <XIcon className="h-4 w-4" />
               </Button>

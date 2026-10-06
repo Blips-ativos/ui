@@ -114,7 +114,10 @@ function FormControl({
 }: useRender.ComponentProps<"div">) {
   const { error, formItemId, formDescriptionId, formMessageId } =
     useFormField();
-  const child = React.isValidElement(children) ? children : undefined;
+  // O filho só vira o elemento renderizado quando não há `render`; com
+  // `render`, os children seguem como conteúdo dele.
+  const child =
+    !render && React.isValidElement(children) ? children : undefined;
 
   return useRender({
     defaultTagName: "div",
@@ -130,7 +133,7 @@ function FormControl({
         "aria-invalid": !!error,
       },
       props,
-      // Sem filho-elemento, o conteúdo segue como children do <div>
+      // Sem filho-elemento como alvo, o conteúdo segue como children
       child ? {} : { children }
     ),
   });

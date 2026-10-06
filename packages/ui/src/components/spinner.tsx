@@ -1,3 +1,5 @@
+"use client";
+
 import { SpinnerIcon } from "@phosphor-icons/react";
 import type * as React from "react";
 

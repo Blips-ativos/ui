@@ -40,6 +40,7 @@ do Base UI. Os `Menubar*` são wrappers finos sobre os `DropdownMenu*` da lib.
 Visual: raiz `h-9 rounded-lg border p-1`, itens `min-h-7 text-xs/relaxed`, popup `rounded-lg ring-1 ring-foreground/10`.
 
 ```tsx
+import * as React from "react";
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -58,7 +59,7 @@ import {
   MenubarTrigger,
 } from "@blips/ui/components/menubar";
 
-export function MenuDoEditor() {
+export function MenuDoEditor({ criarAba }: { criarAba: () => void }) {
   const [regua, setRegua] = React.useState(true);
   const [tema, setTema] = React.useState("system");
 
@@ -67,7 +68,7 @@ export function MenuDoEditor() {
       <MenubarMenu>
         <MenubarTrigger>Arquivo</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem onClick={() => criarAba()}>
+          <MenubarItem onClick={criarAba}>
             Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
           </MenubarItem>
           <MenubarSub>
@@ -127,6 +128,7 @@ Primitiva: `@radix-ui/react-menubar`.
 Visual: raiz `h-9 rounded-md border shadow-xs`, itens `text-sm py-1.5`.
 
 ```tsx
+import * as React from "react"
 import {
   Menubar,
   MenubarCheckboxItem,
@@ -141,7 +143,7 @@ import {
   MenubarTrigger,
 } from "@blips/ui/components/menubar"
 
-export function MenuDoEditor() {
+export function MenuDoEditor({ criarAba }: { criarAba: () => void }) {
   const [regua, setRegua] = React.useState(true)
   const [tema, setTema] = React.useState("system")
 
@@ -150,7 +152,7 @@ export function MenuDoEditor() {
       <MenubarMenu>
         <MenubarTrigger>Arquivo</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem onSelect={() => criarAba()}>
+          <MenubarItem onSelect={criarAba}>
             Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />

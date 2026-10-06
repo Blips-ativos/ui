@@ -195,7 +195,7 @@ const PLACEHOLDER_CDN =
   /(unsplash\.com|placehold\.co|via\.placeholder|dummyimage\.com|placekitten\.com|picsum\.photos|loremflickr\.com)/i;
 // Faixa de emojis usados como ícone de feature (✨🚀🎯⚡🔥💡 e vizinhos no plano de símbolos).
 const EMOJI_RE =
-  /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}]/u;
+  /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}]|\u{FE0F}/u;
 // hex cru (não em arbitrary value) p/ contagem por arquivo — >12 = tokens ignorados.
 const RAW_HEX_RE = /#[0-9a-fA-F]{3,8}\b/g;
 // Elisão de código em entrega: o componente sai pela metade. Alta precisão.
@@ -604,8 +604,7 @@ for (const abs of files) {
   if (isV3 && /\.(tsx|ts|jsx|js)$/.test(file)) {
     const re =
       /import\s*\{([^}]*)\}\s*from\s*["']@phosphor-icons\/react(?:\/dist\/ssr)?["']/g;
-    let m;
-    while ((m = re.exec(text))) {
+    for (const m of text.matchAll(re)) {
       const names = m[1]
         .split(",")
         .map(

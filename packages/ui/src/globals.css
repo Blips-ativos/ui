@@ -675,6 +675,26 @@
   }
 }
 
+/* Utilitários de scrollbar usados pelo message-scroller (vêm do site do
+   shadcn e não estão no shadcn/tailwind.css nem no core do Tailwind). */
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+@utility scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
+}
+
+@utility scrollbar-thumb-transparent {
+  scrollbar-color: transparent var(--tw-scrollbar-track, transparent);
+  --tw-scrollbar-thumb: transparent;
+}
+
+@utility scrollbar-track-transparent {
+  scrollbar-color: var(--tw-scrollbar-thumb, auto) transparent;
+  --tw-scrollbar-track: transparent;
+}
+
 /* ============================================================
    Blips UI tokens — preset shadcn b6GMQNVCs (base neutra + tema
    amarelo), com o amarelo da marca (#FCBA28) mantido como `primary`

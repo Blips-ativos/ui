@@ -54,7 +54,7 @@ A API é a mesma; mudam densidade e um seletor:
 | Choice card selecionado | `has-data-checked` (Checkbox/Radio do Base UI); card interno `p-2` com hover e ring de foco | `has-data-[state=checked]` (Radix); card interno `p-4` |
 | Controles compostos | Checkbox/Radio/Switch/Select da v3 (ver as references) | Os da v2 |
 
-Na v3, um controle próprio que só emite `data-state="checked"` não aciona o destaque do choice card.
+Na v3, o destaque usa a variante customizada `data-checked` do `globals.css` da lib, que casa tanto `[data-checked]` quanto `[data-state="checked"]`: um controle próprio no estilo Radix também aciona o choice card.
 
 ## Exemplo
 

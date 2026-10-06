@@ -20,7 +20,7 @@ Props principais (react-resizable-panels v4):
 |---|---|
 | `ResizablePanelGroup` | `orientation` (`"horizontal"` \| `"vertical"`, padrão horizontal), `onLayoutChange(layout)` (a cada movimento), `onLayoutChanged(layout)` (ao soltar; use para persistir), `defaultLayout`, `disabled`, `id`. O layout é um objeto `{ [idDoPainel]: tamanho }` (tipo `Layout`). |
 | `ResizablePanel` | `id`, `defaultSize`, `minSize`, `maxSize` (prefira string com unidade, ex. `"30%"`), `collapsible`, `collapsedSize`. |
-| `ResizableHandle` | `withHandle`, `disabled`. |
+| `ResizableHandle` | `withHandle` (da lib), `id`. **Não tem `disabled`** na v4: para travar o redimensionamento, use `disabled` no `ResizablePanelGroup`. |
 
 Na v4 não existem `direction`, `PanelGroup`, `PanelResizeHandle` nem
 `onLayout(sizes[])` (eram da v2/v3 do react-resizable-panels). Para ler tamanhos,

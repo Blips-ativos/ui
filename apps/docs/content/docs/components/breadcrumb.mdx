@@ -77,9 +77,7 @@ import Link from "next/link"
 ## Migrando da v2
 
 - `BreadcrumbLink`: a prop `asChild` saiu e no lugar entra `render` (`useRender` do Base UI). Os tipos agora são `useRender.ComponentProps<"a">`.
-- `BreadcrumbLink` não emite mais `data-slot="breadcrumb-link"` diretamente: o slot vai no `state`, como no base-mira.
-- `Breadcrumb` (o `nav`) agora aceita `className`.
-- Os ícones padrão são `CaretRightIcon` (separador) e `DotsThreeIcon` (reticências); o separador não gira mais em RTL.
+- Os ícones padrão são `CaretRightIcon` (separador) e `DotsThreeIcon` (reticências).
 - Visual: `BreadcrumbList` usa `text-xs/relaxed` com `gap-1.5` fixo (sem o `sm:gap-2.5`), `BreadcrumbItem` usa `gap-1` e `BreadcrumbEllipsis` passou de `size-9` para `size-4`.
 
 ```tsx
@@ -100,7 +98,7 @@ import Link from "next/link"
 
 O componente `Breadcrumb` é o elemento de navegação raiz que envolve todos os componentes do breadcrumb.
 
-| Prop        | Type     | Default |
+| Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |
 
@@ -108,7 +106,7 @@ O componente `Breadcrumb` é o elemento de navegação raiz que envolve todos os
 
 O componente `BreadcrumbList` exibe a lista ordenada de itens do breadcrumb.
 
-| Prop        | Type     | Default |
+| Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |
 
@@ -116,7 +114,7 @@ O componente `BreadcrumbList` exibe a lista ordenada de itens do breadcrumb.
 
 O componente `BreadcrumbItem` envolve itens individuais do breadcrumb.
 
-| Prop        | Type     | Default |
+| Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |
 
@@ -124,7 +122,7 @@ O componente `BreadcrumbItem` envolve itens individuais do breadcrumb.
 
 O componente `BreadcrumbLink` exibe um link clicável no breadcrumb. Por padrão renderiza um `<a>`; use `render` para trocar o elemento (via `useRender` do Base UI).
 
-| Prop        | Type                                                   | Default |
+| Prop        | Tipo                                                   | Padrão  |
 | ----------- | ------------------------------------------------------ | ------- |
 | `render`    | `React.ReactElement \| ((props, state) => ReactElement)` | `<a />` |
 | `className` | `string`                                               | -       |
@@ -133,7 +131,7 @@ O componente `BreadcrumbLink` exibe um link clicável no breadcrumb. Por padrão
 
 O componente `BreadcrumbPage` exibe a página atual no breadcrumb (não clicável).
 
-| Prop        | Type     | Default |
+| Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |
 
@@ -141,7 +139,7 @@ O componente `BreadcrumbPage` exibe a página atual no breadcrumb (não clicáve
 
 O componente `BreadcrumbSeparator` exibe um separador entre os itens do breadcrumb. Você pode passar children personalizados para substituir o ícone de separador padrão.
 
-| Prop        | Type              | Default |
+| Prop        | Tipo              | Padrão  |
 | ----------- | ----------------- | ------- |
 | `children`  | `React.ReactNode` | -       |
 | `className` | `string`          | -       |
@@ -150,6 +148,6 @@ O componente `BreadcrumbSeparator` exibe um separador entre os itens do breadcru
 
 O componente `BreadcrumbEllipsis` exibe um indicador de reticências para itens recolhidos do breadcrumb.
 
-| Prop        | Type     | Default |
+| Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |

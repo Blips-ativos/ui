@@ -54,7 +54,7 @@ A primitiva passou de Radix para [Base UI Slider](https://base-ui.com/react/comp
 - `value` e `defaultValue` aceitam `number` ou `number[]`. Com valor escalar, `onValueChange` recebe `number`; com array, `number[]`. O callback tem a assinatura `(value, eventDetails)`.
 - **`onValueCommit` virou `onValueCommitted`.**
 - Estrutura nova: Root › Control › Track › Indicator + Thumb. O antigo `Range` é o `Indicator` (continua com `data-slot="slider-range"`).
-- **Atributos:** `data-orientation="horizontal" | "vertical"` vira `data-horizontal`/`data-vertical`; `data-[disabled]` vira `data-disabled`, agora no Control.
+- **Atributos:** `data-orientation` continua (a lib usa as variantes `data-horizontal:`/`data-vertical:` como atalho); `data-disabled` aparece no Root e também no novo Control.
 - O thumb usa `thumbAlignment="edge"` por padrão (fica dentro do trilho nas pontas).
 - Visual: trilho `h-1`, thumb `size-3` com `rounded-md` e `border-ring`.
 

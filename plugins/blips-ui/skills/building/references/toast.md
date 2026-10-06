@@ -52,7 +52,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 import { Button } from "@blips/ui/components/button";
 import { toast } from "@blips/ui/components/toast";
 
-export function AcoesDoEvento() {
+export function AcoesDoEvento({
+  salvarEvento,
+}: {
+  salvarEvento: () => Promise<{ nome: string }>;
+}) {
   function criar() {
     const id = toast.add({
       type: "success",

@@ -35,6 +35,7 @@ Estado ligado: `aria-pressed` / `data-pressed` (estilo `aria-pressed:bg-muted`).
 
 ```tsx
 import { TextBIcon, BookmarkSimpleIcon } from "@phosphor-icons/react";
+import * as React from "react";
 import { Toggle } from "@blips/ui/components/toggle";
 
 export function Toggles() {

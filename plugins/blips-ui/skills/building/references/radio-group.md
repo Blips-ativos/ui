@@ -23,8 +23,8 @@ Primitivas: `@base-ui/react/radio-group` (raiz) e `@base-ui/react/radio` (`Radio
 
 | Prop | Tipo | Notas |
 |---|---|---|
-| `value` / `defaultValue` (raiz) | `unknown` | Pode ser qualquer tipo, não só string. |
-| `onValueChange` | `(value: unknown, eventDetails) => void` | `value` não é tipado como string: pode precisar de cast (`(v) => setPlano(v as string)`). |
+| `value` / `defaultValue` (raiz) | `any` | Pode ser qualquer tipo, não só string (o wrapper usa `RadioGroup.Props` sem genérico, então o tipo é `any`). |
+| `onValueChange` | `(value: any, eventDetails) => void` | `onValueChange={setPlano}` compila direto; como o `value` chega `any`, não há checagem de tipo: confira que os `value` dos itens batem com o estado. |
 | `readOnly`, `inputRef`, `render` | | Base UI. Sem `asChild`. |
 
 - Raiz com `grid w-full gap-3`.
@@ -32,6 +32,7 @@ Primitivas: `@base-ui/react/radio-group` (raiz) e `@base-ui/react/radio` (`Radio
 - Estado: `data-checked` / `data-unchecked`. Erro por `aria-invalid`.
 
 ```tsx
+import * as React from "react";
 import {
   Field,
   FieldContent,
@@ -52,7 +53,7 @@ export function EscolhaDePlano() {
   return (
     <RadioGroup
       value={plano}
-      onValueChange={(v) => setPlano(v as string)}
+      onValueChange={setPlano}
       className="max-w-sm"
     >
       {planos.map((p) => (
@@ -74,7 +75,6 @@ export function EscolhaDePlano() {
 ### Armadilhas
 
 - `data-[state=checked]:` não casa: use `data-checked:`.
-- `onValueChange={setPlano}` com `useState<string>` não compila sem cast.
 
 ## v2.x — Radix
 

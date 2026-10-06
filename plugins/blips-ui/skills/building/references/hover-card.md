@@ -54,10 +54,7 @@ import {
 export function PerfilHoverCard() {
   return (
     <HoverCard>
-      <HoverCardTrigger
-        delay={300}
-        render={<Button variant="link" nativeButton={false} />}
-      >
+      <HoverCardTrigger delay={300} render={<Button variant="link" />}>
         @blips
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
@@ -81,7 +78,7 @@ export function PerfilHoverCard() {
 ### Armadilhas
 
 - `openDelay`/`closeDelay` no `HoverCard` não existem: os atrasos vão no `HoverCardTrigger` (`delay`, `closeDelay`).
-- `asChild` não existe: `render={<Button nativeButton={false} />}` (o trigger é um `<a>`, não um `<button>`).
+- `asChild` não existe: use `render={<Button variant="link" />}`. O trigger é um `<a>` por padrão; com `render={<Button />}` ele vira o `<button>` do Button. Não passe `nativeButton={false}` a esse Button: ele continua renderizando `<button>` e o Base UI avisa no console.
 - `data-[state=open]:` não casa: use `data-open:`.
 
 ## v2.x — Radix

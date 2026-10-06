@@ -123,7 +123,7 @@ Resultado:
       formatter={(value, name) => (
         <>
           <span>{name}: </span>
-          <span className="font-bold">R$ {value.toLocaleString()}</span>
+          <span className="font-bold tabular-nums">{formatCurrency(Number(value))}</span>
         </>
       )}
     />

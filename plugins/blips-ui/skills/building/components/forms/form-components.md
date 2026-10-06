@@ -308,6 +308,7 @@ import { MinusIcon, PlusIcon } from '@phosphor-icons/react'
             type="button"
             variant="outline"
             size="icon"
+            aria-label="Diminuir"
             onClick={handleDecrement}
             disabled={currentValue <= 0}
           >
@@ -328,6 +329,7 @@ import { MinusIcon, PlusIcon } from '@phosphor-icons/react'
             type="button"
             variant="outline"
             size="icon"
+            aria-label="Aumentar"
             onClick={handleIncrement}
             disabled={currentValue >= 100}
           >

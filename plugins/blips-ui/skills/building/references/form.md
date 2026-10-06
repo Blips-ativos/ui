@@ -108,7 +108,7 @@ Com `Field` + `Controller` (sem os componentes `Form*`), o padrão é
 | `Select` | `value={field.value || null}` + `onValueChange={(v) => field.onChange(v ?? "")}`; passe `items` (com item `value: null` como placeholder). `FormControl` envolve o `SelectTrigger`. |
 | `Checkbox` | `checked={field.value}` + `onCheckedChange={(checked) => field.onChange(checked)}` (boolean; misto é a prop `indeterminate`). |
 | `Switch` | `checked={field.value}` + `onCheckedChange={(checked) => field.onChange(checked)}`. |
-| `RadioGroup` | `value={field.value}` + `onValueChange={(v) => field.onChange(v as string)}` (o valor chega como `unknown`). |
+| `RadioGroup` | `value={field.value}` + `onValueChange={(v) => field.onChange(v as string)}` (o valor é tipado como `any`; o cast documenta o tipo). |
 | `ToggleGroup` | `value={[field.value]}` + `onValueChange={(v) => v[0] && field.onChange(v[0])}` (sempre array). |
 | `Slider` | `value={field.value}` + `onValueChange={(v) => field.onChange(v)}` (escalar ou array, conforme o valor). |
 

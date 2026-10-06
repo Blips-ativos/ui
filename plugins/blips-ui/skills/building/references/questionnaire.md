@@ -77,7 +77,14 @@ const items = [
   },
 ] as const;
 
-export function QuestionarioDeOnboarding() {
+export function QuestionarioDeOnboarding({
+  salvar,
+}: {
+  salvar: (respostas: {
+    objetivo: FormDataEntryValue | null;
+    canais: FormDataEntryValue[];
+  }) => void;
+}) {
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const dados = new FormData(event.currentTarget);

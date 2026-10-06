@@ -61,7 +61,7 @@ export function Badges() {
 | `variant` | `"default" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "link"` | `"default"` | Visual. |
 | `asChild` | `boolean` | `false` | Renderiza o filho (ex.: `<a>`) com o visual do badge. |
 
-Visual new-york: `px-2 py-0.5 text-xs`, ícone `size-3`, padding automático. `destructive` é sólido (`bg-destructive text-white`). Hover só quando o badge é `<a>` (`[a&]:hover`).
+Visual new-york: `px-2 py-0.5 text-xs`, ícone `size-3`, padding fixo (não ajusta com ícone). `destructive` é sólido (`bg-destructive text-white`). Hover só quando o badge é `<a>` (`[a&]:hover`).
 
 ```tsx
 import { Badge } from "@blips/ui/components/badge"

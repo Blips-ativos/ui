@@ -13,7 +13,7 @@ confira `node_modules/@blips/ui/src/` no próprio repo revisado.
 | Estados no DOM | `data-state="open\|closed\|checked…"` | `data-open`, `data-closed`, `data-checked`, `data-popup-open`, `data-panel-open`, `data-pressed` |
 | Ícones Phosphor | sem sufixo (`CaretDown`) ou com (`CaretDownIcon`) | com sufixo `Icon` (sem sufixo é `@deprecated`) |
 | recharts | 2.15.x | 3.10.x |
-| Componentes | 52 | 62 (+ attachment, bubble, combobox, direction, item, marker, message, message-scroller, native-select, questionnaire, toast) |
+| Componentes | 52 | 63 (+ attachment, bubble, combobox, direction, item, marker, message, message-scroller, native-select, questionnaire, toast) |
 | Densidade | new-york (`text-sm`, Button `h-9`, Card `py-6`) | base-mira (`text-xs`, Button `h-7`, Card 16px) |
 
 Como detectar: `node_modules/@blips/ui/package.json` — `dependencies` com
@@ -79,7 +79,7 @@ NÃO Quicksand** — para "anunciar" use `font-display`. Logo: `text-success`,
 
 ## Componentes
 
-- A lib tem 52 componentes na v2.x e 62 na v3.x (Button, Card, Dialog, Alert,
+- A lib tem 52 componentes na v2.x e 63 na v3.x (Button, Card, Dialog, Alert,
   Skeleton, Spinner, Sheet, Table, Form, Field, Empty, Sonner/Toaster...). Os 11 que só
   existem na v3.x (attachment, bubble, combobox, direction, item, marker, message,
   message-scroller, native-select, questionnaire, toast) são import inválido em repo v2.x. O `Button` NÃO tem prop `loading`

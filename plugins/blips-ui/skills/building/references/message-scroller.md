@@ -160,9 +160,22 @@ export function Transcricao({
 Rolar por código (ex.: depois de enviar):
 
 ```tsx
-function BotaoEnviar() {
+import { Button } from "@blips/ui/components/button";
+import { useMessageScroller } from "@blips/ui/components/message-scroller";
+
+// Precisa estar dentro do MessageScrollerProvider.
+function BotaoEnviar({ enviar }: { enviar: () => void }) {
   const { scrollToEnd } = useMessageScroller();
-  return <Button onClick={() => { enviar(); scrollToEnd({ behavior: "smooth" }); }}>Enviar</Button>;
+  return (
+    <Button
+      onClick={() => {
+        enviar();
+        scrollToEnd({ behavior: "smooth" });
+      }}
+    >
+      Enviar
+    </Button>
+  );
 }
 ```
 

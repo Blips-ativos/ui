@@ -54,7 +54,7 @@ No mobile vira Sheet com `--sidebar-width: 18rem`.
 - `Sidebar` aceita `dir` (repassado à Sheet no mobile, RTL).
 - `SidebarTrigger`: `Button size="icon-sm"` com o ícone `SidebarIcon`.
 - `SidebarMenuAction showOnHover` fica visível com `aria-expanded` (ex.: com um `DropdownMenuTrigger` aberto dentro), não com `data-[state=open]`.
-- Seletores próprios: `data-[active=true]:` continua valendo; `data-active:` e `data-open:` também casam.
+- Estado ativo: `isActive` vira `data-active` **sem valor** (`data-active=""`, ausente quando `false`), porque o estado passa pelo `useRender`. Use `data-active:` (ou `peer-data-active/menu-button:`); `data-[active=true]:` vindo da v2 **não casa** mais.
 - Visual mira: textos `text-xs`; `SidebarMenu gap-px`; `SidebarGroup px-2 py-1`; `SidebarInput border-input bg-muted/20`; `floating` com `ring-1`; `outline` com sombra de 1px funcionando com tokens oklch.
 - Grupo/submenu recolhível: `Collapsible` do Base UI. O trigger ganha `data-panel-open` quando aberto e o `Collapsible` raiz, `data-open`.
 
@@ -191,7 +191,7 @@ Ação com menu no item:
 - `asChild` não existe em nenhuma peça: use `render`.
 - Tooltips do menu "demorando" a abrir: falta `<TooltipProvider>` na raiz.
 - `group-data-[state=open]/collapsible:` não casa com o `Collapsible` v3: use `group-data-open/collapsible:`.
-- As classes `no-scrollbar` (no `SidebarContent`) só fazem efeito se o `globals.css` do app definir esse utilitário.
+- `data-[active=true]:` (e `peer-data-[active=true]/menu-button:`) em `className` de consumidor não casa: use `data-active:`.
 
 ## v2.x — Radix
 

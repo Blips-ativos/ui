@@ -57,7 +57,8 @@ No header com sidebar:
 
 ### Armadilhas
 
-- `data-[orientation=vertical]:h-4` não casa com o separador v3: use `data-vertical:h-4`.
+- O Base UI também emite `data-orientation`, então `data-[orientation=vertical]:h-4` (código vindo da v2) continua casando; prefira `data-vertical:h-4`, que é a convenção da v3. O que muda é a altura padrão do vertical: `self-stretch` em vez de `h-full`, então num pai sem altura definida ele acompanha a linha flex, e não 100% do pai.
+- `decorative` copiado da v2 quebra o typecheck: remova.
 
 ## v2.x — Radix
 

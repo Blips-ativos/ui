@@ -87,7 +87,7 @@ Os controles do Base UI não emitem um evento de `change` nativo: ligue o valor 
 A API (`Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`) continua a mesma. O que muda:
 
 - O `FormControl` não usa mais o `Slot` do Radix: ele é baseado no `useRender` do Base UI. Continua aceitando um único filho e passa a aceitar a prop `render`. O tipo das props mudou para `useRender.ComponentProps<"div">`.
-- Se o filho não for um elemento React válido (texto ou fragmento com vários filhos), o `FormControl` renderiza um `<div>` em volta, onde o `Slot` falhava.
+- Se o filho não for um único elemento React (texto ou vários filhos lado a lado), o `FormControl` renderiza um `<div>` em volta, onde o `Slot` falhava. Um fragmento conta como elemento: não envolva o controle em `<>…</>`.
 - Como no `Slot`, as props do filho vencem em conflito: um `id` definido no filho sobrescreve o gerado e quebra o `htmlFor` do `FormLabel`. Não passe `id` ao controle.
 - `FormLabel` agora é tipado como o `Label` nativo e não aceita `asChild`.
 - `FormDescription` e `FormMessage` passam de `text-sm` para `text-xs/relaxed`.
