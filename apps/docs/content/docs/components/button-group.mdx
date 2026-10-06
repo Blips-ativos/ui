@@ -23,8 +23,8 @@ import {
 
 ```tsx
 <ButtonGroup>
-  <Button>Button 1</Button>
-  <Button>Button 2</Button>
+  <Button variant="outline">Botão 1</Button>
+  <Button variant="outline">Botão 2</Button>
 </ButtonGroup>
 ```
 
@@ -35,9 +35,9 @@ import {
 - Use `aria-label` ou `aria-labelledby` para rotular o grupo de botões.
 
 ```tsx
-<ButtonGroup aria-label="Button group">
-  <Button>Button 1</Button>
-  <Button>Button 2</Button>
+<ButtonGroup aria-label="Formatação de texto">
+  <Button variant="outline">Negrito</Button>
+  <Button variant="outline">Itálico</Button>
 </ButtonGroup>
 ```
 
@@ -66,6 +66,12 @@ Aninhe componentes `<ButtonGroup>` para criar grupos de botões com espaçamento
 
 <ComponentPreview name="button-group-nested" />
 
+### Paginação
+
+Um grupo com ícones nas pontas, usando `data-icon` nos ícones.
+
+<ComponentPreview name="button-group-pagination" />
+
 ### Separador
 
 O componente `ButtonGroupSeparator` divide visualmente os botões dentro de um grupo.
@@ -77,6 +83,12 @@ O componente `ButtonGroupSeparator` divide visualmente os botões dentro de um g
 Crie um grupo de botões split adicionando dois botões separados por um `ButtonGroupSeparator`.
 
 <ComponentPreview name="button-group-split" />
+
+### Texto
+
+Use `ButtonGroupText` para exibir texto ou um rótulo dentro do grupo. Com a prop `render`, ele pode virar um `Label`.
+
+<ComponentPreview name="button-group-text" />
 
 ### Input
 
@@ -92,9 +104,15 @@ Envolva um componente `InputGroup` para criar layouts de entrada elaborados.
 
 ### Dropdown Menu
 
-Crie um grupo de botões split com um componente `DropdownMenu`.
+Crie um grupo de botões split com um componente `DropdownMenu`. O gatilho recebe o botão pela prop `render`.
 
 <ComponentPreview name="button-group-dropdown" />
+
+```tsx
+<DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
+  <CaretDownIcon />
+</DropdownMenuTrigger>
+```
 
 ### Select
 
@@ -112,20 +130,20 @@ Use com um componente `Popover`.
 
 ### ButtonGroup
 
-O componente `ButtonGroup` é um contêiner que agrupa botões relacionados com estilização consistente.
+O componente `ButtonGroup` é um contêiner que agrupa botões relacionados com estilização consistente. O arredondamento das pontas e a emenda das bordas valem para os filhos que têm `data-slot` (todos os componentes da `@blips/ui` têm).
 
-| Prop          | Type                         | Default        |
+| Prop          | Tipo                         | Padrão         |
 | ------------- | ---------------------------- | -------------- |
 | `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` |
 
 ```tsx
 <ButtonGroup>
-  <Button>Button 1</Button>
-  <Button>Button 2</Button>
+  <Button>Botão 1</Button>
+  <Button>Botão 2</Button>
 </ButtonGroup>
 ```
 
-Aninhe múltiplos grupos de botões para criar layouts elaborados com espaçamento. Veja o exemplo [nested](#nested) para mais detalhes.
+Aninhe múltiplos grupos de botões para criar layouts elaborados com espaçamento. Veja o exemplo [aninhado](#aninhado) para mais detalhes.
 
 ```tsx
 <ButtonGroup>
@@ -136,49 +154,80 @@ Aninhe múltiplos grupos de botões para criar layouts elaborados com espaçamen
 
 ### ButtonGroupSeparator
 
-O componente `ButtonGroupSeparator` divide visualmente os botões dentro de um grupo.
+O componente `ButtonGroupSeparator` divide visualmente os botões dentro de um grupo. Ele é construído sobre o [Separator do Base UI](https://base-ui.com/react/components/separator).
 
-| Prop          | Type                         | Default      |
+| Prop          | Tipo                         | Padrão       |
 | ------------- | ---------------------------- | ------------ |
 | `orientation` | `"horizontal" \| "vertical"` | `"vertical"` |
 
 ```tsx
 <ButtonGroup>
-  <Button>Button 1</Button>
+  <Button>Botão 1</Button>
   <ButtonGroupSeparator />
-  <Button>Button 2</Button>
+  <Button>Botão 2</Button>
 </ButtonGroup>
 ```
 
 ### ButtonGroupText
 
-Use este componente para exibir texto dentro de um grupo de botões.
+Use este componente para exibir texto dentro de um grupo de botões. Ele renderiza um `div` com `data-slot="button-group-text"`.
 
-| Prop      | Type      | Default |
-| --------- | --------- | ------- |
-| `asChild` | `boolean` | `false` |
+| Prop     | Tipo                                                         | Padrão |
+| -------- | ------------------------------------------------------------ | ------ |
+| `render` | `React.ReactElement \| (props, state) => React.ReactElement` | -      |
 
 ```tsx
 <ButtonGroup>
-  <ButtonGroupText>Text</ButtonGroupText>
-  <Button>Button</Button>
+  <ButtonGroupText>Texto</ButtonGroupText>
+  <Button>Botão</Button>
 </ButtonGroup>
 ```
 
-Use a prop `asChild` para renderizar um componente personalizado como texto, por exemplo um label.
+Use a prop `render` para renderizar um componente personalizado como texto, por exemplo um label.
 
 ```tsx
-import { ButtonGroupText } from "@blips/ui/components/button-group"
+import { ButtonGroup, ButtonGroupText } from "@blips/ui/components/button-group"
+import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"
 
 export function ButtonGroupTextDemo() {
   return (
     <ButtonGroup>
-      <ButtonGroupText asChild>
-        <Label htmlFor="name">Text</Label>
-      </ButtonGroupText>
+      <ButtonGroupText render={<Label htmlFor="name" />}>Texto</ButtonGroupText>
       <Input placeholder="Digite algo aqui..." id="name" />
     </ButtonGroup>
   )
 }
 ```
+
+## Migrando da v2
+
+- **`asChild` de `ButtonGroupText` saiu; use `render`.**
+
+  ```tsx
+  // v2
+  <ButtonGroupText asChild>
+    <Label htmlFor="name">Texto</Label>
+  </ButtonGroupText>
+
+  // v3
+  <ButtonGroupText render={<Label htmlFor="name" />}>Texto</ButtonGroupText>
+  ```
+
+- **Gatilhos de menu e popover dentro do grupo usam `render`.** Isso vem dos componentes do Base UI (`DropdownMenuTrigger`, `PopoverTrigger`, `TooltipTrigger`), não do `ButtonGroup`:
+
+  ```tsx
+  // v2
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline" size="icon"><CaretDown /></Button>
+  </DropdownMenuTrigger>
+
+  // v3
+  <DropdownMenuTrigger render={<Button variant="outline" size="icon" />}>
+    <CaretDownIcon />
+  </DropdownMenuTrigger>
+  ```
+
+- **Separador com atributos do Base UI.** O `ButtonGroupSeparator` usa o `Separator` do Base UI, que expõe `data-horizontal` e `data-vertical`. Um `className` com `data-[orientation=vertical]:…` deve virar `data-vertical:…`.
+- **Pontas por `data-slot`.** O arredondamento agora mira filhos com `data-slot` em vez de `:first-child` e `:last-child`. Um filho customizado sem `data-slot` mantém o próprio raio e não entra na emenda das bordas.
+- **`ButtonGroupText` ganhou `data-slot="button-group-text"`** e ficou com `px-2.5 text-xs/relaxed`, sem `shadow-xs`.

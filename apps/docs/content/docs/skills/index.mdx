@@ -8,3 +8,25 @@ seguindo os padrões da plataforma — componentes, tokens e convenções.
 
 > Esta seção está em construção. Em breve: guias de uso das skills
 > `installing`, `designing`, `building` e `reviewing`.
+
+## Duas versões da lib
+
+As skills funcionam com as duas linhas da `@blips/ui` e seguem a API de cada uma:
+
+| Versão instalada | Trilha | Primitivas |
+| --- | --- | --- |
+| `3.x` (e instalações novas) | **v3.x — Base UI** | `@base-ui/react`, recharts 3 |
+| `2.x` | **v2.x — Radix** | `@radix-ui/react-*`, vaul, recharts 2 |
+
+Antes de escrever ou revisar código, as skills `building`, `reviewing` e `installing`
+leem a versão da `@blips/ui` no repositório (`package.json` ou
+`node_modules/@blips/ui/package.json`) e aplicam só as instruções daquela trilha:
+`render` na v3.x, `asChild` na v2.x, e assim por diante.
+
+- **installing** — instala a v3.x em repositórios novos e mantém a major de quem já está na
+  v2.x.
+- **building** — cada componente com API diferente traz o exemplo das duas trilhas.
+- **reviewing** — o check mecânico detecta a trilha e acusa `asChild` num repo v3.x (erro),
+  `data-state` do Radix (aviso) e ícone sem o sufixo `Icon` (aviso).
+- **designing** — independe da versão; aponta para a building na hora de implementar.
+

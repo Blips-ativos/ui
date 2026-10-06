@@ -29,7 +29,7 @@ import {
 <Pagination>
   <PaginationContent>
     <PaginationItem>
-      <PaginationPrevious href="#" />
+      <PaginationPrevious href="#" text="Anterior" />
     </PaginationItem>
     <PaginationItem>
       <PaginationLink href="#">1</PaginationLink>
@@ -46,44 +46,68 @@ import {
       <PaginationEllipsis />
     </PaginationItem>
     <PaginationItem>
-      <PaginationNext href="#" />
+      <PaginationNext href="#" text="Próxima" />
     </PaginationItem>
   </PaginationContent>
 </Pagination>
 ```
 
+`PaginationPrevious` e `PaginationNext` mostram `"Previous"` e `"Next"` por padrão. Use a prop `text` para traduzir o rótulo.
+
 ## Exemplos
 
-### Exemplo
+### Simples
 
-Paginação completa com links numerados, reticências e botões de avançar e voltar.
+Só os links numerados.
 
-<ComponentPreview name="pagination-demo" />
+<ComponentPreview name="pagination-simple" />
+
+### Com seletor de linhas
+
+Combine com um `Select` para escolher quantas linhas exibir por página.
+
+<ComponentPreview name="pagination-select" />
 
 ## Next.js
 
-Por padrão, o componente `<PaginationLink />` renderiza uma tag `<a />`.
+O `PaginationLink` é um `Button` do Base UI renderizado como `<a>` (`nativeButton={false}` e `render={<a />}`), e aceita as props de `<a>`.
 
-Para usar o componente `<Link />` do Next.js, faça as seguintes alterações em `pagination.tsx`.
+Para navegar com o `<Link />` do Next.js, troque o elemento passado em `render` numa cópia local de `pagination.tsx`:
 
-```diff /typeof Link/ {1}
+```diff
 + import Link from "next/link"
 
-- type PaginationLinkProps = ... & React.ComponentProps<"a">
-+ type PaginationLinkProps = ... & React.ComponentProps<typeof Link>
+  type PaginationLinkProps = {
+    isActive?: boolean
+  } & Pick<React.ComponentProps<typeof Button>, "size"> &
+-   React.ComponentProps<"a">
++   React.ComponentProps<typeof Link>
 
-const PaginationLink = ({...props }: ) => (
-  <PaginationItem>
--   <a>
-+   <Link>
-      // ...
--   </a>
-+   </Link>
-  </PaginationItem>
-)
-
+  // ...
+      render={
+-       <a
++       <Link
+          aria-current={isActive ? "page" : undefined}
+          data-slot="pagination-link"
+          data-active={isActive}
+          {...props}
+        />
+      }
 ```
 
-> **Nota:** Estamos fazendo atualizações na cli para realizar isso automaticamente para você.
+## Migrando da v2
 
-## Changelog
+- `PaginationLink` agora renderiza `<Button nativeButton={false} render={<a />}>` (Base UI) em vez de um `<a>` com `buttonVariants`. As props de `<a>` (`href`, `onClick`…) continuam valendo, e o elemento final continua sendo um `<a>`.
+- `PaginationPrevious` e `PaginationNext` ganharam a prop `text` (padrão `"Previous"`/`"Next"`) para traduzir o rótulo.
+- Os ícones agora são `CaretLeftIcon`, `CaretRightIcon` e `DotsThreeIcon`, e não giram mais em RTL.
+- Visual: `PaginationContent` passou de `gap-1` para `gap-0.5`, `PaginationEllipsis` de `size-9` para `size-7`, e os tamanhos vêm do `Button` da v3 (`icon` é `size-7` e `default` é `h-7`).
+
+```tsx
+// v2: rótulo fixo em inglês
+<PaginationPrevious href="#" />
+<PaginationNext href="#" />
+
+// v3
+<PaginationPrevious href="#" text="Anterior" />
+<PaginationNext href="#" text="Próxima" />
+```

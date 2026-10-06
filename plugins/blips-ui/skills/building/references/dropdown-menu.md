@@ -2,92 +2,163 @@
 
 Import: `@blips/ui/components/dropdown-menu`
 
-Built on [Radix UI Dropdown Menu](https://www.radix-ui.com/primitives/docs/components/dropdown-menu).
+Menu de ações aberto por um botão.
 
-## Sub-components
+Exports (iguais nas duas versões): `DropdownMenu`, `DropdownMenuPortal`,
+`DropdownMenuTrigger`, `DropdownMenuContent`, `DropdownMenuGroup`,
+`DropdownMenuLabel`, `DropdownMenuItem`, `DropdownMenuCheckboxItem`,
+`DropdownMenuRadioGroup`, `DropdownMenuRadioItem`, `DropdownMenuSeparator`,
+`DropdownMenuShortcut`, `DropdownMenuSub`, `DropdownMenuSubTrigger`,
+`DropdownMenuSubContent`.
 
-| Component | Description |
+## Notas comuns
+
+- `DropdownMenuContent` já inclui o Portal: não envolva em `DropdownMenuPortal`.
+- `DropdownMenuItem`: `variant?: "default" | "destructive"` e `inset` (padding para alinhar com itens que têm ícone). `inset` também em Label, SubTrigger, CheckboxItem e RadioItem.
+- `DropdownMenuShortcut`: dica de atalho à direita (só visual).
+- Ícones Phosphor nos itens; trigger só de ícone precisa de `aria-label`.
+- Agrupe com `DropdownMenuGroup` + `DropdownMenuSeparator`; ação destrutiva por último, em grupo próprio.
+- Abrir um Dialog a partir de um item: controle o `open` do Dialog no estado e abra no handler do item (não aninhe o Dialog dentro do menu).
+
+> A API difere entre as versões (`render` vs `asChild`, `onClick` vs `onSelect`, `Label` dentro de `Group`, alinhamento e largura padrão). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
+
+## v3.x — Base UI
+
+Primitiva: `@base-ui/react/menu`.
+
+| Componente | Props relevantes |
 |---|---|
-| `DropdownMenu` | Root component (`DropdownMenuPrimitive.Root`). |
-| `DropdownMenuTrigger` | Element that triggers the menu. Supports `asChild`. |
-| `DropdownMenuContent` | The popover content panel. Auto-portalled. |
-| `DropdownMenuItem` | A menu item. Supports `variant` and `inset` props. |
-| `DropdownMenuCheckboxItem` | A checkbox menu item with check indicator. |
-| `DropdownMenuRadioItem` | A radio menu item with dot indicator. |
-| `DropdownMenuRadioGroup` | Groups radio items together. |
-| `DropdownMenuLabel` | Non-interactive label/header in a menu. Supports `inset`. |
-| `DropdownMenuSeparator` | Visual separator between groups. |
-| `DropdownMenuShortcut` | Right-aligned keyboard shortcut text. |
-| `DropdownMenuGroup` | Groups related items together. |
-| `DropdownMenuPortal` | Renders content in a portal. |
-| `DropdownMenuSub` | Root for a sub-menu. |
-| `DropdownMenuSubTrigger` | Trigger for a sub-menu. Shows chevron. Supports `inset`. |
-| `DropdownMenuSubContent` | Content panel for a sub-menu. |
+| `DropdownMenu` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `modal` (padrão `true`), `disabled`, `loopFocus`, `highlightItemOnHover` |
+| `DropdownMenuTrigger` | `render` (ex.: `render={<Button variant="ghost" />}` — **não** coloque um `<Button>` dentro do trigger), `nativeButton`, `openOnHover`, `delay` |
+| `DropdownMenuContent` | `align` (padrão **`"start"`**), `alignOffset` (`0`), `side` (`"bottom"`), `sideOffset` (`4`) → Positioner. Largura padrão **`w-(--anchor-width)`** (a do trigger) com `min-w-32`: passe `className="w-52"` ou `"w-auto"` quando precisar. Sem `avoidCollisions`, `collisionPadding`, `onCloseAutoFocus`, `onEscapeKeyDown`, `forceMount` |
+| `DropdownMenuItem` | `onClick` (substitui `onSelect`), `closeOnClick` (padrão `true`; `false` mantém o menu aberto — substitui `event.preventDefault()`), `disabled`, `label`, `render` (ex.: `render={<Link href="/x" />}`), `variant`, `inset` |
+| `DropdownMenuCheckboxItem` | `checked`, `defaultChecked`, `onCheckedChange(checked, eventDetails)`, `closeOnClick` (padrão `false`). Sem `"indeterminate"` |
+| `DropdownMenuRadioGroup` | `value`, `defaultValue`, `onValueChange(value, eventDetails)` (valor `any`: tipe explicitamente) |
+| `DropdownMenuRadioItem` | `value` (obrigatório), `closeOnClick` (padrão `false`) |
+| `DropdownMenuLabel` | É `Menu.GroupLabel`: **precisa estar dentro de `DropdownMenuGroup`** |
+| `DropdownMenuSub` | `Menu.SubmenuRoot` (`open`, `onOpenChange`…) |
+| `DropdownMenuSubTrigger` | `openOnHover` (padrão `true`), `delay`; ícone `CaretRightIcon` |
+| `DropdownMenuSubContent` | `side` `"right"`, `alignOffset` `-3` por padrão |
 
-## Props & Variants
-
-### DropdownMenuItem
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `variant` | `"default" \| "destructive"` | `"default"` | Visual style. Destructive shows red text. |
-| `inset` | `boolean` | `false` | Adds left padding (`pl-8`) to align with items that have icons. |
-| `disabled` | `boolean` | `false` | Disables the item. |
-
-### DropdownMenuContent
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `sideOffset` | `number` | `4` | Gap between trigger and content. |
-| `align` | `"start" \| "center" \| "end"` | - | Alignment relative to trigger. |
-| `side` | `"top" \| "right" \| "bottom" \| "left"` | - | Side of trigger to render on. |
-
-### DropdownMenuSubTrigger
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `inset` | `boolean` | `false` | Adds left padding (`pl-8`). |
-
-### DropdownMenuLabel
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `inset` | `boolean` | `false` | Adds left padding (`pl-8`). |
-
-### DropdownMenuCheckboxItem
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `checked` | `boolean \| "indeterminate"` | - | Checked state. |
-| `onCheckedChange` | `(checked: boolean) => void` | - | Callback on check change. |
-
-### DropdownMenuRadioGroup
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `value` | `string` | - | Currently selected value. |
-| `onValueChange` | `(value: string) => void` | - | Callback on value change. |
-
-### Item Variant Styles (CVA)
-
-```
-default:  (no additional styles)
-destructive: text-destructive focus:bg-destructive/10 focus:text-destructive
-```
-
-## Usage
-
-### Basic Dropdown Menu
+- Indicador de checkbox/radio **à direita** (`pr-8`, `CheckIcon`).
+- Estado: `data-open`/`data-popup-open` (trigger), `data-checked`, `data-highlighted`, `data-disabled`. `data-[state=open]:` não casa mais.
+- Visual base-mira: `text-xs`, `min-h-7`, `rounded-lg`, `ring-1` no lugar de borda, menu translúcido (`bg-popover/70` + blur), separador `bg-border/50`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
+"use client";
+
+import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@blips/ui/components/dropdown-menu";
+import { DotsThreeIcon, PencilSimpleIcon, TrashIcon } from "@phosphor-icons/react";
+import Link from "next/link";
+import * as React from "react";
+
+export function AcoesContrato() {
+  const [mostrarArquivados, setMostrarArquivados] = React.useState(false);
+  const [ordem, setOrdem] = React.useState<string>("recentes");
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label="Ações" />}>
+        <DotsThreeIcon />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Contrato</DropdownMenuLabel>
+          <DropdownMenuItem render={<Link href="/contratos/42/editar" />}>
+            <PencilSimpleIcon />
+            Editar
+            <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => duplicar()}>Duplicar</DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>Exportar</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>PDF</DropdownMenuItem>
+              <DropdownMenuItem>Planilha</DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuCheckboxItem
+            checked={mostrarArquivados}
+            onCheckedChange={setMostrarArquivados}
+          >
+            Mostrar arquivados
+          </DropdownMenuCheckboxItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Ordenar</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value={ordem} onValueChange={(v: string) => setOrdem(v)}>
+            <DropdownMenuRadioItem value="recentes">Mais recentes</DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="valor">Maior valor</DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem variant="destructive" onClick={() => setConfirmarExclusao(true)}>
+            <TrashIcon />
+            Excluir
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+```
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-dropdown-menu`.
+
+| Componente | Props relevantes |
+|---|---|
+| `DropdownMenu` | `open`, `defaultOpen`, `onOpenChange(open)`, `modal` (padrão `true`; use `false` ao abrir Dialog a partir de um item) |
+| `DropdownMenuTrigger` | `asChild` (com `Button` dentro) |
+| `DropdownMenuContent` | `sideOffset` (padrão `4`), `align` (padrão do Radix `"center"`), `side`, `alignOffset`, `avoidCollisions`, `collisionPadding`, `loop`, `onCloseAutoFocus`, `forceMount`. Largura pelo conteúdo (`min-w-[8rem]`) |
+| `DropdownMenuItem` | `onSelect(event)` (`event.preventDefault()` mantém aberto), `disabled`, `textValue`, `asChild`, `variant`, `inset` |
+| `DropdownMenuCheckboxItem` | `checked` (`boolean \| "indeterminate"`), `onCheckedChange(checked)` |
+| `DropdownMenuRadioGroup` | `value`, `onValueChange(value: string)` |
+| `DropdownMenuRadioItem` | `value` (obrigatório) |
+| `DropdownMenuLabel` | Pode ficar solto; `inset` |
+| `DropdownMenuSubTrigger` / `DropdownMenuSubContent` | `inset` / props do Radix SubContent |
+
+- Indicador de checkbox (`Check`) e radio (`Circle` preenchido) **à esquerda** (`pl-8`).
+- Estado: `data-state="open" | "checked"`, `data-highlighted`. Densidade `text-sm`.
+
+```tsx
+"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import { DotsThree, PencilSimple, Trash } from "@phosphor-icons/react"
+import { Button } from "@blips/ui/components/button"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuSub,
@@ -96,49 +167,53 @@ import {
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu"
 
-function DropdownMenuDemo() {
+export function AcoesContrato() {
+  const [mostrarArquivados, setMostrarArquivados] = React.useState(false)
+  const [ordem, setOrdem] = React.useState("recentes")
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="ghost" size="icon" aria-label="Ações">
+          <DotsThree />
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>Contrato</DropdownMenuLabel>
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          <DropdownMenuItem asChild>
+            <Link href="/contratos/42/editar">
+              <PencilSimple />
+              Editar
+              <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Gear
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
+          <DropdownMenuItem onSelect={() => duplicar()}>Duplicar</DropdownMenuItem>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
+            <DropdownMenuSubTrigger>Exportar</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem>PDF</DropdownMenuItem>
+              <DropdownMenuItem>Planilha</DropdownMenuItem>
+            </DropdownMenuSubContent>
           </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled>API</DropdownMenuItem>
+        <DropdownMenuCheckboxItem
+          checked={mostrarArquivados}
+          onCheckedChange={(v) => setMostrarArquivados(v === true)}
+        >
+          Mostrar arquivados
+        </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        <DropdownMenuLabel>Ordenar</DropdownMenuLabel>
+        <DropdownMenuRadioGroup value={ordem} onValueChange={setOrdem}>
+          <DropdownMenuRadioItem value="recentes">Mais recentes</DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="valor">Maior valor</DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive" onSelect={() => setConfirmarExclusao(true)}>
+          <Trash />
+          Excluir
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -146,403 +221,6 @@ function DropdownMenuDemo() {
 }
 ```
 
-### Checkbox Items
+## Exemplos na docs
 
-```tsx
-"use client"
-
-import * as React from "react"
-import { Button } from "@blips/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-
-function DropdownMenuCheckboxes() {
-  const [showStatusBar, setShowStatusBar] = React.useState(true)
-  const [showActivityBar, setShowActivityBar] = React.useState(false)
-  const [showPanel, setShowPanel] = React.useState(false)
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={showStatusBar}
-          onCheckedChange={setShowStatusBar}
-        >
-          Status Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={showActivityBar}
-          onCheckedChange={setShowActivityBar}
-          disabled
-        >
-          Activity Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={showPanel}
-          onCheckedChange={setShowPanel}
-        >
-          Panel
-        </DropdownMenuCheckboxItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-```
-
-### Radio Group Items
-
-```tsx
-"use client"
-
-import * as React from "react"
-import { Button } from "@blips/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-
-function DropdownMenuRadioGroupDemo() {
-  const [position, setPosition] = React.useState("bottom")
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-```
-
-## All Example Variants
-
-### dropdown-menu-demo
-
-Full menu with groups, sub-menu, shortcuts, disabled items.
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-
-export default function DropdownMenuDemo() {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="start">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Gear
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Keyboard shortcuts
-            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
-            <DropdownMenuPortal>
-              <DropdownMenuSubContent>
-                <DropdownMenuItem>Email</DropdownMenuItem>
-                <DropdownMenuItem>Message</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>More...</DropdownMenuItem>
-              </DropdownMenuSubContent>
-            </DropdownMenuPortal>
-          </DropdownMenuSub>
-          <DropdownMenuItem>
-            New Team
-            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>GitHub</DropdownMenuItem>
-        <DropdownMenuItem>Support</DropdownMenuItem>
-        <DropdownMenuItem disabled>API</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-```
-
-### dropdown-menu-checkboxes
-
-Checkbox items with controlled state.
-
-```tsx
-"use client"
-
-import * as React from "react"
-import type { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
-
-import { Button } from "@blips/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-
-type Checked = React.ComponentProps<
-  typeof DropdownMenuPrimitive.CheckboxItem
->["checked"]
-
-export default function DropdownMenuCheckboxes() {
-  const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
-  const [showActivityBar, setShowActivityBar] = React.useState<Checked>(false)
-  const [showPanel, setShowPanel] = React.useState<Checked>(false)
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuCheckboxItem
-          checked={showStatusBar}
-          onCheckedChange={setShowStatusBar}
-        >
-          Status Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={showActivityBar}
-          onCheckedChange={setShowActivityBar}
-          disabled
-        >
-          Activity Bar
-        </DropdownMenuCheckboxItem>
-        <DropdownMenuCheckboxItem
-          checked={showPanel}
-          onCheckedChange={setShowPanel}
-        >
-          Panel
-        </DropdownMenuCheckboxItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-```
-
-### dropdown-menu-radio-group
-
-Radio group selection.
-
-```tsx
-"use client"
-
-import * as React from "react"
-
-import { Button } from "@blips/ui/components/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-
-export default function DropdownMenuRadioGroupDemo() {
-  const [position, setPosition] = React.useState("bottom")
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-```
-
-### dropdown-menu-dialog
-
-Dropdown menu that opens dialogs. Uses `modal={false}` on DropdownMenu and controlled Dialog state.
-
-```tsx
-"use client"
-
-import { useState } from "react"
-import { DotsThree } from "@phosphor-icons/react"
-
-import { Button } from "@blips/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@blips/ui/components/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-import { Textarea } from "@blips/ui/components/textarea"
-
-export default function DropdownMenuDialog() {
-  const [showNewDialog, setShowNewDialog] = useState(false)
-  const [showShareDialog, setShowShareDialog] = useState(false)
-
-  return (
-    <>
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" aria-label="Open menu" size="icon-sm">
-            <DotsThree />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-40" align="end">
-          <DropdownMenuLabel>File Actions</DropdownMenuLabel>
-          <DropdownMenuGroup>
-            <DropdownMenuItem onSelect={() => setShowNewDialog(true)}>
-              New File...
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setShowShareDialog(true)}>
-              Share...
-            </DropdownMenuItem>
-            <DropdownMenuItem disabled>Download</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Create New File</DialogTitle>
-            <DialogDescription>
-              Provide a name for your new file. Click create when you&apos;re
-              done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 pb-3">
-            <div className="grid gap-2">
-              <Label htmlFor="filename">File Name</Label>
-              <Input id="filename" name="filename" placeholder="document.txt" />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Create</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Share File</DialogTitle>
-            <DialogDescription>
-              Anyone with the link will be able to view this file.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-3">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="user@example.com"
-                autoComplete="off"
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="message">Message (Optional)</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="Check out this file"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Send Invite</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  )
-}
-```
+`dropdown-menu-demo`, `dropdown-menu-checkboxes`, `dropdown-menu-radio-group`, `dropdown-menu-icons`, `dropdown-menu-destructive` (v3).

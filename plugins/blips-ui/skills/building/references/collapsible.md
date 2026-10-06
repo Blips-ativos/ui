@@ -2,60 +2,75 @@
 
 Import: `@blips/ui/components/collapsible`
 
-## Sub-components
+Painel que abre e fecha a partir de um gatilho. Re-export fino da primitiva, **sem
+estilo próprio** — o estilo vai no uso.
 
-| Export | Description |
-|--------|-------------|
-| `Collapsible` | Root component. Direct re-export of `@radix-ui/react-collapsible` Root. Controls open/close state. |
-| `CollapsibleTrigger` | Trigger button. Direct re-export of Radix CollapsibleTrigger. Toggles the collapsible open/closed. |
-| `CollapsibleContent` | Animated content area. Direct re-export of Radix CollapsibleContent. Hidden when collapsed, shown when open. |
+Exports (iguais nas duas versões): `Collapsible`, `CollapsibleTrigger`,
+`CollapsibleContent`.
 
-## Props & Variants
+## Notas comuns
 
-### Collapsible (Root) Props
+- Root: `open`, `defaultOpen`, `onOpenChange`, `disabled`.
+- Usado na sidebar para seções de navegação recolhíveis (ver `components/sidebar/menu.md`).
+- A lib não define keyframes de collapsible (só os de accordion): anime pela variável de altura da versão (abaixo).
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | -- | Controlled open state |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled initial open state |
-| `onOpenChange` | `(open: boolean) => void` | -- | Called when open state changes |
-| `disabled` | `boolean` | `false` | Prevent interaction |
-| `asChild` | `boolean` | `false` | Merge props onto child element |
+> A API difere entre as versões (`render` vs `asChild`, atributos de estado, variável de altura). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-### CollapsibleTrigger Props
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `asChild` | `boolean` | `false` | Merge props onto child element (commonly used with Button) |
+Primitiva: `@base-ui/react/collapsible`.
 
-### CollapsibleContent Props
+| Componente | Base | Props / estado |
+|---|---|---|
+| `Collapsible` | `Collapsible.Root` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `disabled` |
+| `CollapsibleTrigger` | `Collapsible.Trigger` | `render`, `nativeButton`. Estado: `data-panel-open` |
+| `CollapsibleContent` | `Collapsible.Panel` | `keepMounted` (substitui `forceMount`), `hiddenUntilFound`. Estado: `data-open`/`data-closed`, `data-starting-style`/`data-ending-style`. Variáveis: `--collapsible-panel-height`, `--collapsible-panel-width` |
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `forceMount` | `boolean` | -- | Force mount content even when closed (for animation control) |
-| `asChild` | `boolean` | `false` | Merge props onto child element |
+Seletores de grupo: `group-data-panel-open:` (no trigger) ou `group-data-open:`; não `group-data-[state=open]:`.
 
-### Data Attributes
+```tsx
+"use client";
 
-| Attribute | On | Values |
-|-----------|-----|--------|
-| `data-state` | Trigger, Content | `"open"` \| `"closed"` |
-| `data-disabled` | Trigger | present when disabled |
+import { Button } from "@blips/ui/components/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@blips/ui/components/collapsible";
+import { CaretUpDownIcon } from "@phosphor-icons/react";
+import * as React from "react";
 
-### CSS Variables (on CollapsibleContent)
+export function Repositorios() {
+  const [aberto, setAberto] = React.useState(false);
 
-| Variable | Description |
-|----------|-------------|
-| `--radix-collapsible-content-height` | Height of content for animation |
-| `--radix-collapsible-content-width` | Width of content for animation |
+  return (
+    <Collapsible open={aberto} onOpenChange={setAberto} className="flex w-[350px] flex-col gap-2">
+      <div className="flex items-center justify-between gap-4 px-4">
+        <h4 className="text-sm font-semibold">@anasouza favoritou 3 repositórios</h4>
+        <CollapsibleTrigger render={<Button variant="ghost" size="icon" />}>
+          <CaretUpDownIcon />
+          <span className="sr-only">Alternar</span>
+        </CollapsibleTrigger>
+      </div>
+      <div className="rounded-md border px-4 py-2 font-mono text-xs">@base-ui/react</div>
+      <CollapsibleContent className="flex h-(--collapsible-panel-height) flex-col gap-2 overflow-hidden transition-[height] duration-200 data-ending-style:h-0 data-starting-style:h-0">
+        <div className="rounded-md border px-4 py-2 font-mono text-xs">@phosphor-icons/react</div>
+        <div className="rounded-md border px-4 py-2 font-mono text-xs">@blips/ui</div>
+      </CollapsibleContent>
+    </Collapsible>
+  );
+}
+```
 
-## Dependencies
+## v2.x — Radix
 
-- `@radix-ui/react-collapsible`
+Primitiva: `@radix-ui/react-collapsible`.
 
-## Usage
-
-### Basic Collapsible
+| Componente | Base | Props / estado |
+|---|---|---|
+| `Collapsible` | Radix `Root` | `open`, `defaultOpen`, `onOpenChange(open)`, `disabled` |
+| `CollapsibleTrigger` | Radix `CollapsibleTrigger` | `asChild`. Estado: `data-state="open" \| "closed"` |
+| `CollapsibleContent` | Radix `CollapsibleContent` | `forceMount`. Estado: `data-state`. Variáveis: `--radix-collapsible-content-height`, `--radix-collapsible-content-width` |
 
 ```tsx
 "use client"
@@ -69,57 +84,32 @@ import {
   CollapsibleTrigger,
 } from "@blips/ui/components/collapsible"
 
-export default function CollapsibleDemo() {
-  const [isOpen, setIsOpen] = React.useState(false)
+export function Repositorios() {
+  const [aberto, setAberto] = React.useState(false)
 
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className="flex w-[350px] flex-col gap-2"
-    >
+    <Collapsible open={aberto} onOpenChange={setAberto} className="flex w-[350px] flex-col gap-2">
       <div className="flex items-center justify-between gap-4 px-4">
-        <h4 className="text-sm font-semibold">
-          @peduarte starred 3 repositories
-        </h4>
+        <h4 className="text-sm font-semibold">@anasouza favoritou 3 repositórios</h4>
         <CollapsibleTrigger asChild>
           <Button variant="ghost" size="icon" className="size-8">
             <CaretUpDown />
-            <span className="sr-only">Toggle</span>
+            <span className="sr-only">Alternar</span>
           </Button>
         </CollapsibleTrigger>
       </div>
-      <div className="rounded-md border px-4 py-2 font-mono text-sm">
-        @radix-ui/primitives
-      </div>
+      <div className="rounded-md border px-4 py-2 font-mono text-sm">@radix-ui/primitives</div>
       <CollapsibleContent className="flex flex-col gap-2">
-        <div className="rounded-md border px-4 py-2 font-mono text-sm">
-          @radix-ui/colors
-        </div>
-        <div className="rounded-md border px-4 py-2 font-mono text-sm">
-          @stitches/react
-        </div>
+        <div className="rounded-md border px-4 py-2 font-mono text-sm">@radix-ui/colors</div>
+        <div className="rounded-md border px-4 py-2 font-mono text-sm">@stitches/react</div>
       </CollapsibleContent>
     </Collapsible>
   )
 }
 ```
 
-### Animated Collapsible (with Tailwind)
+Para animar, crie keyframes no app usando `var(--radix-collapsible-content-height)` e aplique com `data-[state=open]:` / `data-[state=closed]:`.
 
-```tsx
-<CollapsibleContent className="overflow-hidden data-[state=closed]:animate-collapse-up data-[state=open]:animate-collapse-down">
-  {/* content */}
-</CollapsibleContent>
-```
+## Exemplos na docs
 
-Use the CSS variables `--radix-collapsible-content-height` and `--radix-collapsible-content-width` in custom keyframe animations for smooth height/width transitions.
-
-## All Examples
-
-- `collapsible-demo` -- Repository list with toggle button
-
-## Project Notes
-
-- This is a thin re-export of Radix primitives with no custom styling. All styling is applied at the usage site.
-- Commonly used in the sidebar component for collapsible navigation sections.
+`collapsible-demo`, `collapsible-file-tree`, `collapsible-settings` (v3).

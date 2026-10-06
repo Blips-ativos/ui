@@ -1,9 +1,9 @@
-"use client";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@blips/ui/components/avatar";
+
 export default function AvatarDemo() {
   return (
     <Avatar>

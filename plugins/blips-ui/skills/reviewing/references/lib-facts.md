@@ -1,8 +1,31 @@
-# Fatos verificados da @blips/ui (v2.x) — consulte ANTES de classificar
+# Fatos verificados da @blips/ui (v2.x e v3.x) — consulte ANTES de classificar
 
 Fonte da verdade contra alucinação de revisor. Verificado no fonte da lib e em
 builds reais (ver CREATION-LOG das skills installing/reviewing). Em dúvida,
 confira `node_modules/@blips/ui/src/` no próprio repo revisado.
+
+## Duas linhas da lib — detecte antes de tudo
+
+| | v2.x — Radix | v3.x — Base UI |
+|---|---|---|
+| Primitivas | `@radix-ui/react-*` + `vaul` (Drawer) | `@base-ui/react` (estilo shadcn base-mira) |
+| Troca de elemento | `asChild` | `render={<El />}` (+ `nativeButton={false}` em Button não-button) |
+| Estados no DOM | `data-state="open\|closed\|checked…"` | `data-open`, `data-closed`, `data-checked`, `data-popup-open`, `data-panel-open`, `data-pressed` |
+| Ícones Phosphor | sem sufixo (`CaretDown`) ou com (`CaretDownIcon`) | com sufixo `Icon` (sem sufixo é `@deprecated`) |
+| recharts | 2.15.x | 3.10.x |
+| Componentes | 52 | 62 (+ attachment, bubble, combobox, direction, item, marker, message, message-scroller, native-select, questionnaire, toast) |
+| Densidade | new-york (`text-sm`, Button `h-9`, Card `py-6`) | base-mira (`text-xs`, Button `h-7`, Card 16px) |
+
+Como detectar: `node_modules/@blips/ui/package.json` — `dependencies` com
+`@base-ui/react` → v3.x; com `@radix-ui/*` → v2.x. Sem isso, a `version` instalada
+(ou o range em `dependencies["@blips/ui"]` do app): `2.x` → v2.x, `3.x` → v3.x. O
+`check.mjs` faz essa detecção e devolve `blipsUi.track`. A lista completa de
+diferenças está em `../../building/references/v2-vs-v3.md`.
+
+Data attributes **da própria lib** que valem nas duas versões (não são do Radix):
+`data-slot`, `data-variant` (exceto no Button v3), `data-size`, `data-active`,
+`data-state="selected"` no `TableRow`, `data-state="expanded|collapsed"` e
+`data-collapsible` na `Sidebar`.
 
 ## Imports (a regra nº 1 — revisores genéricos INVERTEM isto)
 
@@ -39,10 +62,14 @@ NÃO Quicksand** — para "anunciar" use `font-display`. Logo: `text-success`,
 
 ## Dependências
 
-- Vêm com a lib (não são violação como transitivas DA LIB): Radix, CVA, clsx,
-  tailwind-merge, cmdk, recharts, **sonner**, vaul, date-fns, embla,
+- Vêm com a lib (não são violação como transitivas DA LIB): CVA, clsx,
+  tailwind-merge, cmdk, recharts, **sonner**, date-fns, embla,
   react-day-picker, next-themes, **react-hook-form**, **zod**,
-  @hookform/resolvers, @phosphor-icons/react.
+  @hookform/resolvers, @phosphor-icons/react, input-otp, react-resizable-panels,
+  tw-animate-css. **Primitivas por versão:** v2.x traz Radix (`@radix-ui/react-*`) e
+  `vaul`; v3.x traz `@base-ui/react` e `@shadcn/react` (sem Radix nem vaul).
+- recharts acompanha a major da lib: **2.15.x na v2.x**, **3.10.x na v3.x**. App que
+  importa `recharts` direto declara a mesma major.
 - MAS: o que o CÓDIGO DO APP importa deve ser dependência DIRETA do app
   (pnpm estrito) — `import { toast } from "sonner"` sem `sonner` no
   package.json é violação (dependência fantasma).
@@ -52,11 +79,20 @@ NÃO Quicksand** — para "anunciar" use `font-display`. Logo: `text-success`,
 
 ## Componentes
 
-- A lib tem ~52 componentes (Button, Card, Dialog, Alert, Skeleton, Spinner,
-  Sheet, Table, Form, Field, Empty, Sonner/Toaster...). O `Button` NÃO tem prop `loading`
+- A lib tem 52 componentes na v2.x e 62 na v3.x (Button, Card, Dialog, Alert,
+  Skeleton, Spinner, Sheet, Table, Form, Field, Empty, Sonner/Toaster...). Os 11 que só
+  existem na v3.x (attachment, bubble, combobox, direction, item, marker, message,
+  message-scroller, native-select, questionnaire, toast) são import inválido em repo v2.x. O `Button` NÃO tem prop `loading`
   (spinner manual + disabled é o padrão atual).
 - `DialogContent` da lib JÁ embute o botão X de fechar — close customizado
-  duplica; `DialogClose` existe para custom triggers.
+  duplica; `DialogClose` existe para custom triggers (`asChild` na v2.x, `render`
+  na v3.x).
+- Não existem `DialogBody`/`DialogSection` em nenhuma versão (`SheetBody`,
+  `SheetSection` e `SheetSectionTitle` existem nas duas — extensão Blips do Sheet).
+- `@blips/ui/hooks/*` exporta só `use-mobile` nas duas versões.
+- v3.x: `AlertDialogAction` **não fecha** o diálogo (é um Button comum); na v2.x fecha.
+- v3.x: `SidebarProvider` não traz mais `TooltipProvider` (na v2.x trazia, com
+  `delayDuration={0}`).
 - Componentes client da lib precisam viver sob client components no App
   Router; ícones Phosphor em Server Component vêm de
   `@phosphor-icons/react/dist/ssr`.

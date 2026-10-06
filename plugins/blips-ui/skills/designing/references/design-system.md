@@ -121,6 +121,11 @@ a fonte é a skill **`blips-ui:building`** — não reimplemente aqui.
 
 - **Button** — `primary` (fundo `bg-primary`, texto `text-primary-foreground` em `yellow-900`): só o CTA de maior sinal por tela. `secondary`/neutro (`bg-secondary`) para ações de igual peso; `ghost`/`outline` (só `border-border`) para terciárias; `destructive` apenas para ação que apaga/desfaz. Raio `rounded-md`. Por quê: um botão amarelo por tela mantém o "5–10%".
 - **Card** — `bg-card` + `border border-border` + `rounded-xl`; padding interno generoso (≥ `p-6` em cards de conteúdo). Sombra **opcional e única** por tela (§6). Por quê: borda-primeiro mantém a tela calma e funciona idêntico no escuro.
+  Default do `Card` por versão da lib: **v3.x** (base-mira) já vem com `ring-1 ring-foreground/10`,
+  `rounded-lg` e espaçamento de 16px pela variável `--card-spacing` (12px com `size="sm"`) —
+  para o padding generoso de cards de conteúdo, sobrescreva a variável
+  (`className="[--card-spacing:--spacing(6)]"`) em vez de `p-6`; **v2.x** (new-york) vem com
+  `border`, `rounded-xl`, `py-6`/`px-6` e `shadow-sm`.
 - **Dialog/Sheet/Popover** — `bg-popover`/`bg-card`, `border-border`, `rounded-lg`; overlay escurece o fundo para isolar foco. **Sempre com título** (acessível). Por quê: overlay sem título é a violação clássica que `reviewing` pega.
 - **Table** — cabeçalho `text-muted-foreground` (peso 500), linhas separadas por `border-border`, **colunas numéricas em `font-mono` e alinhadas à direita**. Por quê: dinheiro/quantidade só se compara visualmente se os dígitos alinham (ver `reviewing/references/data-formatting.md`).
 - **Badge** — neutro (`bg-muted text-muted-foreground`) por padrão; variantes semânticas (`bg-success`/`bg-warning`/`bg-destructive`/`bg-info` com seu `-foreground`) **só para estado real**. `rounded-md` ou pill. Por quê: badge colorido sem semântica vira ruído — reserve cor para significado.

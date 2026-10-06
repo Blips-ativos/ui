@@ -18,17 +18,62 @@ import { Slider } from "@blips/ui/components/slider"
 ```
 
 ```tsx
-<Slider defaultValue={[33]} max={100} step={1} />
+<Slider defaultValue={33} max={100} step={1} />
 ```
+
+Passe um número em `value`/`defaultValue` para um único thumb, ou um array para vários. Sem `value` nem `defaultValue`, o slider desenha dois thumbs (`[min, max]`).
 
 ## Exemplos
 
-### Exemplo
+### Intervalo e vários thumbs
 
-Um slider básico com um único valor dentro de um intervalo definido.
+Com um array, cada posição vira um thumb.
 
-<ComponentPreview name="slider-demo" />
+<ComponentPreview name="slider-range" />
+
+### Vertical
+
+Use `orientation="vertical"` e dê uma altura ao slider.
+
+<ComponentPreview name="slider-vertical" />
+
+### Controlado
+
+Use `value` e `onValueChange`. Com array, o callback recebe `number[]`.
+
+<ComponentPreview name="slider-controlled" />
+
+### Desabilitado
+
+<ComponentPreview name="slider-disabled" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Slider](https://base-ui.com/react/components/slider).
+
+- `value` e `defaultValue` aceitam `number` ou `number[]`. Com valor escalar, `onValueChange` recebe `number`; com array, `number[]`. O callback tem a assinatura `(value, eventDetails)`.
+- **`onValueCommit` virou `onValueCommitted`.**
+- Estrutura nova: Root › Control › Track › Indicator + Thumb. O antigo `Range` é o `Indicator` (continua com `data-slot="slider-range"`).
+- **Atributos:** `data-orientation="horizontal" | "vertical"` vira `data-horizontal`/`data-vertical`; `data-[disabled]` vira `data-disabled`, agora no Control.
+- O thumb usa `thumbAlignment="edge"` por padrão (fica dentro do trilho nas pontas).
+- Visual: trilho `h-1`, thumb `size-3` com `rounded-md` e `border-ring`.
+
+```tsx
+// v2
+<Slider
+  defaultValue={[50]}
+  onValueChange={([value]) => setVolume(value)}
+  onValueCommit={([value]) => salvar(value)}
+/>
+
+// v3
+<Slider
+  defaultValue={50}
+  onValueChange={(value) => setVolume(value as number)}
+  onValueCommitted={(value) => salvar(value as number)}
+/>
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI Slider](https://www.radix-ui.com/docs/primitives/components/slider#api-reference).
+Consulte a documentação do [Base UI Slider](https://base-ui.com/react/components/slider) para mais informações.

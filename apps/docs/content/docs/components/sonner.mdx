@@ -7,12 +7,29 @@ description: Um componente de toast opinativo para React.
 
 ## Sobre
 
-O Sonner é criado e mantido por [emilkowalski](https://twitter.com/emilkowalski).
+O Sonner é criado e mantido por [emilkowalski](https://twitter.com/emilkowalski). Para um toast montado sobre o Base UI, sem dependência extra, veja o [Toast](/docs/components/toast).
 
 ## Instalação
 
 ```bash
 npm install @blips/ui
+```
+
+Adicione o `Toaster` uma vez, na raiz do app:
+
+```tsx title="app/layout.tsx"
+import { Toaster } from "@blips/ui/components/sonner"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR">
+      <body>
+        <main>{children}</main>
+        <Toaster />
+      </body>
+    </html>
+  )
+}
 ```
 
 ## Uso
@@ -32,6 +49,10 @@ toast("O evento foi criado.")
 Use os diferentes tipos de toast para variar o estilo da notificação.
 
 <ComponentPreview name="sonner-types" />
+
+## Migrando da v2
+
+A API não mudou. Só os ícones seguem o mapeamento do Phosphor da v3: `error` passou de `WarningOctagon` para `XCircle` e `loading` de `CircleNotch` para `Spinner`.
 
 ## Referência da API
 

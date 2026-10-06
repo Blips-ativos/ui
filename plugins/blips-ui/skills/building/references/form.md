@@ -2,225 +2,289 @@
 
 Import: `@blips/ui/components/form`
 
-React Hook Form integration components. Provides form context, field state tracking, and accessible form controls. Built on `react-hook-form` `FormProvider` and `Controller`.
+Integração com **react-hook-form**: contexto do formulário, estado de cada campo
+e ligação acessível entre rótulo, controle, descrição e erro. Para formulários
+novos, considere também o `Field` (`field.md`), que não depende de biblioteca de
+formulário e funciona com `Controller` do RHF, server actions ou TanStack Form.
 
-**Note:** For new forms, consider using the lighter `Field` component (`@blips/ui/components/field`) which is form-library agnostic. The `Form` component is specific to React Hook Form.
+Exports (iguais nas duas versões): `Form`, `FormField`, `FormItem`, `FormLabel`,
+`FormControl`, `FormDescription`, `FormMessage`, `useFormField`.
 
-## Sub-components
+## Notas comuns
 
-| Component | Description |
+| Componente | Descrição |
 |---|---|
-| `Form` | Wrapper around `FormProvider` that also provides a safe internal context. Accepts a `UseFormReturn` spread + `children`. |
-| `FormField` | Wraps react-hook-form's `Controller`. Provides field name context to children. |
-| `FormItem` | Container for a single form field (`space-y-2`). Generates unique IDs for accessibility. |
-| `FormLabel` | Label that auto-connects to `FormControl` via `htmlFor`. Shows destructive color on error. |
-| `FormControl` | Slot component that passes `id`, `aria-describedby`, and `aria-invalid` to its child. |
-| `FormDescription` | Helper text — `text-muted-foreground text-xs`. Connected via `aria-describedby`. |
-| `FormMessage` | Error message — `text-destructive text-sm font-medium`. Auto-reads from field error state. |
+| `Form` | É o `FormProvider` do RHF: `<Form {...form}>`. |
+| `FormField` | `Controller` do RHF + contexto com o `name`. Props: `control`, `name`, `render({ field, fieldState, formState })`, `rules`, `defaultValue`. |
+| `FormItem` | Contêiner do campo (`grid gap-2`). Gera o `id` base. |
+| `FormLabel` | `Label` com `htmlFor` ligado ao controle; fica `text-destructive` quando há erro (`data-error`). |
+| `FormControl` | Repassa ao controle `id`, `aria-describedby` (descrição + mensagem) e `aria-invalid`. |
+| `FormDescription` | Texto de ajuda (`text-muted-foreground`), ligado por `aria-describedby`. |
+| `FormMessage` | Mensagem de erro (`text-destructive`). Sem `children`, lê `error.message` do campo; sem erro e sem `children`, não renderiza nada. |
+| `useFormField()` | `{ id, name, formItemId, formDescriptionId, formMessageId, invalid, isDirty, isTouched, isValidating, error }`. Só funciona dentro de `FormField` + `FormItem`. |
 
-### Hook
+- Schema com zod + `zodResolver`; `defaultValues` para todos os campos (evita input não controlado virando controlado).
+- Mensagens de validação em pt-BR.
+- Controles que não são input nativo (Select, Checkbox, Switch, RadioGroup, ToggleGroup, Slider) **não** recebem `{...field}`: ligue `value`/`checked` e o callback de mudança à mão (tabela abaixo, por versão).
+- Não defina `id` no filho do `FormControl`: ele sobrescreve o id gerado e quebra o `htmlFor` do `FormLabel`.
+- Máscaras (CPF, CNPJ, telefone, moeda): `components/forms/masks.md`.
 
-| Hook | Description |
-|---|---|
-| `useFormField()` | Returns `{ id, name, formItemId, formDescriptionId, formMessageId, invalid, isDirty, isTouched, isValidating, error }`. Works safely outside FormField context (returns defaults). |
-
-## Props & Variants
-
-### Form
-
-Accepts all props from `UseFormReturn<TFieldValues>` (spread), plus `children: React.ReactNode`.
+Padrão básico (igual nas duas versões, com `Input`):
 
 ```tsx
-const form = useForm({ resolver: zodResolver(schema) })
-<Form {...form}>
-  {/* fields */}
-</Form>
-```
+"use client";
 
-### FormField
-
-Same props as react-hook-form's `Controller`:
-
-| Prop | Type | Description |
-|---|---|---|
-| `control` | `Control<TFieldValues>` | Form control from `useForm()`. |
-| `name` | `string` | Field path (e.g., `"email"`, `"address.city"`). |
-| `render` | `({ field, fieldState, formState }) => ReactElement` | Render function. |
-| `rules` | `RegisterOptions` | Validation rules (when not using a resolver). |
-| `defaultValue` | `TFieldValue` | Default value for the field. |
-
-### FormLabel
-
-Extends `Label` props. Auto-applies `text-destructive` class when the field has an error.
-
-### FormControl
-
-Extends `Slot` props. Automatically injects:
-- `id` from FormItem context
-- `aria-describedby` linking to description and message
-- `aria-invalid` from field error state
-
-### FormMessage
-
-Extends `<p>` props. If no `children` provided, auto-reads `error.message` from field state. Returns `null` when no error and no children.
-
-## Usage
-
-### Standard React Hook Form Pattern
-
-```tsx
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@blips/ui/components/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@blips/ui/components/button";
 import {
-  Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,
-} from "@blips/ui/components/form"
-import { Input } from "@blips/ui/components/input"
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@blips/ui/components/form";
+import { Input } from "@blips/ui/components/input";
 
-const formSchema = z.object({
-  username: z.string().min(2, "Username must be at least 2 characters."),
-})
+const schema = z.object({
+  username: z.string().min(2, "O nome de usuário precisa ter ao menos 2 caracteres."),
+});
 
-function ProfileForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+export function PerfilForm() {
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: { username: "" },
-  })
+  });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  function onSubmit(values: z.infer<typeof schema>) {
+    console.log(values);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-sm space-y-6">
         <FormField
           control={form.control}
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Nome de usuário</FormLabel>
               <FormControl>
-                <Input placeholder="shadcn" {...field} />
+                <Input placeholder="ana.souza" {...field} />
               </FormControl>
-              <FormDescription>
-                This is your public display name.
-              </FormDescription>
+              <FormDescription>É o nome exibido publicamente.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Salvar</Button>
       </form>
     </Form>
-  )
+  );
 }
 ```
 
-### Bug Report Form (RHF + Field Components)
+Com `Field` + `Controller` (sem os componentes `Form*`), o padrão é
+`<Field data-invalid={fieldState.invalid}>` + `FieldLabel htmlFor` + controle com
+`aria-invalid` + `<FieldError errors={[fieldState.error]} />` (veja `field.md`).
 
-This example shows the recommended pattern combining `Form` context with the newer `Field` layout components:
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
+
+## v3.x — Base UI
+
+- **`FormControl`** é feito com `useRender` + `mergeProps` do Base UI (não usa mais `Slot`). Aceita **filho único** (`<FormControl><Input /></FormControl>`, como antes) **ou** a prop `render` (`<FormControl render={<Input {...field} />} />`). Tipo: `useRender.ComponentProps<"div">`. Se o filho não for um elemento React válido (texto, vários filhos), renderiza um `<div>` em volta.
+- Nas props em conflito, as do filho vencem as do `FormControl` (handlers, `className` e `style` são mesclados).
+- `FormLabel` é tipado como o `Label` nativo: **sem `asChild`**.
+- `FormDescription` e `FormMessage`: `text-xs/relaxed`.
+
+### Controles dentro do formulário (v3)
+
+| Controle | Ligação com `field` |
+|---|---|
+| `Input`, `Textarea`, `InputGroupInput`, `NativeSelect`, `InputOTP` | `{...field}` |
+| `Select` | `value={field.value || null}` + `onValueChange={(v) => field.onChange(v ?? "")}`; passe `items` (com item `value: null` como placeholder). `FormControl` envolve o `SelectTrigger`. |
+| `Checkbox` | `checked={field.value}` + `onCheckedChange={(checked) => field.onChange(checked)}` (boolean; misto é a prop `indeterminate`). |
+| `Switch` | `checked={field.value}` + `onCheckedChange={(checked) => field.onChange(checked)}`. |
+| `RadioGroup` | `value={field.value}` + `onValueChange={(v) => field.onChange(v as string)}` (o valor chega como `unknown`). |
+| `ToggleGroup` | `value={[field.value]}` + `onValueChange={(v) => v[0] && field.onChange(v[0])}` (sempre array). |
+| `Slider` | `value={field.value}` + `onValueChange={(v) => field.onChange(v)}` (escalar ou array, conforme o valor). |
 
 ```tsx
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@blips/ui/components/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@blips/ui/components/card"
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@blips/ui/components/field"
-import { Input } from "@blips/ui/components/input"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@blips/ui/components/button";
+import { Checkbox } from "@blips/ui/components/checkbox";
 import {
-  InputGroup, InputGroupAddon, InputGroupText, InputGroupTextarea,
-} from "@blips/ui/components/input-group"
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@blips/ui/components/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@blips/ui/components/select";
+import { Switch } from "@blips/ui/components/switch";
 
-const formSchema = z.object({
-  title: z.string().min(5).max(32),
-  description: z.string().min(20).max(100),
-})
+const planos = [
+  { label: "Selecione um plano", value: null },
+  { label: "Básico", value: "basico" },
+  { label: "Pro", value: "pro" },
+];
 
-function BugReportForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: { title: "", description: "" },
-  })
+const schema = z.object({
+  plano: z.string().min(1, "Escolha um plano."),
+  notificacoes: z.boolean(),
+  termos: z.boolean().refine((v) => v, { message: "Você precisa aceitar os termos." }),
+});
+
+type Valores = z.infer<typeof schema>;
+
+export function PreferenciasForm() {
+  const form = useForm<Valores>({
+    resolver: zodResolver(schema),
+    defaultValues: { plano: "", notificacoes: true, termos: false },
+  });
 
   return (
-    <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle>Bug Report</CardTitle>
-        <CardDescription>Help us improve by reporting bugs.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form id="bug-form" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="title">Bug Title</FieldLabel>
-                  <Input {...field} id="title" aria-invalid={fieldState.invalid} />
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-            <Controller
-              name="description"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="description">Description</FieldLabel>
-                  <InputGroup>
-                    <InputGroupTextarea {...field} id="description" rows={6} className="min-h-24 resize-none" />
-                    <InputGroupAddon align="block-end">
-                      <InputGroupText className="tabular-nums">
-                        {field.value.length}/100 characters
-                      </InputGroupText>
-                    </InputGroupAddon>
-                  </InputGroup>
-                  <FieldDescription>Include steps to reproduce.</FieldDescription>
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>Reset</Button>
-          <Button type="submit" form="bug-form">Submit</Button>
-        </Field>
-      </CardFooter>
-    </Card>
-  )
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(console.log)} className="w-full max-w-sm space-y-6">
+        <FormField
+          control={form.control}
+          name="plano"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Plano</FormLabel>
+              <Select
+                items={planos}
+                value={field.value || null}
+                onValueChange={(v) => field.onChange(v ?? "")}
+              >
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    {planos.map((p) => (
+                      <SelectItem key={p.label} value={p.value}>
+                        {p.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormDescription>Você pode trocar depois.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="notificacoes"
+          render={({ field }) => (
+            <FormItem className="flex items-center justify-between gap-4">
+              <div className="grid gap-1">
+                <FormLabel>Notificações por e-mail</FormLabel>
+                <FormDescription>Avisos sobre a sua conta.</FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={(checked) => field.onChange(checked)}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="termos"
+          render={({ field }) => (
+            <FormItem>
+              <div className="flex items-center gap-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={(checked) => field.onChange(checked)}
+                  />
+                </FormControl>
+                <FormLabel className="font-normal">Aceito os termos de uso</FormLabel>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Salvar</Button>
+      </form>
+    </Form>
+  );
 }
 ```
 
-## All Examples
+Exemplos na docs (escritos para a v3): `form-demo`, `form-controls` (em `apps/docs/examples/`).
 
-- `form-rhf-demo` — React Hook Form with Field components, zod validation, InputGroup textarea
-- `form-rhf-input` — Simple input field with username validation
-- `form-rhf-select` — Select dropdown with responsive orientation
-- `form-rhf-checkbox` — Checkbox groups with boolean and array patterns
-- `form-rhf-switch` — Switch toggle with horizontal layout
-- `form-rhf-textarea` — Textarea with character validation
-- `form-rhf-radiogroup` — Radio group with card-style options
-- `form-rhf-array` — Dynamic field arrays with useFieldArray
-- `form-rhf-complex` — Multi-field form combining radio, select, checkbox, and switch
-- `form-rhf-password` — Password input with strength meter and requirements checklist
-- `form-next-demo` — Next.js server actions with `useActionState`, Field components
-- `form-next-complex` — Next.js server actions with radio, select, checkbox, and switch
-- `form-tanstack-demo` — TanStack Form with Field components, zod validation
+## v2.x — Radix
 
-## React Hook Form Examples
+- **`FormControl`** é um `Slot` do `@radix-ui/react-slot`: exige **exatamente um filho elemento** (texto ou vários filhos quebram). Não tem `render`.
+- `FormLabel` usa o `Label` Radix (aceita `asChild`).
+- `FormDescription` e `FormMessage`: `text-sm`.
 
-### form-rhf-demo
+### Controles dentro do formulário (v2)
+
+| Controle | Ligação com `field` |
+|---|---|
+| `Input`, `Textarea`, `InputGroupInput`, `InputOTP` | `{...field}` |
+| `Select` | `value={field.value}` + `onValueChange={field.onChange}`; placeholder em `<SelectValue placeholder="…" />`. `FormControl` envolve o `SelectTrigger`. |
+| `Checkbox` | `checked={field.value}` + `onCheckedChange={field.onChange}` (o valor pode ser `"indeterminate"`; use `!!checked` se precisar de boolean). |
+| `Switch` | `checked={field.value}` + `onCheckedChange={field.onChange}`. |
+| `RadioGroup` | `value={field.value}` + `onValueChange={field.onChange}` (string). |
+| `ToggleGroup` | `type="single"` + `value={field.value}` + `onValueChange={(v) => v && field.onChange(v)}`. |
+| `Slider` | `value={field.value}` (array) + `onValueChange={field.onChange}`. |
+
+```tsx
+<FormField
+  control={form.control}
+  name="plano"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Plano</FormLabel>
+      <Select value={field.value} onValueChange={field.onChange}>
+        <FormControl>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Selecione um plano" />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          <SelectItem value="basico">Básico</SelectItem>
+          <SelectItem value="pro">Pro</SelectItem>
+        </SelectContent>
+      </Select>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+```
+
+### Exemplos completos (escritos para a v2)
+
+Exemplos longos de formulários com react-hook-form + `Field` e com server actions do Next. Os componentes de layout (`Field*`, `Card`) e o fluxo do RHF valem nas duas versões, mas os controles usam a API da v2 (ex.: `<SelectValue placeholder=…>`, `onValueChange` tipado como string no `RadioGroup`, ícones Phosphor sem sufixo). Em repo v3, adapte os controles conforme a seção v3.x acima (tabela "Controles dentro do formulário").
+
+#### form-rhf-demo
 
 Bug report form demonstrating RHF with Field components, Zod validation, and InputGroup textarea with character counter.
 
@@ -370,7 +434,7 @@ export default function BugReportForm() {
 }
 ```
 
-### form-rhf-input
+#### form-rhf-input
 
 Simple input field with username validation (regex, min/max length).
 
@@ -484,7 +548,7 @@ export default function FormRhfInput() {
 }
 ```
 
-### form-rhf-select
+#### form-rhf-select
 
 Select dropdown with responsive orientation layout and language selection.
 
@@ -634,7 +698,7 @@ export default function FormRhfSelect() {
 }
 ```
 
-### form-rhf-checkbox
+#### form-rhf-checkbox
 
 Checkbox patterns: single boolean checkbox (disabled) and multi-select checkbox array with FieldSet/FieldLegend.
 
@@ -813,7 +877,7 @@ export default function FormRhfCheckbox() {
 }
 ```
 
-### form-rhf-switch
+#### form-rhf-switch
 
 Switch toggle with horizontal Field layout for boolean settings.
 
@@ -927,7 +991,7 @@ export default function FormRhfSwitch() {
 }
 ```
 
-### form-rhf-textarea
+#### form-rhf-textarea
 
 Textarea field with min/max character validation.
 
@@ -1037,7 +1101,7 @@ export default function FormRhfTextarea() {
 }
 ```
 
-### form-rhf-radiogroup
+#### form-rhf-radiogroup
 
 Radio group with card-style plan selection using FieldSet, FieldLegend, FieldTitle, and FieldContent.
 
@@ -1189,7 +1253,7 @@ export default function FormRhfRadioGroup() {
 }
 ```
 
-### form-rhf-array
+#### form-rhf-array
 
 Dynamic field array using `useFieldArray` for managing multiple email addresses with add/remove capabilities.
 
@@ -1198,7 +1262,7 @@ Dynamic field array using `useFieldArray` for managing multiple email addresses 
 
 import * as React from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { XIcon } from "@phosphor-icons/react"
+import { X } from "@phosphor-icons/react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
@@ -1305,7 +1369,7 @@ export default function FormRhfArray() {
                                 onClick={() => remove(index)}
                                 aria-label={`Remove email ${index + 1}`}
                               >
-                                <XIcon />
+                                <X />
                               </InputGroupButton>
                             </InputGroupAddon>
                           )}
@@ -1349,7 +1413,7 @@ export default function FormRhfArray() {
 }
 ```
 
-### form-rhf-complex
+#### form-rhf-complex
 
 Complex multi-field form combining RadioGroup (plan), Select (billing), Checkbox array (add-ons), and Switch (notifications) with FieldSeparator sections.
 
@@ -1654,7 +1718,7 @@ export default function FormRhfComplex() {
 }
 ```
 
-### form-rhf-password
+#### form-rhf-password
 
 Password input with real-time strength meter, requirements checklist, and Progress bar visualization.
 
@@ -1874,9 +1938,9 @@ export default function FormRhfPassword() {
 }
 ```
 
-## Form Next Examples
+#### Form Next (server actions)
 
-### form-next-demo
+#### form-next-demo
 
 Bug report form using Next.js `<Form>` component with `useActionState` for server action integration. Uses Field components with server-side validation error display.
 
@@ -2020,7 +2084,7 @@ export default function FormNextDemo() {
 }
 ```
 
-### form-next-complex
+#### form-next-complex
 
 Complex subscription form using Next.js server actions with RadioGroup, Select, Checkbox array, and Switch. Demonstrates `useActionState` with multiple field types.
 

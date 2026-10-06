@@ -2,156 +2,61 @@
 
 Import: `@blips/ui/components/skeleton`
 
-## Sub-components
+Placeholder animado (`animate-pulse rounded-md`) para estado de carregamento. É um
+`<div>` sem props próprias: tamanho e forma vêm de `className`. Monte o skeleton
+com a mesma silhueta do conteúdo final (avatar redondo, linhas de texto, células
+de tabela) para não haver salto de layout.
 
-| Component | Description |
-|---|---|
-| `Skeleton` | A simple animated placeholder div. Renders with `animate-pulse` and `bg-muted` background. |
+Export (igual nas duas versões): `Skeleton`.
 
-## Props & Variants
+API igual na v2.x e na v3.x.
 
-### Skeleton
+Detecção de versão: `SKILL.md`, Passo 0. Diferenças transversais entre as versões: `v2-vs-v3.md`.
 
-Extends `React.HTMLAttributes<HTMLDivElement>`.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | CSS classes to control size, shape, and additional styles. Base: `animate-pulse rounded-md bg-muted`. |
-
-The Skeleton component has no built-in variants. Control its appearance entirely through `className`:
-
-| Shape | Class Example |
-|---|---|
-| Rectangle | `className="h-4 w-[250px]"` |
-| Circle | `className="h-12 w-12 rounded-full"` |
-| Card | `className="h-[125px] w-[250px] rounded-xl"` |
-| Line | `className="h-4 w-full"` |
-
-## Usage
-
-### Basic Skeleton (Avatar + Text)
+Diferença só visual: fundo `bg-muted` na v3 (v2: `bg-accent`).
 
 ```tsx
-import { Skeleton } from "@blips/ui/components/skeleton"
+import { Card, CardContent, CardHeader } from "@blips/ui/components/card";
+import { Skeleton } from "@blips/ui/components/skeleton";
 
-export default function SkeletonDemo() {
+export function CartaoCarregando() {
   return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
+    <Card className="w-full max-w-xs">
+      <CardHeader>
+        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-4 w-1/2" />
+      </CardHeader>
+      <CardContent>
+        <Skeleton className="aspect-square w-full" />
+      </CardContent>
+    </Card>
+  );
+}
+
+export function LinhaCarregando() {
+  return (
+    <div className="flex items-center gap-4">
+      <Skeleton className="size-10 rounded-full" />
+      <div className="flex flex-col gap-2">
+        <Skeleton className="h-4 w-48" />
+        <Skeleton className="h-4 w-32" />
       </div>
     </div>
-  )
+  );
 }
 ```
 
-### Card Skeleton
+Condicional:
 
 ```tsx
-import { Skeleton } from "@blips/ui/components/skeleton"
-
-export default function SkeletonCard() {
-  return (
-    <div className="flex flex-col space-y-3">
-      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  )
-}
+{isLoading ? <Skeleton className="h-4 w-40" /> : <span>{cliente.nome}</span>}
 ```
 
-### Table Skeleton
+## Notas
 
-```tsx
-<div className="space-y-2">
-  {Array.from({ length: 5 }).map((_, i) => (
-    <div key={i} className="flex items-center gap-4">
-      <Skeleton className="h-8 w-8 rounded-full" />
-      <Skeleton className="h-4 flex-1" />
-      <Skeleton className="h-4 w-[100px]" />
-      <Skeleton className="h-4 w-[60px]" />
-    </div>
-  ))}
-</div>
-```
+- Sem `"use client"`: pode ser usado em Server Components.
+- Na sidebar, use `SidebarMenuSkeleton` (veja `sidebar.md`).
 
-### Form Skeleton
+## Exemplos na docs
 
-```tsx
-<div className="space-y-4">
-  <div className="space-y-2">
-    <Skeleton className="h-4 w-[80px]" /> {/* Label */}
-    <Skeleton className="h-8 w-full" />   {/* Input */}
-  </div>
-  <div className="space-y-2">
-    <Skeleton className="h-4 w-[120px]" /> {/* Label */}
-    <Skeleton className="h-8 w-full" />     {/* Input */}
-  </div>
-  <Skeleton className="h-9 w-[100px]" />   {/* Button */}
-</div>
-```
-
-### Inline with Content (Conditional)
-
-```tsx
-{isLoading ? (
-  <Skeleton className="h-4 w-[100px]" />
-) : (
-  <span>{data.name}</span>
-)}
-```
-
-## All Examples
-
-- `skeleton-demo` -- Avatar + text lines skeleton
-- `skeleton-card` -- Card skeleton with image placeholder and text lines
-
-## All Example Variants
-
-### skeleton-demo
-
-```tsx
-import { Skeleton } from "@blips/ui/components/skeleton"
-
-export default function SkeletonDemo() {
-  return (
-    <div className="flex items-center space-x-4">
-      <Skeleton className="h-12 w-12 rounded-full" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  )
-}
-```
-
-### skeleton-card
-
-```tsx
-import { Skeleton } from "@blips/ui/components/skeleton"
-
-export default function SkeletonCard() {
-  return (
-    <div className="flex flex-col space-y-3">
-      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  )
-}
-```
-
-## Project Notes
-
-- This is a pure CSS component (no Radix dependency). It does not use `'use client'`.
-- Uses `animate-pulse` from Tailwind for the animation and `bg-muted` for the background color.
-- See also `SidebarMenuSkeleton` in the sidebar component for sidebar-specific loading states.
-- The component is intentionally minimal -- all sizing and shaping is done via `className`.
+`skeleton-demo`, `skeleton-card`, `skeleton-text`, `skeleton-form`, `skeleton-table` (em `apps/docs/examples/`, escritos para a v3).

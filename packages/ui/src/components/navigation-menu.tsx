@@ -1,9 +1,9 @@
 "use client";
 
-import type * as React from "react";
 import { NavigationMenu as NavigationMenuPrimitive } from "@base-ui/react/navigation-menu";
 import { CaretDownIcon } from "@phosphor-icons/react";
 import { cva } from "class-variance-authority";
+import type * as React from "react";
 
 import { cn } from "../lib/utils";
 

@@ -5,7 +5,7 @@ description: Exibe um badge ou um componente que se parece com um badge.
 
 <ComponentPreview name="badge-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -18,7 +18,9 @@ import { Badge } from "@blips/ui/components/badge"
 ```
 
 ```tsx
-<Badge variant="default | outline | secondary | destructive">Badge</Badge>
+<Badge variant="default | secondary | destructive | outline | ghost | link">
+  Badge
+</Badge>
 ```
 
 ## Exemplos
@@ -29,37 +31,56 @@ Use a prop `variant` para alterar a variante do badge.
 
 <ComponentPreview name="badge-variants" />
 
-### Com icone
+### Com ícone
 
-Voce pode renderizar um icone dentro do badge. Use `data-icon="inline-start"` para renderizar o icone a esquerda e `data-icon="inline-end"` para renderiza-lo a direita.
+Você pode renderizar um ícone dentro do badge. Use `data-icon="inline-start"` para renderizar o ícone à esquerda e `data-icon="inline-end"` para renderizá-lo à direita. O badge ajusta o padding do lado do ícone.
 
 <ComponentPreview name="badge-icon" />
 
 ### Com spinner
 
-Voce pode renderizar um spinner dentro do badge. Lembre-se de adicionar a prop `data-icon="inline-start"` ou `data-icon="inline-end"` ao spinner.
+Você pode renderizar um spinner dentro do badge. Lembre-se de adicionar `data-icon="inline-start"` ou `data-icon="inline-end"` ao spinner.
 
 <ComponentPreview name="badge-spinner" />
 
 ### Link
 
-Use a prop `asChild` para renderizar um link como um badge.
+Use a prop `render` para renderizar o badge como outro elemento, por exemplo um link. Os estilos de hover para `<a>` já vêm aplicados.
 
 <ComponentPreview name="badge-link" />
 
 ### Cores personalizadas
 
-Voce pode personalizar as cores de um badge adicionando classes como `bg-green-50 dark:bg-green-800` ao componente `Badge`.
+Você pode personalizar as cores de um badge adicionando classes como `bg-green-50 dark:bg-green-800` ao componente `Badge`.
 
 <ComponentPreview name="badge-colors" />
 
-## Referencia da API
+## Referência da API
 
 ### Badge
 
-O componente `Badge` exibe um badge ou um componente que se parece com um badge.
+O componente `Badge` exibe um badge ou um componente que se parece com um badge. Renderiza um `<span>` por padrão.
 
-| Prop        | Type                                                                          | Default     |
+| Prop        | Tipo                                                                          | Padrão      |
 | ----------- | ----------------------------------------------------------------------------- | ----------- |
 | `variant`   | `"default" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "link"` | `"default"` |
+| `render`    | `React.ReactElement \| (props, state) => React.ReactElement`                  | -           |
 | `className` | `string`                                                                      | -           |
+
+O badge expõe `data-slot="badge"` e `data-variant` no DOM. A prop `render` segue o padrão do [`useRender` do Base UI](https://base-ui.com/react/utils/use-render).
+
+## Migrando da v2
+
+- **`asChild` foi removida.** Use `render` para trocar o elemento.
+- **Seletores de hover de link**: passaram de `[a&]:hover` para `[a]:hover`. Em `ghost` e `link` o hover agora vale sempre.
+- **Visual**: altura fixa `h-5`, texto `text-[0.625rem]` e ícone forçado em `size-2.5`. A variante `destructive` ficou tonal (`bg-destructive/10 text-destructive`) e `outline` ganhou `bg-input/20`.
+
+```tsx
+// v2
+<Badge asChild>
+  <a href="/pedidos">Pedidos</a>
+</Badge>
+
+// v3
+<Badge render={<a href="/pedidos" />}>Pedidos</Badge>
+```

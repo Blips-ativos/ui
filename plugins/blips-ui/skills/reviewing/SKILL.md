@@ -16,6 +16,33 @@ fixes contrários ao padrão. **Um review sem os fatos é pior que nenhum review
 
 **Anuncie ao começar:** "Usando blips-ui:reviewing para validar o trabalho de UI."
 
+## Detecção de versão (antes de qualquer achado de API)
+
+A `@blips/ui` tem duas linhas com APIs diferentes. Revise cada repo contra a **sua** trilha:
+
+1. Leia `node_modules/@blips/ui/package.json`: `dependencies` com `@base-ui/react` →
+   **v3.x — Base UI**; com `@radix-ui/*` → **v2.x — Radix**.
+2. Sem `node_modules`: `version` instalada ou `package.json` do app →
+   `dependencies["@blips/ui"]`. `2.x` → v2.x; `3.x` → v3.x.
+3. O `check.mjs` faz isso e devolve `blipsUi.track` (`"v2"`, `"v3"` ou `null`). Com `null`,
+   pergunte ou declare a suposição no relatório antes dos achados de API.
+
+Nunca aplique regra de uma trilha no repo da outra: `asChild` é o certo na v2.x e erro na
+v3.x; `render={<El />}` é o certo na v3.x e erro na v2.x.
+
+### Checagens por versão (`references/component-standards.md` §API da versão)
+
+| Achado | Repo v3.x — Base UI | Repo v2.x — Radix |
+|---|---|---|
+| `asChild` em componente da lib | **erro (bloqueante)** — usar `render` | correto |
+| `render={<El />}` em componente da lib | correto | **erro (bloqueante)** — usar `asChild` |
+| `data-[state=open\|closed\|checked…]` em className | **aviso** — usar `data-open`/`data-checked`/`data-popup-open` (exceto `data-state=selected` do TableRow e `expanded/collapsed` da Sidebar) | correto |
+| `data-open:`/`data-checked:` em className | correto | **aviso** — Radix emite `data-[state=…]` |
+| Ícone Phosphor sem sufixo (`CaretDown`) | **aviso** — usar `CaretDownIcon` (sem sufixo é `@deprecated`) | aceito (com sufixo também) |
+| `delayDuration`, `Separator decorative`, `checked="indeterminate"` | **erro (bloqueante)** — props removidas | correto |
+| Import de componente só-v3 (`toast`, `item`, `combobox`…) | correto | **erro (bloqueante)** — não existe |
+| `AlertDialogAction` sem fechar no `onClick` (controlado) | **aviso** — não fecha sozinho | correto (fecha sozinho) |
+
 ## Regra de ouro (anti-inversão)
 
 Antes de classificar QUALQUER achado sobre imports, tokens, tema ou contrato
@@ -33,11 +60,14 @@ dúvida, no próprio `node_modules/@blips/ui/src/`).
 ## Checklist (crie um todo por item)
 
 1. **Definir o escopo** — o que revisar: diff da feature, diretórios tocados
-   ou app inteiro (pergunte se ambíguo). Detecte a versão do React.
+   ou app inteiro (pergunte se ambíguo). Detecte a versão do React **e a trilha da
+   `@blips/ui`** (v2.x Radix × v3.x Base UI — seção acima).
 2. **Rodar o check mecânico** — `node <skill>/scripts/check.mjs <dir-do-app>`
    (determinístico: imports, lucide, tailwind.config, tokens copiados/hardcoded,
    `hsl(var(`, Intl sem locale, Dialog sem Title, icon-button sem label, deps
-   fantasmas). Saída JSON; trate cada item como candidato confirmado.
+   fantasmas e, conforme `blipsUi.track`, a dimensão `api-versao` — `asChild`/`render`,
+   `data-state`, sufixo `Icon`, props removidas, componentes só-v3). Saída JSON; trate
+   cada item como candidato confirmado (os `verify:true` pedem confirmação).
 3. **Despachar o revisor de julgamento** — subagente com o prompt
    `agents/ui-reviewer.md`, apontando o escopo e as references. Cobre o que
    grep não pega: estados de query, anatomia de empty state, ordem de hooks,
@@ -58,10 +88,10 @@ reference da dimensão que está revisando ANTES do código.
 
 | Dimensão | Reference | Cobre |
 | --- | --- | --- |
-| Fatos da lib | `references/lib-facts.md` | exports/imports por React, tokens do tema, deps embutidas |
-| Construção | `references/component-standards.md` | extração, estado derivado, ordem de hooks, composição, **completude de código**, **proximidade/agrupamento (Leis de UX)**, estrutura de página |
+| Fatos da lib | `references/lib-facts.md` | trilhas v2.x/v3.x, exports/imports por React, tokens do tema, deps embutidas |
+| Construção | `references/component-standards.md` | extração, estado derivado, ordem de hooks, composição, **API da versão (v2.x × v3.x)**, **completude de código**, **proximidade/agrupamento (Leis de UX)**, estrutura de página |
 | Estados de UI | `references/ui-states.md` | loading/empty/erro/mutação; thresholds de loading, retry, matriz ARIA/foco |
-| Acessibilidade | `references/accessibility.md` | mínimos que o Radix não cobre; target size, foco, contraste, rótulos |
+| Acessibilidade | `references/accessibility.md` | mínimos que a primitiva (Radix/Base UI) não cobre; target size, foco, contraste, rótulos |
 | Tipografia | `references/typography.md` | 3 pesos, medida, tracking, hierarchy lint, editorial |
 | Formulários | `references/forms.md` | máquina de estados de validação, timing, RHF+Zod, nunca-resetar |
 | Movimento | `references/motion.md` | durações, transform/opacity, reduced-motion, loops/WCAG |
@@ -69,8 +99,8 @@ reference da dimensão que está revisando ANTES do código.
 | Anti-genérico | `references/anti-slop.md` | "AI slop" P0/P1/P2: hexes banidos, emoji-ícone, fórmula 80/20 |
 
 O `scripts/check.mjs` cobre o subconjunto **auto-verificável** dessas dimensões
-(imports, ícones, tailwind, formatação, a11y, anti-slop, tipografia, motion,
-construção). O revisor de julgamento cobre o resto.
+(imports, ícones, api-versao, tailwind, formatação, a11y, anti-slop, tipografia,
+motion, construção). O revisor de julgamento cobre o resto.
 
 ### Dois modos de review
 
@@ -85,6 +115,7 @@ construção). O revisor de julgamento cobre o resto.
 
 ```
 ## Review de UI — <escopo>
+Trilha da @blips/ui: <v2.x — Radix | v3.x — Base UI> (versão <x.y.z>)
 
 ### Violações dos padrões Blips
 | # | Arquivo | Violação | Regra (reference) | Severidade | Correção |
@@ -101,6 +132,8 @@ as violações; é informação útil, não gate)
 ## Red flags do PRÓPRIO review — pare e releia as references
 
 - Recomendar barrel em React 18/19 (ou subpath em 17)
+- Aplicar regra da trilha errada: pedir `render` num repo v2.x ou `asChild` num v3.x;
+  reportar `data-state="selected"` (TableRow) ou `collapsed` (Sidebar) como violação na v3.x
 - Afirmar que um token/export "não existe" sem checar lib-facts
 - Sugerir `@source`, copiar/"completar" tokens, ou criar token que já existe
 - Severidade inventada em vez da do padrão

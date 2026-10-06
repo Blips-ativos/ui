@@ -1,11 +1,22 @@
-"use client";
-import { Label } from "@blips/ui/components/label";
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "@blips/ui/components/field";
 import { Textarea } from "@blips/ui/components/textarea";
+
 export default function TextareaWithLabel() {
   return (
-    <div className="grid w-full gap-1.5">
-      <Label htmlFor="message">Your message</Label>
-      <Textarea placeholder="Type your message here." id="message" />
-    </div>
+    <Field className="max-w-sm">
+      <FieldLabel htmlFor="textarea-demo-message">Mensagem</FieldLabel>
+      <Textarea
+        id="textarea-demo-message"
+        placeholder="Digite sua mensagem aqui."
+        rows={6}
+      />
+      <FieldDescription>
+        Digite sua mensagem e pressione Enter para enviar.
+      </FieldDescription>
+    </Field>
   );
 }

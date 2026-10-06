@@ -5,12 +5,21 @@ Procedimento verificado em Vite 7 com React 19 e React 17.
 ## 1. Instalar
 
 ```bash
-pnpm add @blips/ui @phosphor-icons/react
+# instalação nova → v3.x (Base UI)
+pnpm add @blips/ui@^3 @phosphor-icons/react
 pnpm add -D tailwindcss @tailwindcss/vite
 ```
 
+Repo que **já está na v2.x** (Radix): mantenha a major — `pnpm add @blips/ui@^2`. Subir de
+2.x para 3.x é migração de API (`asChild` → `render`, `data-state` → `data-open`…), não
+parte da instalação. Detecção de trilha no `SKILL.md`.
+
 `@phosphor-icons/react` como dep direta porque o app importa ícones. Para
 formulários, adicione `react-hook-form zod @hookform/resolvers`.
+
+Gráficos importam `recharts` direto: adicione-o **na mesma major da lib** —
+`pnpm add recharts@^3` na v3.x, `pnpm add recharts@2.15.4` na v2.x. Nada muda no peer do
+React (`^17 || ^18 || ^19` nas duas).
 
 Aviso esperado do pnpm 10: "Ignored build scripts: esbuild" — inofensivo (o
 binário vem por optionalDependencies). Em projetos React 17, peer warnings de
@@ -59,7 +68,7 @@ Opcional (perf): preconnect das fontes no `index.html`:
 ```tsx
 import { Button } from "@blips/ui/components/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@blips/ui/components/card";
-import { Plus } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
 
 export function App() {
   return (
@@ -70,7 +79,7 @@ export function App() {
         </CardHeader>
         <CardContent>
           <Button>
-            <Plus />
+            <PlusIcon data-icon="inline-start" />
             Novo cliente
           </Button>
         </CardContent>
@@ -79,6 +88,10 @@ export function App() {
   );
 }
 ```
+
+`data-icon="inline-start"` ajusta o padding do ícone no Button da **v3.x**; na **v2.x** o
+atributo é ignorado (o Button ajusta sozinho) — o exemplo funciona nas duas. Ícones com
+sufixo `Icon` existem no Phosphor 2.1.10 das duas trilhas.
 
 ## React 17 (legado)
 

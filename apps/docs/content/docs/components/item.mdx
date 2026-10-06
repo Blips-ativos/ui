@@ -1,0 +1,120 @@
+---
+title: Item
+description: Linha versátil com mídia, título, descrição e ações, para listas de configurações, pessoas, arquivos e afins.
+---
+
+<ComponentPreview name="item-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from "@blips/ui/components/item"
+```
+
+```tsx
+<Item variant="outline">
+  <ItemMedia variant="icon">
+    <ShieldCheckIcon />
+  </ItemMedia>
+  <ItemContent>
+    <ItemTitle>Autenticação em dois fatores</ItemTitle>
+    <ItemDescription>Proteja a conta com um segundo passo.</ItemDescription>
+  </ItemContent>
+  <ItemActions>
+    <Button size="sm">Ativar</Button>
+  </ItemActions>
+</Item>
+```
+
+## Item ou Field?
+
+Use o [Field](/docs/components/field) para rótulo, descrição e erro de um controle de formulário. Use o `Item` para exibir conteúdo, como uma lista de pessoas, notificações ou arquivos, com ações ao lado.
+
+## Exemplos
+
+### Variantes
+
+<ComponentPreview name="item-variants" />
+
+### Tamanhos
+
+<ComponentPreview name="item-size" />
+
+### Link
+
+Use `render` para que o item inteiro seja um link. O hover vem de graça.
+
+<ComponentPreview name="item-link" />
+
+```tsx
+<Item render={<a href="/docs" />}>
+  <ItemContent>
+    <ItemTitle>Visitar a documentação</ItemTitle>
+  </ItemContent>
+</Item>
+```
+
+Com o `Link` do Next.js: `<Item render={<Link href="/docs" />}>…</Item>`.
+
+### Grupo e separador
+
+`ItemGroup` empilha itens com `role="list"`; `ItemSeparator` divide-os com uma linha.
+
+<ComponentPreview name="item-group" />
+
+### Cabeçalho e rodapé
+
+`ItemHeader` e `ItemFooter` ocupam a largura toda, acima e abaixo do conteúdo.
+
+<ComponentPreview name="item-header-footer" />
+
+### Imagem
+
+`ItemMedia variant="image"` recorta a imagem num quadrado de cantos arredondados.
+
+<ComponentPreview name="item-image" />
+
+## Referência da API
+
+### Item
+
+| Prop      | Type                                | Default     |
+| --------- | ----------------------------------- | ----------- |
+| `variant` | `"default" \| "outline" \| "muted"` | `"default"` |
+| `size`    | `"default" \| "sm" \| "xs"`         | `"default"` |
+| `render`  | `ReactElement`                      | `<div>`     |
+
+### ItemMedia
+
+| Prop      | Type                             | Default     |
+| --------- | -------------------------------- | ----------- |
+| `variant` | `"default" \| "icon" \| "image"` | `"default"` |
+
+### ItemGroup
+
+`div` com `role="list"`. O espaçamento entre itens diminui quando eles usam `size="sm"` ou `size="xs"`.
+
+### ItemSeparator
+
+Um [Separator](/docs/components/separator) horizontal com margem vertical.
+
+### ItemContent, ItemTitle, ItemDescription, ItemActions, ItemHeader, ItemFooter
+
+Partes de layout. Aceitam as props do elemento HTML correspondente (`div`, ou `p` no `ItemDescription`). O título é cortado em uma linha e a descrição em duas.

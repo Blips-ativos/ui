@@ -7,7 +7,12 @@ export {
 } from "./components/accordion";
 
 // Alert
-export { Alert, AlertDescription, AlertTitle } from "./components/alert";
+export {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "./components/alert";
 
 // Alert Dialog
 export {
@@ -96,6 +101,7 @@ export {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  useCarousel,
 } from "./components/carousel";
 // Chart
 export {
@@ -189,6 +195,7 @@ export {
   DrawerHeader,
   DrawerOverlay,
   DrawerPortal,
+  DrawerSwipeHandle,
   DrawerTitle,
   DrawerTrigger,
 } from "./components/drawer";
@@ -345,6 +352,7 @@ export {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
+  NavigationMenuPositioner,
   NavigationMenuTrigger,
   NavigationMenuViewport,
   navigationMenuTriggerStyle,
@@ -370,7 +378,13 @@ export {
   PopoverTrigger,
 } from "./components/popover";
 // Progress
-export { Progress } from "./components/progress";
+export {
+  Progress,
+  ProgressIndicator,
+  ProgressLabel,
+  ProgressTrack,
+  ProgressValue,
+} from "./components/progress";
 // Questionnaire
 export {
   Questionnaire,

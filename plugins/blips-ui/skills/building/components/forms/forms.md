@@ -13,11 +13,16 @@ Guide for creating forms with react-hook-form, Zod validation, and the project's
 
 | Resource | File | When to use |
 |----------|------|-------------|
-| Zod Schemas | [schemas-reference.md](schemas-reference.md) | Validations, types, regex |
-| UI Components | [components-reference.md](components-reference.md) | Input, Select, Switch, Textarea |
-| Input Masks | [masks-reference.md](masks-reference.md) | CPF, CNPJ, phone, currency |
-| File Upload | [upload-reference.md](upload-reference.md) | Upload with drag-and-drop |
-| Form Arrays | [arrays-reference.md](arrays-reference.md) | Dynamic field lists |
+| Zod Schemas | [schemas.md](schemas.md) | Validations, types, regex |
+| UI Components | [form-components.md](form-components.md) | Input, Select, Switch, Textarea |
+| Input Masks | [masks.md](masks.md) | CPF, CNPJ, phone, currency |
+| File Upload | [upload.md](upload.md) | Upload with drag-and-drop |
+| Form Arrays | [arrays.md](arrays.md) | Dynamic field lists |
+
+> **Versão da lib:** react-hook-form, Zod, `Form`/`FormField`/`FormItem`/`FormLabel`/
+> `FormControl`/`FormMessage` têm o mesmo uso na v2.x e na v3.x. O que muda (trigger do Sheet,
+> `Select`, densidade) está em [v3.x — Base UI](#v3x--base-ui) e [v2.x — Radix](#v2x--radix).
+> Detecção de versão: Passo 0 do `SKILL.md` do building.
 
 ---
 
@@ -89,8 +94,8 @@ export function EntityForm({ formRef, defaultValues, onSubmit }: EntityFormProps
 O `formRef` permite que o botão de submit fique fora do `<form>`:
 
 ```typescript
-// Componente pai (Sheet)
-export function EntityCreateSheet({ children }: Props) {
+// Componente pai (Sheet) — v3.x; na v2.x o trigger usa asChild (ver seção v2.x)
+export function EntityCreateSheet({ children }: { children: React.ReactElement }) {
   const formRef = React.useRef<HTMLFormElement>(null)
   const [open, setOpen] = React.useState(false)
 
@@ -103,7 +108,7 @@ export function EntityCreateSheet({ children }: Props) {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>{children}</SheetTrigger>
+      <SheetTrigger render={children} />
       <SheetContent>
         <SheetHeader>
           <SheetTitle>Criar Entidade</SheetTitle>
@@ -116,7 +121,7 @@ export function EntityCreateSheet({ children }: Props) {
         <SheetFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
           <Button onClick={() => formRef.current?.requestSubmit()} disabled={isPending}>
-            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {isPending && <Spinner data-icon="inline-start" />}
             Salvar
           </Button>
         </SheetFooter>
@@ -151,9 +156,42 @@ export function EntityCreateSheet({ children }: Props) {
 
 ---
 
+## v3.x — Base UI
+
+- Trigger do Sheet recebendo um elemento do pai: `<SheetTrigger render={children} />`
+  (`children: React.ReactElement`). Se o pai mandar um `<Button>`, ele vira o trigger.
+- `FormControl` usa `useRender` + `mergeProps`: aceita um filho (`<FormControl><Input /></FormControl>`)
+  ou `render` (`<FormControl render={<Input />} />`). Um `id` no filho sobrescreve o do campo e
+  quebra o `htmlFor` do `FormLabel`: não passe `id` no input.
+- `FormDescription`/`FormMessage` em `text-xs/relaxed` (densidade base-mira).
+- `Spinner` (`@blips/ui/components/spinner`) com `data-icon="inline-start"` dentro do Button.
+- `Select` precisa de `items` para mostrar o rótulo antes de abrir — ver `form-components.md`.
+
+## v2.x — Radix
+
+```tsx
+export function EntityCreateSheet({ children }: { children: React.ReactNode }) {
+  // ...
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
+      {/* ... */}
+      <Button onClick={() => formRef.current?.requestSubmit()} disabled={isPending}>
+        {isPending && <Spinner />}
+        Salvar
+      </Button>
+    </Sheet>
+  )
+}
+```
+
+- `FormControl` usa o `Slot` do Radix (um único filho elemento; sem `render`).
+- `FormDescription`/`FormMessage` em `text-sm`.
+
+---
+
 ## Arquivos de Referência
 
 - `packages/ui/src/components/form.tsx`
 - `packages/ui/src/components/sheet.tsx`
-- `packages/ui/src/hooks/use-file-upload.ts`
 - Máscaras de input: utilitário do seu app (ver [masks.md](masks.md))

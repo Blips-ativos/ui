@@ -2,6 +2,10 @@
 
 Instalação e configuração inicial do data-table.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Dependências](#dependências)
@@ -12,6 +16,8 @@ Instalação e configuração inicial do data-table.
 - [Componentes Base Reutilizáveis](#componentes-base-reutilizáveis)
 - [Configuração Inicial da Tabela](#configuração-inicial-da-tabela)
 - [Checklist de Setup](#checklist-de-setup)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Dependências
 
@@ -175,7 +181,7 @@ O componente extrai o título de `meta.title`, garantindo consistência com o me
 "use client";
 
 import { Column } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, CaretUpDown, EyeSlash } from "@phosphor-icons/react";
+import { ArrowDownIcon, ArrowUpIcon, CaretUpDownIcon, EyeSlashIcon } from "@phosphor-icons/react";
 
 import { cn } from "@blips/ui/lib/utils";
 import { Button } from "@blips/ui/components/button";
@@ -206,36 +212,38 @@ export function DataTableColumnHeader<TData, TValue>({
   return (
     <div className={cn("flex items-center space-x-2", className)}>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="-ml-3 h-8 data-[state=open]:bg-accent"
-          >
-            <span>{title}</span>
-            {column.getIsSorted() === "desc" ? (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : (
-              <CaretUpDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              size="sm"
+              className="-ml-3 h-8 data-popup-open:bg-accent"
+            />
+          }
+        >
+          <span>{title}</span>
+          {column.getIsSorted() === "desc" ? (
+            <ArrowDownIcon className="ml-2 h-4 w-4" />
+          ) : column.getIsSorted() === "asc" ? (
+            <ArrowUpIcon className="ml-2 h-4 w-4" />
+          ) : (
+            <CaretUpDownIcon className="ml-2 h-4 w-4" />
+          )}
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-            <ArrowUp className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+            <ArrowUpIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Crescente
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-            <ArrowDown className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+            <ArrowDownIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
             Decrescente
           </DropdownMenuItem>
           {column.getCanHide() && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-                <EyeSlash className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
+                <EyeSlashIcon className="mr-2 h-3.5 w-3.5 text-muted-foreground/70" />
                 Ocultar
               </DropdownMenuItem>
             </>
@@ -255,10 +263,10 @@ export function DataTableColumnHeader<TData, TValue>({
 
 import { Table } from "@tanstack/react-table";
 import {
-  CaretLeft,
-  ChevronRight,
-  CaretDoubleLeft,
-  CaretDoubleRight,
+  CaretLeftIcon,
+  CaretRightIcon,
+  CaretDoubleLeftIcon,
+  CaretDoubleRightIcon,
 } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
@@ -322,7 +330,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Primeira página</span>
-            <CaretDoubleLeft className="h-4 w-4" />
+            <CaretDoubleLeftIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -331,7 +339,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Página anterior</span>
-            <CaretLeft className="h-4 w-4" />
+            <CaretLeftIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -340,7 +348,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Próxima página</span>
-            <ChevronRight className="h-4 w-4" />
+            <CaretRightIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -349,7 +357,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Última página</span>
-            <CaretDoubleRight className="h-4 w-4" />
+            <CaretDoubleRightIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -367,13 +375,14 @@ O componente usa `meta.title` para exibir o nome da coluna no menu, garantindo c
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { GearSix } from "@phosphor-icons/react";
+import { GearSixIcon } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -388,14 +397,16 @@ export function DataTableViewOptions<TData>({
 }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-auto h-8 lg:flex">
-          <GearSix className="mr-2 h-4 w-4" />
-          Colunas
-        </Button>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" size="sm" className="ml-auto h-8 lg:flex" />}
+      >
+        <GearSixIcon className="mr-2 h-4 w-4" />
+        Colunas
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[180px]">
-        <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -467,3 +478,44 @@ const table = useReactTable({
 - [ ] Definir tipos de dados
 - [ ] Criar arquivo de colunas
 - [ ] Criar componente da tabela
+
+## v3.x — Base UI
+
+- Cabeçalho ordenável: `DropdownMenuTrigger render={<Button … className="-ml-3 h-8 data-popup-open:bg-accent" />}`.
+- View options: `DropdownMenuLabel` dentro de `DropdownMenuGroup`;
+  `DropdownMenuCheckboxItem onCheckedChange={(value) => column.toggleVisibility(!!value)}`
+  (recebe `(checked, eventDetails)`; o indicador fica à direita).
+- Paginação: `Select` de tamanho de página funciona sem `items` porque rótulo e `value` são o
+  mesmo número; `SelectContent` sobrepõe o trigger por padrão (`alignItemWithTrigger`).
+
+## v2.x — Radix
+
+```tsx
+// Cabeçalho ordenável
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost" size="sm" className="-ml-3 h-8 data-[state=open]:bg-accent">
+      <span>{title}</span>
+      <CaretUpDown className="ml-2 h-4 w-4" />
+    </Button>
+  </DropdownMenuTrigger>
+  {/* ... */}
+</DropdownMenu>
+
+// View options
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline" size="sm" className="ml-auto h-8 lg:flex">
+      <GearSix className="mr-2 h-4 w-4" />
+      Colunas
+    </Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end" className="w-[150px]">
+    <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    {/* DropdownMenuCheckboxItem: indicador à esquerda, onCheckedChange(checked) */}
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+- `SelectContent position="popper"` se quiser o popup abaixo do trigger.

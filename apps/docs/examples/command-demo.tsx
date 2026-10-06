@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Command,
   CommandEmpty,
@@ -9,49 +11,49 @@ import {
   CommandShortcut,
 } from "@blips/ui/components/command";
 import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Gear,
-  Smiley,
-  User,
+  CalculatorIcon,
+  CalendarBlankIcon,
+  CreditCardIcon,
+  GearIcon,
+  SmileyIcon,
+  UserIcon,
 } from "@phosphor-icons/react";
 
 export default function CommandDemo() {
   return (
-    <Command className="rounded-lg border shadow-md md:min-w-[450px]">
-      <CommandInput placeholder="Type a command or search..." />
+    <Command className="rounded-xl shadow-md ring-1 ring-foreground/10 md:min-w-[450px]">
+      <CommandInput placeholder="Digite um comando ou pesquise..." />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Suggestions">
+        <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+        <CommandGroup heading="Sugestões">
           <CommandItem>
-            <Calendar />
-            <span>Calendar</span>
+            <CalendarBlankIcon />
+            <span>Calendário</span>
           </CommandItem>
           <CommandItem>
-            <Smiley />
-            <span>MagnifyingGlass Emoji</span>
+            <SmileyIcon />
+            <span>Buscar emoji</span>
           </CommandItem>
           <CommandItem disabled>
-            <Calculator />
-            <span>Calculator</span>
+            <CalculatorIcon />
+            <span>Calculadora</span>
           </CommandItem>
         </CommandGroup>
         <CommandSeparator />
-        <CommandGroup heading="Gear">
+        <CommandGroup heading="Configurações">
           <CommandItem>
-            <User />
-            <span>Profile</span>
+            <UserIcon />
+            <span>Perfil</span>
             <CommandShortcut>⌘P</CommandShortcut>
           </CommandItem>
           <CommandItem>
-            <CreditCard />
-            <span>Billing</span>
+            <CreditCardIcon />
+            <span>Faturamento</span>
             <CommandShortcut>⌘B</CommandShortcut>
           </CommandItem>
           <CommandItem>
-            <Gear />
-            <span>Gear</span>
+            <GearIcon />
+            <span>Configurações</span>
             <CommandShortcut>⌘S</CommandShortcut>
           </CommandItem>
         </CommandGroup>

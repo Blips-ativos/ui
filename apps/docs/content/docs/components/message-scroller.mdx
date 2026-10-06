@@ -1,0 +1,112 @@
+---
+title: Message Scroller
+description: Lista rolável de mensagens que acompanha a resposta enquanto ela chega e oferece um botão para voltar ao fim.
+---
+
+<ComponentPreview name="message-scroller-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+O primitivo vem de `@shadcn/react/message-scroller`, que já é dependência da `@blips/ui`.
+
+## Uso
+
+```tsx
+import {
+  MessageScroller,
+  MessageScrollerButton,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerProvider,
+  MessageScrollerViewport,
+} from "@blips/ui/components/message-scroller"
+```
+
+```tsx
+<MessageScrollerProvider autoScroll>
+  <MessageScroller>
+    <MessageScrollerViewport>
+      <MessageScrollerContent>
+        {messages.map((message) => (
+          <MessageScrollerItem
+            key={message.id}
+            messageId={message.id}
+            scrollAnchor={message.role === "user"}
+          >
+            {/* <Message> … */}
+          </MessageScrollerItem>
+        ))}
+      </MessageScrollerContent>
+    </MessageScrollerViewport>
+    <MessageScrollerButton />
+  </MessageScroller>
+</MessageScrollerProvider>
+```
+
+O `MessageScroller` ocupa toda a altura do pai (`size-full`), então o pai precisa ter altura definida e `overflow-hidden`, como o `CardContent` com `min-h-0 flex-1` da demo.
+
+## Exemplos
+
+### Botões de rolagem
+
+`MessageScrollerButton` aparece só quando há conteúdo além da borda. Use `direction="start"` para voltar ao começo e `direction="end"` (padrão) para ir ao fim.
+
+<ComponentPreview name="message-scroller-button" />
+
+### Rolar por código
+
+Dentro do `MessageScrollerProvider`, o hook `useMessageScroller()` devolve `scrollToEnd`, `scrollToStart` e `scrollToMessage(messageId)`. Também existem `useMessageScrollerScrollable()` (se há conteúdo antes ou depois da área visível) e `useMessageScrollerVisibility()` (quais mensagens estão visíveis).
+
+```tsx
+function IrParaMensagem({ id }: { id: string }) {
+  const { scrollToMessage } = useMessageScroller()
+  return <Button onClick={() => scrollToMessage(id)}>Ver mensagem</Button>
+}
+```
+
+## Referência da API
+
+### MessageScrollerProvider
+
+| Prop                     | Type                                | Default |
+| ------------------------ | ----------------------------------- | ------- |
+| `autoScroll`             | `boolean`                           |         |
+| `defaultScrollPosition`  | `"start" \| "end" \| "last-anchor"` |         |
+| `scrollEdgeThreshold`    | `number`                            |         |
+| `scrollPreviousItemPeek` | `number`                            |         |
+| `scrollMargin`           | `number`                            |         |
+
+Com `autoScroll`, a lista fica presa no fim enquanto o conteúdo cresce, até a pessoa rolar para cima.
+
+### MessageScrollerViewport
+
+Elemento que rola. Aceita as props de `div` e `preserveScrollOnPrepend`, que mantém a posição ao carregar mensagens antigas no topo.
+
+### MessageScrollerContent
+
+Coluna das mensagens (`gap-6`). Aceita as props de `div` e `spacerClassName`.
+
+### MessageScrollerItem
+
+| Prop           | Type      | Default |
+| -------------- | --------- | ------- |
+| `messageId`    | `string`  |         |
+| `scrollAnchor` | `boolean` | `false` |
+
+Marque com `scrollAnchor` as mensagens que devem ancorar a rolagem, em geral as da pessoa usuária: ao enviar, a pergunta sobe para o topo e a resposta aparece embaixo.
+
+### MessageScrollerButton
+
+| Prop        | Type               | Default       |
+| ----------- | ------------------ | ------------- |
+| `direction` | `"start" \| "end"` | `"end"`       |
+| `variant`   | variantes do `Button` | `"secondary"` |
+| `size`      | tamanhos do `Button`  | `"icon-sm"`   |
+| `behavior`  | `ScrollBehavior`   |               |
+| `render`    | `ReactElement`     | `<Button />`  |
+
+Sem `children`, renderiza um `ArrowDownIcon` (girado para `direction="start"`) e um texto só para leitores de tela.

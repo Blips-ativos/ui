@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@blips/ui/components/button";
 import { Input } from "@blips/ui/components/input";
 import { Label } from "@blips/ui/components/label";
@@ -19,8 +20,8 @@ import {
 export default function SheetSections() {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Editar empreendimento</Button>
+      <SheetTrigger render={<Button variant="outline" />}>
+        Editar empreendimento
       </SheetTrigger>
       <SheetContent className="sm:data-[side=right]:max-w-lg">
         <SheetHeader>
@@ -66,11 +67,9 @@ export default function SheetSections() {
           </SheetSection>
         </SheetBody>
         <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Salvar alterações</Button>
-          </SheetClose>
-          <SheetClose asChild>
-            <Button variant="outline">Cancelar</Button>
+          <Button type="submit">Salvar alterações</Button>
+          <SheetClose render={<Button variant="outline" />}>
+            Cancelar
           </SheetClose>
         </SheetFooter>
       </SheetContent>

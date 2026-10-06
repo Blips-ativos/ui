@@ -1,5 +1,8 @@
 # Componentes Base da Sidebar
 
+> Exemplos na **v3.x — Base UI**. Para repo **v2.x — Radix**, veja a seção
+> [v2.x — Radix](#v2x--radix) no fim (detecção de versão: Passo 0 do `SKILL.md` do building).
+
 ## Table of Contents
 
 - [SidebarProvider](#sidebarprovider)
@@ -13,6 +16,8 @@
 - [SidebarRail](#sidebarrail)
 - [SidebarInset](#sidebarinset)
 - [useSidebar Hook](#usesidebar-hook)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## SidebarProvider
 
@@ -155,16 +160,14 @@ Header sticky no topo da sidebar.
   <SidebarHeader className="border-b border-sidebar-border">
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton size="lg" asChild>
-          <Link href="/">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <PanelLeft className="size-4" />
-            </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">App Name</span>
-              <span className="truncate text-xs text-muted-foreground">Admin</span>
-            </div>
-          </Link>
+        <SidebarMenuButton size="lg" render={<Link href="/" />}>
+          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <SidebarSimpleIcon className="size-4" />
+          </div>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold">App Name</span>
+            <span className="truncate text-xs text-muted-foreground">Admin</span>
+          </div>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
@@ -179,13 +182,11 @@ Header sticky no topo da sidebar.
   <SidebarMenu>
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton>
-            Select Workspace
-            <ChevronDown className="ml-auto" />
-          </SidebarMenuButton>
+        <DropdownMenuTrigger render={<SidebarMenuButton />}>
+          Select Workspace
+          <CaretDownIcon className="ml-auto" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-[--radix-popper-anchor-width]">
+        <DropdownMenuContent>{/* v3.x: já usa w-(--anchor-width) */}
           <DropdownMenuItem>Workspace 1</DropdownMenuItem>
           <DropdownMenuItem>Workspace 2</DropdownMenuItem>
         </DropdownMenuContent>
@@ -206,17 +207,15 @@ Footer sticky no bottom da sidebar.
   <SidebarMenu>
     <SidebarMenuItem>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton size="lg">
-            <div className="flex size-8 items-center justify-center rounded-full bg-sidebar-accent">
-              <span>JD</span>
-            </div>
-            <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-semibold">John Doe</span>
-              <span className="truncate text-xs text-muted-foreground">john@example.com</span>
-            </div>
-            <MoreVertical className="ml-auto size-4" />
-          </SidebarMenuButton>
+        <DropdownMenuTrigger render={<SidebarMenuButton size="lg" />}>
+          <div className="flex size-8 items-center justify-center rounded-full bg-sidebar-accent">
+            <span>JD</span>
+          </div>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold">John Doe</span>
+            <span className="truncate text-xs text-muted-foreground">john@example.com</span>
+          </div>
+          <DotsThreeVerticalIcon className="ml-auto size-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent side="top" align="end" sideOffset={8}>
           <DropdownMenuItem>Account</DropdownMenuItem>
@@ -255,7 +254,7 @@ Seção dentro do SidebarContent.
 <SidebarGroup>
   <SidebarGroupLabel>Application</SidebarGroupLabel>
   <SidebarGroupAction title="Add Project">
-    <Plus /> <span className="sr-only">Add Project</span>
+    <PlusIcon /> <span className="sr-only">Add Project</span>
   </SidebarGroupAction>
   <SidebarGroupContent>
     <SidebarMenu>
@@ -270,11 +269,9 @@ Seção dentro do SidebarContent.
 ```tsx
 <Collapsible defaultOpen className="group/collapsible">
   <SidebarGroup>
-    <SidebarGroupLabel asChild>
-      <CollapsibleTrigger>
-        Help
-        <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-      </CollapsibleTrigger>
+    <SidebarGroupLabel render={<CollapsibleTrigger />}>
+      Help
+      <CaretDownIcon className="ml-auto transition-transform group-data-open/collapsible:rotate-180" />
     </SidebarGroupLabel>
     <CollapsibleContent>
       <SidebarGroupContent>
@@ -407,3 +404,52 @@ export function AppSidebar() {
   );
 }
 ```
+
+---
+
+## v3.x — Base UI
+
+- `SidebarProvider` não envolve os filhos em `TooltipProvider`. Para tooltips instantâneos no
+  modo ícone: `<TooltipProvider delay={0}><SidebarProvider>…</SidebarProvider></TooltipProvider>`.
+- `SidebarTrigger`: `Button variant="ghost" size="icon-sm"` com `SidebarIcon`.
+- `Sidebar` aceita `dir` (repassado ao `SheetContent` no mobile).
+- `DropdownMenuContent` já ocupa a largura do trigger (`w-(--anchor-width)`).
+- `SidebarGroupLabel render={<CollapsibleTrigger />}` e seta com `group-data-open/collapsible:`.
+- Os atributos próprios da sidebar continuam iguais: `data-state="expanded" | "collapsed"`,
+  `data-collapsible`, `data-variant`, `data-side`. Seletores como
+  `group-data-[collapsible=icon]:hidden` e `peer-data-[state=collapsed]:` seguem válidos.
+
+## v2.x — Radix
+
+```tsx
+{/* Header com dropdown: largura do trigger via var do Radix */}
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <SidebarMenuButton>
+      Select Workspace
+      <CaretDown className="ml-auto" />
+    </SidebarMenuButton>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent className="w-(--radix-dropdown-menu-trigger-width)">
+    <DropdownMenuItem>Workspace 1</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+{/* Group collapsible */}
+<Collapsible defaultOpen className="group/collapsible">
+  <SidebarGroup>
+    <SidebarGroupLabel asChild>
+      <CollapsibleTrigger>
+        Help
+        <CaretDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+      </CollapsibleTrigger>
+    </SidebarGroupLabel>
+    <CollapsibleContent>{/* ... */}</CollapsibleContent>
+  </SidebarGroup>
+</Collapsible>
+```
+
+- `SidebarProvider` já fornece `TooltipProvider delayDuration={0}`.
+- `SidebarTrigger`: `size="icon"` + `size-7`, ícone `SidebarSimple`.
+- Header/footer com `SidebarMenuButton` como link: `asChild` + `<Link>` filho (ver `menu.md`).
+

@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "../lib/utils";
-import * as RechartsPrimitive from "recharts";
 import type { TooltipValueType } from "recharts";
+import * as RechartsPrimitive from "recharts";
+import { cn } from "../lib/utils";
 
 // Formato: { NOME_DO_TEMA: SELETOR_CSS }
 const THEMES = { light: "", dark: ".dark" } as const;

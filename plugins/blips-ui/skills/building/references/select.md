@@ -2,85 +2,59 @@
 
 Import: `@blips/ui/components/select`
 
-## Sub-components
+Escolha de uma opção numa lista fechada (5+ opções, ou pouco espaço). Para até ~5
+opções visíveis, Radio Group; com busca/digitação, Combobox (padrão Popover +
+Command em `command.md`, ou o Combobox primitivo da v3 em `combobox.md`); em
+formulário simples ou mobile, NativeSelect (só v3, `native-select.md`).
 
-| Component | Description |
-|---|---|
-| `Select` | Root component. Direct re-export of `@radix-ui/react-select` Root. Manages open state and value. |
-| `SelectGroup` | Groups related items. Direct re-export of `@radix-ui/react-select` Group. |
-| `SelectValue` | Displays the selected value inside the trigger. Direct re-export of `@radix-ui/react-select` Value. |
-| `SelectTrigger` | Button that opens the select dropdown. Styled with border, height `h-8`, and a chevron icon. |
-| `SelectContent` | Popover dropdown container. Rendered in a Portal with scroll buttons and animations. |
-| `SelectLabel` | Non-selectable label within a group. Styled with `font-semibold`. |
-| `SelectItem` | Selectable option. Shows a check icon when selected. Supports an optional `description` prop. |
-| `SelectSeparator` | Visual divider between items/groups. Renders a 1px line. |
-| `SelectScrollUpButton` | Scroll indicator at the top of the content when items overflow. |
-| `SelectScrollDownButton` | Scroll indicator at the bottom of the content when items overflow. |
+Exports (iguais nas duas versões): `Select`, `SelectTrigger`, `SelectValue`,
+`SelectContent`, `SelectGroup`, `SelectLabel`, `SelectItem`, `SelectSeparator`,
+`SelectScrollUpButton`, `SelectScrollDownButton`.
 
-## Props & Variants
+## Notas comuns
 
-### Select (Root)
+- `SelectTrigger` tem a prop da lib `size`: `"default"` ou `"sm"`. Largura pelo `className` (`w-48`, `w-full`).
+- Ícones Phosphor no trigger (caret) e no item marcado (check).
+- Erro: `aria-invalid` no `SelectTrigger` (automático dentro de `FormControl`).
+- Em react-hook-form: `value={field.value}` + `onValueChange={field.onChange}` no `Select`, e o `SelectTrigger` dentro de `FormControl`.
+- Não existe prop `description` no `SelectItem`: para texto secundário, componha dentro do item.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `defaultValue` | `string` | -- | Default selected value (uncontrolled). |
-| `value` | `string` | -- | Controlled selected value. |
-| `onValueChange` | `(value: string) => void` | -- | Callback when value changes. |
-| `defaultOpen` | `boolean` | `false` | Whether dropdown is open by default. |
-| `open` | `boolean` | -- | Controlled open state. |
-| `onOpenChange` | `(open: boolean) => void` | -- | Callback when open state changes. |
-| `disabled` | `boolean` | `false` | Disable the entire select. |
-| `required` | `boolean` | `false` | Mark as required for form validation. |
-| `name` | `string` | -- | Name for form submission. |
-| `dir` | `"ltr" \| "rtl"` | -- | Reading direction. |
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-### SelectTrigger
+## v3.x — Base UI
 
-Extends `React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>`.
+Primitiva: `@base-ui/react/select`. `Select` é um alias direto de `Select.Root`
+(sem `data-slot` no root).
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Additional CSS classes. Base: `flex h-8 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm`. |
-| `aria-invalid` | `boolean` | -- | Mark trigger as invalid (for form validation). |
+**Select (Root)**
 
-### SelectContent
+| Prop | Tipo | Notas |
+|---|---|---|
+| `items` | `{ label, value }[]` ou `Record<value, label>` | **Recomendado**: sem ele o `SelectValue` mostra o `value` cru até o popup abrir. Um item com `value: null` vira o placeholder. |
+| `value` / `defaultValue` | qualquer tipo (string, objeto, `null`) | Com `multiple`, array. |
+| `onValueChange` | `(value, eventDetails) => void` | |
+| `multiple` | `boolean` | Seleção múltipla. |
+| `open` / `onOpenChange(open, eventDetails)` / `modal` | | |
+| `itemToStringLabel`, `itemToStringValue`, `isItemEqualToValue` | | Para valores objeto. |
+| `name`, `required`, `disabled`, `readOnly`, `inputRef` | | |
 
-Extends `React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>`.
+**SelectValue**: não tem `placeholder`. O placeholder é o rótulo de um item com
+`value: null` em `items`, ou o `children` (texto ou função `(value) => ReactNode`).
+Estilo do placeholder: `data-placeholder:` no trigger.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `position` | `"popper" \| "item-aligned"` | `"popper"` | Positioning strategy. `"popper"` uses floating positioning, `"item-aligned"` aligns with trigger. |
-| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side (popper mode only). |
-| `sideOffset` | `number` | -- | Offset from the trigger. |
-| `align` | `"start" \| "center" \| "end"` | -- | Alignment relative to trigger. |
-| `className` | `string` | -- | Additional CSS classes. |
+**SelectContent**
 
-### SelectItem
+| Prop | Padrão | Notas |
+|---|---|---|
+| `alignItemWithTrigger` | `true` | Popup sobrepõe o trigger alinhando o item marcado (parecido com `position="item-aligned"` do Radix). `false` = abaixo do trigger (popper). |
+| `side` | `"bottom"` | Vale com `alignItemWithTrigger={false}`. |
+| `sideOffset` | `4` | |
+| `align` / `alignOffset` | `"center"` / `0` | |
 
-Extends `React.ComponentPropsWithoutRef<typeof SelectPrimitive.Item>`.
+`SelectLabel` é `Select.GroupLabel`: **precisa ficar dentro de um `SelectGroup`**.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `value` | `string` | **(required)** | The value of the item. |
-| `disabled` | `boolean` | `false` | Disable this item. |
-| `description` | `string` | -- | **Project-specific.** Secondary text shown below the item label in `text-muted-foreground text-xs`. |
-| `className` | `string` | -- | Additional CSS classes. |
-
-### SelectLabel
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Additional CSS classes. Base: `py-1.5 pr-2 pl-8 font-semibold text-sm`. |
-
-### SelectSeparator
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Additional CSS classes. Base: `-mx-1 my-1 h-px bg-muted`. |
-
-## Usage
-
-### Basic Select
+Visual: trigger `h-7` (sm `h-6`), `text-xs/relaxed`, ícones `size-3.5`; itens `min-h-7`; popup com largura do trigger (`w-(--anchor-width)`).
+Estado: `data-open`/`data-closed`, `data-disabled`, `data-highlighted` (item), `data-placeholder` (trigger).
 
 ```tsx
 import {
@@ -89,119 +63,95 @@ import {
   SelectGroup,
   SelectItem,
   SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from "@blips/ui/components/select"
+} from "@blips/ui/components/select";
 
-export default function SelectDemo() {
+const frutas = [
+  { label: "Maçã", value: "maca" },
+  { label: "Banana", value: "banana" },
+];
+const legumes = [
+  { label: "Cenoura", value: "cenoura" },
+  { label: "Brócolis", value: "brocolis" },
+];
+const items = [{ label: "Selecione um alimento", value: null }, ...frutas, ...legumes];
+
+export function SeletorDeAlimento() {
+  const [valor, setValor] = React.useState<string | null>(null);
+
   return (
-    <Select>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a fruit" />
+    <Select items={items} value={valor} onValueChange={setValor}>
+      <SelectTrigger className="w-48">
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
-          <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem>
+          <SelectLabel>Frutas</SelectLabel>
+          {frutas.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+        <SelectSeparator />
+        <SelectGroup>
+          <SelectLabel>Legumes</SelectLabel>
+          {legumes.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.label}
+            </SelectItem>
+          ))}
         </SelectGroup>
       </SelectContent>
     </Select>
-  )
+  );
 }
 ```
 
-### With Item Descriptions (Project-Specific)
+Múltipla escolha com resumo no trigger:
 
 ```tsx
-<Select>
-  <SelectTrigger className="w-[280px]">
-    <SelectValue placeholder="Select a role" />
+<Select items={items} multiple defaultValue={[]}>
+  <SelectTrigger className="w-64">
+    <SelectValue>
+      {(valor: string[]) =>
+        valor.length === 0 ? "Selecione as frutas" : `${valor.length} selecionadas`
+      }
+    </SelectValue>
   </SelectTrigger>
-  <SelectContent>
-    <SelectItem value="manager" description="Full access to all features">
-      Manager
-    </SelectItem>
-    <SelectItem value="professor" description="Limited to assigned students">
-      Professor
-    </SelectItem>
-  </SelectContent>
+  <SelectContent>…</SelectContent>
 </Select>
 ```
 
-### Scrollable with Multiple Groups
+### Armadilhas
+
+- `<SelectValue placeholder="…" />` não existe: use item `value: null` em `items` ou `children`.
+- `position="popper"` não existe: `alignItemWithTrigger={false}`.
+- `SelectLabel` solto (fora de `SelectGroup`) quebra.
+- `--radix-select-trigger-width` virou `--anchor-width`; `data-[state=open]:` virou `data-open:`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-select`.
+
+**Select (Root)**: `value`/`defaultValue` (**string**; `""` não é permitido em item),
+`onValueChange(value: string)`, `open`, `onOpenChange(open)`, `name`, `required`,
+`disabled`, `dir`. Sem seleção múltipla.
+
+**SelectValue**: `placeholder` (string ou nó).
+
+**SelectContent**: `position` (`"item-aligned"` padrão da lib, ou `"popper"`),
+`align` (`"center"`), `side`, `sideOffset`, `avoidCollisions`. Com `"popper"`, o
+viewport usa `--radix-select-trigger-width`.
+
+`SelectLabel` (`Select.Label`) pode ficar solto ou dentro de `SelectGroup`.
+
+Visual: trigger `h-9` (sm `h-8`), `text-sm`, `shadow-xs`.
+Estado: `data-state="open" | "closed"`, `data-placeholder`, `data-disabled`, `data-highlighted`.
 
 ```tsx
-<Select>
-  <SelectTrigger className="w-[280px]">
-    <SelectValue placeholder="Select a timezone" />
-  </SelectTrigger>
-  <SelectContent>
-    <SelectGroup>
-      <SelectLabel>North America</SelectLabel>
-      <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-      <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-      <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-    </SelectGroup>
-    <SelectGroup>
-      <SelectLabel>Europe & Africa</SelectLabel>
-      <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-      <SelectItem value="cet">Central European Time (CET)</SelectItem>
-    </SelectGroup>
-  </SelectContent>
-</Select>
-```
-
-### With React Hook Form
-
-```tsx
-import { Controller } from "react-hook-form"
-
-<Controller
-  name="language"
-  control={form.control}
-  render={({ field, fieldState }) => (
-    <Select
-      name={field.name}
-      value={field.value}
-      onValueChange={field.onChange}
-    >
-      <SelectTrigger aria-invalid={fieldState.invalid}>
-        <SelectValue placeholder="Select" />
-      </SelectTrigger>
-      <SelectContent position="item-aligned">
-        <SelectItem value="en">English</SelectItem>
-        <SelectItem value="es">Spanish</SelectItem>
-        <SelectItem value="fr">French</SelectItem>
-      </SelectContent>
-    </Select>
-  )}
-/>
-```
-
-### With Separator
-
-```tsx
-<SelectContent>
-  <SelectItem value="auto">Auto</SelectItem>
-  <SelectSeparator />
-  <SelectItem value="en">English</SelectItem>
-  <SelectItem value="es">Spanish</SelectItem>
-</SelectContent>
-```
-
-## All Example Variants
-
-### select-demo
-
-Basic select with grouped fruits.
-
-```tsx
-import * as React from "react"
-
 import {
   Select,
   SelectContent,
@@ -212,20 +162,19 @@ import {
   SelectValue,
 } from "@blips/ui/components/select"
 
-export default function SelectDemo() {
+export function SeletorDeFruta() {
+  const [valor, setValor] = React.useState("")
+
   return (
-    <Select>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select a fruit" />
+    <Select value={valor} onValueChange={setValor}>
+      <SelectTrigger className="w-48">
+        <SelectValue placeholder="Selecione uma fruta" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent position="popper">
         <SelectGroup>
-          <SelectLabel>Fruits</SelectLabel>
-          <SelectItem value="apple">Apple</SelectItem>
+          <SelectLabel>Frutas</SelectLabel>
+          <SelectItem value="maca">Maçã</SelectItem>
           <SelectItem value="banana">Banana</SelectItem>
-          <SelectItem value="blueberry">Blueberry</SelectItem>
-          <SelectItem value="grapes">Grapes</SelectItem>
-          <SelectItem value="pineapple">Pineapple</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
@@ -233,91 +182,6 @@ export default function SelectDemo() {
 }
 ```
 
-### select-scrollable
+## Exemplos na docs
 
-Scrollable select with multiple timezone groups.
-
-```tsx
-import * as React from "react"
-
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@blips/ui/components/select"
-
-export default function SelectScrollable() {
-  return (
-    <Select>
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="Select a timezone" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>North America</SelectLabel>
-          <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-          <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-          <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-          <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-          <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-          <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Europe & Africa</SelectLabel>
-          <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-          <SelectItem value="cet">Central European Time (CET)</SelectItem>
-          <SelectItem value="eet">Eastern European Time (EET)</SelectItem>
-          <SelectItem value="west">
-            Western European Summer Time (WEST)
-          </SelectItem>
-          <SelectItem value="cat">Central Africa Time (CAT)</SelectItem>
-          <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Asia</SelectLabel>
-          <SelectItem value="msk">Moscow Time (MSK)</SelectItem>
-          <SelectItem value="ist">India Standard Time (IST)</SelectItem>
-          <SelectItem value="cst_china">China Standard Time (CST)</SelectItem>
-          <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
-          <SelectItem value="kst">Korea Standard Time (KST)</SelectItem>
-          <SelectItem value="ist_indonesia">
-            Indonesia Central Standard Time (WITA)
-          </SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Australia & Pacific</SelectLabel>
-          <SelectItem value="awst">
-            Australian Western Standard Time (AWST)
-          </SelectItem>
-          <SelectItem value="acst">
-            Australian Central Standard Time (ACST)
-          </SelectItem>
-          <SelectItem value="aest">
-            Australian Eastern Standard Time (AEST)
-          </SelectItem>
-          <SelectItem value="nzst">New Zealand Standard Time (NZST)</SelectItem>
-          <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>South America</SelectLabel>
-          <SelectItem value="art">Argentina Time (ART)</SelectItem>
-          <SelectItem value="bot">Bolivia Time (BOT)</SelectItem>
-          <SelectItem value="brt">Brasilia Time (BRT)</SelectItem>
-          <SelectItem value="clt">Chile Standard Time (CLT)</SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
-  )
-}
-```
-
-## Project Notes
-
-- Uses `@phosphor-icons/react` icons (`Check`, `CaretDown`, `CaretUp`) instead of Lucide.
-- The `SelectItem` has a project-specific `description` prop for secondary text, not present in vanilla shadcn/ui.
-- Default trigger height is `h-8` (compact), matching the project design system.
-- `SelectContent` defaults to `position="popper"` with translate animations per side. Use `position="item-aligned"` for form selects to align with the trigger value.
+`select-demo`, `select-multiple`, `select-popper`, `select-scrollable`, `select-sizes`, `select-disabled`, `select-invalid` (em `apps/docs/examples/`, escritos para a v3).

@@ -2,6 +2,9 @@
 
 Configuracao de cores e temas para charts.
 
+API igual na v2.x e na v3.x. Os tokens `--chart-1` a `--chart-5` já vêm no `globals.css` da
+`@blips/ui` nas duas versões; o passo 1 abaixo só é necessário para trocar a paleta.
+
 ## CSS Variables (Recomendado)
 
 ### 1. Defina as cores no CSS
@@ -116,8 +119,8 @@ const chartConfig = {
 ### Com Tailwind
 
 ```tsx
-<LabelList className="fill-[--color-desktop]" />
-<text className="fill-[--color-mobile]" />
+<LabelList className="fill-(--color-desktop)" />
+<text className="fill-(--color-mobile)" />
 ```
 
 ---

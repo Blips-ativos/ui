@@ -2,6 +2,8 @@
 
 Defina schemas **localmente** no arquivo do formulário.
 
+API igual na v2.x e na v3.x (Zod e react-hook-form não dependem da versão da lib).
+
 ## Schema Básico
 
 ```typescript

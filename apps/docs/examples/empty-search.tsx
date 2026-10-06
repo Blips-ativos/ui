@@ -7,19 +7,19 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@blips/ui/components/empty";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 
 export default function EmptySearch() {
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <MagnifyingGlass />
+          <MagnifyingGlassIcon />
         </EmptyMedia>
         <EmptyTitle>Nenhum resultado encontrado</EmptyTitle>
         <EmptyDescription>
-          Não encontramos nada para "relatório anual". Tente outros termos ou
-          remova os filtros aplicados.
+          Não encontramos nada para &quot;relatório anual&quot;. Tente outros
+          termos ou remova os filtros aplicados.
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>

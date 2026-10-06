@@ -21,7 +21,7 @@ import { Checkbox } from "@blips/ui/components/checkbox"
 <Checkbox />
 ```
 
-## Estado Marcado
+## Estado marcado
 
 Use `defaultChecked` para checkboxes não controlados, ou `checked` e
 `onCheckedChange` para controlar o estado.
@@ -36,12 +36,20 @@ export function Example() {
 }
 ```
 
-## Estado Inválido
+## Estado inválido
 
 Defina `aria-invalid` no checkbox e `data-invalid` no wrapper do campo para
 exibir os estilos de estado inválido.
 
+<ComponentPreview name="checkbox-invalid" />
+
 ## Exemplos
+
+### Com texto
+
+Use `FieldContent` e `FieldDescription` para um texto de apoio ao lado do checkbox.
+
+<ComponentPreview name="checkbox-with-text" />
 
 ### Desabilitado
 
@@ -49,6 +57,46 @@ Use a prop `disabled` para impedir a interação e adicione o atributo `data-dis
 
 <ComponentPreview name="checkbox-disabled" />
 
+### Grupo
+
+Agrupe opções relacionadas com `FieldSet` e `FieldLegend`.
+
+<ComponentPreview name="checkbox-group" />
+
+### Indeterminado
+
+Use a prop `indeterminate` para o estado misto, típico de um checkbox "selecionar todos".
+
+<ComponentPreview name="checkbox-indeterminate" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Checkbox](https://base-ui.com/react/components/checkbox).
+
+- **`checked="indeterminate"` deixou de existir.** `checked` é só `boolean`, e o estado misto vem da prop separada `indeterminate`.
+- `onCheckedChange` recebe `(checked: boolean, eventDetails)`. Antes o valor podia ser `"indeterminate"`.
+- **Atributos de estado:** `data-state="checked" | "unchecked" | "indeterminate"` vira `data-checked`, `data-unchecked` e `data-indeterminate`. Seletores como `peer-data-[state=checked]:` passam a `peer-data-checked:`.
+- O elemento raiz é um `<span role="checkbox">` com um `<input>` oculto, não mais um `<button>`. Para formulários nativos, use `name`, `value` e `required` no `Checkbox`.
+- `asChild` vira `render`.
+- Visual: foco `ring-2 ring-ring/30`, sem `shadow-xs`, e uma área de toque ampliada (`after:-inset-*`).
+
+```tsx
+// v2
+<Checkbox
+  checked={someChecked ? "indeterminate" : allChecked}
+  onCheckedChange={(value) => setAll(value === true)}
+/>
+<label className="peer-data-[state=checked]:line-through">Tarefa</label>
+
+// v3
+<Checkbox
+  checked={allChecked}
+  indeterminate={someChecked}
+  onCheckedChange={(checked) => setAll(checked)}
+/>
+<label className="peer-data-checked:line-through">Tarefa</label>
+```
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/checkbox#api-reference) para mais informações.
+Consulte a documentação do [Base UI Checkbox](https://base-ui.com/react/components/checkbox) para mais informações.

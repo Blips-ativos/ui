@@ -4,9 +4,17 @@
 
 The `dashboard-01` block is a full dashboard layout combining an inset sidebar, interactive area chart, metric cards, and a sortable data table with drag-and-drop support. It demonstrates the composition of multiple shadcn/ui primitives into a complete admin interface.
 
+> **Versão da lib:** o código abaixo está na **v3.x — Base UI** (imports `@blips/ui/components/*`,
+> ícones Phosphor `*Icon`, `render`, `data-popup-open`, `ToggleGroup` com array, `Drawer` do
+> Base UI, `Select` com `items`, recharts 3). Para repo **v2.x — Radix**, veja só as diferenças
+> em [v2.x — Radix](#v2x--radix) no fim. Detecção de versão: Passo 0 do `SKILL.md` do building.
+>
+> Os componentes locais do bloco (`AppSidebar`, `DataTable`, `NavMain`…) moram no app
+> (`@/components/*`); só as primitivas vêm da `@blips/ui`.
+
 **Type:** registry:block
 **Files:** 11 files
-**Dependencies:** @dnd-kit/core, @dnd-kit/modifiers, @dnd-kit/sortable, @dnd-kit/utilities, @tabler/icons-react, @tanstack/react-table, zod
+**Dependencies:** @blips/ui, @dnd-kit/core, @dnd-kit/modifiers, @dnd-kit/sortable, @dnd-kit/utilities, @phosphor-icons/react, @tanstack/react-table, recharts (3 na v3.x, 2 na v2.x), sonner, zod
 
 ## Structure
 
@@ -47,18 +55,18 @@ SidebarProvider (--sidebar-width, --header-height CSS vars)
 
 ## Code
 
-### Code (registry/new-york-v4/blocks/dashboard-01/page.tsx):
+### Code (page.tsx):
 
 ```tsx
-import { AppSidebar } from "@/registry/new-york-v4/blocks/dashboard-01/components/app-sidebar"
-import { ChartAreaInteractive } from "@/registry/new-york-v4/blocks/dashboard-01/components/chart-area-interactive"
-import { DataTable } from "@/registry/new-york-v4/blocks/dashboard-01/components/data-table"
-import { SectionCards } from "@/registry/new-york-v4/blocks/dashboard-01/components/section-cards"
-import { SiteHeader } from "@/registry/new-york-v4/blocks/dashboard-01/components/site-header"
+import { AppSidebar } from "@/components/app-sidebar"
+import { ChartAreaInteractive } from "@/components/chart-area-interactive"
+import { DataTable } from "@/components/data-table"
+import { SectionCards } from "@/components/section-cards"
+import { SiteHeader } from "@/components/site-header"
 import {
   SidebarInset,
   SidebarProvider,
-} from "@/registry/new-york-v4/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 import data from "./data.json"
 
@@ -92,7 +100,7 @@ export default function Page() {
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/data.json):
+### Code (data.json):
 
 ```tsx
 [
@@ -711,34 +719,34 @@ export default function Page() {
 ]
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/app-sidebar.tsx):
+### Code (components/app-sidebar.tsx):
 
 ```tsx
 "use client"
 
 import * as React from "react"
 import {
-  IconCamera,
-  IconChartBar,
-  IconDashboard,
-  IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
-  IconFolder,
-  IconHelp,
-  IconInnerShadowTop,
-  IconListDetails,
-  IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
-} from "@tabler/icons-react"
+  CameraIcon,
+  ChartBarIcon,
+  SquaresFourIcon,
+  DatabaseIcon,
+  SparkleIcon,
+  FileTextIcon,
+  FileDocIcon,
+  FolderIcon,
+  QuestionIcon,
+  CircleHalfIcon,
+  ListBulletsIcon,
+  ClipboardTextIcon,
+  MagnifyingGlassIcon,
+  GearIcon,
+  UsersIcon,
+} from "@phosphor-icons/react"
 
-import { NavDocuments } from "@/registry/new-york-v4/blocks/dashboard-01/components/nav-documents"
-import { NavMain } from "@/registry/new-york-v4/blocks/dashboard-01/components/nav-main"
-import { NavSecondary } from "@/registry/new-york-v4/blocks/dashboard-01/components/nav-secondary"
-import { NavUser } from "@/registry/new-york-v4/blocks/dashboard-01/components/nav-user"
+import { NavDocuments } from "@/components/nav-documents"
+import { NavMain } from "@/components/nav-main"
+import { NavSecondary } from "@/components/nav-secondary"
+import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
   SidebarContent,
@@ -747,7 +755,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/registry/new-york-v4/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 const data = {
   user: {
@@ -759,33 +767,33 @@ const data = {
     {
       title: "Dashboard",
       url: "#",
-      icon: IconDashboard,
+      icon: SquaresFourIcon,
     },
     {
       title: "Lifecycle",
       url: "#",
-      icon: IconListDetails,
+      icon: ListBulletsIcon,
     },
     {
       title: "Analytics",
       url: "#",
-      icon: IconChartBar,
+      icon: ChartBarIcon,
     },
     {
       title: "Projects",
       url: "#",
-      icon: IconFolder,
+      icon: FolderIcon,
     },
     {
       title: "Team",
       url: "#",
-      icon: IconUsers,
+      icon: UsersIcon,
     },
   ],
   navClouds: [
     {
       title: "Capture",
-      icon: IconCamera,
+      icon: CameraIcon,
       isActive: true,
       url: "#",
       items: [
@@ -801,7 +809,7 @@ const data = {
     },
     {
       title: "Proposal",
-      icon: IconFileDescription,
+      icon: FileTextIcon,
       url: "#",
       items: [
         {
@@ -816,7 +824,7 @@ const data = {
     },
     {
       title: "Prompts",
-      icon: IconFileAi,
+      icon: SparkleIcon,
       url: "#",
       items: [
         {
@@ -834,34 +842,34 @@ const data = {
     {
       title: "Settings",
       url: "#",
-      icon: IconSettings,
+      icon: GearIcon,
     },
     {
       title: "Get Help",
       url: "#",
-      icon: IconHelp,
+      icon: QuestionIcon,
     },
     {
       title: "Search",
       url: "#",
-      icon: IconSearch,
+      icon: MagnifyingGlassIcon,
     },
   ],
   documents: [
     {
       name: "Data Library",
       url: "#",
-      icon: IconDatabase,
+      icon: DatabaseIcon,
     },
     {
       name: "Reports",
       url: "#",
-      icon: IconReport,
+      icon: ClipboardTextIcon,
     },
     {
       name: "Word Assistant",
       url: "#",
-      icon: IconFileWord,
+      icon: FileDocIcon,
     },
   ],
 }
@@ -873,13 +881,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
+              render={<a href="#" />}
             >
-              <a href="#">
-                <IconInnerShadowTop className="size-5!" />
-                <span className="text-base font-semibold">Acme Inc.</span>
-              </a>
+              <CircleHalfIcon className="size-5!" />
+              <span className="text-base font-semibold">Acme Inc.</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -897,7 +903,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/chart-area-interactive.tsx):
+### Code (components/chart-area-interactive.tsx):
 
 ```tsx
 "use client"
@@ -905,7 +911,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
-import { useIsMobile } from "@/registry/new-york-v4/hooks/use-mobile"
+import { useIsMobile } from "@blips/ui/hooks/use-mobile"
 import {
   Card,
   CardAction,
@@ -913,24 +919,24 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/new-york-v4/ui/card"
+} from "@blips/ui/components/card"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/registry/new-york-v4/ui/chart"
+} from "@blips/ui/components/chart"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/registry/new-york-v4/ui/select"
+} from "@blips/ui/components/select"
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@/registry/new-york-v4/ui/toggle-group"
+} from "@blips/ui/components/toggle-group"
 
 export const description = "An interactive area chart"
 
@@ -1077,18 +1083,23 @@ export function ChartAreaInteractive() {
           <span className="@[540px]/card:hidden">Last 3 months</span>
         </CardDescription>
         <CardAction>
+          {/* v3.x: value é sempre array; seleção única é o default */}
           <ToggleGroup
-            type="single"
-            value={timeRange}
-            onValueChange={setTimeRange}
+            value={[timeRange]}
+            onValueChange={(value) => value[0] && setTimeRange(value[0])}
             variant="outline"
+            spacing={0}
             className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex"
           >
             <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
             <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
             <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
           </ToggleGroup>
-          <Select value={timeRange} onValueChange={setTimeRange}>
+          <Select
+            items={{ "90d": "Last 3 months", "30d": "Last 30 days", "7d": "Last 7 days" }}
+            value={timeRange}
+            onValueChange={(value) => value && setTimeRange(value)}
+          >
             <SelectTrigger
               className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
               size="sm"
@@ -1193,7 +1204,7 @@ export function ChartAreaInteractive() {
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/data-table.tsx):
+### Code (components/data-table.tsx):
 
 ```tsx
 "use client"
@@ -1219,19 +1230,19 @@ import {
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import {
-  IconChevronDown,
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-  IconCircleCheckFilled,
-  IconDotsVertical,
-  IconGripVertical,
-  IconLayoutColumns,
-  IconLoader,
-  IconPlus,
-  IconTrendingUp,
-} from "@tabler/icons-react"
+  CaretDownIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+  CaretDoubleLeftIcon,
+  CaretDoubleRightIcon,
+  CheckCircleIcon,
+  DotsThreeVerticalIcon,
+  DotsSixVerticalIcon,
+  ColumnsIcon,
+  SpinnerIcon,
+  PlusIcon,
+  TrendUpIcon,
+} from "@phosphor-icons/react"
 import {
   flexRender,
   getCoreRowModel,
@@ -1251,16 +1262,16 @@ import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { toast } from "sonner"
 import { z } from "zod"
 
-import { useIsMobile } from "@/registry/new-york-v4/hooks/use-mobile"
-import { Badge } from "@/registry/new-york-v4/ui/badge"
-import { Button } from "@/registry/new-york-v4/ui/button"
+import { useIsMobile } from "@blips/ui/hooks/use-mobile"
+import { Badge } from "@blips/ui/components/badge"
+import { Button } from "@blips/ui/components/button"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
   type ChartConfig,
-} from "@/registry/new-york-v4/ui/chart"
-import { Checkbox } from "@/registry/new-york-v4/ui/checkbox"
+} from "@blips/ui/components/chart"
+import { Checkbox } from "@blips/ui/components/checkbox"
 import {
   Drawer,
   DrawerClose,
@@ -1270,7 +1281,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@/registry/new-york-v4/ui/drawer"
+} from "@blips/ui/components/drawer"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -1278,17 +1289,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/registry/new-york-v4/ui/dropdown-menu"
-import { Input } from "@/registry/new-york-v4/ui/input"
-import { Label } from "@/registry/new-york-v4/ui/label"
+} from "@blips/ui/components/dropdown-menu"
+import { Input } from "@blips/ui/components/input"
+import { Label } from "@blips/ui/components/label"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/registry/new-york-v4/ui/select"
-import { Separator } from "@/registry/new-york-v4/ui/separator"
+} from "@blips/ui/components/select"
+import { Separator } from "@blips/ui/components/separator"
 import {
   Table,
   TableBody,
@@ -1296,13 +1307,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/registry/new-york-v4/ui/table"
+} from "@blips/ui/components/table"
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@/registry/new-york-v4/ui/tabs"
+} from "@blips/ui/components/tabs"
 
 export const schema = z.object({
   id: z.number(),
@@ -1328,7 +1339,7 @@ function DragHandle({ id }: { id: number }) {
       size="icon"
       className="size-7 text-muted-foreground hover:bg-transparent"
     >
-      <IconGripVertical className="size-3 text-muted-foreground" />
+      <DotsSixVerticalIcon className="size-3 text-muted-foreground" />
       <span className="sr-only">Drag to reorder</span>
     </Button>
   )
@@ -1345,9 +1356,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     header: ({ table }) => (
       <div className="flex items-center justify-center">
         <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
+          checked={table.getIsAllPageRowsSelected()}
+          indeterminate={
+            table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
@@ -1391,9 +1402,9 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     cell: ({ row }) => (
       <Badge variant="outline" className="px-1.5 text-muted-foreground">
         {row.original.status === "Done" ? (
-          <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+          <CheckCircleIcon className="fill-green-500 dark:fill-green-400" />
         ) : (
-          <IconLoader />
+          <SpinnerIcon />
         )}
         {row.original.status}
       </Badge>
@@ -1487,15 +1498,17 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     id: "actions",
     cell: () => (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
-            size="icon"
-          >
-            <IconDotsVertical />
-            <span className="sr-only">Open menu</span>
-          </Button>
+        <DropdownMenuTrigger
+          render={
+            <Button
+              variant="ghost"
+              className="flex size-8 text-muted-foreground data-popup-open:bg-muted"
+              size="icon"
+            />
+          }
+        >
+          <DotsThreeVerticalIcon />
+          <span className="sr-only">Open menu</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
           <DropdownMenuItem>Edit</DropdownMenuItem>
@@ -1608,7 +1621,15 @@ export function DataTable({
         <Label htmlFor="view-selector" className="sr-only">
           View
         </Label>
-        <Select defaultValue="outline">
+        <Select
+          items={{
+            outline: "Outline",
+            "past-performance": "Past Performance",
+            "key-personnel": "Key Personnel",
+            "focus-documents": "Focus Documents",
+          }}
+          defaultValue="outline"
+        >
           <SelectTrigger
             className="flex w-fit @4xl/main:hidden"
             size="sm"
@@ -1635,13 +1656,11 @@ export function DataTable({
         </TabsList>
         <div className="flex items-center gap-2">
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <IconLayoutColumns />
-                <span className="hidden lg:inline">Customize Columns</span>
-                <span className="lg:hidden">Columns</span>
-                <IconChevronDown />
-              </Button>
+            <DropdownMenuTrigger render={<Button variant="outline" size="sm" />}>
+              <ColumnsIcon />
+              <span className="hidden lg:inline">Customize Columns</span>
+              <span className="lg:hidden">Columns</span>
+              <CaretDownIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               {table
@@ -1668,7 +1687,7 @@ export function DataTable({
             </DropdownMenuContent>
           </DropdownMenu>
           <Button variant="outline" size="sm">
-            <IconPlus />
+            <PlusIcon />
             <span className="hidden lg:inline">Add Section</span>
           </Button>
         </div>
@@ -1770,7 +1789,7 @@ export function DataTable({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to first page</span>
-                <IconChevronsLeft />
+                <CaretDoubleLeftIcon />
               </Button>
               <Button
                 variant="outline"
@@ -1780,7 +1799,7 @@ export function DataTable({
                 disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Go to previous page</span>
-                <IconChevronLeft />
+                <CaretLeftIcon />
               </Button>
               <Button
                 variant="outline"
@@ -1790,7 +1809,7 @@ export function DataTable({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to next page</span>
-                <IconChevronRight />
+                <CaretRightIcon />
               </Button>
               <Button
                 variant="outline"
@@ -1800,7 +1819,7 @@ export function DataTable({
                 disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Go to last page</span>
-                <IconChevronsRight />
+                <CaretDoubleRightIcon />
               </Button>
             </div>
           </div>
@@ -1849,11 +1868,11 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 
   return (
-    <Drawer direction={isMobile ? "bottom" : "right"}>
-      <DrawerTrigger asChild>
-        <Button variant="link" className="w-fit px-0 text-left text-foreground">
-          {item.header}
-        </Button>
+    <Drawer swipeDirection={isMobile ? "down" : "right"}>
+      <DrawerTrigger
+        render={<Button variant="link" className="w-fit px-0 text-left text-foreground" />}
+      >
+        {item.header}
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
@@ -1909,7 +1928,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
               <div className="grid gap-2">
                 <div className="flex gap-2 leading-none font-medium">
                   Trending up by 5.2% this month{" "}
-                  <IconTrendingUp className="size-4" />
+                  <TrendUpIcon className="size-4" />
                 </div>
                 <div className="text-muted-foreground">
                   Showing total visitors for the last 6 months. This is just
@@ -1995,9 +2014,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
         </div>
         <DrawerFooter>
           <Button>Submit</Button>
-          <DrawerClose asChild>
-            <Button variant="outline">Done</Button>
-          </DrawerClose>
+          <DrawerClose render={<Button variant="outline" />}>Done</DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
@@ -2005,18 +2022,18 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/nav-documents.tsx):
+### Code (components/nav-documents.tsx):
 
 ```tsx
 "use client"
 
 import {
-  IconDots,
-  IconFolder,
-  IconShare3,
-  IconTrash,
+  DotsThreeIcon,
+  FolderIcon,
+  ShareIcon,
+  TrashIcon,
   type Icon,
-} from "@tabler/icons-react"
+} from "@phosphor-icons/react"
 
 import {
   DropdownMenu,
@@ -2024,7 +2041,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/registry/new-york-v4/ui/dropdown-menu"
+} from "@blips/ui/components/dropdown-menu"
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -2033,7 +2050,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/registry/new-york-v4/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function NavDocuments({
   items,
@@ -2052,21 +2069,21 @@ export function NavDocuments({
       <SidebarMenu>
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton asChild>
-              <a href={item.url}>
-                <item.icon />
-                <span>{item.name}</span>
-              </a>
+            <SidebarMenuButton render={<a href={item.url} />}>
+              <item.icon />
+              <span>{item.name}</span>
             </SidebarMenuButton>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuAction
-                  showOnHover
-                  className="rounded-sm data-[state=open]:bg-accent"
-                >
-                  <IconDots />
-                  <span className="sr-only">More</span>
-                </SidebarMenuAction>
+              <DropdownMenuTrigger
+                render={
+                  <SidebarMenuAction
+                    showOnHover
+                    className="rounded-sm data-popup-open:bg-accent"
+                  />
+                }
+              >
+                <DotsThreeIcon />
+                <span className="sr-only">More</span>
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 className="w-24 rounded-lg"
@@ -2074,16 +2091,16 @@ export function NavDocuments({
                 align={isMobile ? "end" : "start"}
               >
                 <DropdownMenuItem>
-                  <IconFolder />
+                  <FolderIcon />
                   <span>Open</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <IconShare3 />
+                  <ShareIcon />
                   <span>Share</span>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem variant="destructive">
-                  <IconTrash />
+                  <TrashIcon />
                   <span>Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -2092,7 +2109,7 @@ export function NavDocuments({
         ))}
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
-            <IconDots className="text-sidebar-foreground/70" />
+            <DotsThreeIcon className="text-sidebar-foreground/70" />
             <span>More</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -2102,21 +2119,21 @@ export function NavDocuments({
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/nav-main.tsx):
+### Code (components/nav-main.tsx):
 
 ```tsx
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
+import { PlusCircleIcon, EnvelopeIcon, type Icon } from "@phosphor-icons/react"
 
-import { Button } from "@/registry/new-york-v4/ui/button"
+import { Button } from "@blips/ui/components/button"
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/registry/new-york-v4/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function NavMain({
   items,
@@ -2136,7 +2153,7 @@ export function NavMain({
               tooltip="Quick Create"
               className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
             >
-              <IconCirclePlusFilled />
+              <PlusCircleIcon />
               <span>Quick Create</span>
             </SidebarMenuButton>
             <Button
@@ -2144,7 +2161,7 @@ export function NavMain({
               className="size-8 group-data-[collapsible=icon]:opacity-0"
               variant="outline"
             >
-              <IconMail />
+              <EnvelopeIcon />
               <span className="sr-only">Inbox</span>
             </Button>
           </SidebarMenuItem>
@@ -2165,13 +2182,13 @@ export function NavMain({
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/nav-secondary.tsx):
+### Code (components/nav-secondary.tsx):
 
 ```tsx
 "use client"
 
 import * as React from "react"
-import { type Icon } from "@tabler/icons-react"
+import { type Icon } from "@phosphor-icons/react"
 
 import {
   SidebarGroup,
@@ -2179,7 +2196,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/registry/new-york-v4/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function NavSecondary({
   items,
@@ -2197,11 +2214,9 @@ export function NavSecondary({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
+              <SidebarMenuButton render={<a href={item.url} />}>
+                <item.icon />
+                <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -2212,24 +2227,24 @@ export function NavSecondary({
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/nav-user.tsx):
+### Code (components/nav-user.tsx):
 
 ```tsx
 "use client"
 
 import {
-  IconCreditCard,
-  IconDotsVertical,
-  IconLogout,
-  IconNotification,
-  IconUserCircle,
-} from "@tabler/icons-react"
+  CreditCardIcon,
+  DotsThreeVerticalIcon,
+  SignOutIcon,
+  BellIcon,
+  UserCircleIcon,
+} from "@phosphor-icons/react"
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/registry/new-york-v4/ui/avatar"
+} from "@blips/ui/components/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -2238,13 +2253,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/registry/new-york-v4/ui/dropdown-menu"
+} from "@blips/ui/components/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/registry/new-york-v4/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function NavUser({
   user,
@@ -2261,62 +2276,66 @@ export function NavUser({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs text-muted-foreground">
-                  {user.email}
-                </span>
-              </div>
-              <IconDotsVertical className="ml-auto size-4" />
-            </SidebarMenuButton>
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="truncate text-xs text-muted-foreground">
+                {user.email}
+              </span>
+            </div>
+            <DotsThreeVerticalIcon className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--anchor-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs text-muted-foreground">
-                    {user.email}
-                  </span>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </DropdownMenuLabel>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <IconUserCircle />
+                <UserCircleIcon />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <IconCreditCard />
+                <CreditCardIcon />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <IconNotification />
+                <BellIcon />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <IconLogout />
+              <SignOutIcon />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -2327,12 +2346,12 @@ export function NavUser({
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/section-cards.tsx):
+### Code (components/section-cards.tsx):
 
 ```tsx
-import { IconTrendingDown, IconTrendingUp } from "@tabler/icons-react"
+import { TrendDownIcon, TrendUpIcon } from "@phosphor-icons/react"
 
-import { Badge } from "@/registry/new-york-v4/ui/badge"
+import { Badge } from "@blips/ui/components/badge"
 import {
   Card,
   CardAction,
@@ -2340,7 +2359,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/registry/new-york-v4/ui/card"
+} from "@blips/ui/components/card"
 
 export function SectionCards() {
   return (
@@ -2353,14 +2372,14 @@ export function SectionCards() {
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
+              <TrendUpIcon />
               +12.5%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month <IconTrendingUp className="size-4" />
+            Trending up this month <TrendUpIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">
             Visitors for the last 6 months
@@ -2375,14 +2394,14 @@ export function SectionCards() {
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingDown />
+              <TrendDownIcon />
               -20%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period <IconTrendingDown className="size-4" />
+            Down 20% this period <TrendDownIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">
             Acquisition needs attention
@@ -2397,14 +2416,14 @@ export function SectionCards() {
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
+              <TrendUpIcon />
               +12.5%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention <IconTrendingUp className="size-4" />
+            Strong user retention <TrendUpIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">Engagement exceed targets</div>
         </CardFooter>
@@ -2417,14 +2436,14 @@ export function SectionCards() {
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
-              <IconTrendingUp />
+              <TrendUpIcon />
               +4.5%
             </Badge>
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-col items-start gap-1.5 text-sm">
           <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
+            Steady performance increase <TrendUpIcon className="size-4" />
           </div>
           <div className="text-muted-foreground">Meets growth projections</div>
         </CardFooter>
@@ -2434,12 +2453,12 @@ export function SectionCards() {
 }
 
 ```
-### Code (registry/new-york-v4/blocks/dashboard-01/components/site-header.tsx):
+### Code (components/site-header.tsx):
 
 ```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-import { Separator } from "@/registry/new-york-v4/ui/separator"
-import { SidebarTrigger } from "@/registry/new-york-v4/ui/sidebar"
+import { Button } from "@blips/ui/components/button"
+import { Separator } from "@blips/ui/components/separator"
+import { SidebarTrigger } from "@blips/ui/components/sidebar"
 
 export function SiteHeader() {
   return (
@@ -2452,15 +2471,21 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">Documents</h1>
         <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              GitHub
-            </a>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="hidden sm:flex"
+            nativeButton={false}
+            render={
+              <a
+                href="https://github.com/shadcn-ui/ui/tree/main/apps/v4/app/(examples)/dashboard"
+                rel="noopener noreferrer"
+                target="_blank"
+                className="dark:text-foreground"
+              />
+            }
+          >
+            GitHub
           </Button>
         </div>
       </div>
@@ -2469,3 +2494,70 @@ export function SiteHeader() {
 }
 
 ```
+
+---
+
+## v2.x — Radix
+
+O bloco vale para a v2.x trocando só estes pontos:
+
+| Arquivo / trecho | v3.x — Base UI (acima) | v2.x — Radix |
+|---|---|---|
+| Ícones | `CaretDownIcon`, `DotsThreeVerticalIcon`… | os mesmos nomes funcionam (Phosphor 2.1.10); `CaretDown` sem sufixo também |
+| Triggers (`DropdownMenuTrigger`, `DrawerTrigger`, `DrawerClose`) | `render={<Button … />}` | `asChild` + `<Button>` filho |
+| Item da sidebar como link (`nav-*.tsx`) | `<SidebarMenuButton render={<a href={item.url} />}>` | `<SidebarMenuButton asChild><a href={item.url}>…</a></SidebarMenuButton>` |
+| Trigger aberto (`nav-user`, `nav-documents`, ações da tabela) | `data-popup-open:bg-sidebar-accent` / `data-popup-open:bg-accent` / `data-popup-open:bg-muted` | `data-[state=open]:bg-sidebar-accent` / `data-[state=open]:bg-accent` / `data-[state=open]:bg-muted` |
+| Largura do menu do usuário | `w-(--anchor-width)` | `w-(--radix-dropdown-menu-trigger-width)` |
+| `DropdownMenuLabel` (`nav-user`) | dentro de `DropdownMenuGroup` | solto |
+| Checkbox "select all" | `checked={all}` + `indeterminate={some && !all}` | `checked={all \|\| (some && "indeterminate")}` |
+| `ToggleGroup` do gráfico | `value={[timeRange]}`, `onValueChange={(v) => v[0] && setTimeRange(v[0])}`, `spacing={0}` | `type="single" value={timeRange} onValueChange={setTimeRange}` |
+| `Select` com rótulo ≠ `value` (time range, view selector) | `items={{ "90d": "Last 3 months", … }}` e `onValueChange={(v) => v && setX(v)}` | sem `items`; `onValueChange={setX}` |
+| `Drawer` (`TableCellViewer`) | `<Drawer swipeDirection={isMobile ? "down" : "right"}>`; alça opt-in (`showSwipeHandle`) | `<Drawer direction={isMobile ? "bottom" : "right"}>` (vaul; alça sempre visível no bottom) |
+| Gráficos | recharts 3 (`accessibilityLayer` default `true`) | recharts 2.15 (passe `accessibilityLayer`) |
+| Densidade | base-mira (`Button` `h-7`, `Card` 16px, `text-xs`) | new-york (`Button` `h-9`, `Card` `py-6`, `text-sm`) |
+
+Exemplo (gráfico interativo na v2.x):
+
+```tsx
+<CardAction>
+  <ToggleGroup
+    type="single"
+    value={timeRange}
+    onValueChange={setTimeRange}
+    variant="outline"
+    className="hidden *:data-[slot=toggle-group-item]:px-4! @[767px]/card:flex"
+  >
+    <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
+    <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
+    <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
+  </ToggleGroup>
+  <Select value={timeRange} onValueChange={setTimeRange}>
+    <SelectTrigger className="flex w-40 @[767px]/card:hidden" size="sm" aria-label="Select a value">
+      <SelectValue placeholder="Last 3 months" />
+    </SelectTrigger>
+    {/* SelectContent igual */}
+  </Select>
+</CardAction>
+```
+
+Exemplo (`TableCellViewer` na v2.x):
+
+```tsx
+<Drawer direction={isMobile ? "bottom" : "right"}>
+  <DrawerTrigger asChild>
+    <Button variant="link" className="w-fit px-0 text-left text-foreground">
+      {item.header}
+    </Button>
+  </DrawerTrigger>
+  <DrawerContent>
+    {/* ... */}
+    <DrawerFooter>
+      <Button>Submit</Button>
+      <DrawerClose asChild>
+        <Button variant="outline">Done</Button>
+      </DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+

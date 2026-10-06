@@ -1,12 +1,22 @@
-"use client";
-
 import { Toggle } from "@blips/ui/components/toggle";
-import { TextB } from "@phosphor-icons/react";
+import {
+  TextBIcon,
+  TextItalicIcon,
+  TextUnderlineIcon,
+} from "@phosphor-icons/react";
 
 export default function ToggleDemo() {
   return (
-    <Toggle aria-label="Toggle bold">
-      <TextB className="h-4 w-4" />
-    </Toggle>
+    <div className="flex flex-wrap items-center gap-2">
+      <Toggle aria-label="Alternar negrito" defaultPressed>
+        <TextBIcon />
+      </Toggle>
+      <Toggle aria-label="Alternar itálico">
+        <TextItalicIcon />
+      </Toggle>
+      <Toggle aria-label="Alternar sublinhado">
+        <TextUnderlineIcon />
+      </Toggle>
+    </div>
   );
 }

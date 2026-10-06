@@ -1,12 +1,12 @@
 "use client";
+
 import {
   Menubar,
   MenubarCheckboxItem,
   MenubarContent,
+  MenubarGroup,
   MenubarItem,
   MenubarMenu,
-  MenubarRadioGroup,
-  MenubarRadioItem,
   MenubarSeparator,
   MenubarShortcut,
   MenubarSub,
@@ -14,67 +14,86 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@blips/ui/components/menubar";
+import * as React from "react";
+
 export default function MenubarDemo() {
+  const [showBookmarks, setShowBookmarks] = React.useState(false);
+  const [showFullUrls, setShowFullUrls] = React.useState(true);
+
   return (
     <Menubar>
       <MenubarMenu>
-        <MenubarTrigger>File</MenubarTrigger>
+        <MenubarTrigger>Arquivo</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
-            New Tab<MenubarShortcut>⌘T</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem>
-            New Window<MenubarShortcut>⌘N</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem disabled>New Incognito Window</MenubarItem>
+          <MenubarGroup>
+            <MenubarItem>
+              Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>
+              Nova janela <MenubarShortcut>⌘N</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem disabled>Nova janela anônima</MenubarItem>
+          </MenubarGroup>
           <MenubarSeparator />
           <MenubarSub>
-            <MenubarSubTrigger>Share</MenubarSubTrigger>
+            <MenubarSubTrigger>Compartilhar</MenubarSubTrigger>
             <MenubarSubContent>
-              <MenubarItem>Email link</MenubarItem>
-              <MenubarItem>Messages</MenubarItem>
-              <MenubarItem>Notes</MenubarItem>
+              <MenubarItem>Link por e-mail</MenubarItem>
+              <MenubarItem>Mensagens</MenubarItem>
+              <MenubarItem>Notas</MenubarItem>
             </MenubarSubContent>
           </MenubarSub>
           <MenubarSeparator />
           <MenubarItem>
-            Print...<MenubarShortcut>⌘P</MenubarShortcut>
+            Imprimir... <MenubarShortcut>⌘P</MenubarShortcut>
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger>Edit</MenubarTrigger>
+        <MenubarTrigger>Editar</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
-            Undo<MenubarShortcut>⌘Z</MenubarShortcut>
-          </MenubarItem>
-          <MenubarItem>
-            Redo<MenubarShortcut>⇧⌘Z</MenubarShortcut>
-          </MenubarItem>
+          <MenubarGroup>
+            <MenubarItem>
+              Desfazer <MenubarShortcut>⌘Z</MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>
+              Refazer <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+            </MenubarItem>
+          </MenubarGroup>
           <MenubarSeparator />
-          <MenubarItem>Cut</MenubarItem>
-          <MenubarItem>Copy</MenubarItem>
-          <MenubarItem>Paste</MenubarItem>
+          <MenubarGroup>
+            <MenubarItem>Recortar</MenubarItem>
+            <MenubarItem>Copiar</MenubarItem>
+            <MenubarItem>Colar</MenubarItem>
+          </MenubarGroup>
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger>View</MenubarTrigger>
-        <MenubarContent>
-          <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
-          <MenubarCheckboxItem checked>
-            Always Show Full URLs
+        <MenubarTrigger>Exibir</MenubarTrigger>
+        <MenubarContent className="w-64">
+          <MenubarCheckboxItem
+            checked={showBookmarks}
+            onCheckedChange={setShowBookmarks}
+          >
+            Sempre mostrar a barra de favoritos
+          </MenubarCheckboxItem>
+          <MenubarCheckboxItem
+            checked={showFullUrls}
+            onCheckedChange={setShowFullUrls}
+          >
+            Sempre mostrar URLs completas
           </MenubarCheckboxItem>
           <MenubarSeparator />
           <MenubarItem inset>
-            Reload<MenubarShortcut>⌘R</MenubarShortcut>
+            Recarregar <MenubarShortcut>⌘R</MenubarShortcut>
           </MenubarItem>
           <MenubarItem disabled inset>
-            Force Reload<MenubarShortcut>⇧⌘R</MenubarShortcut>
+            Forçar recarga <MenubarShortcut>⇧⌘R</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />
-          <MenubarItem inset>Toggle Fullscreen</MenubarItem>
+          <MenubarItem inset>Tela cheia</MenubarItem>
           <MenubarSeparator />
-          <MenubarItem inset>Hide Sidebar</MenubarItem>
+          <MenubarItem inset>Ocultar barra lateral</MenubarItem>
         </MenubarContent>
       </MenubarMenu>
     </Menubar>

@@ -1,15 +1,11 @@
 import { Checkbox } from "@blips/ui/components/checkbox";
+import { Field, FieldLabel } from "@blips/ui/components/field";
 
 export default function CheckboxDisabled() {
   return (
-    <div className="flex items-center space-x-2">
-      <Checkbox id="terms2" disabled />
-      <label
-        htmlFor="terms2"
-        className="text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-      >
-        Accept terms and conditions
-      </label>
-    </div>
+    <Field orientation="horizontal" data-disabled="true" className="w-fit">
+      <Checkbox id="terms-disabled" disabled />
+      <FieldLabel htmlFor="terms-disabled">Ativar notificações</FieldLabel>
+    </Field>
   );
 }

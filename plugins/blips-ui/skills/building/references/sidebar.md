@@ -2,127 +2,77 @@
 
 Import: `@blips/ui/components/sidebar`
 
-## Sub-components
+Barra lateral de navegação do app: painel fixo no desktop (expandido, recolhido
+em ícones ou fora da tela) e Sheet no mobile. É a navegação padrão de apps
+internos Blips.
 
-| Component | Description |
-|---|---|
-| `SidebarProvider` | Root context provider. Manages open/collapsed state, mobile detection, keyboard shortcut (Ctrl+B). Wraps children in `TooltipProvider`. |
-| `Sidebar` | Main sidebar container. Handles desktop (fixed panel) and mobile (Sheet) rendering. |
-| `SidebarTrigger` | Toggle button for sidebar open/close. Renders as a ghost icon Button. |
-| `SidebarRail` | Thin vertical strip at the sidebar edge for drag-to-toggle. Hidden on mobile. |
-| `SidebarInset` | Main content area (`<main>`) that sits beside the sidebar with proper margins. |
-| `SidebarInput` | Styled Input component for search fields inside the sidebar. |
-| `SidebarHeader` | Top section of the sidebar. Flex column with `gap-2 p-2`. |
-| `SidebarFooter` | Bottom section of the sidebar. Flex column with `gap-2 p-2`. |
-| `SidebarSeparator` | Separator styled for sidebar context with `bg-sidebar-border`. |
-| `SidebarContent` | Scrollable middle section. Flex column with overflow handling. |
-| `SidebarGroup` | Groups navigation items. Flex column with `p-2`. |
-| `SidebarGroupLabel` | Label for a group. Supports `asChild` for custom elements (e.g., CollapsibleTrigger). |
-| `SidebarGroupAction` | Action button positioned at top-right of a group. |
-| `SidebarGroupContent` | Content container within a group. |
-| `SidebarMenu` | Unsorted list (`<ul>`) for menu items. Flex column with `gap-1`. |
-| `SidebarMenuItem` | List item (`<li>`) wrapper for a menu button. |
-| `SidebarMenuButton` | Interactive menu button with CVA variants. Supports `asChild`, `isActive`, `tooltip`, `variant`, and `size`. |
-| `SidebarMenuAction` | Action button within a menu item (e.g., delete, settings). Supports `showOnHover`. |
-| `SidebarMenuBadge` | Badge displayed on a menu item (e.g., notification count). |
-| `SidebarMenuSkeleton` | Loading skeleton for menu items. Supports `showIcon`. |
-| `SidebarMenuSub` | Nested sub-menu list with left border indentation. |
-| `SidebarMenuSubItem` | Sub-menu list item. |
-| `SidebarMenuSubButton` | Interactive button for sub-menu items. Supports `size` and `isActive`. |
-| `useSidebar` | Hook to access sidebar context (state, open, toggleSidebar, isMobile, etc.). |
+Exports (iguais nas duas versões, 24 nomes): `SidebarProvider`, `Sidebar`,
+`SidebarTrigger`, `SidebarRail`, `SidebarInset`, `SidebarInput`,
+`SidebarHeader`, `SidebarFooter`, `SidebarSeparator`, `SidebarContent`,
+`SidebarGroup`, `SidebarGroupLabel`, `SidebarGroupAction`,
+`SidebarGroupContent`, `SidebarMenu`, `SidebarMenuItem`, `SidebarMenuButton`,
+`SidebarMenuAction`, `SidebarMenuBadge`, `SidebarMenuSkeleton`,
+`SidebarMenuSub`, `SidebarMenuSubItem`, `SidebarMenuSubButton`, `useSidebar`.
 
-## Props & Variants
+## Notas comuns
 
-### SidebarProvider
+**Estrutura**: `SidebarProvider` > (`Sidebar` > `SidebarHeader` / `SidebarContent` > `SidebarGroup` > `SidebarGroupLabel` + `SidebarGroupContent` > `SidebarMenu` > `SidebarMenuItem` > `SidebarMenuButton` / `SidebarFooter` / `SidebarRail`) + `SidebarInset` (o `<main>` ao lado, com o header e o `SidebarTrigger`).
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `defaultOpen` | `boolean` | `true` | Initial open state (uncontrolled). |
-| `open` | `boolean` | -- | Controlled open state. |
-| `onOpenChange` | `(open: boolean) => void` | -- | Callback when open state changes. |
-| `className` | `string` | -- | Additional CSS classes. |
-| `style` | `CSSProperties` | -- | CSS custom properties. Sets `--sidebar-width` and `--sidebar-width-icon`. |
+**SidebarProvider**: `defaultOpen` (`true`), `open` + `onOpenChange(open)` (controlado), `style` para as CSS vars `--sidebar-width` (`16rem`) e `--sidebar-width-icon` (`3rem`). Persiste o estado no cookie `sidebar_state` (7 dias). Atalho `Ctrl/Cmd + B`.
 
-**CSS custom properties:**
-- `--sidebar-width`: `16rem` (default desktop width)
-- `--sidebar-width-icon`: `3rem` (collapsed icon-only width)
+**Sidebar**
 
-**Cookie persistence:** Saves state to `sidebar_state` cookie (7-day max-age).
-
-**Keyboard shortcut:** `Ctrl+B` / `Cmd+B` toggles the sidebar.
-
-### Sidebar
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `side` | `"left" \| "right"` | `"left"` | Which side the sidebar is on. |
-| `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` | Visual variant. `floating` adds rounded corners and shadow. `inset` adds margin and rounding. |
-| `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | Collapse behavior. `offcanvas` slides out, `icon` shrinks to icon-only, `none` is always visible. |
-| `className` | `string` | -- | Additional CSS classes. |
-
-**Mobile behavior:** On mobile, the sidebar renders inside a `Sheet` component with `--sidebar-width: 18rem`.
-
-### SidebarMenuButton (CVA Variants)
-
-| Variant | Values | Default | Description |
-|---|---|---|---|
-| `variant` | `"default" \| "outline"` | `"default"` | Visual style. `outline` adds a border shadow. |
-| `size` | `"default" \| "sm" \| "lg"` | `"default"` | Size. `default`=`h-8`, `sm`=`h-7 text-xs`, `lg`=`h-12`. |
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `asChild` | `boolean` | `false` | Render as child element (e.g., `<a>`). |
-| `isActive` | `boolean` | `false` | Highlight as active. Applies `bg-sidebar-accent font-medium`. |
-| `tooltip` | `string \| TooltipContentProps` | -- | Tooltip shown when sidebar is collapsed (icon mode). |
-
-### SidebarMenuSubButton
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `asChild` | `boolean` | `false` | Render as child element. |
-| `size` | `"sm" \| "md"` | `"md"` | Text size. `sm`=`text-xs`, `md`=`text-sm`. |
-| `isActive` | `boolean` | -- | Highlight as active. |
-
-### SidebarMenuAction
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `asChild` | `boolean` | `false` | Render as child element. |
-| `showOnHover` | `boolean` | `false` | Only show on hover/focus (opacity transition). |
-
-### SidebarMenuSkeleton
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `showIcon` | `boolean` | `false` | Show an icon-sized skeleton circle. |
-
-### SidebarGroupLabel
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `asChild` | `boolean` | `false` | Render as child element (e.g., `CollapsibleTrigger`). |
-
-### useSidebar Hook
-
-Returns `SidebarContextProps`:
-
-| Property | Type | Description |
+| Prop | Tipo | Padrão |
 |---|---|---|
-| `state` | `"expanded" \| "collapsed"` | Current sidebar state. |
-| `open` | `boolean` | Whether sidebar is open. |
-| `setOpen` | `(open: boolean) => void` | Set open state. |
-| `openMobile` | `boolean` | Whether mobile sheet is open. |
-| `setOpenMobile` | `(open: boolean) => void` | Set mobile open state. |
-| `isMobile` | `boolean` | Whether on mobile viewport. |
-| `toggleSidebar` | `() => void` | Toggle sidebar (desktop or mobile). |
+| `side` | `"left" \| "right"` | `"left"` |
+| `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` |
+| `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` |
 
-## Usage
+No mobile vira Sheet com `--sidebar-width: 18rem`.
 
-### Basic Sidebar
+**SidebarMenuButton**: `isActive` (destaque `bg-sidebar-accent font-medium`, `data-active`), `tooltip` (string ou props de `TooltipContent`; aparece só recolhida em ícones), `variant` (`"default"` \| `"outline"`), `size` (`"default"` `h-8`, `"sm"` `h-7`, `"lg"` `h-12`).
+
+**SidebarMenuSubButton**: `size` (`"sm"` \| `"md"`, padrão `"md"`), `isActive`.
+**SidebarMenuAction**: `showOnHover` (só aparece no hover/foco do item).
+**SidebarMenuSkeleton**: `showIcon`.
+
+**useSidebar()**: `{ state: "expanded" | "collapsed", open, setOpen, openMobile, setOpenMobile, isMobile, toggleSidebar }`.
+
+- Tokens de cor próprios: `bg-sidebar`, `text-sidebar-foreground`, `bg-sidebar-accent`, `text-sidebar-accent-foreground`, `bg-sidebar-primary`, `border-sidebar-border`, `ring-sidebar-ring`.
+- Atributos para estilizar: `data-state` (`expanded`/`collapsed`, no wrapper), `data-collapsible`, `data-variant`, `data-side`, `data-sidebar`, `data-active`, `data-size`, `data-mobile`.
+- Recolhida em ícones: botões viram `size-8 p-2`, rótulos e submenus somem, `SidebarGroupLabel` fica `opacity-0`.
+- Internamente usa `Sheet`, `Button`, `Input`, `Separator`, `Skeleton` e `Tooltip` da própria lib, e o hook `useIsMobile`.
+- Header do `SidebarInset`: `SidebarTrigger` + `Separator` vertical + `Breadcrumb` (veja `separator.md` para o seletor de altura de cada versão).
+
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
+
+## v3.x — Base UI
+
+- **`render` no lugar de `asChild`** (feito com `useRender` + `mergeProps`) em `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarMenuButton`, `SidebarMenuAction` e `SidebarMenuSubButton`: `<SidebarMenuButton render={<a href="/x" />}>…</SidebarMenuButton>`.
+- Com `tooltip`, o trigger é `<TooltipTrigger render={render} />`: `render` + `tooltip` juntos funcionam (o elemento do `render` vira o trigger).
+- **O `SidebarProvider` não envolve mais os filhos num `TooltipProvider`.** Os tooltips do menu usam o atraso padrão do Base UI (~600 ms). Para abrir na hora, coloque `<TooltipProvider>` na raiz do app (o da lib já tem `delay={0}`).
+- `Sidebar` aceita `dir` (repassado à Sheet no mobile, RTL).
+- `SidebarTrigger`: `Button size="icon-sm"` com o ícone `SidebarIcon`.
+- `SidebarMenuAction showOnHover` fica visível com `aria-expanded` (ex.: com um `DropdownMenuTrigger` aberto dentro), não com `data-[state=open]`.
+- Seletores próprios: `data-[active=true]:` continua valendo; `data-active:` e `data-open:` também casam.
+- Visual mira: textos `text-xs`; `SidebarMenu gap-px`; `SidebarGroup px-2 py-1`; `SidebarInput border-input bg-muted/20`; `floating` com `ring-1`; `outline` com sombra de 1px funcionando com tokens oklch.
+- Grupo/submenu recolhível: `Collapsible` do Base UI. O trigger ganha `data-panel-open` quando aberto e o `Collapsible` raiz, `data-open`.
 
 ```tsx
-"use client"
+"use client";
 
+import {
+  CaretRightIcon,
+  GearIcon,
+  HouseIcon,
+  TrayIcon,
+} from "@phosphor-icons/react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@blips/ui/components/collapsible";
+import { Separator } from "@blips/ui/components/separator";
 import {
   Sidebar,
   SidebarContent,
@@ -133,169 +83,217 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from "@blips/ui/components/sidebar";
+import { TooltipProvider } from "@blips/ui/components/tooltip";
+
+const itens = [
+  { titulo: "Início", url: "/", icone: HouseIcon },
+  { titulo: "Caixa de entrada", url: "/inbox", icone: TrayIcon },
+];
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <TooltipProvider>
+      <SidebarProvider>
+        <Sidebar collapsible="icon">
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>Aplicação</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {itens.map((item) => (
+                    <SidebarMenuItem key={item.titulo}>
+                      <SidebarMenuButton
+                        tooltip={item.titulo}
+                        render={<a href={item.url} />}
+                      >
+                        <item.icone />
+                        <span>{item.titulo}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+
+                  <Collapsible className="group/collapsible" render={<SidebarMenuItem />}>
+                    <CollapsibleTrigger render={<SidebarMenuButton tooltip="Configurações" />}>
+                      <GearIcon />
+                      <span>Configurações</span>
+                      <CaretRightIcon className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton isActive render={<a href="/conta" />}>
+                            Conta
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </Collapsible>
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+          <SidebarRail />
+        </Sidebar>
+        <SidebarInset>
+          <header className="flex h-12 items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 data-vertical:h-4" />
+            {/* Breadcrumb */}
+          </header>
+          {children}
+        </SidebarInset>
+      </SidebarProvider>
+    </TooltipProvider>
+  );
+}
+```
+
+Grupo inteiro recolhível pelo rótulo:
+
+```tsx
+<Collapsible defaultOpen className="group/collapsible">
+  <SidebarGroup>
+    <SidebarGroupLabel render={<CollapsibleTrigger />}>
+      Projetos
+      <CaretRightIcon className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
+    </SidebarGroupLabel>
+    <CollapsibleContent>
+      <SidebarGroupContent>…</SidebarGroupContent>
+    </CollapsibleContent>
+  </SidebarGroup>
+</Collapsible>
+```
+
+Ação com menu no item:
+
+```tsx
+<SidebarMenuItem>
+  <SidebarMenuButton render={<a href="/projetos/1" />}>Projeto 1</SidebarMenuButton>
+  <DropdownMenu>
+    <DropdownMenuTrigger render={<SidebarMenuAction showOnHover />}>
+      <DotsThreeIcon />
+      <span className="sr-only">Mais</span>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent side="right" align="start">…</DropdownMenuContent>
+  </DropdownMenu>
+</SidebarMenuItem>
+```
+
+### Armadilhas
+
+- `asChild` não existe em nenhuma peça: use `render`.
+- Tooltips do menu "demorando" a abrir: falta `<TooltipProvider>` na raiz.
+- `group-data-[state=open]/collapsible:` não casa com o `Collapsible` v3: use `group-data-open/collapsible:`.
+- As classes `no-scrollbar` (no `SidebarContent`) só fazem efeito se o `globals.css` do app definir esse utilitário.
+
+## v2.x — Radix
+
+- **`asChild`** (com `Slot` do Radix) em `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarMenuButton`, `SidebarMenuAction` e `SidebarMenuSubButton`.
+- O `SidebarProvider` já envolve os filhos num `TooltipProvider delayDuration={0}`: tooltips do menu abrem na hora sem configurar nada.
+- `SidebarTrigger`: `Button size="icon"` + `size-7`, ícone `SidebarSimple`.
+- `SidebarMenuAction showOnHover` fica visível com `data-[state=open]` (menu aberto dentro).
+- Visual new-york: textos `text-sm` (sm `text-xs`); `SidebarMenu gap-1`; `SidebarGroup p-2`.
+- Grupo/submenu recolhível: `Collapsible` Radix (`data-state="open"`).
+
+```tsx
+"use client"
+
+import { CaretRight, Gear, House, Tray } from "@phosphor-icons/react"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@blips/ui/components/collapsible"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
   SidebarTrigger,
 } from "@blips/ui/components/sidebar"
-import { House, Tray, Gear } from "@phosphor-icons/react"
 
-const items = [
-  { title: "House", url: "#", icon: House },
-  { title: "Tray", url: "#", icon: Tray },
-  { title: "Gear", url: "#", icon: Gear },
+const itens = [
+  { titulo: "Início", url: "/", icone: House },
+  { titulo: "Caixa de entrada", url: "/inbox", icone: Tray },
 ]
 
-export default function AppSidebar() {
+export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <Sidebar>
+      <Sidebar collapsible="icon">
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Application</SidebarGroupLabel>
+            <SidebarGroupLabel>Aplicação</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
+                {itens.map((item) => (
+                  <SidebarMenuItem key={item.titulo}>
+                    <SidebarMenuButton asChild tooltip={item.titulo}>
                       <a href={item.url}>
-                        <item.icon />
-                        <span>{item.title}</span>
+                        <item.icone />
+                        <span>{item.titulo}</span>
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
+
+                <Collapsible asChild className="group/collapsible">
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton tooltip="Configurações">
+                        <Gear />
+                        <span>Configurações</span>
+                        <CaretRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuSubButton asChild isActive>
+                            <a href="/conta">Conta</a>
+                          </SidebarMenuSubButton>
+                        </SidebarMenuSubItem>
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </SidebarMenuItem>
+                </Collapsible>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-12 items-center justify-between px-4">
-          <SidebarTrigger />
+        <header className="flex h-12 items-center gap-2 px-4">
+          <SidebarTrigger className="-ml-1" />
         </header>
+        {children}
       </SidebarInset>
     </SidebarProvider>
   )
 }
 ```
 
-### With Collapsible Groups
+### Exemplos completos (escritos para a v2)
 
-```tsx
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@blips/ui/components/collapsible"
-import { ChevronRight } from "@phosphor-icons/react"
+Exemplos longos de sidebar com `asChild`, ícones Phosphor sem sufixo e `Collapsible` Radix. Em repo v3, troque `asChild` por `render`, os ícones pelos nomes com sufixo `Icon` e os seletores `data-[state=open]` por `data-open`/`data-panel-open` (veja a seção v3.x acima).
 
-<Collapsible defaultOpen className="group/collapsible">
-  <SidebarGroup>
-    <SidebarGroupLabel asChild>
-      <CollapsibleTrigger>
-        {item.title}
-        <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-      </CollapsibleTrigger>
-    </SidebarGroupLabel>
-    <CollapsibleContent>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {item.items.map((subItem) => (
-            <SidebarMenuItem key={subItem.title}>
-              <SidebarMenuButton asChild isActive={subItem.isActive}>
-                <a href={subItem.url}>{subItem.title}</a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </CollapsibleContent>
-  </SidebarGroup>
-</Collapsible>
-```
-
-### With Nested Sub-menus
-
-```tsx
-<SidebarMenuItem>
-  <Collapsible>
-    <CollapsibleTrigger asChild>
-      <SidebarMenuButton>
-        <ChevronRight className="transition-transform" />
-        <FolderIcon />
-        {name}
-      </SidebarMenuButton>
-    </CollapsibleTrigger>
-    <CollapsibleContent>
-      <SidebarMenuSub>
-        {items.map((subItem) => (
-          <SidebarMenuSubItem key={subItem.title}>
-            <SidebarMenuSubButton asChild isActive={subItem.isActive}>
-              <a href={subItem.url}>{subItem.title}</a>
-            </SidebarMenuSubButton>
-          </SidebarMenuSubItem>
-        ))}
-      </SidebarMenuSub>
-    </CollapsibleContent>
-  </Collapsible>
-</SidebarMenuItem>
-```
-
-### With Menu Badges
-
-```tsx
-<SidebarMenuItem>
-  <SidebarMenuButton>
-    <FileIcon />
-    {item.file}
-  </SidebarMenuButton>
-  <SidebarMenuBadge>{item.state}</SidebarMenuBadge>
-</SidebarMenuItem>
-```
-
-### With MagnifyingGlass Input
-
-```tsx
-<SidebarHeader>
-  <SidebarGroup className="py-0">
-    <SidebarGroupContent className="relative">
-      <Label htmlFor="search" className="sr-only">MagnifyingGlass</Label>
-      <SidebarInput id="search" placeholder="MagnifyingGlass..." className="pl-8" />
-      <MagnifyingGlass className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 opacity-50" />
-    </SidebarGroupContent>
-  </SidebarGroup>
-</SidebarHeader>
-```
-
-### Loading State
-
-```tsx
-<SidebarMenu>
-  {Array.from({ length: 5 }).map((_, i) => (
-    <SidebarMenuItem key={i}>
-      <SidebarMenuSkeleton showIcon />
-    </SidebarMenuItem>
-  ))}
-</SidebarMenu>
-```
-
-## All Examples
-
-- `sidebar-demo` -- Basic sidebar with menu items and trigger
-- `sidebar-01` -- Simple sidebar with grouped navigation
-- `sidebar-02` -- Collapsible sidebar sections
-- `sidebar-11` -- Collapsible file tree sidebar
-- `sidebar-header` -- Header with dropdown workspace selector
-- `sidebar-footer` -- Footer with dropdown user menu
-- `sidebar-group` -- Simple group with label and menu items
-- `sidebar-group-collapsible` -- Collapsible group using Collapsible component
-- `sidebar-group-action` -- Group with action button (e.g., add project)
-- `sidebar-menu` -- Basic menu with icons and links
-- `sidebar-menu-action` -- Menu items with dropdown action menus
-- `sidebar-menu-sub` -- Nested sub-menus with sub-items
-- `sidebar-menu-collapsible` -- Collapsible menu items with sub-menus
-- `sidebar-menu-badge` -- Menu items with notification badges
-- `sidebar-rsc` -- React Server Component with Suspense and skeleton fallback
-- `sidebar-controlled` -- Controlled open/close state with custom toggle button
-
-## All Example Variants
-
-### sidebar-demo
+#### sidebar-demo
 
 ```tsx
 "use client"
@@ -364,7 +362,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-header
+#### sidebar-header
 
 ```tsx
 "use client"
@@ -425,7 +423,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-footer
+#### sidebar-footer
 
 ```tsx
 "use client"
@@ -496,7 +494,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-group
+#### sidebar-group
 
 ```tsx
 "use client"
@@ -546,7 +544,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-group-collapsible
+#### sidebar-group-collapsible
 
 ```tsx
 "use client"
@@ -613,7 +611,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-group-action
+#### sidebar-group-action
 
 ```tsx
 "use client"
@@ -683,7 +681,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-menu
+#### sidebar-menu
 
 ```tsx
 "use client"
@@ -745,7 +743,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-menu-action
+#### sidebar-menu-action
 
 ```tsx
 "use client"
@@ -834,7 +832,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-menu-sub
+#### sidebar-menu-sub
 
 ```tsx
 "use client"
@@ -932,7 +930,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-menu-collapsible
+#### sidebar-menu-collapsible
 
 ```tsx
 "use client"
@@ -1046,7 +1044,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-menu-badge
+#### sidebar-menu-badge
 
 ```tsx
 "use client"
@@ -1113,7 +1111,7 @@ export default function AppSidebar() {
 }
 ```
 
-### sidebar-rsc
+#### sidebar-rsc
 
 ```tsx
 import * as React from "react"
@@ -1202,7 +1200,7 @@ async function NavProjects() {
 }
 ```
 
-### sidebar-controlled
+#### sidebar-controlled
 
 ```tsx
 "use client"
@@ -1283,12 +1281,7 @@ export default function AppSidebar() {
 }
 ```
 
-## Project Notes
 
-- Uses `@phosphor-icons/react` `SidebarSimple` icon (aliased as `SidebarSimple`) for the trigger button.
-- The sidebar uses the project's own `Sheet`, `Button`, `Input`, `Separator`, `Skeleton`, and `Tooltip` components internally.
-- Uses `useIsMobile` hook from `@selfie/ui/hooks/use-mobile` for responsive behavior.
-- **CSS custom properties** define widths: `--sidebar-width: 16rem`, `--sidebar-width-icon: 3rem`, `--sidebar-width` (mobile): `18rem`.
-- **Sidebar color tokens:** `bg-sidebar`, `text-sidebar-foreground`, `bg-sidebar-accent`, `text-sidebar-accent-foreground`, `bg-sidebar-primary`, `text-sidebar-primary-foreground`, `bg-sidebar-border`, `ring-sidebar-ring`.
-- **Data attributes** used for styling: `data-sidebar`, `data-state`, `data-collapsible`, `data-variant`, `data-side`, `data-active`, `data-size`, `data-mobile`.
-- Collapsed icon mode: Menu buttons shrink to `size-8 p-2`, labels and sub-menus are hidden, group labels get `opacity-0`.
+## Exemplos na docs
+
+`sidebar-demo` (em `apps/docs/examples/`, escrito para a v3).

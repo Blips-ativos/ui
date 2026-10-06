@@ -2,145 +2,98 @@
 
 Import: `@blips/ui/components/slider`
 
-## Sub-components
+Seleção de um valor ou de uma faixa numa escala contínua (volume, faixa de
+preço). Quando o valor exato importa, acompanhe de um `Input` numérico ou mostre
+o valor ao lado.
 
-| Component | Description |
-|---|---|
-| `Slider` | Range input wrapping `@radix-ui/react-slider` Root. Renders a track, filled range, and draggable thumb. |
+Export (igual nas duas versões): `Slider`.
 
-## Props & Variants
+## Notas comuns
 
-### Slider
+- `min` (padrão `0`), `max` (padrão `100`), `step`, `disabled`, `orientation`, `name`.
+- Um thumb por posição do array de valor: `[25, 75]` desenha dois (faixa).
+- Sem `value` nem `defaultValue`, renderiza dois thumbs (`[min, max]`).
+- Dê nome acessível: `aria-label` ou `aria-labelledby` apontando para o rótulo.
 
-Extends `React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `defaultValue` | `number[]` | -- | Default value (uncontrolled). Array for range support. |
-| `value` | `number[]` | -- | Controlled value. |
-| `onValueChange` | `(value: number[]) => void` | -- | Callback when value changes during drag. |
-| `onValueCommit` | `(value: number[]) => void` | -- | Callback when drag ends (committed value). |
-| `min` | `number` | `0` | Minimum value. |
-| `max` | `number` | `100` | Maximum value. |
-| `step` | `number` | `1` | Step increment. |
-| `minStepsBetweenThumbs` | `number` | `0` | Minimum steps between thumbs (range mode). |
-| `disabled` | `boolean` | `false` | Disable the slider. |
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Slider orientation. |
-| `inverted` | `boolean` | `false` | Invert the slider direction. |
-| `dir` | `"ltr" \| "rtl"` | -- | Reading direction. |
-| `name` | `string` | -- | Name for form submission. |
-| `className` | `string` | -- | Additional CSS classes. Base: `relative flex w-full touch-none select-none items-center`. |
+## v3.x — Base UI
 
-**Internal structure:**
-- **Track:** `relative h-2 w-full grow overflow-hidden rounded-full bg-secondary`
-- **Range:** `absolute h-full bg-primary`
-- **Thumb:** `block h-5 w-5 rounded-full border-2 border-primary bg-background` with focus ring
+Primitiva: `@base-ui/react/slider`. Estrutura: Root > Control > Track > Indicator
+(`data-slot="slider-range"`) + Thumbs. `thumbAlignment="edge"` (pode sobrescrever).
 
-## Usage
+| Prop | Tipo | Notas |
+|---|---|---|
+| `value` / `defaultValue` | `number \| number[]` | **Escalar desenha um único thumb** (desvio Blips do base-mira). |
+| `onValueChange` | `(value: number \| number[], eventDetails) => void` | Recebe `number` se o valor for escalar, `number[]` se for array. |
+| `onValueCommitted` | `(value, eventDetails) => void` | Substitui `onValueCommit` do Radix (fim do arraste). |
+| `largeStep`, `minStepsBetweenValues`, `format`, `locale`, `thumbCollisionBehavior` | | Base UI. |
 
-### Basic Slider
+Visual: track `h-1 rounded-md bg-muted`; thumb `size-3 rounded-md border-ring`.
+Estado: `data-horizontal`/`data-vertical`, `data-disabled` (no Control), `data-dragging`.
+Vertical: `orientation="vertical"` + altura no pai (o Control tem `min-h-40`).
 
 ```tsx
-import { Slider } from "@blips/ui/components/slider"
+import { Slider } from "@blips/ui/components/slider";
 
-export default function SliderDemo() {
+export function Sliders() {
+  const [volume, setVolume] = React.useState(50);
+  const [faixa, setFaixa] = React.useState([200, 800]);
+
   return (
-    <Slider
-      defaultValue={[50]}
-      max={100}
-      step={1}
-      className="w-[60%]"
-    />
-  )
+    <div className="flex w-full max-w-sm flex-col gap-6">
+      <Slider
+        aria-label="Volume"
+        value={volume}
+        onValueChange={(v) => setVolume(v as number)}
+      />
+      <Slider
+        aria-label="Faixa de preço"
+        min={0}
+        max={1000}
+        step={50}
+        value={faixa}
+        onValueChange={(v) => setFaixa(v as number[])}
+      />
+    </div>
+  );
 }
 ```
 
-### Controlled Slider
+### Armadilhas
+
+- `onValueCommit` não existe: `onValueCommitted`.
+- `data-[orientation=vertical]:` e `data-[disabled]:` não casam: `data-vertical:`, `data-disabled:`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-slider` (Root > Track > Range + Thumbs).
+
+| Prop | Tipo | Notas |
+|---|---|---|
+| `value` / `defaultValue` | `number[]` | **Sempre array**, mesmo com um thumb (`[50]`). |
+| `onValueChange` | `(value: number[]) => void` | |
+| `onValueCommit` | `(value: number[]) => void` | Fim do arraste. |
+| `minStepsBetweenThumbs`, `inverted`, `asChild` | | Radix. |
+
+Visual: track `h-1.5 rounded-full`; thumb `size-4 rounded-full border-primary shadow-sm`.
+Estado: `data-orientation`, `data-disabled`.
 
 ```tsx
-import { useState } from "react"
 import { Slider } from "@blips/ui/components/slider"
 
-export default function SliderControlled() {
-  const [value, setValue] = useState([33])
+export function Sliders() {
+  const [volume, setVolume] = React.useState([50])
 
   return (
-    <div className="space-y-2">
-      <Slider
-        value={value}
-        onValueChange={setValue}
-        max={100}
-        step={1}
-      />
-      <p className="text-sm text-muted-foreground">Value: {value[0]}</p>
+    <div className="flex w-full max-w-sm flex-col gap-6">
+      <Slider aria-label="Volume" value={volume} onValueChange={setVolume} />
+      <Slider aria-label="Faixa de preço" defaultValue={[200, 800]} max={1000} step={50} />
     </div>
   )
 }
 ```
 
-### Range Slider (Two Thumbs)
+## Exemplos na docs
 
-```tsx
-<Slider
-  defaultValue={[25, 75]}
-  max={100}
-  step={1}
-  minStepsBetweenThumbs={5}
-/>
-```
-
-### With Labels
-
-```tsx
-<div className="space-y-2">
-  <div className="flex justify-between text-sm text-muted-foreground">
-    <span>0%</span>
-    <span>100%</span>
-  </div>
-  <Slider defaultValue={[50]} max={100} step={1} />
-</div>
-```
-
-### Custom Step and Range
-
-```tsx
-<Slider
-  defaultValue={[5]}
-  min={0}
-  max={10}
-  step={0.5}
-  className="w-full"
-/>
-```
-
-### With Form Integration
-
-```tsx
-import { Controller } from "react-hook-form"
-import { Slider } from "@blips/ui/components/slider"
-
-<Controller
-  name="volume"
-  control={form.control}
-  render={({ field }) => (
-    <Slider
-      value={[field.value]}
-      onValueChange={([val]) => field.onChange(val)}
-      min={0}
-      max={100}
-      step={1}
-    />
-  )}
-/>
-```
-
-## All Examples
-
-- `slider-demo` -- Basic slider at 50% with step=1
-
-## Project Notes
-
-- The slider renders a single thumb by default. Pass an array with two values (e.g., `[25, 75]`) to create a range slider with two thumbs.
-- The `value` and `defaultValue` props must always be arrays, even for single-value sliders: `[50]` not `50`.
-- Track uses `bg-secondary`, range fill uses `bg-primary`, thumb uses `border-primary bg-background`.
-- For form integration, destructure the array in `onValueChange`: `onValueChange={([val]) => field.onChange(val)}`.
+`slider-demo`, `slider-range`, `slider-controlled`, `slider-vertical`, `slider-disabled` (em `apps/docs/examples/`, escritos para a v3).

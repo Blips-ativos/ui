@@ -1,13 +1,13 @@
 ---
 title: Drawer
-description: Um componente de drawer para React.
+description: Um painel que desliza a partir de uma borda da tela e pode ser fechado arrastando.
 ---
 
 <ComponentPreview name="drawer-demo" />
 
 ## Sobre
 
-O Drawer é construído sobre o [Vaul](https://github.com/emilkowalski/vaul) por [emilkowalski](https://twitter.com/emilkowalski).
+O Drawer é construído sobre o [Base UI Drawer](https://base-ui.com/react/components/drawer). Na v2 ele usava o Vaul.
 
 ## Instalação
 
@@ -18,6 +18,7 @@ npm install @blips/ui
 ## Uso
 
 ```tsx
+import { Button } from "@blips/ui/components/button"
 import {
   Drawer,
   DrawerClose,
@@ -32,7 +33,7 @@ import {
 
 ```tsx
 <Drawer>
-  <DrawerTrigger>Abrir</DrawerTrigger>
+  <DrawerTrigger render={<Button variant="outline" />}>Abrir</DrawerTrigger>
   <DrawerContent>
     <DrawerHeader>
       <DrawerTitle>Você tem certeza absoluta?</DrawerTitle>
@@ -40,22 +41,82 @@ import {
     </DrawerHeader>
     <DrawerFooter>
       <Button>Enviar</Button>
-      <DrawerClose>
-        <Button variant="outline">Cancelar</Button>
-      </DrawerClose>
+      <DrawerClose render={<Button variant="outline" />}>Cancelar</DrawerClose>
     </DrawerFooter>
   </DrawerContent>
 </Drawer>
 ```
 
+O `DrawerContent` precisa estar dentro do `Drawer` da `@blips/ui`: ele lê a direção, o modo modal e a alça de arraste do contexto do root.
+
 ## Exemplos
 
-### Exemplo
+### Posição
 
-Um drawer com cabeçalho, conteúdo interativo e rodapé com ações.
+Use a prop `swipeDirection` no `Drawer` para definir de qual borda o painel entra: `up`, `right`, `down` (padrão) ou `left`.
 
-<ComponentPreview name="drawer-demo" />
+<ComponentPreview name="drawer-position" />
+
+### Alça de arraste
+
+A alça é opcional. Use `showSwipeHandle` no `Drawer` para exibi-la, ou renderize `<DrawerSwipeHandle />` manualmente.
+
+<ComponentPreview name="drawer-swipe-handle" />
+
+### Conteúdo rolável
+
+Dê `flex-1 overflow-y-auto` ao corpo para que só ele role.
+
+<ComponentPreview name="drawer-scrollable" />
+
+### Pontos de parada
+
+Passe `snapPoints` para o drawer parar em alturas intermediárias. Os valores podem ser medidas CSS (`"31rem"`) ou frações da altura (`1`).
+
+<ComponentPreview name="drawer-snap-points" />
+
+### Não modal
+
+Com `modal={false}` o overlay não é renderizado e a página continua interativa. Combine com `disablePointerDismissal` para não fechar ao clicar fora.
+
+<ComponentPreview name="drawer-non-modal" />
+
+## Migrando da v2
+
+A primitiva trocou o Vaul pelo [Base UI Drawer](https://base-ui.com/react/components/drawer).
+
+- `direction` vira `swipeDirection`, com os valores `down | up | left | right` (antes `bottom | top | left | right`).
+- Saem as props do Vaul `shouldScaleBackground`, `setBackgroundColorOnScale`, `dismissible`, `handleOnly`, `fadeFromIndex` e `activeSnapPoint`/`setActiveSnapPoint`. `snapPoints` segue o formato do Base UI. Drawers aninhados funcionam sem a prop `nested`.
+- `asChild` saiu do `DrawerTrigger` e do `DrawerClose`. Use `render`.
+- A alça deixou de aparecer sempre: agora é opt-in com `showSwipeHandle` ou `<DrawerSwipeHandle />`.
+- O `className` passado ao `DrawerContent` vai para o popup (`data-slot="drawer-popup"`). O `data-slot="drawer-content"` agora é o wrapper interno dos filhos.
+- Seletores `data-[vaul-drawer-direction=*]` não existem mais. Use `data-[swipe-direction=*]`, `data-[swipe-axis=x|y]` e o grupo `group/drawer-popup`.
+- `onOpenChange` recebe `(open, eventDetails)`.
+
+```tsx
+// v2
+<Drawer direction="right">
+  <DrawerTrigger asChild>
+    <Button variant="outline">Abrir</Button>
+  </DrawerTrigger>
+  <DrawerContent>{/* ... */}</DrawerContent>
+</Drawer>
+
+// v3
+<Drawer swipeDirection="right" showSwipeHandle>
+  <DrawerTrigger render={<Button variant="outline" />}>Abrir</DrawerTrigger>
+  <DrawerContent>{/* ... */}</DrawerContent>
+</Drawer>
+```
 
 ## Referência da API
 
-Consulte a [documentação do Vaul](https://vaul.emilkowal.ski/getting-started) para a referência completa da API.
+### Drawer
+
+| Prop              | Tipo                                   | Padrão   |
+| ----------------- | -------------------------------------- | -------- |
+| `swipeDirection`  | `"down" \| "up" \| "left" \| "right"`  | `"down"` |
+| `showSwipeHandle` | `boolean`                              | `false`  |
+| `modal`           | `boolean \| "trap-focus"`              | `true`   |
+
+Para as demais props, consulte a documentação do [Base UI Drawer](https://base-ui.com/react/components/drawer).

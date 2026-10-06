@@ -5,7 +5,7 @@ description: Renderiza um rótulo acessível associado a controles.
 
 <ComponentPreview name="label-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -21,14 +21,48 @@ import { Label } from "@blips/ui/components/label"
 <Label htmlFor="email">Seu endereço de e-mail</Label>
 ```
 
-## Referência da API
-
-Consulte a documentação do [Radix UI Label](https://www.radix-ui.com/docs/primitives/components/label#api-reference) para mais informações.
-
 ## Exemplos
 
-### Exemplo
+### Com input
 
-Associa um `Label` a um `Checkbox` para criar um controle acessível.
+<ComponentPreview name="label-input" />
 
-<ComponentPreview name="label-demo" />
+### Com textarea
+
+<ComponentPreview name="label-textarea" />
+
+### Desabilitado
+
+Dentro de um `Field` com `data-disabled`, o label fica esmaecido e sem interação.
+
+<ComponentPreview name="label-disabled" />
+
+## Referência da API
+
+### Label
+
+Um `<label>` nativo estilizado: aceita todas as props de `<label>`. O Base UI não tem um primitivo de Label; a associação com o controle é feita por `htmlFor` ou aninhando o controle dentro do label.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `htmlFor`   | `string` | -      |
+| `className` | `string` | -      |
+
+Em formulários, prefira o [`Field`](/docs/components/field) com `FieldLabel`, que já cuida do layout e dos estados.
+
+## Migrando da v2
+
+- **Elemento nativo**: o `Label` deixou de usar o `@radix-ui/react-label` e agora é um `<label>`.
+- **`asChild` foi removida** e não há `render`: use o `<label>` direto ou envolva o controle.
+- O Radix impedia a seleção de texto em duplo clique; isso deixou de existir (a classe `select-none` continua).
+- **Visual**: fonte padrão passou de `text-sm` para `text-xs/relaxed`.
+
+```tsx
+// v2
+<Label asChild>
+  <span>E-mail</span>
+</Label>
+
+// v3
+<Label htmlFor="email">E-mail</Label>
+```

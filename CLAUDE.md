@@ -5,8 +5,9 @@ Guidance for Claude Code when working in this repository.
 ## Overview
 
 `blips-ui` is the standalone **Blips UI component library** — a Turborepo +
-pnpm monorepo. Components mirror shadcn/ui on Radix primitives and are
-published as `@blips/ui`.
+pnpm monorepo. Components mirror shadcn/ui on **Base UI** primitives
+(`@base-ui/react`, shadcn style **`base-mira`**) and are published as
+`@blips/ui`. Since v3 there is no `@radix-ui/*` and no `vaul` in the lib.
 
 ## Layout
 
@@ -16,6 +17,9 @@ published as `@blips/ui`.
 - `apps/docs/` — fumadocs documentation site.
 - `plugins/` — Claude Code plugin marketplace (`blips-ui`); not app code.
 - `packages/ui/registry/` + `registry.json` — shadcn registry definitions.
+  `registry/default/{ui,hooks}/` and `registry/index.ts` are a **generated copy**
+  of `src/` (relative imports rewritten to `@/lib/utils` / `@/hooks/*`) — never
+  edit them by hand; see the registry gotcha below.
 
 ## Commands (run from repo root)
 
@@ -27,7 +31,8 @@ pnpm check            # biome check (lint + format)
 pnpm check:fix        # biome check --write
 pnpm typecheck        # turbo typecheck
 pnpm test             # turbo test
-pnpm registry:build   # build @blips/ui shadcn registry
+pnpm registry:build   # build @blips/ui shadcn registry (fails if registry/ drifted from src/)
+pnpm --filter @blips/ui exec node scripts/build-registry.js --sync  # regenerate registry/ from src/
 
 # Per package
 pnpm --filter @blips/ui build      # tsup
@@ -88,15 +93,47 @@ the `verify` job fails at merge).
 - In components import `cn` from the **relative** `../lib/utils`, never the
   `@/lib/utils` alias — the tsup build has no path alias and it breaks the bundle.
 - Component pattern: function components (no `forwardRef`) with `data-slot`
-  attributes and **CVA** variants. Use the **`blips-ui:building` skill**
+  attributes and **CVA** variants, on **Base UI** primitives
+  (`@base-ui/react/<part>`). Polymorphism is Base UI's **`render` prop**
+  (`useRender` + `mergeProps`), **not `asChild`** — e.g.
+  `<Button nativeButton={false} render={<Link href="…" />}>`. State attributes
+  are Base UI's (`data-open`, `data-closed`, `data-checked`, `data-active`…),
+  not Radix `data-state=…`. Use the **`blips-ui:building` skill**
   (`plugins/blips-ui/skills/building/`) when creating components.
+- **Canonical class reference = the shadcn CLI output** for preset
+  **`b6GMQNVCs`** (style `base-mira`, Phosphor icons, translucent menu — see
+  `packages/ui/components.json`). When adding or updating a component, generate
+  it with the shadcn CLI on that preset and reapply the Blips customizations on
+  top; don't hand-tune classes away from what the CLI emits.
+- **Density is `mira`** (compact): controls are `h-7` by default (`sm` `h-6`,
+  `lg` `h-8`), text `text-xs`, icons `size-3.5`. This is intentional — don't
+  "fix" sizes back to new-york/default proportions.
+- **shadcn utilities are embedded in `globals.css`** (a copy of
+  `shadcn/tailwind.css`: the `data-open/closed/checked/…` variants,
+  `no-scrollbar`, `scroll-fade*`, `shimmer*`, accordion keyframes) instead of
+  `@import "shadcn/tailwind.css"`, so the lib has no runtime dependency on the
+  shadcn CLI. When upgrading shadcn, recopy that block.
 - **Icons: `@phosphor-icons/react` is the standard** (weight `regular`, the
   default — don't pass `weight`). Never import `lucide-react` — a Biome
-  `noRestrictedImports` rule blocks it. Use Phosphor names (`CaretDown`, `X`,
-  `MagnifyingGlass`, `Check`, `Circle`, `DotsThree`…), not Lucide names.
+  `noRestrictedImports` rule blocks it. Use Phosphor names **with the `Icon`
+  suffix** (`CaretDownIcon`, `XIcon`, `MagnifyingGlassIcon`, `CheckIcon`,
+  `CircleIcon`, `DotsThreeIcon`…) — the unsuffixed names (`CaretDown`, `X`…)
+  are **deprecated** in Phosphor 2.1.x. Never use Lucide names.
+- **Charts: recharts 3** (pinned `3.10.1`). recharts 2 APIs/types don't apply
+  (e.g. tooltip/legend payload types changed) — follow `chart.tsx`.
 - Internal imports use **`@blips/*`** (this repo), not `@workspace/*`.
-- **Two registry build scripts** must stay in sync: `packages/ui/scripts/build-registry.js`
-  (package) and `apps/docs/scripts/build-registry.ts` (docs site, runs before dev/build).
+- **Two registry build scripts**, different jobs:
+  `packages/ui/scripts/build-registry.js` builds the **shadcn registry**
+  (`public/r/*.json`) from `registry/`, and `apps/docs/scripts/build-registry.ts`
+  builds the **docs examples registry** (`apps/docs/lib/__registry__.ts`, runs
+  before docs dev/build). The first one also guards `registry/` against drift:
+  without flags it **fails** if the copy in `registry/default/`, `registry/index.ts`
+  or the `dependencies`/`registryDependencies` of `registry.json` don't match
+  `src/`. After changing anything in `packages/ui/src/{components,hooks,index.ts}`
+  run it with **`--sync`** (copies the files, rewrites imports, derives the deps
+  from the imports — `recharts` gets the version pinned in `package.json`) and
+  then `pnpm check:fix` on `registry.json`. A new component also needs a new
+  item (`name` + `description`) in `registry.json`, or `--sync` fails.
 - **`apps/docs` is a static export** (`output: "export"` → `out/`): keep it
   fully SSG (no API routes / SSR / dynamic). Deployed to Firebase Hosting
   (`apps/docs/firebase.json`). MDX is styled via `components/mdx-components.tsx`
@@ -104,4 +141,6 @@ the `verify` job fails at merge).
 - Biome formatting: double quotes, semicolons, 2-space indent, line width 80,
   `es5` trailing commas.
 - React peer range: `^17 || ^18 || ^19`.
-- Comments/code in **pt-BR**; commit messages in **English** (Conventional Commits).
+- Comments/code in **pt-BR**; commit messages in **pt-BR** too (Conventional
+  Commits, `type(scope): descrição no imperativo`) — org rule since 2026-09;
+  older history is in English.

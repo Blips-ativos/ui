@@ -1,0 +1,56 @@
+---
+title: Direction
+description: Define a direção de leitura (LTR ou RTL) para os componentes Base UI de uma subárvore.
+---
+
+<ComponentPreview name="direction-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { DirectionProvider, useDirection } from "@blips/ui/components/direction"
+```
+
+```tsx
+<html dir="rtl">
+  <body>
+    <DirectionProvider direction="rtl">{children}</DirectionProvider>
+  </body>
+</html>
+```
+
+O `DirectionProvider` é o [Direction Provider do Base UI](https://base-ui.com/react/utils/direction-provider), reexportado sem mudanças. Ele informa a direção aos componentes que dependem dela para posicionar popups, navegar pelo teclado e calcular arraste, como Slider, Menu, Select, Tabs e Toolbar.
+
+O provider não muda o layout sozinho: continue definindo o atributo `dir` no HTML (ou num elemento ancestral) para o CSS e o navegador inverterem o texto. Os dois precisam concordar.
+
+## Exemplos
+
+### Lendo a direção
+
+O hook `useDirection()` devolve `"ltr"` ou `"rtl"` dentro do provider. Fora dele, devolve `"ltr"`.
+
+```tsx
+function Seta() {
+  const direction = useDirection()
+  return direction === "rtl" ? <ArrowLeftIcon /> : <ArrowRightIcon />
+}
+```
+
+## Referência da API
+
+### DirectionProvider
+
+| Prop        | Type             | Default |
+| ----------- | ---------------- | ------- |
+| `direction` | `"ltr" \| "rtl"` | `"ltr"` |
+| `children`  | `ReactNode`      |         |
+
+### useDirection
+
+`() => "ltr" | "rtl"`

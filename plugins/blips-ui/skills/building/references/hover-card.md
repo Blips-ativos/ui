@@ -2,105 +2,101 @@
 
 Import: `@blips/ui/components/hover-card`
 
-Built on [Radix UI Hover Card](https://www.radix-ui.com/primitives/docs/components/hover-card). Displays rich content when hovering over a trigger element.
+Cartão com conteúdo rico que aparece ao passar o mouse (ou focar) num gatilho.
+Use para prévia de perfil, de link ou de registro. Não use para ação essencial:
+no toque (mobile) ele não abre de forma confiável. Para conteúdo clicável, use
+Popover; para uma dica curta, Tooltip.
 
-## Sub-components
+Exports (iguais nas duas versões): `HoverCard`, `HoverCardTrigger`, `HoverCardContent`.
 
-| Component | Description |
+## Notas comuns
+
+- Conteúdo vai num Portal, com animação de fade/zoom e slide conforme `data-side`.
+- `HoverCardContent` aceita `side`, `sideOffset` e `align`. Largura padrão fixa (`w-64` na v2, `w-72` na v3); ajuste com `className`.
+- Ícones Phosphor (nunca lucide).
+
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
+
+## v3.x — Base UI
+
+Primitiva: `@base-ui/react/preview-card` (`PreviewCard`).
+
+| Componente | Descrição |
 |---|---|
-| `HoverCard` | Root component (`HoverCardPrimitive.Root`). |
-| `HoverCardTrigger` | Element that activates the hover card on hover. Supports `asChild`. |
-| `HoverCardContent` | The popover content panel with animations. |
+| `HoverCard` | `PreviewCard.Root`. `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`. |
+| `HoverCardTrigger` | `PreviewCard.Trigger`. Renderiza um `<a>` por padrão; troque com `render`. Os atrasos ficam **aqui**: `delay` e `closeDelay` (ms). |
+| `HoverCardContent` | Portal + Positioner + Popup. `rounded-lg p-2.5 text-xs/relaxed ring-1 ring-foreground/10 shadow-md`, `w-72`. |
 
-## Props & Variants
+**HoverCardContent**
 
-### HoverCard (Root)
+| Prop | Tipo | Padrão |
+|---|---|---|
+| `side` | `"top" \| "right" \| "bottom" \| "left" \| "inline-start" \| "inline-end"` | `"bottom"` |
+| `sideOffset` | `number` | `4` |
+| `align` | `"start" \| "center" \| "end"` | `"center"` |
+| `alignOffset` | `number` | `4` |
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `openDelay` | `number` | `700` | Milliseconds before the card opens on hover. |
-| `closeDelay` | `number` | `300` | Milliseconds before the card closes when hover ends. |
-| `open` | `boolean` | - | Controlled open state. |
-| `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes. |
-
-### HoverCardContent
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `align` | `"start" \| "center" \| "end"` | `"center"` | Alignment relative to trigger. |
-| `sideOffset` | `number` | `4` | Gap between trigger and content. |
-| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Side of trigger to render on. |
-
-**Base classes:** `z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none`
-
-Includes entrance/exit animations: fade, zoom, and slide-in based on `data-side`.
-
-## Usage
-
-### Basic Hover Card
+Estado: `data-open` / `data-closed`. CSS vars: `--transform-origin`, `--anchor-width`, `--available-height`.
 
 ```tsx
-import { Calendar } from "@phosphor-icons/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@blips/ui/components/avatar"
-import { Button } from "@blips/ui/components/button"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@blips/ui/components/avatar";
+import { Button } from "@blips/ui/components/button";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "@blips/ui/components/hover-card"
+} from "@blips/ui/components/hover-card";
 
-function HoverCardDemo() {
+export function PerfilHoverCard() {
   return (
     <HoverCard>
-      <HoverCardTrigger asChild>
-        <Button variant="link">@nextjs</Button>
+      <HoverCardTrigger
+        delay={300}
+        render={<Button variant="link" nativeButton={false} />}
+      >
+        @blips
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
-        <div className="flex justify-between gap-4">
+        <div className="flex gap-3">
           <Avatar>
-            <AvatarImage src="https://github.com/vercel.png" />
-            <AvatarFallback>VC</AvatarFallback>
+            <AvatarImage src="/logo.png" />
+            <AvatarFallback>BL</AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <h4 className="text-sm font-semibold">@nextjs</h4>
-            <p className="text-sm">
-              The React Framework -- created and maintained by @vercel.
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Joined December 2021
-            </div>
+          <div className="flex flex-col gap-1">
+            <h4 className="text-sm font-medium">@blips</h4>
+            <p>Gestão de ativos para quem empreende.</p>
+            <span className="text-muted-foreground">Desde dezembro de 2021</span>
           </div>
         </div>
       </HoverCardContent>
     </HoverCard>
-  )
+  );
 }
 ```
 
-### Simple Text Hover Card
+### Armadilhas
+
+- `openDelay`/`closeDelay` no `HoverCard` não existem: os atrasos vão no `HoverCardTrigger` (`delay`, `closeDelay`).
+- `asChild` não existe: `render={<Button nativeButton={false} />}` (o trigger é um `<a>`, não um `<button>`).
+- `data-[state=open]:` não casa: use `data-open:`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-hover-card`.
+
+| Componente | Descrição |
+|---|---|
+| `HoverCard` | `HoverCardPrimitive.Root`. `openDelay` (padrão Radix 700), `closeDelay` (300), `open`, `defaultOpen`, `onOpenChange(open)`. |
+| `HoverCardTrigger` | `HoverCardPrimitive.Trigger`. Use `asChild` para não aninhar `<a>`. |
+| `HoverCardContent` | Portal + Content. `rounded-md border p-4 shadow-md`, `w-64`. `align` padrão `"center"`, `sideOffset` padrão `4`; também `side`, `avoidCollisions`, `collisionPadding`. |
+
+Estado: `data-state="open" | "closed"`. CSS var de origem: `--radix-hover-card-content-transform-origin`.
 
 ```tsx
-<HoverCard>
-  <HoverCardTrigger asChild>
-    <span className="underline cursor-pointer">Hover me</span>
-  </HoverCardTrigger>
-  <HoverCardContent>
-    <p className="text-sm">Additional information appears here on hover.</p>
-  </HoverCardContent>
-</HoverCard>
-```
-
-## All Examples
-
-- `hover-card-demo` -- User profile card with avatar, name, description, and join date
-
-## All Example Variants
-
-### hover-card-demo
-
-```tsx
-import { Calendar } from "@phosphor-icons/react"
-
 import {
   Avatar,
   AvatarFallback,
@@ -113,26 +109,22 @@ import {
   HoverCardTrigger,
 } from "@blips/ui/components/hover-card"
 
-export default function HoverCardDemo() {
+export function PerfilHoverCard() {
   return (
-    <HoverCard>
+    <HoverCard openDelay={300}>
       <HoverCardTrigger asChild>
-        <Button variant="link">@nextjs</Button>
+        <Button variant="link">@blips</Button>
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
-        <div className="flex justify-between gap-4">
+        <div className="flex gap-4">
           <Avatar>
-            <AvatarImage src="https://github.com/vercel.png" />
-            <AvatarFallback>VC</AvatarFallback>
+            <AvatarImage src="/logo.png" />
+            <AvatarFallback>BL</AvatarFallback>
           </Avatar>
           <div className="space-y-1">
-            <h4 className="text-sm font-semibold">@nextjs</h4>
-            <p className="text-sm">
-              The React Framework -- created and maintained by @vercel.
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Joined December 2021
-            </div>
+            <h4 className="text-sm font-semibold">@blips</h4>
+            <p className="text-sm">Gestão de ativos para quem empreende.</p>
+            <div className="text-xs text-muted-foreground">Desde dezembro de 2021</div>
           </div>
         </div>
       </HoverCardContent>
@@ -140,3 +132,7 @@ export default function HoverCardDemo() {
   )
 }
 ```
+
+## Exemplos na docs
+
+`hover-card-demo`, `hover-card-sides` (em `apps/docs/examples/`, escritos para a v3).

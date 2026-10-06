@@ -2,53 +2,119 @@
 
 Import: `@blips/ui/components/checkbox`
 
-## Sub-components
+Caixa de seleção `size-4`, com indicador de check Phosphor. Export único: `Checkbox`.
 
-| Export | Description |
-|--------|-------------|
-| `Checkbox` | A styled checkbox built on `@radix-ui/react-checkbox`. Renders a 16x16 square with border, check indicator, and focus ring. |
+## Notas comuns
 
-## Props & Variants
+- É um elemento `peer`: irmãos podem reagir ao estado com seletores `peer-*`.
+- Rótulo: `<Label htmlFor>` / `<FieldLabel htmlFor>` apontando para o `id` do Checkbox, ou dentro de `Field orientation="horizontal"` (ver `references/field.md`).
+- Integração com formulário: `Controller` do react-hook-form ou `FormField` da lib (ver `components/forms/form-components.md`).
+- Cartão selecionável: `FieldLabel` envolvendo um `Field` com o Checkbox (padrão "choice card" em `references/field.md`).
 
-`Checkbox` accepts all `@radix-ui/react-checkbox` Root props:
+> A API difere entre as versões (estado misto, `onCheckedChange`, atributos de estado). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `checked` | `boolean` \| `"indeterminate"` | -- | Controlled checked state |
-| `defaultChecked` | `boolean` | -- | Uncontrolled initial checked state |
-| `onCheckedChange` | `(checked: boolean \| "indeterminate") => void` | -- | Called when checked state changes |
-| `disabled` | `boolean` | `false` | Disable the checkbox |
-| `required` | `boolean` | `false` | Mark as required for forms |
-| `name` | `string` | -- | Form field name |
-| `value` | `string` | `"on"` | Form field value |
-| `id` | `string` | -- | Element ID (pair with `<Label htmlFor>`) |
-| `className` | `string` | -- | Additional CSS classes |
+## v3.x — Base UI
 
-### Default Styles
+Primitiva: `@base-ui/react/checkbox`. A raiz é um `<span role="checkbox">` com um `<input>` oculto (não é mais `<button>`).
 
+| Prop | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `checked` | `boolean` | — | Controlado. **Só boolean.** |
+| `defaultChecked` | `boolean` | `false` | Não controlado. |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void` | — | Mudança. |
+| `indeterminate` | `boolean` | `false` | Estado misto (substitui `checked="indeterminate"`). |
+| `name` / `value` / `required` / `form` | — | — | Integração com `<form>` nativo, na raiz. |
+| `uncheckedValue` | `string` | — | Valor enviado quando desmarcado. |
+| `parent` | `boolean` | `false` | Checkbox-pai num `CheckboxGroup` do Base UI. |
+| `disabled` / `readOnly` | `boolean` | `false` | — |
+| `id` | `string` | — | Id do input (para `htmlFor`). |
+| `inputRef` | `Ref<HTMLInputElement>` | — | Ref do input oculto. |
+
+Estado: `data-checked`, `data-unchecked`, `data-indeterminate`, `data-disabled` (e `data-invalid`, `data-dirty`… dentro de Field do Base UI). Seletores de consumidor: `peer-data-checked:`, `data-checked:` — não `data-[state=checked]:`.
+
+Visual: foco `ring-2 ring-ring/30`, sem sombra, área de toque ampliada (`after:-inset-x-3 after:-inset-y-2`), estilos `group-has` para Field/FieldLabel. Ícone `CheckIcon`.
+
+```tsx
+"use client";
+
+import { Checkbox } from "@blips/ui/components/checkbox";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+} from "@blips/ui/components/field";
+import { useState } from "react";
+
+const modulos = [
+  { id: "contratos", label: "Contratos" },
+  { id: "financeiro", label: "Financeiro" },
+];
+
+export function PermissoesModulos() {
+  const [selecionados, setSelecionados] = useState<string[]>(["contratos"]);
+  const todos = selecionados.length === modulos.length;
+  const alguns = selecionados.length > 0 && !todos;
+
+  return (
+    <FieldGroup className="max-w-sm gap-3">
+      <Field orientation="horizontal">
+        <Checkbox
+          id="modulos-todos"
+          checked={todos}
+          indeterminate={alguns}
+          onCheckedChange={(checked) =>
+            setSelecionados(checked ? modulos.map((m) => m.id) : [])
+          }
+        />
+        <FieldLabel htmlFor="modulos-todos">Todos os módulos</FieldLabel>
+      </Field>
+      {modulos.map((m) => (
+        <Field key={m.id} orientation="horizontal" className="ps-6">
+          <Checkbox
+            id={`modulo-${m.id}`}
+            checked={selecionados.includes(m.id)}
+            onCheckedChange={(checked) =>
+              setSelecionados((atual) =>
+                checked ? [...atual, m.id] : atual.filter((id) => id !== m.id)
+              )
+            }
+          />
+          <FieldLabel htmlFor={`modulo-${m.id}`} className="font-normal">
+            {m.label}
+          </FieldLabel>
+        </Field>
+      ))}
+
+      <Field orientation="horizontal">
+        <Checkbox id="termos" defaultChecked />
+        <FieldContent>
+          <FieldLabel htmlFor="termos">Aceito os termos e condições</FieldLabel>
+          <FieldDescription>Você pode revogar a qualquer momento.</FieldDescription>
+        </FieldContent>
+      </Field>
+    </FieldGroup>
+  );
+}
 ```
-h-4 w-4 shrink-0 rounded-sm border border-primary
-ring-offset-background
-focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-disabled:cursor-not-allowed disabled:opacity-50
-data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground
-```
 
-### Data Attributes
+## v2.x — Radix
 
-| Attribute | Values | Description |
-|-----------|--------|-------------|
-| `data-state` | `"checked"` \| `"unchecked"` \| `"indeterminate"` | Current state |
-| `data-disabled` | present when disabled | Disabled state |
+Primitiva: `@radix-ui/react-checkbox`. A raiz é um `<button role="checkbox">`.
 
-## Dependencies
+| Prop | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `checked` | `boolean \| "indeterminate"` | — | Controlado; `"indeterminate"` para estado misto. |
+| `defaultChecked` | `boolean \| "indeterminate"` | — | Não controlado. |
+| `onCheckedChange` | `(checked: boolean \| "indeterminate") => void` | — | Mudança. |
+| `disabled` / `required` | `boolean` | `false` | — |
+| `name` / `value` | `string` | `value="on"` | Formulário. |
+| `id` | `string` | — | Para `<Label htmlFor>`. |
 
-- `@radix-ui/react-checkbox`
-- `@phosphor-icons/react` (Check icon)
+Estado: `data-state="checked" | "unchecked" | "indeterminate"`, `data-disabled`. Seletores: `data-[state=checked]:`, `peer-data-[state=checked]:`.
 
-## Usage
-
-### Basic Checkbox with Label
+Visual: `shadow-xs`, foco `ring-[3px] ring-ring/50`. Ícone `Check` (`size-3.5`).
 
 ```tsx
 "use client"
@@ -56,83 +122,47 @@ data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground
 import { Checkbox } from "@blips/ui/components/checkbox"
 import { Label } from "@blips/ui/components/label"
 
-export default function CheckboxDemo() {
+export function Termos() {
   return (
-    <div className="flex items-center gap-3">
-      <Checkbox id="terms" />
-      <Label htmlFor="terms">Accept terms and conditions</Label>
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <Checkbox id="termos" />
+        <Label htmlFor="termos">Aceito os termos e condições</Label>
+      </div>
+
+      <div className="flex items-start gap-3">
+        <Checkbox id="termos-2" defaultChecked />
+        <div className="grid gap-2">
+          <Label htmlFor="termos-2">Aceito os termos e condições</Label>
+          <p className="text-sm text-muted-foreground">
+            Você pode revogar a qualquer momento.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <Checkbox
+          id="todos"
+          checked={alguns ? "indeterminate" : todos}
+          onCheckedChange={(checked) => marcarTodos(checked === true)}
+        />
+        <Label htmlFor="todos">Todos os módulos</Label>
+      </div>
+
+      <Label className="flex items-start gap-3 rounded-lg border p-3 hover:bg-accent/50 has-[[aria-checked=true]]:border-primary has-[[aria-checked=true]]:bg-primary/5">
+        <Checkbox id="notificacoes" defaultChecked />
+        <div className="grid gap-1.5 font-normal">
+          <p className="text-sm leading-none font-medium">Ativar notificações</p>
+          <p className="text-sm text-muted-foreground">
+            Você pode ativar ou desativar a qualquer momento.
+          </p>
+        </div>
+      </Label>
     </div>
   )
 }
 ```
 
-### Checkbox with Description
+## Exemplos na docs
 
-```tsx
-"use client"
-
-import { Checkbox } from "@blips/ui/components/checkbox"
-import { Label } from "@blips/ui/components/label"
-
-export function CheckboxWithDescription() {
-  return (
-    <div className="flex items-start gap-3">
-      <Checkbox id="terms-2" defaultChecked />
-      <div className="grid gap-2">
-        <Label htmlFor="terms-2">Accept terms and conditions</Label>
-        <p className="text-sm text-muted-foreground">
-          By clicking this checkbox, you agree to the terms and conditions.
-        </p>
-      </div>
-    </div>
-  )
-}
-```
-
-### Disabled Checkbox
-
-```tsx
-<div className="flex items-start gap-3">
-  <Checkbox id="toggle" disabled />
-  <Label htmlFor="toggle">Enable notifications</Label>
-</div>
-```
-
-### Styled Card Checkbox (Custom Colors)
-
-```tsx
-"use client"
-
-import { Checkbox } from "@blips/ui/components/checkbox"
-import { Label } from "@blips/ui/components/label"
-
-export function CheckboxCard() {
-  return (
-    <Label className="flex items-start gap-3 rounded-lg border p-3 hover:bg-accent/50 has-[[aria-checked=true]]:border-blue-600 has-[[aria-checked=true]]:bg-blue-50 dark:has-[[aria-checked=true]]:border-blue-900 dark:has-[[aria-checked=true]]:bg-blue-950">
-      <Checkbox
-        id="toggle-2"
-        defaultChecked
-        className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white dark:data-[state=checked]:border-blue-700 dark:data-[state=checked]:bg-blue-700"
-      />
-      <div className="grid gap-1.5 font-normal">
-        <p className="text-sm leading-none font-medium">
-          Enable notifications
-        </p>
-        <p className="text-sm text-muted-foreground">
-          You can enable or disable notifications at any time.
-        </p>
-      </div>
-    </Label>
-  )
-}
-```
-
-## All Examples
-
-- `checkbox-demo` -- Multiple checkbox variants (basic, with description, disabled, card-style)
-
-## Project Notes
-
-- Uses `@phosphor-icons/react` Check icon.
-- The checkbox is a `peer` element, enabling Tailwind peer selectors on sibling elements.
-- For form integration, use with `react-hook-form`'s `Controller` or the project's `FormField` component.
+`checkbox-demo`, `checkbox-with-text`, `checkbox-disabled`, `checkbox-indeterminate`, `checkbox-group`, `checkbox-invalid` (v3).

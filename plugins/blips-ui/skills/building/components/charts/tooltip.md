@@ -2,6 +2,10 @@
 
 Customizacao de tooltips em charts.
 
+API igual na v2.x e na v3.x para as props de `ChartTooltipContent` deste guia; tipos do
+recharts e alguns comportamentos mudam — ver [v3.x — Base UI](#v3x--base-ui) e
+[v2.x — Radix](#v2x--radix).
+
 ## Uso Basico
 
 ```tsx
@@ -21,6 +25,7 @@ import { ChartTooltip, ChartTooltipContent } from "@blips/ui/components/chart"
 | `indicator` | `dot` \| `line` \| `dashed` | Estilo do indicador |
 | `hideLabel` | boolean | Oculta o label |
 | `hideIndicator` | boolean | Oculta o indicador |
+| `formatter` / `labelFormatter` | função | Formata valor/label (tipos do recharts da versão) |
 
 ---
 
@@ -188,6 +193,51 @@ export function SalesChart() {
   )
 }
 ```
+
+---
+
+## v3.x — Base UI
+
+- Tipos do recharts 3 (`DefaultTooltipContentProps<TooltipValueType, number | string>`): um
+  `formatter` escrito contra o recharts 2 pode precisar de ajuste de tipo.
+- Valor `0` aparece no tooltip; valores não numéricos aparecem via `String()`.
+- Tooltip próprio: `TooltipContentProps` de `recharts` (ver `charts.md`).
+
+```tsx
+<ChartTooltip
+  content={
+    <ChartTooltipContent
+      formatter={(value, name) => (
+        <span>
+          {name}: <span className="font-medium tabular-nums">{formatCurrency(Number(value))}</span>
+        </span>
+      )}
+    />
+  }
+/>
+```
+
+## v2.x — Radix
+
+- Tipos do recharts 2 (`TooltipProps<ValueType, NameType>`).
+- Valor `0` **não** aparece no tooltip (a lib testa `item.value && …`): se zero importa, use
+  `formatter` ou um tooltip próprio.
+
+```tsx
+<ChartTooltip
+  content={
+    <ChartTooltipContent
+      formatter={(value, name) => (
+        <span>
+          {name}: <span className="font-medium tabular-nums">{formatCurrency(Number(value))}</span>
+        </span>
+      )}
+    />
+  }
+/>
+```
+
+`formatCurrency` é o utilitário de moeda do app (Intl `pt-BR`/`BRL`), igual nas duas versões.
 
 ---
 

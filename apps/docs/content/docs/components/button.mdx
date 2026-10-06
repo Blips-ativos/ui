@@ -18,14 +18,22 @@ import { Button } from "@blips/ui/components/button"
 ```
 
 ```tsx
-<Button variant="outline">Button</Button>
+<Button variant="outline">Botão</Button>
 ```
+
+O `Button` é construído sobre o [Button do Base UI](https://base-ui.com/react/components/button). Ele aceita todas as props do primitivo, incluindo `render`, `nativeButton` e `focusableWhenDisabled`.
 
 ## Exemplos
 
+### Variantes e tamanhos
+
+Todas as combinações de `variant` e `size` com texto.
+
+<ComponentPreview name="button-variants" />
+
 ### Tamanho
 
-Use a prop `size` para alterar o tamanho do botão.
+Use a prop `size` para alterar o tamanho do botão. Os tamanhos `icon-*` são para botões só com ícone.
 
 <ComponentPreview name="button-size" />
 
@@ -53,21 +61,65 @@ Use a prop `size` para alterar o tamanho do botão.
 
 <ComponentPreview name="button-link" />
 
-### Icon
+### Ícone
+
+Para um botão só com ícone, use um tamanho `icon-*` e sempre informe um `aria-label`.
 
 <ComponentPreview name="button-icon" />
 
 ### Com ícone
 
-Lembre-se de adicionar o atributo `data-icon="inline-start"` ou `data-icon="inline-end"` ao ícone para o espaçamento correto.
+Adicione `data-icon="inline-start"` ou `data-icon="inline-end"` ao ícone. O botão usa esse atributo para ajustar o padding do lado do ícone.
 
 <ComponentPreview name="button-with-icon" />
+
+```tsx
+<Button variant="outline">
+  <GitBranchIcon data-icon="inline-start" /> Nova branch
+</Button>
+```
+
+### Carregando
+
+Combine o botão desabilitado com o componente `Spinner`, que também aceita `data-icon`.
+
+<ComponentPreview name="button-loading" />
 
 ### Arredondado
 
 Use a classe `rounded-full` para deixar o botão arredondado.
 
 <ComponentPreview name="button-rounded" />
+
+### Inválido
+
+O botão reage a `aria-invalid` com borda e anel de foco na cor `destructive`.
+
+<ComponentPreview name="button-invalid" />
+
+### Como link (`render`)
+
+Use a prop `render` para renderizar o botão como outro elemento, por exemplo um `<a>` ou o `Link` do Next.js. Quando o elemento renderizado não for um `<button>` nativo, passe `nativeButton={false}`; sem isso o Base UI aplica a semântica de botão nativo e avisa no console.
+
+<ComponentPreview name="button-render" />
+
+```tsx
+import Link from "next/link"
+
+<Button nativeButton={false} render={<Link href="/login" />}>
+  Entrar
+</Button>
+```
+
+Se você só precisa do visual de botão num elemento qualquer, use `buttonVariants`:
+
+```tsx
+import { buttonVariants } from "@blips/ui/components/button"
+
+<a href="/login" className={buttonVariants({ variant: "outline" })}>
+  Entrar
+</a>
+```
 
 ### Button Group
 
@@ -79,10 +131,54 @@ Para criar um grupo de botões, use o componente `ButtonGroup`. Consulte a docum
 
 ### Button
 
-O componente `Button` é um wrapper em torno do elemento `button` que adiciona uma variedade de estilos e funcionalidades.
+O `Button` envolve o [Button do Base UI](https://base-ui.com/react/components/button) e adiciona as variantes de estilo. As demais props são as do primitivo.
 
-| Prop      | Tipo                                                                                 | Padrão      |
-| --------- | ------------------------------------------------------------------------------------ | ----------- |
-| `variant` | `"default" \| "outline" \| "ghost" \| "destructive" \| "secondary" \| "link"`        | `"default"` |
-| `size`    | `"default" \| "xs" \| "sm" \| "lg" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg"` | `"default"` |
-| `asChild` | `boolean`                                                                            | `false`     |
+| Prop                    | Tipo                                                                                 | Padrão      |
+| ----------------------- | ------------------------------------------------------------------------------------ | ----------- |
+| `variant`               | `"default" \| "outline" \| "ghost" \| "destructive" \| "secondary" \| "link"`        | `"default"` |
+| `size`                  | `"default" \| "xs" \| "sm" \| "lg" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg"` | `"default"` |
+| `render`                | `React.ReactElement \| (props, state) => React.ReactElement`                         | -           |
+| `nativeButton`          | `boolean`                                                                            | `true`      |
+| `focusableWhenDisabled` | `boolean`                                                                            | `false`     |
+| `disabled`              | `boolean`                                                                            | `false`     |
+
+`className` e `style` também aceitam uma função que recebe o estado do botão.
+
+### buttonVariants
+
+Função `cva` que devolve as classes do botão. Recebe `{ variant, size, className }`.
+
+## Migrando da v2
+
+- **`asChild` saiu; use `render`.** Quando o elemento renderizado não é um `<button>`, passe `nativeButton={false}`.
+
+  ```tsx
+  // v2
+  <Button asChild>
+    <a href="/conta">Minha conta</a>
+  </Button>
+
+  // v3
+  <Button nativeButton={false} render={<a href="/conta" />}>
+    Minha conta
+  </Button>
+  ```
+
+- **Ícones usam `data-icon`.** O padding reduzido do lado do ícone agora depende de `data-icon="inline-start"` ou `data-icon="inline-end"` no ícone filho; o antigo `has-[>svg]:px-*` saiu.
+
+  ```tsx
+  // v2
+  <Button>
+    <GitBranch /> Nova branch
+  </Button>
+
+  // v3
+  <Button>
+    <GitBranchIcon data-icon="inline-start" /> Nova branch
+  </Button>
+  ```
+
+- **Sem `data-variant` e `data-size`.** O botão não emite mais esses atributos. Quem estilizava ou testava por `[data-variant=…]` ou `[data-size=…]` precisa mudar o seletor. O `data-slot="button"` continua.
+- **Props do Base UI.** O tipo agora é `ButtonPrimitive.Props` em vez de `React.ComponentProps<"button">`. Os handlers (`onClick` etc.) seguem iguais, e entra a prop `focusableWhenDisabled`.
+- **Visual mais compacto.** As alturas caíram um degrau: `default` foi de `h-9` para `h-7`, `sm` de `h-8` para `h-6`, `lg` de `h-10` para `h-8`, `xs` de `h-6` para `h-5`; os tamanhos `icon-*` acompanham. O texto padrão é `text-xs/relaxed` e o espaço entre ícone e texto caiu de `gap-2` para `gap-1`.
+- **`destructive` e `outline` mudaram.** `destructive` deixou de ser sólido (`bg-destructive/10 text-destructive`). `outline` perdeu o `bg-background` e o `shadow-xs`.

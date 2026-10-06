@@ -23,12 +23,70 @@ import { Progress } from "@blips/ui/components/progress"
 
 ## Exemplos
 
-### Exemplo
+### Valores
 
-Uma barra de progresso que atualiza seu valor após a montagem do componente.
+<ComponentPreview name="progress-values" />
 
-<ComponentPreview name="progress-demo" />
+### Com label e valor
+
+O `Progress` aceita filhos, renderizados acima da barra. Use `ProgressLabel` e `ProgressValue` para um rótulo acessível e o valor formatado.
+
+<ComponentPreview name="progress-label" />
+
+### Indeterminado
+
+Passe `value={null}` quando o progresso é desconhecido. A barra ganha `data-indeterminate`.
+
+<ComponentPreview name="progress-indeterminate" />
+
+### Controlado
+
+<ComponentPreview name="progress-controlled" />
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI Progress](https://www.radix-ui.com/docs/primitives/components/progress#api-reference).
+### Progress
+
+O contêiner raiz. Aceita todas as props do `Progress.Root` do Base UI e renderiza a barra (`ProgressTrack` + `ProgressIndicator`) depois dos filhos.
+
+| Prop               | Tipo                                     | Padrão |
+| ------------------ | ---------------------------------------- | ------ |
+| `value`            | `number \| null`                         | -      |
+| `min`              | `number`                                 | `0`    |
+| `max`              | `number`                                 | `100`  |
+| `format`           | `Intl.NumberFormatOptions`               | -      |
+| `locale`           | `string`                                 | -      |
+| `getAriaValueText` | `(formattedValue, value) => string`      | -      |
+
+### ProgressLabel
+
+Rótulo acessível da barra. `data-slot="progress-label"`.
+
+### ProgressValue
+
+Mostra o valor formatado. Aceita uma função como filho: `(formattedValue, value) => ReactNode`. `data-slot="progress-value"`.
+
+### ProgressTrack e ProgressIndicator
+
+Os primitivos da barra, para compor um `Progress.Root` do Base UI à mão.
+
+Consulte a documentação do [Base UI Progress](https://base-ui.com/react/components/progress).
+
+## Migrando da v2
+
+- **Primitivo**: Radix trocado pelo `Progress` do Base UI; `asChild` não existe (use `render`).
+- **O `className` do `Progress` agora cai no contêiner** (`flex flex-wrap gap-3`), não na barra. Para estilizar a barra, use seletores como `[&_[data-slot=progress-track]]:h-2`.
+- **Visual**: a barra passou de `h-2 rounded-full bg-primary/20` para `h-1 rounded-md bg-muted`.
+- **`value` aceita `null`** para o estado indeterminado.
+- **Novos exports**: `ProgressTrack`, `ProgressIndicator`, `ProgressLabel` e `ProgressValue`.
+
+```tsx
+// v2
+<Progress value={40} className="h-3 bg-primary/10" />
+
+// v3
+<Progress
+  value={40}
+  className="[&_[data-slot=progress-track]]:h-3 [&_[data-slot=progress-track]]:bg-primary/10"
+/>
+```

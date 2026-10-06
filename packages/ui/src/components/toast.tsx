@@ -1,18 +1,17 @@
 "use client";
 
-import type * as React from "react";
 import { Toast as ToastPrimitive } from "@base-ui/react/toast";
-import { cn } from "../lib/utils";
-
-import { Button } from "./button";
 import {
-  XIcon,
   CheckCircleIcon,
   InfoIcon,
+  SpinnerIcon,
   WarningIcon,
   XCircleIcon,
-  SpinnerIcon,
+  XIcon,
 } from "@phosphor-icons/react";
+import type * as React from "react";
+import { cn } from "../lib/utils";
+import { Button } from "./button";
 
 const toast = ToastPrimitive.createToastManager();
 

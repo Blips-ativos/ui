@@ -2,6 +2,10 @@
 
 Componentes de `@blips/ui` para uso em formulários.
 
+> Input, Textarea, Switch, Checkbox e o padrão `FormField`/`FormControl` têm o mesmo uso na
+> v2.x e na v3.x; o `Select` e os atributos de estado mudam — ver [v3.x — Base UI](#v3x--base-ui)
+> e [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [FormControl - Comportamento Importante](#formcontrol---comportamento-importante)
@@ -13,6 +17,8 @@ Componentes de `@blips/ui` para uso em formulários.
 - [ButtonGroup com Input (+/-)](#buttongroup-com-input-)
 - [Layout em Grid](#layout-em-grid)
 - [Campos Condicionais](#campos-condicionais)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## FormControl - Comportamento Importante
 
@@ -36,13 +42,13 @@ O `FormControl` é responsável por:
       <FormLabel>Quantidade</FormLabel>
       <ButtonGroup>
         <Button type="button" variant="outline" onClick={decrement}>
-          <Minus className="size-4" />
+          <MinusIcon className="size-4" />
         </Button>
         <FormControl>
           <Input type="number" {...field} />
         </FormControl>
         <Button type="button" variant="outline" onClick={increment}>
-          <Plus className="size-4" />
+          <PlusIcon className="size-4" />
         </Button>
       </ButtonGroup>
       <FormMessage />
@@ -180,64 +186,10 @@ import { Input } from '@blips/ui/components/input'
 
 ## Select
 
-```typescript
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@blips/ui/components/select'
-
-<FormField
-  control={form.control}
-  name="category"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Categoria</FormLabel>
-      <Select onValueChange={field.onChange} value={field.value}>
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione uma categoria" />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-          <SelectItem value="option1">Opção 1</SelectItem>
-          <SelectItem value="option2">Opção 2</SelectItem>
-          <SelectItem value="option3">Opção 3</SelectItem>
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-
-// Select com dados dinâmicos
-<FormField
-  control={form.control}
-  name="categoryId"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Categoria</FormLabel>
-      <Select onValueChange={field.onChange} value={field.value}>
-        <FormControl>
-          <SelectTrigger>
-            <SelectValue placeholder="Selecione" />
-          </SelectTrigger>
-        </FormControl>
-        <SelectContent>
-          {categories.map((cat) => (
-            <SelectItem key={cat.id} value={cat.id}>
-              {cat.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-```
+O `Select` muda de primitiva entre as versões (Radix → Base UI) e o exemplo é diferente em
+cada uma: veja [v3.x — Base UI](#v3x--base-ui) e [v2.x — Radix](#v2x--radix) no fim deste
+arquivo. Em comum: `value={field.value}` + `onValueChange={field.onChange}`, `FormControl`
+envolvendo só o `SelectTrigger`, e `FormMessage` para o erro.
 
 ## Switch
 
@@ -336,7 +288,7 @@ Use `ButtonGroup` para inputs numéricos com botões de incremento/decremento:
 ```typescript
 import { Button } from '@blips/ui/components/button'
 import { ButtonGroup } from '@blips/ui/components/button-group'
-import { Minus, Plus } from '@phosphor-icons/react'
+import { MinusIcon, PlusIcon } from '@phosphor-icons/react'
 
 <FormField
   control={form.control}
@@ -359,7 +311,7 @@ import { Minus, Plus } from '@phosphor-icons/react'
             onClick={handleDecrement}
             disabled={currentValue <= 0}
           >
-            <Minus className="size-4" />
+            <MinusIcon className="size-4" />
           </Button>
           <FormControl>
             <Input
@@ -379,7 +331,7 @@ import { Minus, Plus } from '@phosphor-icons/react'
             onClick={handleIncrement}
             disabled={currentValue >= 100}
           >
-            <Plus className="size-4" />
+            <PlusIcon className="size-4" />
           </Button>
         </ButtonGroup>
         <FormMessage />
@@ -469,3 +421,125 @@ function ConditionalForm({ formRef, onSubmit }: FormProps) {
   )
 }
 ```
+
+---
+
+## v3.x — Base UI
+
+### Select
+
+- Passe `items` (array `{ value, label }` ou record `{ [value]: label }`) no `Select`: sem ele o
+  `SelectValue` mostra o `value` cru até o popup abrir.
+- `SelectValue placeholder="…"` funciona (prop do `Select.Value` do Base UI).
+- `onValueChange(value, eventDetails)`: `field.onChange` direto funciona (o segundo argumento
+  é ignorado). O `value` pode ser `null` quando nada está selecionado.
+- `SelectContent` sobrepõe o trigger alinhando o item selecionado (`alignItemWithTrigger`,
+  default `true`); para o popup abaixo do trigger, `alignItemWithTrigger={false}`.
+- `SelectLabel` precisa estar dentro de `SelectGroup`.
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@blips/ui/components/select'
+
+const categorias = [
+  { value: 'option1', label: 'Opção 1' },
+  { value: 'option2', label: 'Opção 2' },
+  { value: 'option3', label: 'Opção 3' },
+]
+
+<FormField
+  control={form.control}
+  name="category"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Categoria</FormLabel>
+      <Select items={categorias} value={field.value} onValueChange={field.onChange}>
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione uma categoria" />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          {categorias.map((categoria) => (
+            <SelectItem key={categoria.value} value={categoria.value}>
+              {categoria.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
+// Dados dinâmicos: derive os items da lista carregada
+const items = categories.map((cat) => ({ value: cat.id, label: cat.name }))
+```
+
+### Switch e Checkbox
+
+- `onCheckedChange(checked, eventDetails)`: `field.onChange` direto funciona.
+- `Checkbox` só aceita `checked` boolean; estado misto é a prop `indeterminate`.
+- Estado para estilizar: `data-checked`/`data-unchecked` (não `data-[state=checked]`).
+
+## v2.x — Radix
+
+### Select
+
+- `SelectValue placeholder` mostra o placeholder e, com valor, o texto do `SelectItem`
+  selecionado (sem `items`).
+- `value` precisa ser `string`.
+- `SelectContent position="popper"` para o popup abaixo do trigger.
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@blips/ui/components/select'
+
+<FormField
+  control={form.control}
+  name="category"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>Categoria</FormLabel>
+      <Select onValueChange={field.onChange} value={field.value}>
+        <FormControl>
+          <SelectTrigger>
+            <SelectValue placeholder="Selecione uma categoria" />
+          </SelectTrigger>
+        </FormControl>
+        <SelectContent>
+          <SelectItem value="option1">Opção 1</SelectItem>
+          <SelectItem value="option2">Opção 2</SelectItem>
+          <SelectItem value="option3">Opção 3</SelectItem>
+        </SelectContent>
+      </Select>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+
+// Select com dados dinâmicos
+<SelectContent>
+  {categories.map((cat) => (
+    <SelectItem key={cat.id} value={cat.id}>
+      {cat.name}
+    </SelectItem>
+  ))}
+</SelectContent>
+```
+
+### Switch e Checkbox
+
+- `onCheckedChange(checked)`; no `Checkbox` o valor pode ser `"indeterminate"`
+  (`checked="indeterminate"` para estado misto).
+- Estado para estilizar: `data-[state=checked]`.

@@ -1,7 +1,35 @@
 # blips-ui
 
 Biblioteca de componentes **Blips UI** — Turborepo + pnpm. Os componentes
-espelham o shadcn/ui sobre primitivas Radix e são publicados como `@blips/ui`.
+espelham o shadcn/ui sobre primitivas **Base UI** (`@base-ui/react`, estilo
+shadcn **`base-mira`**) e são publicados como `@blips/ui`. Desde a v3 a lib não
+usa `@radix-ui/*` nem `vaul`.
+
+### Convenções da lib (v3)
+
+- **Base UI, não Radix** — polimorfismo pela prop `render` (não existe mais
+  `asChild`): `<Button nativeButton={false} render={<Link href="/docs" />}>`.
+  Atributos de estado são os do Base UI (`data-open`, `data-checked`,
+  `data-active`…), não `data-state=…`.
+- **Referência canônica de classes** — a saída do CLI do shadcn no preset
+  **`b6GMQNVCs`** (`base-mira`, ícones Phosphor, menu translúcido), com as
+  personalizações da Blips por cima. Componente novo ou atualizado parte dessa
+  saída, não de classes ajustadas à mão.
+- **Densidade `mira`** — compacta de propósito: controles `h-7` por padrão
+  (`sm` `h-6`, `lg` `h-8`), texto `text-xs`, ícones `size-3.5`.
+- **Utilitários do shadcn embutidos no `globals.css`** — cópia do
+  `shadcn/tailwind.css` (variantes `data-open/closed/checked/…`,
+  `no-scrollbar`, `scroll-fade*`, `shimmer*`, keyframes do accordion), sem
+  depender do CLI do shadcn em runtime.
+- **Ícones** — `@phosphor-icons/react`, sempre com o **sufixo `Icon`**
+  (`CaretDownIcon`, `XIcon`, `MagnifyingGlassIcon`…); os nomes sem sufixo estão
+  deprecated no Phosphor 2.1.x. `lucide-react` é bloqueado pelo Biome.
+- **Gráficos** — recharts **3** (`3.10.1`).
+- **Registry shadcn** — `packages/ui/registry/default/` é uma cópia gerada de
+  `packages/ui/src/`. Depois de mexer nos componentes, rode
+  `pnpm --filter @blips/ui exec node scripts/build-registry.js --sync`;
+  `pnpm registry:build` falha se a cópia estiver fora de sincronia.
+- **Commits** em pt-BR, Conventional Commits.
 
 O repositório também hospeda um **marketplace de plugins do Claude Code**
 (`blips-ui-marketplace`) com o plugin `blips-ui` (skills para adicionar e
