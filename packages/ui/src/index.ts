@@ -27,7 +27,18 @@ export {
 
 // Aspect Ratio
 export { AspectRatio } from "./components/aspect-ratio";
-
+// Attachment
+export {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+  AttachmentTrigger,
+} from "./components/attachment";
 // Avatar
 export {
   Avatar,
@@ -37,10 +48,8 @@ export {
   AvatarGroupCount,
   AvatarImage,
 } from "./components/avatar";
-
 // Badge
 export { Badge, badgeVariants } from "./components/badge";
-
 // Breadcrumb
 export {
   Breadcrumb,
@@ -51,13 +60,24 @@ export {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "./components/breadcrumb";
-
+// Bubble
+export {
+  Bubble,
+  BubbleContent,
+  BubbleGroup,
+  BubbleReactions,
+} from "./components/bubble";
 // Button
 export { Button, buttonVariants } from "./components/button";
-
+// Button Group
+export {
+  ButtonGroup,
+  ButtonGroupSeparator,
+  ButtonGroupText,
+  buttonGroupVariants,
+} from "./components/button-group";
 // Calendar
 export { Calendar, CalendarDayButton } from "./components/calendar";
-
 // Card
 export {
   Card,
@@ -68,7 +88,6 @@ export {
   CardHeader,
   CardTitle,
 } from "./components/card";
-
 // Carousel
 export {
   Carousel,
@@ -78,17 +97,43 @@ export {
   CarouselNext,
   CarouselPrevious,
 } from "./components/carousel";
-
+// Chart
+export {
+  type ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartStyle,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "./components/chart";
 // Checkbox
 export { Checkbox } from "./components/checkbox";
-
 // Collapsible
 export {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./components/collapsible";
-
+// Combobox
+export {
+  Combobox,
+  ComboboxChip,
+  ComboboxChips,
+  ComboboxChipsInput,
+  ComboboxCollection,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxLabel,
+  ComboboxList,
+  ComboboxSeparator,
+  ComboboxTrigger,
+  ComboboxValue,
+  useComboboxAnchor,
+} from "./components/combobox";
 // Command
 export {
   Command,
@@ -101,7 +146,6 @@ export {
   CommandSeparator,
   CommandShortcut,
 } from "./components/command";
-
 // Context Menu
 export {
   ContextMenu,
@@ -120,7 +164,6 @@ export {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./components/context-menu";
-
 // Dialog
 export {
   Dialog,
@@ -134,7 +177,8 @@ export {
   DialogTitle,
   DialogTrigger,
 } from "./components/dialog";
-
+// Direction
+export { DirectionProvider, useDirection } from "./components/direction";
 // Drawer
 export {
   Drawer,
@@ -148,7 +192,6 @@ export {
   DrawerTitle,
   DrawerTrigger,
 } from "./components/drawer";
-
 // Dropdown Menu
 export {
   DropdownMenu,
@@ -167,17 +210,56 @@ export {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./components/dropdown-menu";
-
+// Empty
+export {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "./components/empty";
+// Field
+export {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+  FieldTitle,
+} from "./components/field";
+// Form
+export {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  useFormField,
+} from "./components/form";
 // Hover Card
 export {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "./components/hover-card";
-
 // Input
 export { Input } from "./components/input";
-
+// Input Group
+export {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+  InputGroupText,
+  InputGroupTextarea,
+} from "./components/input-group";
 // Input OTP
 export {
   InputOTP,
@@ -185,10 +267,30 @@ export {
   InputOTPSeparator,
   InputOTPSlot,
 } from "./components/input-otp";
-
+// Item
+export {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemFooter,
+  ItemGroup,
+  ItemHeader,
+  ItemMedia,
+  ItemSeparator,
+  ItemTitle,
+} from "./components/item";
+// Kbd
+export { Kbd, KbdGroup } from "./components/kbd";
 // Label
 export { Label } from "./components/label";
-
+// Marker
+export {
+  Marker,
+  MarkerContent,
+  MarkerIcon,
+  markerVariants,
+} from "./components/marker";
 // Menubar
 export {
   Menubar,
@@ -208,7 +310,33 @@ export {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "./components/menubar";
-
+// Message
+export {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageFooter,
+  MessageGroup,
+  MessageHeader,
+} from "./components/message";
+// Message Scroller
+export {
+  MessageScroller,
+  MessageScrollerButton,
+  MessageScrollerContent,
+  MessageScrollerItem,
+  MessageScrollerProvider,
+  MessageScrollerViewport,
+  useMessageScroller,
+  useMessageScrollerScrollable,
+  useMessageScrollerVisibility,
+} from "./components/message-scroller";
+// Native Select
+export {
+  NativeSelect,
+  NativeSelectOptGroup,
+  NativeSelectOption,
+} from "./components/native-select";
 // Navigation Menu
 export {
   NavigationMenu,
@@ -221,7 +349,6 @@ export {
   NavigationMenuViewport,
   navigationMenuTriggerStyle,
 } from "./components/navigation-menu";
-
 // Pagination
 export {
   Pagination,
@@ -232,7 +359,6 @@ export {
   PaginationNext,
   PaginationPrevious,
 } from "./components/pagination";
-
 // Popover
 export {
   Popover,
@@ -243,23 +369,36 @@ export {
   PopoverTitle,
   PopoverTrigger,
 } from "./components/popover";
-
 // Progress
 export { Progress } from "./components/progress";
-
+// Questionnaire
+export {
+  Questionnaire,
+  QuestionnaireActions,
+  QuestionnaireChoice,
+  QuestionnaireChoiceDescription,
+  QuestionnaireChoices,
+  QuestionnaireDescription,
+  QuestionnaireError,
+  QuestionnaireInput,
+  QuestionnaireItem,
+  QuestionnaireNext,
+  QuestionnairePrevious,
+  QuestionnaireProgress,
+  QuestionnaireSkip,
+  QuestionnaireSubmit,
+  QuestionnaireTitle,
+} from "./components/questionnaire";
 // Radio Group
 export { RadioGroup, RadioGroupItem } from "./components/radio-group";
-
 // Resizable
 export {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "./components/resizable";
-
 // Scroll Area
 export { ScrollArea, ScrollBar } from "./components/scroll-area";
-
 // Select
 export {
   Select,
@@ -273,10 +412,8 @@ export {
   SelectTrigger,
   SelectValue,
 } from "./components/select";
-
 // Separator
 export { Separator } from "./components/separator";
-
 // Sheet
 export {
   Sheet,
@@ -291,124 +428,6 @@ export {
   SheetTitle,
   SheetTrigger,
 } from "./components/sheet";
-
-// Skeleton
-export { Skeleton } from "./components/skeleton";
-
-// Slider
-export { Slider } from "./components/slider";
-
-// Sonner (Toast)
-export { Toaster } from "./components/sonner";
-
-// Switch
-export { Switch } from "./components/switch";
-
-// Table
-export {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./components/table";
-
-// Tabs
-export {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-  tabsListVariants,
-} from "./components/tabs";
-
-// Textarea
-export { Textarea } from "./components/textarea";
-
-// Toggle
-export { Toggle, toggleVariants } from "./components/toggle";
-
-// Toggle Group
-export { ToggleGroup, ToggleGroupItem } from "./components/toggle-group";
-
-// Tooltip
-export {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./components/tooltip";
-
-// Button Group
-export {
-  ButtonGroup,
-  ButtonGroupSeparator,
-  ButtonGroupText,
-  buttonGroupVariants,
-} from "./components/button-group";
-
-// Chart
-export {
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "./components/chart";
-
-// Empty
-export {
-  Empty,
-  EmptyContent,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from "./components/empty";
-
-// Field
-export {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
-  FieldTitle,
-} from "./components/field";
-
-// Form
-export {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useFormField,
-} from "./components/form";
-
-// Input Group
-export {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "./components/input-group";
-
-// Kbd
-export { Kbd, KbdGroup } from "./components/kbd";
 
 // Sidebar
 export {
@@ -437,12 +456,67 @@ export {
   SidebarTrigger,
   useSidebar,
 } from "./components/sidebar";
-
+// Skeleton
+export { Skeleton } from "./components/skeleton";
+// Slider
+export { Slider } from "./components/slider";
+// Sonner (Toast)
+export { Toaster } from "./components/sonner";
 // Spinner
 export { Spinner } from "./components/spinner";
-
+// Switch
+export { Switch } from "./components/switch";
+// Table
+export {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./components/table";
+// Tabs
+export {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  tabsListVariants,
+} from "./components/tabs";
+// Textarea
+export { Textarea } from "./components/textarea";
+// Toast (Base UI). O Toaster daqui sai como ToastToaster no barrel para não
+// colidir com o Toaster do Sonner; pelo subpath @blips/ui/components/toast ele
+// continua se chamando Toaster.
+export {
+  createToastManager,
+  Toast,
+  ToastAction,
+  ToastClose,
+  ToastContent,
+  ToastDescription,
+  Toaster as ToastToaster,
+  ToastPortal,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+  toast,
+  useToastManager,
+} from "./components/toast";
+// Toggle
+export { Toggle, toggleVariants } from "./components/toggle";
+// Toggle Group
+export { ToggleGroup, ToggleGroupItem } from "./components/toggle-group";
+// Tooltip
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./components/tooltip";
 // Hooks
 export { useIsMobile } from "./hooks/use-mobile";
-
 // Utilities
 export { cn } from "./lib/utils";
