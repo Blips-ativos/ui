@@ -16,83 +16,85 @@ import {
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
 import {
-  Archive,
-  ArrowLeft,
-  CalendarPlus,
-  Clock,
-  Funnel,
-  EnvelopeSimple,
-  DotsThree,
-  Tag,
-  Trash,
+  ArchiveIcon,
+  ArrowLeftIcon,
+  CalendarPlusIcon,
+  ClockIcon,
+  DotsThreeIcon,
+  EnvelopeSimpleIcon,
+  FunnelIcon,
+  TagIcon,
+  TrashIcon,
 } from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function ButtonGroupDemo() {
-  const [label, setLabel] = React.useState("personal");
+  const [label, setLabel] = React.useState("pessoal");
 
   return (
     <ButtonGroup>
       <ButtonGroup className="hidden sm:flex">
-        <Button variant="outline" size="icon" aria-label="Go Back">
-          <ArrowLeft />
+        <Button variant="outline" size="icon" aria-label="Voltar">
+          <ArrowLeftIcon />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button variant="outline">Archive</Button>
-        <Button variant="outline">Report</Button>
+        <Button variant="outline">Arquivar</Button>
+        <Button variant="outline">Denunciar</Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button variant="outline">Snooze</Button>
+        <Button variant="outline">Adiar</Button>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="icon" aria-label="More Options">
-              <DotsThree />
-            </Button>
+          <DropdownMenuTrigger
+            render={
+              <Button variant="outline" size="icon" aria-label="Mais opções" />
+            }
+          >
+            <DotsThreeIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <EnvelopeSimple />
-                Mark as Read
+                <EnvelopeSimpleIcon />
+                Marcar como lida
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Archive />
-                Archive
+                <ArchiveIcon />
+                Arquivar
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Clock />
-                Snooze
+                <ClockIcon />
+                Adiar
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CalendarPlus />
-                Add to Calendar
+                <CalendarPlusIcon />
+                Adicionar ao calendário
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Funnel />
-                Add to List
+                <FunnelIcon />
+                Adicionar à lista
               </DropdownMenuItem>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>
-                  <Tag />
-                  Label As...
+                  <TagIcon />
+                  Etiquetar como...
                 </DropdownMenuSubTrigger>
                 <DropdownMenuSubContent>
                   <DropdownMenuRadioGroup
                     value={label}
                     onValueChange={setLabel}
                   >
-                    <DropdownMenuRadioItem value="personal">
-                      Personal
+                    <DropdownMenuRadioItem value="pessoal">
+                      Pessoal
                     </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="work">
-                      Work
+                    <DropdownMenuRadioItem value="trabalho">
+                      Trabalho
                     </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="other">
-                      Other
+                    <DropdownMenuRadioItem value="outro">
+                      Outro
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuSubContent>
@@ -101,8 +103,8 @@ export default function ButtonGroupDemo() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem variant="destructive">
-                <Trash />
-                Trash
+                <TrashIcon />
+                Lixeira
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>

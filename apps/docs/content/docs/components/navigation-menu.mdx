@@ -28,18 +28,20 @@ import {
 <NavigationMenu>
   <NavigationMenuList>
     <NavigationMenuItem>
-      <NavigationMenuTrigger>Item Um</NavigationMenuTrigger>
+      <NavigationMenuTrigger>Item um</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <NavigationMenuLink>Link</NavigationMenuLink>
+        <NavigationMenuLink href="/docs">Link</NavigationMenuLink>
       </NavigationMenuContent>
     </NavigationMenuItem>
   </NavigationMenuList>
 </NavigationMenu>
 ```
 
-## Componente de Link
+O conteúdo de cada item sempre abre dentro de um popup posicionado abaixo da lista. Use a prop `align` do `NavigationMenu` (`"start"` por padrão) para alinhar esse popup.
 
-Use a prop `asChild` para compor um componente de link customizado, como o `Link` do Next.js.
+## Componente de link
+
+Use a prop `render` para compor um componente de link customizado, como o `Link` do Next.js.
 
 ```tsx
 import Link from "next/link"
@@ -53,22 +55,51 @@ import {
 export function NavigationMenuDemo() {
   return (
     <NavigationMenuItem>
-      <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
-        <Link href="/docs">Documentação</Link>
+      <NavigationMenuLink
+        render={<Link href="/docs" />}
+        className={navigationMenuTriggerStyle()}
+      >
+        Documentação
       </NavigationMenuLink>
     </NavigationMenuItem>
   )
 }
 ```
 
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Navigation Menu](https://base-ui.com/react/components/navigation-menu).
+
+- `asChild` saiu do `NavigationMenuLink` e do `NavigationMenuTrigger`. Use `render`. A prop `active` do link continua valendo.
+- A prop `viewport` do `NavigationMenu` está **obsoleta e não tem efeito**. O conteúdo sempre aparece no popup posicionado; o modo `viewport={false}` da v2, com o conteúdo logo abaixo do item, deixou de existir.
+- O `NavigationMenu` ganhou `align`, repassado ao `NavigationMenuPositioner` que ele já renderiza. `NavigationMenuPositioner` e `NavigationMenuViewport` são exportados para quem monta o root direto com o primitivo do Base UI; dentro do `NavigationMenu` da lib eles duplicam o popup.
+- `value`/`onValueChange` do root recebem `(value, eventDetails)`. `delayDuration` e `skipDelayDuration` viram `delay` e `closeDelay`.
+- Seletores `data-[state=open]` viram `data-popup-open`/`data-open`.
+
+```tsx
+// v2
+<NavigationMenu viewport={false}>
+  {/* ... */}
+  <NavigationMenuLink asChild>
+    <Link href="/docs">Documentação</Link>
+  </NavigationMenuLink>
+</NavigationMenu>
+
+// v3
+<NavigationMenu>
+  {/* ... */}
+  <NavigationMenuLink render={<Link href="/docs" />}>
+    Documentação
+  </NavigationMenuLink>
+</NavigationMenu>
+```
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI Navigation Menu](https://www.radix-ui.com/docs/primitives/components/navigation-menu#api-reference) para mais informações.
+### NavigationMenu
 
-## Exemplos
+| Prop    | Tipo                           | Padrão    |
+| ------- | ------------------------------ | --------- |
+| `align` | `"start" \| "center" \| "end"` | `"start"` |
 
-### Exemplo
-
-Um menu de navegação completo com gatilhos, conteúdo em grade, links e ícones.
-
-<ComponentPreview name="navigation-menu-demo" />
+Consulte a documentação do [Base UI Navigation Menu](https://base-ui.com/react/components/navigation-menu) para mais informações.

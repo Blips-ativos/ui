@@ -2,85 +2,110 @@
 
 Import: `@blips/ui/components/alert`
 
-## Sub-components
+Mensagem em destaque dentro da página (não é toast nem modal). `div` com
+`role="alert"`. Sem primitiva Base UI/Radix: só HTML + CVA nas duas versões.
 
-| Component | Description |
+## Notas comuns
+
+- Variantes: `default` (`bg-card text-card-foreground`) e `destructive` (`bg-card text-destructive`, descrição em `text-destructive/90`). **Não existe variante `info`** — para tons informativos, use `default` com ícone ou ajuste por `className`.
+- Ícone Phosphor como **filho direto** de `Alert` vira a primeira coluna do grid; título e descrição vão para a segunda.
+- `alertVariants` não é exportado.
+
+> A API difere entre as versões (export `AlertAction` só na v3). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
+
+## v3.x — Base UI
+
+Exports: `Alert`, `AlertTitle`, `AlertDescription`, `AlertAction`.
+
+| Componente | Descrição |
 |---|---|
-| `Alert` | Root container with variant-based styling. Renders a `div` with `role="alert"`. Supports icon positioning via CSS selectors. |
-| `AlertTitle` | Heading (`h5`) for the alert. Styled with `font-medium leading-none tracking-tight`. |
-| `AlertDescription` | Body text container (`div`). Styled with `text-sm`. |
+| `Alert` | `variant?: "default" \| "destructive"`. Base: `grid gap-0.5 rounded-lg border px-2 py-1.5 text-xs/relaxed`; com svg vira `grid-cols-[auto_1fr]`, ícone `size-3.5` (se não tiver `size-*`) ocupando 2 linhas. Com `AlertAction`, reserva `pr-18`. |
+| `AlertTitle` | `font-medium`; vai para a coluna 2 quando há ícone. Sem `line-clamp`: títulos longos quebram linha. |
+| `AlertDescription` | `text-xs/relaxed text-balance text-muted-foreground`; links sublinhados; `mb-4` entre parágrafos. |
+| `AlertAction` | **Novo.** Slot `absolute top-1.5 right-2` para uma ação (ex.: botão de fechar ou "Desfazer"). |
 
-## Props & Variants
-
-### Alert
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `variant` | `"default" \| "destructive" \| "info"` | `"default"` | Visual style variant. |
-| `className` | `string` | - | Additional CSS classes. |
-
-#### Variant Styles
-
-| Variant | Classes |
-|---|---|
-| `default` | `bg-background text-foreground` |
-| `destructive` | `border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive` |
-| `info` | `border-info [&>svg]:text-info` |
-
-**Base classes:** `relative w-full rounded-lg border p-4 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:top-4 [&>svg]:left-4 [&>svg]:text-foreground [&>svg~*]:pl-7`
-
-Icons placed as direct children of `Alert` are automatically positioned absolutely at `top-4 left-4`, and subsequent siblings get `pl-7` padding.
-
-### AlertTitle
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | - | Additional CSS classes. Base: `mb-1 font-medium leading-none tracking-tight`. |
-
-### AlertDescription
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | - | Additional CSS classes. Base: `text-sm [&_p]:leading-relaxed`. |
-
-## Usage
-
-### Default alert with icon
+### Exemplos
 
 ```tsx
-import { CheckCircle } from "@phosphor-icons/react"
-import { Alert, AlertDescription, AlertTitle } from "@blips/ui/components/alert"
+import {
+  Alert,
+  AlertAction,
+  AlertDescription,
+  AlertTitle,
+} from "@blips/ui/components/alert";
+import { Button } from "@blips/ui/components/button";
+import { CheckCircleIcon, WarningCircleIcon, XIcon } from "@phosphor-icons/react";
 
-export function AlertSuccess() {
+export function AlertaSucesso() {
   return (
     <Alert>
-      <CheckCircle />
-      <AlertTitle>Success! Your changes have been saved</AlertTitle>
+      <CheckCircleIcon />
+      <AlertTitle>Alterações salvas</AlertTitle>
+      <AlertDescription>O cadastro do cliente foi atualizado.</AlertDescription>
+      <AlertAction>
+        <Button variant="ghost" size="icon-xs" aria-label="Fechar">
+          <XIcon />
+        </Button>
+      </AlertAction>
+    </Alert>
+  );
+}
+
+export function AlertaPagamento() {
+  return (
+    <Alert variant="destructive">
+      <WarningCircleIcon />
+      <AlertTitle>Não foi possível processar o pagamento.</AlertTitle>
       <AlertDescription>
-        This is an alert with icon, title and description.
+        <p>
+          Confira os seus <a href="#cobranca">dados de cobrança</a> e tente novamente.
+        </p>
+        <ul className="list-inside list-disc">
+          <li>Confira os dados do cartão</li>
+          <li>Verifique se há saldo suficiente</li>
+        </ul>
       </AlertDescription>
     </Alert>
-  )
+  );
 }
 ```
 
-### Destructive alert
+## v2.x — Radix
+
+Exports: `Alert`, `AlertTitle`, `AlertDescription` (não há `AlertAction`).
+
+| Componente | Descrição |
+|---|---|
+| `Alert` | `variant?: "default" \| "destructive"`. Base: `grid grid-cols-[0_1fr] gap-y-0.5 rounded-lg border px-4 py-3 text-sm`; com svg, `grid-cols-[calc(var(--spacing)*4)_1fr] gap-x-3` e ícone `size-4`. |
+| `AlertTitle` | `col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight` (título longo é cortado em 1 linha). |
+| `AlertDescription` | `col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground`. |
+
+### Exemplos
 
 ```tsx
-import { WarningCircle } from "@phosphor-icons/react"
+import { CheckCircle, WarningCircle } from "@phosphor-icons/react"
 import { Alert, AlertDescription, AlertTitle } from "@blips/ui/components/alert"
 
-export function AlertDestructive() {
+export function AlertaSucesso() {
+  return (
+    <Alert>
+      <CheckCircle />
+      <AlertTitle>Alterações salvas</AlertTitle>
+      <AlertDescription>O cadastro do cliente foi atualizado.</AlertDescription>
+    </Alert>
+  )
+}
+
+export function AlertaPagamento() {
   return (
     <Alert variant="destructive">
       <WarningCircle />
-      <AlertTitle>Unable to process your payment.</AlertTitle>
+      <AlertTitle>Não foi possível processar o pagamento.</AlertTitle>
       <AlertDescription>
-        <p>Please verify your billing information and try again.</p>
+        <p>Confira os dados de cobrança e tente novamente.</p>
         <ul className="list-inside list-disc text-sm">
-          <li>Check your card details</li>
-          <li>Ensure sufficient funds</li>
-          <li>Verify billing address</li>
+          <li>Confira os dados do cartão</li>
+          <li>Verifique se há saldo suficiente</li>
         </ul>
       </AlertDescription>
     </Alert>
@@ -88,28 +113,8 @@ export function AlertDestructive() {
 }
 ```
 
-### Title-only alert (no description)
+Para uma ação no canto na v2, posicione manualmente: `<Alert className="relative pr-12">` + um `Button` com `className="absolute top-2 right-2"`.
 
-```tsx
-import { Popcorn } from "@phosphor-icons/react"
-import { Alert, AlertTitle } from "@blips/ui/components/alert"
+## Exemplos na docs
 
-export function AlertTitleOnly() {
-  return (
-    <Alert>
-      <Popcorn />
-      <AlertTitle>This Alert has a title and an icon. No description.</AlertTitle>
-    </Alert>
-  )
-}
-```
-
-## Project Notes
-
-- The project version includes an `info` variant (`border-info [&>svg]:text-info`) not present in upstream shadcn.
-- Default variant for Badge in this project is `"outline"`, but for Alert it is `"default"`.
-- Uses CVA (`class-variance-authority`) for variant management.
-
-## All Examples
-
-- `alert-demo`
+`alert-demo`, `alert-basic`, `alert-destructive`, `alert-action` (v3).

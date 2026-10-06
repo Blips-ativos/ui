@@ -2,6 +2,12 @@
 
 Padrão para criar painéis laterais usando Sheet + SheetBody.
 
+> **Versão da lib:** confira a versão da `@blips/ui` do repo (ver o "Passo 0" do
+> `SKILL.md` do building e `references/v2-vs-v3.md`). `SheetBody`, `SheetSection` e
+> `SheetSectionTitle` são extensões Blips presentes nas duas linhas. O conteúdo comum vale
+> para as duas; largura, trigger, padding e dismiss mudam e estão em
+> [v3.x — Base UI](#v3x--base-ui) e [v2.x — Radix](#v2x--radix).
+
 ## Table of Contents
 
 - [Quando Usar](#quando-usar)
@@ -15,6 +21,8 @@ Padrão para criar painéis laterais usando Sheet + SheetBody.
 - [Uso com Tabelas (Data Table)](#uso-com-tabelas-data-table)
 - [Formulários com react-hook-form](#formulários-com-react-hook-form)
 - [Diretrizes](#diretrizes)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 - [Arquivos de Referência](#arquivos-de-referência)
 
 ## Quando Usar
@@ -85,7 +93,7 @@ export function EditItemSheet({
 }: EditItemSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:data-[side=right]:max-w-md">
+      <SheetContent>
         <SheetHeader>
           <SheetTitle>Editar Item</SheetTitle>
           <SheetDescription>Atualize os dados do item.</SheetDescription>
@@ -138,7 +146,7 @@ export function ItemDetailsSheet({
 }: ItemDetailsSheetProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:data-[side=right]:max-w-lg">
+      <SheetContent>
         <SheetHeader>
           <SheetTitle>Detalhes do Item</SheetTitle>
           <SheetDescription>{item?.name ?? "Carregando..."}</SheetDescription>
@@ -177,48 +185,22 @@ export function ItemDetailsSheet({
 ### 2. SheetContent
 
 ```tsx
-<SheetContent className="sm:data-[side=right]:max-w-lg">
+<SheetContent side="right">
 ```
-
-**Largura máxima:**
-
-O `SheetContent` usa `data-side` attribute, então para sobrescrever a largura máxima padrão (`sm:max-w-sm`), use o seletor específico:
-
-```tsx
-// ✅ Correto - usa data attribute selector
-<SheetContent className="sm:data-[side=right]:max-w-lg">
-<SheetContent className="sm:data-[side=right]:max-w-xl">
-<SheetContent className="sm:data-[side=right]:max-w-2xl">
-
-// ❌ Incorreto - não sobrescreve o padrão
-<SheetContent className="sm:max-w-lg">
-```
-
-Tamanhos disponíveis:
-
-- `sm:data-[side=right]:max-w-sm` (padrão, ~384px)
-- `sm:data-[side=right]:max-w-md` (~448px)
-- `sm:data-[side=right]:max-w-lg` (~512px)
-- `sm:data-[side=right]:max-w-xl` (~576px)
-- `sm:data-[side=right]:max-w-2xl` (~672px)
-
-Para outros lados, ajuste o seletor:
-
-- `sm:data-[side=left]:max-w-lg`
-- `data-[side=bottom]:max-h-[80vh]`
-- `data-[side=top]:max-h-[50vh]`
-
-**Outras opções:**
 
 - Side: `side="right"` (padrão), `"left"`, `"top"`, `"bottom"`
 - `showCloseButton={false}` para ocultar o X
+- Largura padrão `sm:max-w-sm` (~384px) nas laterais. **Como sobrescrever muda por versão**:
+  na v3.x o painel tem `data-side` e a largura precisa do seletor
+  `sm:data-[side=right]:max-w-lg`; na v2.x não há `data-side` e basta `sm:max-w-lg`. Ver
+  [v3.x](#v3x--base-ui) e [v2.x](#v2x--radix).
 
 ### 3. SheetHeader
 
 ```tsx
 <SheetHeader>
   <SheetTitle className="flex items-center gap-2">
-    <FileText className="size-5" />
+    <FileTextIcon className="size-4" />
     Detalhes do Item
   </SheetTitle>
   <SheetDescription>{item?.name ?? "Carregando..."}</SheetDescription>
@@ -248,7 +230,7 @@ Para outros lados, ajuste o seletor:
 ```
 
 - Container com `overflow-auto` para scroll
-- Aplica padding `p-4` quando NÃO contém `SheetSection`
+- Aplica padding próprio quando NÃO contém `SheetSection` (`p-6` na v3.x, `p-4` na v2.x)
 - Remove padding automaticamente quando contém `SheetSection`
 - Deve envolver todo o conteúdo scrollável
 
@@ -261,7 +243,7 @@ Para outros lados, ajuste o seletor:
 </SheetSection>
 ```
 
-- Padding automático (`p-4`)
+- Padding automático (`p-6` na v3.x, `p-4` na v2.x)
 - Borda no topo automática (separa a primeira seção do header e cada seção da anterior)
 - Use para agrupar informações relacionadas
 
@@ -271,7 +253,7 @@ Para outros lados, ajuste o seletor:
 <SheetSectionTitle>Informações Gerais</SheetSectionTitle>
 ```
 
-- Estilo: `text-muted-foreground text-sm font-medium mb-4`
+- Estilo: `text-muted-foreground font-medium mb-4` (`text-xs` na v3.x, `text-sm` na v2.x)
 - Use para identificar cada seção
 
 ### 7. SheetFooter (opcional)
@@ -285,8 +267,8 @@ Para outros lados, ajuste o seletor:
 </SheetFooter>
 ```
 
-- Fixo na parte inferior
-- Borda superior automática
+- Fixo na parte inferior (`mt-auto`)
+- Sem borda automática
 - Layout flex column com gap
 
 ## Padrões de Conteúdo
@@ -295,7 +277,7 @@ Para outros lados, ajuste o seletor:
 
 ```tsx
 <div className="flex items-start gap-3">
-  <Building2 className="size-4 text-muted-foreground mt-0.5" />
+  <BuildingsIcon className="size-4 text-muted-foreground mt-0.5" />
   <div>
     <p className="text-sm font-medium">Label</p>
     <p className="text-sm text-muted-foreground">Valor</p>
@@ -347,7 +329,7 @@ Para outros lados, ajuste o seletor:
   hasError && (
     <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
       <div className="flex items-start gap-2">
-        <AlertCircle className="size-4 text-destructive mt-0.5" />
+        <WarningCircleIcon className="size-4 text-destructive mt-0.5" />
         <div>
           <p className="text-sm font-medium text-destructive">Título do erro</p>
           <p className="text-sm text-muted-foreground mt-1">{errorMessage}</p>
@@ -417,7 +399,7 @@ Para formulários com poucos campos relacionados, não use seções:
 
 ```tsx
 <Sheet open={open} onOpenChange={onOpenChange}>
-  <SheetContent className="sm:data-[side=right]:max-w-md">
+  <SheetContent>
     <SheetHeader>
       <SheetTitle>Editar Item</SheetTitle>
       <SheetDescription>Atualize os dados do item.</SheetDescription>
@@ -466,7 +448,7 @@ Para formulários com grupos de campos distintos, use seções:
 
 ```tsx
 <Sheet open={open} onOpenChange={onOpenChange}>
-  <SheetContent className="sm:data-[side=right]:max-w-lg">
+  <SheetContent>
     <SheetHeader>
       <SheetTitle>Configurar Plano</SheetTitle>
     </SheetHeader>
@@ -509,17 +491,8 @@ Para formulários com grupos de campos distintos, use seções:
 
 ### Sheet com Trigger
 
-```tsx
-<Sheet>
-  <SheetTrigger asChild>
-    <Button variant="outline" size="sm">
-      <Eye className="size-4 mr-2" />
-      Ver detalhes
-    </Button>
-  </SheetTrigger>
-  <SheetContent>{/* ... */}</SheetContent>
-</Sheet>
-```
+A forma de transformar um `Button` em trigger muda por versão — ver
+[v3.x](#v3x--base-ui) e [v2.x](#v2x--radix).
 
 ## Uso com Tabelas (Data Table)
 
@@ -542,9 +515,10 @@ const handleViewItem = (item: Item) => {
     <Button
       variant="outline"
       size="icon"
+      aria-label="Ver detalhes"
       onClick={() => handleViewItem(row.original)}
     >
-      <Eye className="size-4" />
+      <EyeIcon />
     </Button>
   ),
 }
@@ -602,14 +576,149 @@ O `SheetContent` usa `display: flex` com `flex-direction: column`. Quando você 
 - Não use `SheetSection` para conteúdo único ou simples
 - Não crie uma única seção dentro do `SheetBody` - use o body diretamente
 - Não use `Separator` manual - `SheetSection` já tem borda
+- Não misture APIs das duas versões (`asChild` na v3.x, `render` na v2.x)
 - Não adicione padding extra no `SheetBody` com seções
 - Não esqueça de tratar estado vazio/null
 - Não coloque formulários sem `SheetFooter` para ações
 - Não use scroll manual - `SheetBody` já gerencia
 - Não envolva `SheetBody`/`SheetFooter` em `<form>` sem a classe flex adequada
 
+## v3.x — Base UI
+
+Primitiva `Dialog` de `@base-ui/react`. Painel `bg-popover`, texto `text-xs/relaxed`,
+header/body/section/footer com `p-6`, título `font-heading text-sm font-medium`, X como
+`Button variant="ghost" size="icon-sm"`. Animação por `data-starting-style`/`data-ending-style`.
+
+| Peça | Props relevantes |
+|---|---|
+| `Sheet` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `modal`, `disablePointerDismissal` |
+| `SheetTrigger` / `SheetClose` | `render` (no lugar de `asChild`), `nativeButton` |
+| `SheetContent` (`Dialog.Popup`) | `side`, `showCloseButton`, `initialFocus`, `finalFocus`. Emite `data-side` e `data-open`/`data-closed` |
+
+Largura: o default vem de `data-[side=right]:sm:max-w-sm`, então a sobrescrita precisa do
+mesmo seletor:
+
+```tsx
+// ✅ v3.x
+<SheetContent className="sm:data-[side=right]:max-w-lg">
+<SheetContent side="left" className="sm:data-[side=left]:max-w-lg">
+<SheetContent side="bottom" className="data-[side=bottom]:max-h-[80vh]">
+
+// ❌ não sobrescreve o default na v3.x
+<SheetContent className="sm:max-w-lg">
+```
+
+```tsx
+"use client";
+
+import { Button } from "@blips/ui/components/button";
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@blips/ui/components/sheet";
+import { EyeIcon } from "@phosphor-icons/react";
+
+export function DetalhesSheet() {
+  return (
+    <Sheet>
+      {/* o trigger JÁ é o Button: não aninhe <Button> dentro dele */}
+      <SheetTrigger render={<Button variant="outline" size="sm" />}>
+        <EyeIcon data-icon="inline-start" />
+        Ver detalhes
+      </SheetTrigger>
+      <SheetContent className="sm:data-[side=right]:max-w-lg">
+        <SheetHeader>
+          <SheetTitle>Detalhes</SheetTitle>
+        </SheetHeader>
+        <SheetBody>{/* ... */}</SheetBody>
+        <SheetFooter>
+          <SheetClose render={<Button variant="outline" />}>Fechar</SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}
+```
+
+Dismiss: não há `onPointerDownOutside`/`onEscapeKeyDown`. Use `disablePointerDismissal` no
+`Sheet` ou `onOpenChange={(open, d) => { if (!open && d.reason === "outside-press") d.cancel(); }}`.
+Seletores próprios: `data-open:`/`data-closed:` (`data-[state=open]:` não casa).
+
+## v2.x — Radix
+
+Primitiva `@radix-ui/react-dialog`. Painel `bg-background`, `gap-4`, header/body/section/
+footer com `p-4`, título `font-semibold`, descrição `text-sm`. **Sem `data-side`**: o lado
+vira classes condicionais.
+
+| Peça | Props relevantes |
+|---|---|
+| `Sheet` | `open`, `defaultOpen`, `onOpenChange(open)`, `modal` |
+| `SheetTrigger` / `SheetClose` | `asChild` |
+| `SheetContent` | `side`, `showCloseButton`, `onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`, `onOpenAutoFocus`, `onCloseAutoFocus`, `forceMount`. Estado: `data-state` |
+
+Largura: o default é `sm:max-w-sm` simples, e o `cn` resolve a sobrescrita direta:
+
+```tsx
+// ✅ v2.x
+<SheetContent className="sm:max-w-lg">
+<SheetContent side="bottom" className="max-h-[80vh]">
+
+// ❌ na v2.x não existe data-side: o seletor nunca casa
+<SheetContent className="sm:data-[side=right]:max-w-lg">
+```
+
+```tsx
+"use client";
+
+import { Button } from "@blips/ui/components/button";
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@blips/ui/components/sheet";
+import { Eye } from "@phosphor-icons/react";
+
+export function DetalhesSheet() {
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button variant="outline" size="sm">
+          <Eye />
+          Ver detalhes
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-lg">
+        <SheetHeader>
+          <SheetTitle>Detalhes</SheetTitle>
+        </SheetHeader>
+        <SheetBody>{/* ... */}</SheetBody>
+        <SheetFooter>
+          <SheetClose asChild>
+            <Button variant="outline">Fechar</Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
+  );
+}
+```
+
+Dismiss: `onPointerDownOutside={(e) => e.preventDefault()}` no `SheetContent`.
+Seletores próprios: `data-[state=open]:`/`data-[state=closed]:`.
+
 ## Arquivos de Referência
 
-- `packages/ui/src/components/sheet.tsx` - Componentes base
-- `apps/admin/app/(admin)/users/[id]/_components/tabs/uploads-tab.tsx` - Exemplo com detalhes de upload
-- `apps/admin/app/(admin)/disciplines/_components/discipline-details-sheet.tsx` - Exemplo com detalhes de disciplina
+- `references/sheet.md` — API completa por versão
+- `references/v2-vs-v3.md` — diferenças transversais
+- `packages/ui/src/components/sheet.tsx` — componente base

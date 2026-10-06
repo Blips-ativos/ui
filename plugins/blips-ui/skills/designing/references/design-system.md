@@ -37,7 +37,7 @@ anunciar), profundidade por borda antes de sombra, raio único e generoso
 
 **Key Characteristics:**
 - Neutros frios oklch de croma zero (`oklch(… 0 0)`) — estrutura silenciosa, sem viés de cor.
-- **Um único acento de marca**: amarelo Blips `#fcba28` (`--primary`), foreground preto `#000000`. ~5–10% dos pixels, nunca mais.
+- **Um único acento de marca**: amarelo Blips `#fcba28` (`--primary`), foreground `yellow-900` (`oklch(0.421 0.095 57.708)`). ~5–10% dos pixels, nunca mais.
 - Palco branco puro no claro (`oklch(1 0 0)`), quase-preto no escuro (`oklch(0.145 0 0)`); o amarelo é constante entre os dois.
 - Duas vozes tipográficas: **Inter** (`--font-sans`, ler/UI — `--font-heading` é só um alias de Inter) + **Quicksand** (`--font-display`, a única voz de "anúncio"/display). **JetBrains Mono** (`--font-mono`) é função (dados/código), não leitura.
 - Profundidade por **borda sutil** primeiro; sombra é exceção, e no escuro a borda vence a sombra.
@@ -54,7 +54,7 @@ significar; usar um token fora do papel quebra o sistema (ex.: `success` para
 "botão verde bonito" rouba o significado de "deu certo").
 
 ### Marca — o único acento
-- **`primary` `#fcba28`** (foreground `#000000`) — amarelo Blips. **Único token de marca.** Reservado a: CTA primário, estado selecionado, foco-de-marca, o realce de maior sinal da tela. Alvo de cobertura: **~5–10% dos pixels** — se domina, deixou de significar. Idêntico no claro e no escuro (`--primary` / `--sidebar-primary`). Por quê: um só calor num campo frio é o que torna a marca legível e a ação inequívoca.
+- **`primary` `#fcba28`** (foreground `yellow-900` (`oklch(0.421 0.095 57.708)`), contraste 5,05:1) — amarelo Blips. **Único token de marca.** Reservado a: CTA primário, estado selecionado, foco-de-marca, o realce de maior sinal da tela. Alvo de cobertura: **~5–10% dos pixels** — se domina, deixou de significar. Idêntico no claro e no escuro (`--primary` / `--sidebar-primary`). Por quê: um só calor num campo frio é o que torna a marca legível e a ação inequívoca.
 
 ### Semânticas — só significado de estado
 Cada uma com par `-foreground`. Nunca decorativas.
@@ -65,9 +65,9 @@ Cada uma com par `-foreground`. Nunca decorativas.
 - Por quê: estado tem semântica fixa; reaproveitar a cor para enfeite faz o usuário ler estado onde não há.
 
 ### Neutros estruturais (croma zero — constroem tudo)
-- **`background`** claro `oklch(1 0 0)` / escuro `oklch(0.145 0 0)` — o palco. **`foreground`** claro `oklch(0% 0 0)` / escuro `oklch(0.985 0 0)` — texto primário.
+- **`background`** claro `oklch(1 0 0)` / escuro `oklch(0.145 0 0)` — o palco. **`foreground`** claro `oklch(0.145 0 0)` / escuro `oklch(0.985 0 0)` — texto primário.
 - **`muted`** `oklch(0.97 0 0)` claro / `oklch(0.269 0 0)` escuro; **`muted-foreground`** `oklch(0.556 0 0)` / `oklch(0.708 0 0)` — texto secundário/metadados, fundos discretos.
-- **`secondary`** e **`accent`** — `oklch(0.97 0 0)` (claro) / `oklch(0.269 0 0)`–`oklch(0.371 0 0)` (escuro): superfícies/botões neutros, hover.
+- **`secondary`** — `oklch(0.967 0.001 286.375)` (claro) / `oklch(0.274 0.006 286.033)` (escuro); **`accent`** — `oklch(0.97 0 0)` / `oklch(0.269 0 0)`: superfícies/botões neutros, hover.
 - **`border`** `oklch(0.922 0 0)` claro / `oklch(1 0 0 / 10%)` escuro; **`input`** idem (escuro `/15%`); **`ring`** `oklch(0.708 0 0)` / `oklch(0.556 0 0)` — anel de foco. Por quê: no escuro a borda é branco translúcido (não cinza sólido) → ela "acende" sutilmente em vez de pesar.
 
 ### Elevação — superfícies que se distinguem por luminância, não cor
@@ -77,10 +77,10 @@ Cada uma com par `-foreground`. Nunca decorativas.
 - **`selection`** claro `oklch(0% 0 0)` (fg `oklch(1 0 0)`) / escuro invertido — seleção de texto. Por quê: a elevação anda por **degraus de luminância** (0.145 → 0.2 → 0.205), não por matiz; o campo permanece frio.
 
 ### Sidebar — mesmo idioma do conteúdo
-- **`sidebar`** `oklch(0.985 0 0)` claro / `oklch(0.205 0 0)` escuro; **`sidebar-foreground`**, **`sidebar-accent`** (`oklch(0.97 0 0)`/`oklch(0.269 0 0)`), **`sidebar-border`**, **`sidebar-ring`** espelham os neutros do conteúdo. **`sidebar-primary` = `#fcba28`** (fg `#000000`). Por quê: a sidebar não é um "painel escuro" à parte — é o mesmo ambiente, separado por **uma borda sutil**, mantendo a tela coesa (ver §5).
+- **`sidebar`** `oklch(0.985 0 0)` claro / `oklch(0.205 0 0)` escuro; **`sidebar-foreground`**, **`sidebar-accent`** (`oklch(0.97 0 0)`/`oklch(0.269 0 0)`), **`sidebar-border`**, **`sidebar-ring`** espelham os neutros do conteúdo. **`sidebar-primary` = `#fcba28`** (fg `yellow-900`). Por quê: a sidebar não é um "painel escuro" à parte — é o mesmo ambiente, separado por **uma borda sutil**, mantendo a tela coesa (ver §5).
 
-### Charts — paleta categórica, fora da marca
-- **`chart-1..5`** — claro: `oklch(0.646 0.222 41.116)`, `oklch(0.6 0.118 184.704)`, `oklch(0.398 0.07 227.392)`, `oklch(0.828 0.189 84.429)`, `oklch(0.769 0.188 70.08)`. Escuro: `oklch(0.488 0.243 264.376)`, `oklch(0.696 0.17 162.48)`, `oklch(0.769 0.188 70.08)`, `oklch(0.627 0.265 303.9)`, `oklch(0.645 0.246 16.439)`. Por quê: séries de dados precisam de **distinção categórica**; use os tokens `chart-*` no Recharts — nunca hexes ad-hoc nem o `primary` "porque combina".
+### Charts — escala sequencial em âmbar
+- **`chart-1..5`** — a escala `yellow-300…800` do Tailwind, igual no claro e no escuro: `oklch(0.905 0.182 98.111)`, `oklch(0.795 0.184 86.047)`, `oklch(0.681 0.162 75.834)`, `oklch(0.554 0.135 66.442)`, `oklch(0.476 0.114 61.907)`. Por quê: veio do preset shadcn `b6GMQNVCs` e aproxima os gráficos da marca. **Cuidado:** é uma escala **sequencial** (claro → escuro), boa para dados ordenados; em séries **categóricas**, diferencie também por forma, rótulo ou padrão. No tema claro, `chart-1` (1,3:1) e `chart-2` (1,9:1) têm contraste baixo sobre o branco — prefira `chart-3..5` para linhas finas e texto. Use os tokens `chart-*` no Recharts — nunca hexes ad-hoc nem o `primary` "porque combina".
 
 ---
 
@@ -119,8 +119,13 @@ de tipografia mais quebrada pela IA.
 Receitas curtas de *chrome* (aparência). Para a **API/props** de cada componente,
 a fonte é a skill **`blips-ui:building`** — não reimplemente aqui.
 
-- **Button** — `primary` (fundo `bg-primary`, texto `text-primary-foreground` preto): só o CTA de maior sinal por tela. `secondary`/neutro (`bg-secondary`) para ações de igual peso; `ghost`/`outline` (só `border-border`) para terciárias; `destructive` apenas para ação que apaga/desfaz. Raio `rounded-md`. Por quê: um botão amarelo por tela mantém o "5–10%".
+- **Button** — `primary` (fundo `bg-primary`, texto `text-primary-foreground` em `yellow-900`): só o CTA de maior sinal por tela. `secondary`/neutro (`bg-secondary`) para ações de igual peso; `ghost`/`outline` (só `border-border`) para terciárias; `destructive` apenas para ação que apaga/desfaz. Raio `rounded-md`. Por quê: um botão amarelo por tela mantém o "5–10%".
 - **Card** — `bg-card` + `border border-border` + `rounded-xl`; padding interno generoso (≥ `p-6` em cards de conteúdo). Sombra **opcional e única** por tela (§6). Por quê: borda-primeiro mantém a tela calma e funciona idêntico no escuro.
+  Default do `Card` por versão da lib: **v3.x** (base-mira) já vem com `ring-1 ring-foreground/10`,
+  `rounded-lg` e espaçamento de 16px pela variável `--card-spacing` (12px com `size="sm"`) —
+  para o padding generoso de cards de conteúdo, sobrescreva a variável
+  (`className="[--card-spacing:--spacing(6)]"`) em vez de `p-6`; **v2.x** (new-york) vem com
+  `border`, `rounded-xl`, `py-6`/`px-6` e `shadow-sm`.
 - **Dialog/Sheet/Popover** — `bg-popover`/`bg-card`, `border-border`, `rounded-lg`; overlay escurece o fundo para isolar foco. **Sempre com título** (acessível). Por quê: overlay sem título é a violação clássica que `reviewing` pega.
 - **Table** — cabeçalho `text-muted-foreground` (peso 500), linhas separadas por `border-border`, **colunas numéricas em `font-mono` e alinhadas à direita**. Por quê: dinheiro/quantidade só se compara visualmente se os dígitos alinham (ver `reviewing/references/data-formatting.md`).
 - **Badge** — neutro (`bg-muted text-muted-foreground`) por padrão; variantes semânticas (`bg-success`/`bg-warning`/`bg-destructive`/`bg-info` com seu `-foreground`) **só para estado real**. `rounded-md` ou pill. Por quê: badge colorido sem semântica vira ruído — reserve cor para significado.
@@ -151,7 +156,7 @@ invisível; a borda é `oklch(1 0 0 / 10%)` (branco translúcido) e **acende** a
 elevação. Por isso o sistema prioriza borda.
 
 Raio real (derivado de `--radius` = 10px): `--radius-sm` 6px · `--radius-md` 8px
-· `--radius-lg` 10px · `--radius-xl` 14px · `--radius-2xl` 18px. Cantos vivos
+· `--radius-lg` 10px · `--radius-xl` 14px · `--radius-2xl` 18px · `--radius-3xl` 22px · `--radius-4xl` 26px. Cantos vivos
 (`rounded-none`) são exceção justificada.
 
 | Nível | Tratamento | Uso |
@@ -213,7 +218,7 @@ acontecem no celular — nenhuma tela pode quebrar embaixo.
 ## 9. Agent Prompt Guide
 
 ### Quick reference
-- CTA / seleção / foco de marca: **`bg-primary` (#fcba28)**, texto `text-primary-foreground` (#000000).
+- CTA / seleção / foco de marca: **`bg-primary` (#fcba28)**, texto `text-primary-foreground` (`yellow-900`).
 - Fundo de página: `bg-background` (branco no claro / quase-preto no escuro).
 - Superfície de card/overlay: `bg-card` · elevação leve `bg-surface` · fundo discreto `bg-muted`.
 - Texto primário `text-foreground` · secundário/metadado `text-muted-foreground`.

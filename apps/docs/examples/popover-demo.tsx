@@ -1,61 +1,44 @@
+"use client";
+
 import { Button } from "@blips/ui/components/button";
+import { Field, FieldGroup, FieldLabel } from "@blips/ui/components/field";
 import { Input } from "@blips/ui/components/input";
-import { Label } from "@blips/ui/components/label";
 import {
   Popover,
   PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
 } from "@blips/ui/components/popover";
 
 export default function PopoverDemo() {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Open popover</Button>
+      <PopoverTrigger render={<Button variant="outline" />}>
+        Abrir popover
       </PopoverTrigger>
-      <PopoverContent className="w-80">
-        <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="leading-none font-medium">Dimensions</h4>
-            <p className="text-sm text-muted-foreground">
-              Set the dimensions for the layer.
-            </p>
-          </div>
-          <div className="grid gap-2">
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="width">Width</Label>
-              <Input
-                id="width"
-                defaultValue="100%"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="maxWidth">Max. width</Label>
-              <Input
-                id="maxWidth"
-                defaultValue="300px"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="height">Height</Label>
-              <Input
-                id="height"
-                defaultValue="25px"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="maxHeight">Max. height</Label>
-              <Input
-                id="maxHeight"
-                defaultValue="none"
-                className="col-span-2 h-8"
-              />
-            </div>
-          </div>
-        </div>
+      <PopoverContent className="w-64" align="start">
+        <PopoverHeader>
+          <PopoverTitle>Dimensões</PopoverTitle>
+          <PopoverDescription>
+            Defina as dimensões da camada.
+          </PopoverDescription>
+        </PopoverHeader>
+        <FieldGroup className="gap-4">
+          <Field orientation="horizontal">
+            <FieldLabel htmlFor="popover-width" className="w-1/2">
+              Largura
+            </FieldLabel>
+            <Input id="popover-width" defaultValue="100%" />
+          </Field>
+          <Field orientation="horizontal">
+            <FieldLabel htmlFor="popover-height" className="w-1/2">
+              Altura
+            </FieldLabel>
+            <Input id="popover-height" defaultValue="25px" />
+          </Field>
+        </FieldGroup>
       </PopoverContent>
     </Popover>
   );

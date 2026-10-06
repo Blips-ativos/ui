@@ -40,7 +40,7 @@ import {
       <MenubarSeparator />
       <MenubarGroup>
         <MenubarItem>Compartilhar</MenubarItem>
-        <MenubarItem>Imprimir</MenubarItem>
+        <MenubarItem onClick={imprimir}>Imprimir</MenubarItem>
       </MenubarGroup>
     </MenubarContent>
   </MenubarMenu>
@@ -49,12 +49,56 @@ import {
 
 ## Exemplos
 
-### Exemplo
+### Grupo de seleção
 
-Uma barra de menus completa com submenus, atalhos, itens de seleção e grupos de opções.
+Use `MenubarRadioGroup` para escolhas mutuamente exclusivas.
 
-<ComponentPreview name="menubar-demo" />
+<ComponentPreview name="menubar-radio" />
+
+### Com ícones
+
+<ComponentPreview name="menubar-icons" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Menubar](https://base-ui.com/react/components/menubar), com um [Base UI Menu](https://base-ui.com/react/components/menu) em cada `MenubarMenu`. Os componentes `Menubar*` reaproveitam os do Dropdown Menu, então todas as mudanças dele valem aqui também.
+
+- `onSelect` vira `onClick`; `onCheckedChange` e `onValueChange` recebem `eventDetails` como segundo argumento.
+- `value`, `defaultValue` e `onValueChange` do `Menubar` (qual menu está aberto) não existem mais. Controle cada `MenubarMenu` com `open`/`onOpenChange`.
+- `asChild` saiu do `MenubarTrigger`. Use `render`. O estado aberto aparece como `aria-expanded`/`data-popup-open`, não `data-[state=open]`.
+- `MenubarLabel` precisa estar dentro de um `MenubarGroup`.
+- Seletores `data-[state=*]` viram `data-open`/`data-checked`.
+
+```tsx
+// v2
+<Menubar value={aberto} onValueChange={setAberto}>
+  <MenubarMenu value="arquivo">
+    <MenubarTrigger>Arquivo</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem onSelect={imprimir}>Imprimir</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+
+// v3
+<Menubar>
+  <MenubarMenu open={arquivoAberto} onOpenChange={setArquivoAberto}>
+    <MenubarTrigger>Arquivo</MenubarTrigger>
+    <MenubarContent>
+      <MenubarItem onClick={imprimir}>Imprimir</MenubarItem>
+    </MenubarContent>
+  </MenubarMenu>
+</Menubar>
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI Menubar](https://www.radix-ui.com/docs/primitives/components/menubar#api-reference).
+### MenubarContent
+
+| Prop          | Tipo                           | Padrão    |
+| ------------- | ------------------------------ | --------- |
+| `align`       | `"start" \| "center" \| "end"` | `"start"` |
+| `alignOffset` | `number`                       | `-4`      |
+| `sideOffset`  | `number`                       | `8`       |
+
+Consulte a documentação do [Base UI Menubar](https://base-ui.com/react/components/menubar).

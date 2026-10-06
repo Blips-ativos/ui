@@ -1,0 +1,255 @@
+---
+title: Migração v2 → v3
+description: O que muda para quem consome a @blips/ui ao sair da v2 (Radix) para a v3 (Base UI, estilo base-mira), com antes e depois e uma tabela por componente.
+---
+
+A v3 troca os primitivos do [Radix UI](https://www.radix-ui.com/) pelos do [Base UI](https://base-ui.com/) e adota o estilo **base-mira** do shadcn: componentes mais compactos, tema novo e uma leva de componentes para interfaces de chat e agentes. Os nomes dos exports continuam os mesmos, mas várias props, atributos e callbacks mudaram. Este guia lista o que você precisa revisar no seu app.
+
+## Resumo
+
+- **Base UI no lugar de Radix.** Todo `asChild` vira `render`.
+- **Atributos de estado novos.** `data-state="open"` vira `data-open`, `data-state="checked"` vira `data-checked`, e assim por diante.
+- **Callbacks com um segundo argumento.** `onOpenChange(open, eventDetails)`, `onValueChange(value, eventDetails)`, `onCheckedChange(checked, eventDetails)`.
+- **Menus:** `onSelect` vira `onClick`.
+- **Valores em array** no Accordion e no ToggleGroup, inclusive no modo de um item só.
+- **Ícones** com o sufixo `Icon` (`CaretDownIcon`).
+- **recharts 3** no lugar do recharts 2.
+- **Densidade mira:** controles mais baixos (`h-9` → `h-7`) e texto `text-xs`.
+- **Tema novo**, com o amarelo da marca `#FCBA28` mantido como `primary`.
+- **Componentes novos:** Attachment, Bubble, Combobox, Direction, Item, Marker, Message, Message Scroller, Native Select, Questionnaire e Toast.
+- **Toast:** no barrel, o `Toaster` do Toast sai como `ToastToaster`.
+
+## Dependências
+
+A `@blips/ui` instala as próprias dependências; você não precisa adicioná-las. Mas se o seu app importava algum pacote abaixo **diretamente** contando com a cópia que vinha junto da lib, instale-o no app ou migre o código.
+
+| Pacote | v2 | v3 |
+| --- | --- | --- |
+| `@base-ui/react` | — | `^1.8.0` |
+| `@shadcn/react` (Message Scroller e Questionnaire) | — | `^0.3.1` |
+| `recharts` | `2.15.4` | `3.10.1` |
+| `@radix-ui/react-*` (26 pacotes, incluindo `react-slot`) | sim | **sai** |
+| `vaul` (Drawer) | `^1.1.2` | **sai** |
+
+Continuam: `@phosphor-icons/react`, `cmdk`, `react-day-picker`, `input-otp`, `embla-carousel-react`, `react-resizable-panels`, `sonner`, `react-hook-form`.
+
+## `asChild` vira `render`
+
+O Base UI não tem `asChild`. Para trocar o elemento renderizado, passe o elemento na prop `render`. Os children continuam no componente.
+
+```tsx
+// v2
+<DialogTrigger asChild>
+  <Button variant="outline">Abrir</Button>
+</DialogTrigger>
+
+// v3
+<DialogTrigger render={<Button variant="outline" />}>Abrir</DialogTrigger>
+```
+
+```tsx
+// v2
+<Button asChild>
+  <Link href="/painel">Ir para o painel</Link>
+</Button>
+
+// v3: quando o elemento não é um <button>, avise com nativeButton={false}
+<Button nativeButton={false} render={<Link href="/painel" />}>
+  Ir para o painel
+</Button>
+```
+
+```tsx
+// v2
+<SidebarMenuButton asChild>
+  <a href="/clientes">Clientes</a>
+</SidebarMenuButton>
+
+// v3
+<SidebarMenuButton render={<a href="/clientes" />}>Clientes</SidebarMenuButton>
+```
+
+Os triggers do Base UI já renderizam um `<button>`. Não coloque um `Button` **dentro** de um trigger: passe-o em `render`.
+
+`Label` virou um `<label>` nativo e não tem `asChild` nem `render`. No `FormControl`, o filho único continua funcionando (`<FormControl><Input /></FormControl>`), e `render={<Input />}` também é aceito.
+
+## Atributos de estado e variáveis CSS
+
+Seletores que miram `data-[state=…]` param de funcionar nos componentes migrados.
+
+| v2 (Radix) | v3 (Base UI) |
+| --- | --- |
+| `data-[state=open]` / `data-[state=closed]` | `data-open` / `data-closed` |
+| `data-[state=checked]` / `unchecked` | `data-checked` / `data-unchecked` |
+| `data-[state=indeterminate]` | `data-indeterminate` |
+| `data-[state=active]` (Tabs) | `data-active` |
+| `data-[state=on]` (Toggle) | `data-pressed` / `aria-pressed` |
+| `data-[orientation=vertical]` | continua igual (o Base UI também emite `data-orientation`); a lib ganhou as variantes `data-vertical:` / `data-horizontal:` como atalho |
+| `group-data-[state=open]` no trigger do Collapsible/Accordion | `group-data-panel-open` |
+| `data-[state=open]` em trigger de menu/popover | `data-popup-open` / `aria-expanded` |
+| `peer-data-[state=checked]` | `peer-data-checked` |
+
+As variantes `data-open:`, `data-closed:`, `data-checked:`, `data-unchecked:`, `data-active:` e `data-disabled:` definidas no `globals.css` da lib casam com os **dois** formatos (o atributo do Base UI e o `data-state` antigo). Prefira essas variantes a classes arbitrárias como `data-[state=open]:`.
+
+| Variável v2 | Variável v3 |
+| --- | --- |
+| `--radix-popover-trigger-width`, `--radix-select-trigger-width` | `--anchor-width` |
+| `--radix-*-content-available-height` | `--available-height` |
+| `--radix-*-content-transform-origin` | `--transform-origin` |
+| `--radix-collapsible-content-height` | `--collapsible-panel-height` |
+| `--radix-accordion-content-height` | `--accordion-panel-height` |
+
+## Callbacks e props renomeadas
+
+- `onOpenChange`, `onValueChange`, `onCheckedChange` e `onPressedChange` recebem `eventDetails` como segundo argumento. Quem passa um `setState` direto continua funcionando.
+- `DropdownMenuItem`, `ContextMenuItem` e `MenubarItem`: `onSelect` vira `onClick`. Para manter o menu aberto, use `closeOnClick={false}` no lugar de `event.preventDefault()`.
+- `forceMount` vira `keepMounted` (Accordion, Collapsible, Tabs, Scroll Area).
+- Props de foco e dismiss do Radix no conteúdo (`onOpenAutoFocus`, `onCloseAutoFocus`, `onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`) saem. Use `initialFocus`/`finalFocus` no conteúdo e controle o fechamento no `onOpenChange` do Root.
+- Tooltip: `delayDuration` vira `delay`. O Tooltip não se envolve mais num Provider sozinho: para manter a abertura imediata da v2, coloque `<TooltipProvider>` na raiz do app.
+
+## Ícones
+
+A lib usa os nomes com sufixo `Icon` do Phosphor, que são os recomendados desde o `@phosphor-icons/react` 2.1. Os nomes sem sufixo estão marcados como `@deprecated`.
+
+```tsx
+// v2
+import { CaretDown, MagnifyingGlass } from "@phosphor-icons/react"
+
+// v3
+import { CaretDownIcon, MagnifyingGlassIcon } from "@phosphor-icons/react"
+```
+
+Alguns ícones internos mudaram: o Spinner passou de `CircleNotch` para `Spinner`, o Carousel usa `CaretLeft`/`CaretRight`, o Accordion alterna `CaretDown`/`CaretUp`, e o Sonner mostra `XCircle` no erro.
+
+## Gráficos: recharts 3
+
+O `Chart` agora exige recharts 3. Se o seu app usa a API do recharts direto nos gráficos (componentes, `Customized`, tipos do payload de `Tooltip` e `Legend`), siga o [guia de migração do recharts 3](https://github.com/recharts/recharts/wiki/3.0-migration-guide). Formatters tipados contra o recharts 2 podem precisar de ajuste. O `ChartContainer` ganhou `initialDimension` (padrão 320x200) para a renderização inicial e o SSR.
+
+## Densidade mira
+
+Os componentes ficaram mais compactos. Telas que dependiam de alturas fixas, ou que alinhavam controles da lib com elementos próprios, precisam de revisão visual.
+
+| Elemento | v2 | v3 |
+| --- | --- | --- |
+| Button / Toggle default | `h-9` | `h-7` |
+| Button `sm` / `lg` / `xs` | `h-8` / `h-10` / `h-6` | `h-6` / `h-8` / `h-5` |
+| Button `icon` / `icon-sm` / `icon-lg` | `size-9` / `size-8` / `size-10` | `size-7` / `size-6` / `size-8` |
+| Input, Select, InputGroup | `h-9`, `text-sm` | `h-7`, `text-xs/relaxed` |
+| Card | `py-6 px-6`, `rounded-xl` | `--card-spacing` (16px, ou 12px com `size="sm"`), `rounded-lg` |
+| Dialog | `sm:max-w-lg`, `p-6` | `sm:max-w-sm`, `p-4` |
+| Texto base de Label, Table, Field, menus | `text-sm` | `text-xs` |
+
+Outras mudanças visuais que costumam aparecer: `destructive` deixou de ser sólido (`bg-destructive/10 text-destructive`) no Button e no Badge; bordas viraram `ring-1 ring-foreground/10` em Card, Dialog e Popover; `outline` perdeu `shadow-xs`. Para recuperar um tamanho antigo pontualmente, passe a classe no `className` (ex.: `className="sm:max-w-lg"` no `DialogContent`).
+
+O padding de ícone em Button, Badge e Tabs agora depende de `data-icon="inline-start"` ou `data-icon="inline-end"` no ícone:
+
+```tsx
+<Button>
+  <PlusIcon data-icon="inline-start" /> Novo cliente
+</Button>
+```
+
+## Tema
+
+O `globals.css` adota a paleta do preset shadcn (base neutra), com uma exceção: o `primary` continua o amarelo da marca **`#FCBA28`**, nos temas claro e escuro.
+
+| Token | v2 | v3 |
+| --- | --- | --- |
+| `--primary` | `#fcba28` | `#fcba28` (mantido) |
+| `--primary-foreground` | `#000000` | `oklch(0.421 0.095 57.708)` (yellow-900, contraste 5,05:1, AA) |
+| `--foreground` (claro) | preto puro | `oklch(0.145 0 0)` |
+| `--chart-1` … `--chart-5` | paleta padrão do shadcn, diferente em cada tema | escala yellow-300 … yellow-800, igual nos dois temas |
+| Raios | `sm` … `2xl` (soma/subtração sobre `--radius`) | mesmos valores com o `--radius` padrão (a escala agora multiplica `--radius`), mais `--radius-3xl` e `--radius-4xl` |
+
+Se você sobrescrevia tokens no CSS do app, confira se os nomes ainda batem. Nenhum token foi renomeado.
+
+## Componentes novos
+
+| Componente | Para quê |
+| --- | --- |
+| [Attachment](/docs/components/attachment) | Arquivo anexado com estado de envio e ações |
+| [Bubble](/docs/components/bubble) | Balão de mensagem com variantes e reações |
+| [Combobox](/docs/components/combobox) | Campo com busca e lista de opções (Base UI) |
+| [Direction](/docs/components/direction) | `DirectionProvider` e `useDirection` para RTL |
+| [Item](/docs/components/item) | Linha com mídia, título, descrição e ações |
+| [Marker](/docs/components/marker) | Linha de status ou evento numa conversa |
+| [Message](/docs/components/message) | Layout de mensagem com avatar, cabeçalho e rodapé |
+| [Message Scroller](/docs/components/message-scroller) | Lista de mensagens com autoscroll |
+| [Native Select](/docs/components/native-select) | `<select>` nativo com o estilo da lib |
+| [Questionnaire](/docs/components/questionnaire) | Perguntas em sequência com escolhas e navegação |
+| [Toast](/docs/components/toast) | Notificações do Base UI, alternativa ao Sonner |
+
+Exports novos em componentes que já existiam: `AlertAction`, `ProgressTrack`, `ProgressIndicator`, `ProgressLabel`, `ProgressValue`, `DrawerSwipeHandle`, `NavigationMenuPositioner` e `useCarousel`. Eles saem pelo subpath (`@blips/ui/components/<nome>`) e também pelo barrel.
+
+## Toast e Sonner
+
+A lib tem dois sistemas de notificação, e os dois exportam um `Toaster`:
+
+```tsx
+// Sonner (o mesmo da v2)
+import { Toaster } from "@blips/ui/components/sonner"
+
+// Toast do Base UI: pelo subpath, continua se chamando Toaster
+import { Toaster, toast } from "@blips/ui/components/toast"
+
+// Pelo barrel, o Toaster do Toast sai renomeado para não colidir com o do Sonner
+import { Toaster, ToastToaster } from "@blips/ui"
+```
+
+O barrel também exporta `toast` (o gerenciador do Toast do Base UI). Se o mesmo arquivo importa `toast` do pacote `sonner`, renomeie um dos dois.
+
+Prefira sempre os subpaths (`@blips/ui/components/<nome>`) ao barrel `@blips/ui`.
+
+## Mudanças por componente
+
+Componentes que não aparecem na tabela (Empty, Kbd, Skeleton, Table, Textarea, Resizable, Spinner) só mudaram no visual.
+
+| Componente | O que muda na API |
+| --- | --- |
+| Accordion | Saem `type` e `collapsible`; use `multiple` para abrir vários. `value`/`defaultValue` são **sempre arrays** (`defaultValue={["item-1"]}`). `AccordionContent`: `forceMount` → `keepMounted`. Trigger: `asChild` → `render`. |
+| Alert | Novo `AlertAction` (slot de ação no canto). |
+| Alert Dialog | `AlertDialogAction` virou um `Button` comum e **não fecha mais o diálogo sozinho**: controle `open` e feche no `onClick`. `AlertDialogCancel` aceita `variant`/`size`, sem `asChild`. Saem as props de foco do Radix no conteúdo. |
+| Aspect Ratio | Virou uma `div` com `aspect-ratio` do CSS. `ratio` é **obrigatória** (`ratio={1}`). Sai o wrapper interno do Radix. |
+| Avatar | `AvatarFallback`: `delayMs` → `delay`. `asChild` → `render`. |
+| Badge | `asChild` → `render` (`<Badge render={<a href="#" />}>`). |
+| Breadcrumb | `BreadcrumbLink`: `asChild` → `render` (`render={<Link href="/x" />}`). |
+| Button | `asChild` → `render`; com elemento que não é `<button>`, passe `nativeButton={false}`. Não emite mais `data-variant`/`data-size`. Nova prop `focusableWhenDisabled`. |
+| Button Group | `ButtonGroupText`: `asChild` → `render`. O separador usa `data-vertical`/`data-horizontal`. |
+| Calendar | `classNames.table` → `classNames.month_grid`. `CalendarDayButton` aceita `locale`. Célula menor (`--cell-size` 6). |
+| Card | Nova prop `size` (`"default" \| "sm"`); padding via `--card-spacing`. |
+| Carousel | Novo `useCarousel`. `CarouselPrevious`/`Next`: `size` padrão `"icon-sm"`, sem `asChild`. |
+| Chart | Exige recharts 3. Nova prop `initialDimension`. Tipos de `ChartTooltipContent`/`ChartLegendContent` seguem o recharts 3. O tooltip mostra valor 0. |
+| Checkbox | `checked="indeterminate"` sai; use `indeterminate`. `onCheckedChange(checked: boolean, eventDetails)`. Root é `<span role="checkbox">` com input oculto. |
+| Collapsible | Trigger: `asChild` → `render`. Content: `forceMount` → `keepMounted`. Variável `--collapsible-panel-height`. |
+| Command | `CommandDialog` usa o Dialog do Base UI e **não envolve mais os filhos em `<Command>`**: coloque o `<Command>` dentro dele. `showCloseButton` passou a ser `false` por padrão (na v2 o X aparecia sempre); passe `showCloseButton` para manter. Título e descrição padrão em inglês, passe `title`/`description`. `CommandItem` mostra um check automático com `data-checked=true`. |
+| Context Menu | `ContextMenuTrigger`: `asChild` → `render`. Item: `onSelect` → `onClick`. `ContextMenuLabel` precisa ficar dentro de `ContextMenuGroup`. |
+| Dialog | Trigger/Close: `asChild` → `render`. Content perde as props de foco/dismiss do Radix e ganha `initialFocus`/`finalFocus`. `DialogOverlay` é o `Backdrop`. |
+| Drawer | `vaul` → Base UI. `direction` → `swipeDirection` (`"down" \| "up" \| "left" \| "right"`). Saem `shouldScaleBackground`, `dismissible`, `handleOnly` e afins. A alça agora é opcional (`showSwipeHandle` ou `DrawerSwipeHandle`). `DrawerContent` precisa estar dentro do `Drawer` da lib. Seletores `data-[vaul-drawer-direction=*]` → `data-[swipe-direction=*]`. |
+| Dropdown Menu | Trigger e itens: `asChild` → `render` (não coloque `Button` dentro do trigger). Item: `onSelect` → `onClick`; manter aberto: `closeOnClick={false}`. Content já inclui Portal e Positioner, `align` padrão `"start"`. `DropdownMenuLabel` dentro de `DropdownMenuGroup`. Checkbox sem `indeterminate`. |
+| Field | O destaque do `FieldLabel` em card segue `data-checked` (Base UI). |
+| Form | `FormControl` usa `useRender` no lugar do `Slot`; aceita filho único ou `render`. `FormLabel` sem `asChild`. |
+| Hover Card | Primitivo `PreviewCard`. `openDelay`/`closeDelay` saem do Root e vão para o Trigger como `delay`/`closeDelay`. Trigger renderiza `<a>` por padrão. |
+| Input | Renderiza o `Input` do Base UI. Mesmas props. |
+| Input Group | `InputGroupButton`: `asChild` → `render`; `type` tipado como `"button" \| "submit" \| "reset"`. Tamanhos menores. |
+| Input OTP | O container perdeu `gap-2`: passe `containerClassName="gap-2"` para espaçar os grupos. |
+| Label | `<label>` nativo, sem `asChild`. |
+| Menubar | Saem `value`/`onValueChange`/`defaultValue` do Root: controle cada `MenubarMenu` com `open`/`onOpenChange`. Valem as mudanças do Dropdown Menu. |
+| Navigation Menu | A prop `viewport` não tem mais efeito (o conteúdo sempre abre no popup). Novo `NavigationMenuPositioner` e prop `align`. Link/Trigger: `asChild` → `render`. `NavigationMenuIndicator` não tem equivalente direto. |
+| Pagination | `PaginationLink` é um `Button` com `render={<a />}`. `PaginationPrevious`/`Next` ganharam `text` para traduzir o rótulo (`text="Anterior"`). |
+| Popover | Trigger: `asChild` → `render`. `PopoverContent` aceita `anchor`. `PopoverAnchor` mantido, sem `asChild`. `PopoverTitle`/`PopoverDescription` ligam `aria-*` sozinhos. |
+| Progress | Novos `ProgressTrack`, `ProgressIndicator`, `ProgressLabel`, `ProgressValue`. O `className` do `Progress` vai para o contêiner, não para a barra: estilize a barra com `[&_[data-slot=progress-track]]:h-2`. `value={null}` = indeterminado. |
+| Radio Group | `onValueChange(value: unknown, eventDetails)`: pode precisar de cast. `value` do item aceita qualquer tipo. |
+| Scroll Area | Saem `type` e `scrollHideDelay`. Use `data-hovering`/`data-scrolling` para a visibilidade. |
+| Select | `SelectValue` mantém `placeholder` (não passe o texto como children: children estáticos substituem o valor selecionado). Prefira a prop `items` no Root para o rótulo aparecer antes de abrir. `position="popper"` → `alignItemWithTrigger={false}`. `SelectLabel` dentro de `SelectGroup`. `value` aceita qualquer tipo. |
+| Separator | Sai `decorative`; o separador é sempre semântico. Para algo só visual, passe `role="none"`. |
+| Sheet | Trigger/Close: `asChild` → `render`. Content perde as props de foco/dismiss do Radix. Animação via `data-starting-style`/`data-ending-style`. |
+| Sidebar | `asChild` → `render` em `SidebarMenuButton`, `SidebarMenuAction`, `SidebarMenuSubButton`, `SidebarGroupLabel` e `SidebarGroupAction`. O `SidebarProvider` não envolve mais um `TooltipProvider`: os tooltips do menu abrem com o atraso padrão. `Sidebar` aceita `dir`. |
+| Slider | `onValueCommit` → `onValueCommitted`. Valor escalar desenha um único thumb e o callback recebe `number`. |
+| Sonner | API igual; ícones de erro e carregamento mudaram. |
+| Switch | `onCheckedChange(checked, eventDetails)`. Root é `<span role="switch">`. |
+| Tabs | `activationMode` sai; a ativação passa a ser manual. Para o comportamento antigo, use `activateOnFocus` no `TabsList`. `forceMount` → `keepMounted`. |
+| Toggle | `onPressedChange(pressed, eventDetails)`. Estado em `data-pressed`/`aria-pressed`. |
+| Toggle Group | Sai `type`; use `multiple`. `value`/`defaultValue` são **sempre arrays** (`value={["bold"]}`). `rovingFocus`/`loop` → `loopFocus`. `spacing` padrão passou de 0 para 2: use `spacing={0}` para o visual grudado. |
+| Tooltip | `delayDuration` → `delay` (no Provider ou no Trigger); `skipDelayDuration` → `timeout`; `disableHoverableContent` → `disableHoverablePopup`. Sem `TooltipProvider` ancestral, o atraso é de 600ms. |
+
+As páginas dos componentes que mudaram de API têm uma seção **Migrando da v2** com antes e depois em código.

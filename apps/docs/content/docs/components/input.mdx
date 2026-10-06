@@ -18,19 +18,63 @@ import { Input } from "@blips/ui/components/input"
 ```
 
 ```tsx
-<Input />
+<Input type="email" placeholder="E-mail" />
 ```
+
+O `Input` renderiza o [Input do Base UI](https://base-ui.com/react/components/input) e aceita todas as props de um `<input>` nativo. Para rótulo, descrição e erro, componha com o [`Field`](/docs/components/field).
 
 ## Exemplos
 
+### Com rótulo
+
+Use `Field` e `FieldLabel` para associar o rótulo ao input via `htmlFor`/`id`.
+
+<ComponentPreview name="input-with-label" />
+
+### Com descrição
+
+Use `FieldDescription` para um texto de apoio abaixo do input.
+
+<ComponentPreview name="input-description" />
+
 ### Desabilitado
 
-Use a prop `disabled` para desabilitar o input.
+Use a prop `disabled` no input e `data-disabled` no `Field` para esmaecer também o rótulo.
 
 <ComponentPreview name="input-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` no input e `data-invalid` no `Field`, e mostre a mensagem com `FieldError`.
+
+<ComponentPreview name="input-invalid" />
 
 ### Arquivo
 
 Use a prop `type="file"` para criar um input de arquivo.
 
 <ComponentPreview name="input-file" />
+
+### Com botão
+
+<ComponentPreview name="input-button" />
+
+### Formulário
+
+Um formulário completo combinando `Input`, `NativeSelect` e `Field`.
+
+<ComponentPreview name="input-form" />
+
+## Migrando da v2
+
+A API não mudou: o `Input` continua recebendo as props de `<input>`. O que muda:
+
+- Agora renderiza o `Input` do [Base UI](https://base-ui.com/react/components/input) em vez de um `<input>` puro, o que integra o componente ao `Field` do Base UI.
+- Densidade menor: altura `h-7` (antes `h-9`), `px-2` (antes `px-3`) e texto `text-xs/relaxed` a partir de `md` (antes `text-sm`).
+- Sem `shadow-xs`; fundo `bg-input/20`; o anel de foco passa a `ring-2 ring-ring/30` e o estado `aria-invalid` ganha anel próprio.
+
+Se você dependia da altura antiga para alinhar com outros elementos, passe `className="h-9"`.
+
+## Referência da API
+
+Consulte a documentação do [Base UI Input](https://base-ui.com/react/components/input) para mais informações.

@@ -2,18 +2,22 @@
 
 Guide for building data tables using TanStack Table v8 with shadcn/ui components.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Sub-References
 
 | Resource | File | When to use |
 |----------|------|-------------|
-| Setup | [setup-reference.md](setup-reference.md) | Installation, initial structure, hooks and helpers |
-| Columns | [columns-reference.md](columns-reference.md) | Column definition with `meta.title` |
-| Sorting | [sorting-reference.md](sorting-reference.md) | Client/server-side and URL-driven sorting |
-| Filtering | [filtering-reference.md](filtering-reference.md) | Filters, debounce and `useDeferredValue` |
-| Pagination | [pagination-reference.md](pagination-reference.md) | Client/server/cursor-based pagination |
-| Row Selection | [row-selection-reference.md](row-selection-reference.md) | Row selection and cross-page selection |
-| Visibility | [visibility-reference.md](visibility-reference.md) | Column toggle and persistence |
-| Toolbar | [toolbar-reference.md](toolbar-reference.md) | Toolbar components |
+| Setup | [setup.md](setup.md) | Installation, initial structure, hooks and helpers |
+| Columns | [columns.md](columns.md) | Column definition with `meta.title` |
+| Sorting | [sorting.md](sorting.md) | Client/server-side and URL-driven sorting |
+| Filtering | [filtering.md](filtering.md) | Filters, debounce and `useDeferredValue` |
+| Pagination | [pagination.md](pagination.md) | Client/server/cursor-based pagination |
+| Row Selection | [row-selection.md](row-selection.md) | Row selection and cross-page selection |
+| Visibility | [visibility.md](visibility.md) | Column toggle and persistence |
+| Toolbar | [toolbar.md](toolbar.md) | Toolbar components |
 
 ---
 
@@ -222,6 +226,27 @@ onSortingChange: (updater) => { ... }
 - Adicionar seleção de linhas para bulk actions
 
 ---
+
+## v3.x — Base UI
+
+Resumo das peças de UI que mudam numa data table (detalhes em cada guia):
+
+- Trigger de dropdown/popover com aparência de Button: `<DropdownMenuTrigger render={<Button variant="ghost" />}>`.
+- Checkbox "selecionar todos": `checked={allSelected}` + `indeterminate={someSelected && !allSelected}`.
+- `DropdownMenuLabel` dentro de `DropdownMenuGroup`.
+- `DropdownMenuCheckboxItem onCheckedChange(checked, eventDetails)`.
+- Trigger aberto: `data-popup-open:` (não `data-[state=open]:`).
+- `Select` com rótulo diferente do `value` precisa de `items` para o `SelectValue`.
+- `TableRow data-state="selected"` continua valendo: é atributo da tabela, não do Base UI.
+- Densidade base-mira: `Button` default `h-7`, `text-xs`; não force `h-8`/`h-9` sem motivo.
+
+## v2.x — Radix
+
+- Triggers com `asChild` + `<Button>` filho.
+- Checkbox "selecionar todos": `checked={allSelected || (someSelected && "indeterminate")}`.
+- `DropdownMenuLabel` solto; `DropdownMenuCheckboxItem onCheckedChange(checked)`.
+- Trigger aberto: `data-[state=open]:`.
+- `SelectValue` mostra o texto do item selecionado sem `items`.
 
 ## Arquivos de Referência
 

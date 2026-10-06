@@ -2,167 +2,104 @@
 
 Import: `@blips/ui/components/badge`
 
-## Sub-components
+Rótulo curto em linha (status, contagem, categoria). Exports: `Badge`, `badgeVariants`.
 
-| Component | Description |
-|---|---|
-| `Badge` | Inline badge element. Renders a styled `div` with CVA variants. |
+## Notas comuns
 
-Also exports `badgeVariants` for use with other elements.
+- Variantes (nas duas versões): `default` (padrão), `secondary`, `destructive`, `outline`, `ghost`, `link`. **Não existem** `success`, `warning` nem `info`: para status coloridos use `className` com tokens do tema (ex.: `bg-primary/10 text-primary`), nunca cores hardcoded fora do tema.
+- Formato pílula (`rounded-full`) por padrão.
+- `badgeVariants({ variant })` aplica o visual em outro elemento.
+- O `data-variant` continua no DOM nas duas versões.
+- Contador numérico: `className="min-w-5 px-1 font-mono tabular-nums"`.
 
-## Props & Variants
+> A API difere entre as versões (`render` vs `asChild`). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-### Badge
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
+`Badge` usa `useRender` + `mergeProps` (`useRender.ComponentProps<"span"> & VariantProps`).
+
+| Prop | Tipo | Padrão | Descrição |
 |---|---|---|---|
-| `variant` | `"default" \| "secondary" \| "destructive" \| "outline" \| "success" \| "warning"` | `"outline"` | Visual style variant. |
-| `className` | `string` | - | Additional CSS classes. |
-| `children` | `ReactNode` | - | Badge content (text, icons, etc.). |
+| `variant` | `"default" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "link"` | `"default"` | Visual. |
+| `render` | `ReactElement \| (props, state) => ReactElement` | — | Troca o elemento (ex.: `<a>`, `Link`). Substitui o `asChild`. |
 
-**Base classes:** `inline-flex items-center whitespace-nowrap rounded-sm border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2`
+Visual base-mira: altura fixa `h-5`, `text-[0.625rem]`, ícone forçado em `size-2.5!`. `destructive` é tonal (`bg-destructive/10 text-destructive`); `outline` tem `bg-input/20`. Hover de link vale quando o badge é `<a>` (`[a]:hover`).
 
-#### Variant Styles
+Ícone com espaçamento certo: marque com `data-icon="inline-start"` ou `data-icon="inline-end"`.
 
-| Variant | Classes |
-|---|---|
-| `default` | `border-transparent bg-primary text-primary-foreground hover:bg-primary/80` |
-| `secondary` | `border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80` |
-| `destructive` | `border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80` |
-| `outline` | `text-foreground` |
-| `success` | `border-transparent bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400` |
-| `warning` | `border-transparent bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400` |
+```tsx
+import { Badge } from "@blips/ui/components/badge";
+import { ArrowUpRightIcon, CheckCircleIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 
-## Usage
+export function Badges() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Badge>Ativo</Badge>
+      <Badge variant="secondary">
+        <CheckCircleIcon data-icon="inline-start" />
+        Verificado
+      </Badge>
+      <Badge variant="destructive">Inadimplente</Badge>
+      <Badge variant="outline" className="min-w-5 px-1 font-mono tabular-nums">
+        20+
+      </Badge>
+      <Badge variant="ghost" render={<Link href="/contratos" />}>
+        Ver contratos <ArrowUpRightIcon data-icon="inline-end" />
+      </Badge>
+    </div>
+  );
+}
+```
 
-### All variants
+## v2.x — Radix
+
+`Badge` usa `Slot` de `@radix-ui/react-slot` quando `asChild`.
+
+| Prop | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `variant` | `"default" \| "secondary" \| "destructive" \| "outline" \| "ghost" \| "link"` | `"default"` | Visual. |
+| `asChild` | `boolean` | `false` | Renderiza o filho (ex.: `<a>`) com o visual do badge. |
+
+Visual new-york: `px-2 py-0.5 text-xs`, ícone `size-3`, padding fixo (não ajusta com ícone). `destructive` é sólido (`bg-destructive text-white`). Hover só quando o badge é `<a>` (`[a&]:hover`).
 
 ```tsx
 import { Badge } from "@blips/ui/components/badge"
+import { ArrowUpRight, SealCheck } from "@phosphor-icons/react"
+import Link from "next/link"
 
-export function BadgeVariants() {
+export function Badges() {
   return (
     <div className="flex flex-wrap gap-2">
-      <Badge>Default</Badge>
-      <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="destructive">Destructive</Badge>
-      <Badge variant="outline">Outline</Badge>
-      <Badge variant="success">Success</Badge>
-      <Badge variant="warning">Warning</Badge>
+      <Badge>Ativo</Badge>
+      <Badge variant="secondary">
+        <SealCheck />
+        Verificado
+      </Badge>
+      <Badge variant="destructive">Inadimplente</Badge>
+      <Badge variant="outline" className="h-5 min-w-5 px-1 font-mono tabular-nums">
+        20+
+      </Badge>
+      <Badge variant="ghost" asChild>
+        <Link href="/contratos">
+          Ver contratos <ArrowUpRight />
+        </Link>
+      </Badge>
     </div>
   )
 }
 ```
 
-### Badge with icon
-
-```tsx
-import { SealCheck } from "@phosphor-icons/react"
-import { Badge } from "@blips/ui/components/badge"
-
-<Badge variant="secondary" className="bg-blue-500 text-white dark:bg-blue-600">
-  <SealCheck />
-  Verified
-</Badge>
-```
-
-### Numeric/counter badge
-
-```tsx
-<Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">8</Badge>
-<Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums" variant="destructive">99</Badge>
-<Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums" variant="outline">20+</Badge>
-```
-
-### Using badgeVariants with other elements
+`badgeVariants` em outro elemento (igual nas duas versões):
 
 ```tsx
 import { badgeVariants } from "@blips/ui/components/badge"
 
 <a href="/status" className={badgeVariants({ variant: "outline" })}>
-  View Status
+  Ver status
 </a>
 ```
 
-## Project Notes
+## Exemplos na docs
 
-- The project default variant is `"outline"` (differs from upstream shadcn which defaults to `"default"`).
-- Includes custom `success` and `warning` variants not present in upstream shadcn, with light/dark mode support using green and yellow color palettes.
-- Shape is `rounded-sm` (slightly rounded). For pill/circular badges, add `rounded-full`.
-
-## All Example Variants
-
-### badge-demo
-
-```tsx
-import { WarningCircle, SealCheck, Check } from "@phosphor-icons/react"
-
-import { Badge } from "@/registry/new-york-v4/ui/badge"
-
-export default function BadgeDemo() {
-  return (
-    <div className="flex flex-col items-center gap-2">
-      <div className="flex w-full flex-wrap gap-2">
-        <Badge>Badge</Badge>
-        <Badge variant="secondary">Secondary</Badge>
-        <Badge variant="destructive">Destructive</Badge>
-        <Badge variant="outline">Outline</Badge>
-      </div>
-      <div className="flex w-full flex-wrap gap-2">
-        <Badge
-          variant="secondary"
-          className="bg-blue-500 text-white dark:bg-blue-600"
-        >
-          <SealCheck />
-          Verified
-        </Badge>
-        <Badge className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums">
-          8
-        </Badge>
-        <Badge
-          className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
-          variant="destructive"
-        >
-          99
-        </Badge>
-        <Badge
-          className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
-          variant="outline"
-        >
-          20+
-        </Badge>
-      </div>
-    </div>
-  )
-}
-```
-
-### badge-destructive
-
-```tsx
-import { Badge } from "@/registry/new-york-v4/ui/badge"
-
-export default function BadgeDestructive() {
-  return <Badge variant="destructive">Destructive</Badge>
-}
-```
-
-### badge-outline
-
-```tsx
-import { Badge } from "@/registry/new-york-v4/ui/badge"
-
-export default function BadgeOutline() {
-  return <Badge variant="outline">Outline</Badge>
-}
-```
-
-### badge-secondary
-
-```tsx
-import { Badge } from "@/registry/new-york-v4/ui/badge"
-
-export default function BadgeSecondary() {
-  return <Badge variant="secondary">Secondary</Badge>
-}
-```
+`badge-demo`, `badge-variants`, `badge-icon`, `badge-link`, `badge-spinner`, `badge-colors`, `badge-secondary`, `badge-destructive`, `badge-outline` (v3).

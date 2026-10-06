@@ -3,8 +3,9 @@
 import { Calendar } from "@blips/ui/components/calendar";
 import { Card, CardContent } from "@blips/ui/components/card";
 import * as React from "react";
+import { ptBR } from "react-day-picker/locale";
 
-export function CalendarWeekNumbers() {
+export default function CalendarWeekNumbers() {
   const [date, setDate] = React.useState<Date | undefined>(
     new Date(new Date().getFullYear(), 1, 3)
   );
@@ -17,6 +18,7 @@ export function CalendarWeekNumbers() {
           defaultMonth={date}
           selected={date}
           onSelect={setDate}
+          locale={ptBR}
           showWeekNumber
         />
       </CardContent>

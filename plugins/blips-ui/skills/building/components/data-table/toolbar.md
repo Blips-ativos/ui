@@ -2,6 +2,10 @@
 
 Implementação de barra de ferramentas com filtros e ações.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Estrutura Base](#estrutura-base)
@@ -11,6 +15,8 @@ Implementação de barra de ferramentas com filtros e ações.
 - [Actions Dropdown por Linha](#actions-dropdown-por-linha)
 - [Exportação](#exportação)
 - [Refresh Button](#refresh-button)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Estrutura Base
 
@@ -19,7 +25,7 @@ Implementação de barra de ferramentas com filtros e ações.
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { X, MagnifyingGlass, Plus } from "@phosphor-icons/react";
+import { XIcon, MagnifyingGlassIcon, PlusIcon } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
 import { Input } from "@blips/ui/components/input";
@@ -40,7 +46,7 @@ export function DataTableToolbar<TData>({
       <div className="flex flex-1 items-center space-x-2">
         {/* Busca */}
         <div className="relative">
-          <MagnifyingGlass className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <MagnifyingGlassIcon className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Filtrar..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -68,7 +74,7 @@ export function DataTableToolbar<TData>({
             className="h-8 px-2 lg:px-3"
           >
             Limpar
-            <X className="ml-2 h-4 w-4" />
+            <XIcon className="ml-2 h-4 w-4" />
           </Button>
         )}
       </div>
@@ -76,7 +82,7 @@ export function DataTableToolbar<TData>({
       <div className="flex items-center space-x-2">
         <DataTableViewOptions table={table} />
         <Button size="sm" className="h-8">
-          <Plus className="mr-2 h-4 w-4" />
+          <PlusIcon className="mr-2 h-4 w-4" />
           Novo
         </Button>
       </div>
@@ -115,7 +121,7 @@ export function DataTableToolbar<TData>({
                 onBulkExport(ids);
               }}
             >
-              <Download className="mr-2 h-4 w-4" />
+              <DownloadSimpleIcon className="mr-2 h-4 w-4" />
               Exportar
             </Button>
           )}
@@ -128,7 +134,7 @@ export function DataTableToolbar<TData>({
                 onBulkDelete(ids);
               }}
             >
-              <Trash className="mr-2 h-4 w-4" />
+              <TrashIcon className="mr-2 h-4 w-4" />
               Excluir
             </Button>
           )}
@@ -175,7 +181,7 @@ export function ResourceToolbar({
     <div className="flex items-center gap-4 flex-wrap">
       {/* Busca com debounce no componente pai */}
       <div className="relative flex-1 min-w-[200px] max-w-sm">
-        <MagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           placeholder="Buscar..."
           value={search}
@@ -187,7 +193,7 @@ export function ResourceToolbar({
       {/* Filtro de status */}
       <Select
         value={statusFilter ?? "all"}
-        onValueChange={(v) => onStatusFilterChange(v === "all" ? undefined : v)}
+        onValueChange={(v) => onStatusFilterChange(!v || v === "all" ? undefined : v)}
       >
         <SelectTrigger className="w-[140px]">
           <SelectValue placeholder="Status" />
@@ -201,7 +207,7 @@ export function ResourceToolbar({
 
       {/* Botão de criar */}
       <Button onClick={onCreateClick} className="ml-auto">
-        <Plus className="mr-2 h-4 w-4" />
+        <PlusIcon className="mr-2 h-4 w-4" />
         Novo
       </Button>
     </div>
@@ -235,12 +241,12 @@ const [slaFilter, setSlaFilter] = useState<"with_sla" | "without_sla">();
 
 Ciclo de clique: neutro → positivo (primary tint) → negativo (secondary) → neutro.
 
-Veja detalhes completos em [filtering-reference.md](filtering-reference.md#filtro-toggle-booleanpresença).
+Veja detalhes completos em [filtering.md](filtering.md#filtro-toggle-booleanpresença).
 
 ### Filtro de Data Range
 
 ```tsx
-import { Calendar } from "@phosphor-icons/react";
+import { CalendarIcon } from "@phosphor-icons/react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { DateRange } from "react-day-picker";
@@ -262,32 +268,34 @@ interface DateRangeFilterProps {
 export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
+      <PopoverTrigger
+        render={
+          <Button
+            variant="outline"
+            className={cn(
             "w-[240px] justify-start text-left font-normal",
             !value && "text-muted-foreground"
           )}
-        >
-          <Calendar className="mr-2 h-4 w-4" />
-          {value?.from ? (
-            value.to ? (
-              <>
-                {format(value.from, "dd/MM/yyyy", { locale: ptBR })} -{" "}
-                {format(value.to, "dd/MM/yyyy", { locale: ptBR })}
-              </>
-            ) : (
-              format(value.from, "dd/MM/yyyy", { locale: ptBR })
-            )
+          />
+        }
+      >
+        <CalendarIcon className="mr-2 h-4 w-4" />
+        {value?.from ? (
+          value.to ? (
+            <>
+              {format(value.from, "dd/MM/yyyy", { locale: ptBR })} -{" "}
+              {format(value.to, "dd/MM/yyyy", { locale: ptBR })}
+            </>
           ) : (
-            "Selecionar período"
-          )}
-        </Button>
+            format(value.from, "dd/MM/yyyy", { locale: ptBR })
+          )
+        ) : (
+          "Selecionar período"
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar
-          initialFocus
+          autoFocus
           mode="range"
           defaultMonth={value?.from}
           selected={value}
@@ -329,13 +337,14 @@ export function DateRangeFilter({ value, onChange }: DateRangeFilterProps) {
 "use client";
 
 import { useState } from "react";
-import { DotsThree, Eye, Pencil, Trash, Copy } from "@phosphor-icons/react";
+import { DotsThreeIcon, EyeIcon, PencilIcon, TrashIcon, CopyIcon } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -376,27 +385,27 @@ export function ActionsDropdown({ resource, onAction }: ActionsDropdownProps) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Abrir menu</span>
-            <DotsThree className="h-4 w-4" />
-          </Button>
+        <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" />}>
+          <span className="sr-only">Abrir menu</span>
+          <DotsThreeIcon className="h-4 w-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          </DropdownMenuGroup>
           <DropdownMenuItem
             onClick={() => navigator.clipboard.writeText(resource.id)}
           >
-            <Copy className="mr-2 h-4 w-4" />
+            <CopyIcon className="mr-2 h-4 w-4" />
             Copiar ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Eye className="mr-2 h-4 w-4" />
+            <EyeIcon className="mr-2 h-4 w-4" />
             Visualizar
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-            <Pencil className="mr-2 h-4 w-4" />
+            <PencilIcon className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -404,7 +413,7 @@ export function ActionsDropdown({ resource, onAction }: ActionsDropdownProps) {
             className="text-destructive focus:text-destructive"
             onClick={() => setShowDeleteDialog(true)}
           >
-            <Trash className="mr-2 h-4 w-4" />
+            <TrashIcon className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -448,7 +457,7 @@ export function ActionsDropdown({ resource, onAction }: ActionsDropdownProps) {
     exportToCSV(data, "export.csv");
   }}
 >
-  <Download className="mr-2 h-4 w-4" />
+  <DownloadSimpleIcon className="mr-2 h-4 w-4" />
   Exportar CSV
 </Button>
 
@@ -481,6 +490,68 @@ function exportToCSV<T extends Record<string, any>>(data: T[], filename: string)
   onClick={() => refetch()}
   disabled={isLoading}
 >
-  <ArrowsClockwise className={cn("h-4 w-4", isLoading && "animate-spin")} />
+  <ArrowsClockwiseIcon className={cn("h-4 w-4", isLoading && "animate-spin")} />
 </Button>
 ```
+
+## v3.x — Base UI
+
+- Triggers (`PopoverTrigger`, `DropdownMenuTrigger`) recebem o `Button` em `render`.
+- `DropdownMenuLabel` dentro de `DropdownMenuGroup`.
+- `Select` de status: o `SelectValue` mostra o `value` cru até abrir; passe `items` para o
+  rótulo aparecer:
+
+```tsx
+const statusItems = [
+  { value: "all", label: "Todos" },
+  { value: "active", label: "Ativo" },
+  { value: "inactive", label: "Inativo" },
+]
+
+<Select
+  items={statusItems}
+  value={statusFilter ?? "all"}
+  onValueChange={(v) => onStatusFilterChange(!v || v === "all" ? undefined : v)}
+>
+  <SelectTrigger className="w-[140px]">
+    <SelectValue placeholder="Status" />
+  </SelectTrigger>
+  <SelectContent>
+    {statusItems.map((item) => (
+      <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+```
+
+## v2.x — Radix
+
+```tsx
+// Filtro de data
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline" className="w-[240px] justify-start text-left font-normal">
+      <CalendarIcon className="mr-2 h-4 w-4" />
+      Selecionar período
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-auto p-0" align="start">{/* <Calendar mode="range" … /> */}</PopoverContent>
+</Popover>
+
+// Ações por linha
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost" className="h-8 w-8 p-0">
+      <DotsThree className="h-4 w-4" />
+    </Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end">
+    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+    {/* ... */}
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+- O `Select` de status mostra o texto do `SelectItem` sem precisar de `items`.
+- Não importe o ícone e o componente com o mesmo nome `Calendar`: use `CalendarIcon` para o
+  ícone (existe no Phosphor 2.1.10 da v2.x também) e `Calendar` para o componente.

@@ -5,7 +5,7 @@ import {
   AvatarImage,
 } from "@blips/ui/components/avatar";
 
-export function AvatarGroupExample() {
+export default function AvatarGroupExample() {
   return (
     <AvatarGroup className="grayscale">
       <Avatar>

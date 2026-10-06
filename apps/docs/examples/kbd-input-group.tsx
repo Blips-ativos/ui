@@ -4,15 +4,15 @@ import {
   InputGroupInput,
 } from "@blips/ui/components/input-group";
 import { Kbd } from "@blips/ui/components/kbd";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 
 export default function KbdInputGroup() {
   return (
     <div className="flex w-full max-w-xs flex-col gap-6">
       <InputGroup>
-        <InputGroupInput placeholder="MagnifyingGlass..." />
+        <InputGroupInput placeholder="Buscar..." />
         <InputGroupAddon>
-          <MagnifyingGlass />
+          <MagnifyingGlassIcon />
         </InputGroupAddon>
         <InputGroupAddon align="inline-end">
           <Kbd>⌘</Kbd>

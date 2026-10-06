@@ -2,153 +2,113 @@
 
 Import: `@blips/ui/components/tabs`
 
-## Sub-components
+Alterna entre painéis de conteúdo relacionados no mesmo contexto (visão geral /
+histórico / configurações). Para alternar um valor (filtro, visualização) sem
+painel, use Toggle Group; para navegar entre páginas, links.
 
-- **`Tabs`** - Root container built on `@radix-ui/react-tabs`. Applies `flex flex-col gap-2`.
-- **`TabsList`** - Container for tab triggers. Supports `variant` prop. Provides variant context to child triggers.
-- **`TabsTrigger`** - Individual tab button. Inherits variant from `TabsList` context or accepts its own `variant` prop.
-- **`TabsContent`** - Content panel for each tab. Applies `flex-1 outline-none`.
+Exports (iguais nas duas versões): `Tabs`, `TabsList`, `TabsTrigger`,
+`TabsContent`, `tabsListVariants`.
 
-### Exported Utilities
+## Notas comuns
 
-- **`tabsListVariants`** - CVA variant function for TabsList styling.
-- **`tabsTriggerVariants`** - CVA variant function for TabsTrigger styling.
+- `TabsList` tem a prop `variant`: `"default"` (pílula com fundo `bg-muted`) ou `"line"` (sublinhado, fundo transparente).
+- `Tabs` aceita `orientation` (`"horizontal"` padrão, ou `"vertical"`); a lib repassa à primitiva e põe `data-orientation`. Vertical: lista em coluna, triggers alinhados à esquerda.
+- Cada `TabsTrigger` e `TabsContent` precisa de um `value` correspondente.
+- Ícones no trigger são Phosphor; trigger só com ícone precisa de `aria-label`.
 
-## Props & Variants
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-### Tabs (Root)
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `defaultValue` | `string` | `undefined` | Default active tab value (uncontrolled) |
-| `value` | `string` | `undefined` | Controlled active tab value |
-| `onValueChange` | `(value: string) => void` | `undefined` | Callback when active tab changes |
-| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Tab orientation |
-| `className` | `string` | `undefined` | Additional CSS classes |
+Primitiva: `@base-ui/react/tabs`. `TabsTrigger` é `Tabs.Tab`; `TabsContent` é `Tabs.Panel`.
 
-### TabsList
+| Componente | Props |
+|---|---|
+| `Tabs` | `value` / `defaultValue` (qualquer tipo; **sem `defaultValue`, começa no índice 0**), `onValueChange(value, eventDetails)`, `orientation`. |
+| `TabsList` | `variant`, **`activateOnFocus`** (padrão `false`: setas só movem o foco, Enter/Espaço ativa), `loopFocus`. |
+| `TabsTrigger` | `value`, `disabled`, `render`. Ícone com texto: `data-icon="inline-start"`/`"inline-end"`. |
+| `TabsContent` | `value`, **`keepMounted`** (no lugar de `forceMount`). |
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `variant` | `'default' \| 'underline'` | `'default'` | Visual style variant |
-| `className` | `string` | `undefined` | Additional CSS classes |
-
-#### TabsList Variants
-
-| Variant | Description | Styles |
-|---------|-------------|--------|
-| `default` | Pill-shaped container with muted background | `h-9 rounded-lg bg-muted p-[3px]` |
-| `underline` | Transparent background with bottom border | `h-auto gap-0 border-b bg-transparent p-0` |
-
-### TabsTrigger
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | **required** | Unique value matching a `TabsContent` |
-| `variant` | `'default' \| 'underline'` | Inherited from `TabsList` | Override variant from context |
-| `disabled` | `boolean` | `false` | Disables the trigger |
-| `className` | `string` | `undefined` | Additional CSS classes |
-
-#### TabsTrigger Variants
-
-| Variant | Active State | Inactive State |
-|---------|-------------|----------------|
-| `default` | `bg-background shadow-sm` (light), `bg-input/30 border-input` (dark) | `text-muted-foreground` (dark), `text-foreground` (light) |
-| `underline` | `border-primary text-foreground` (bottom border) | `text-muted-foreground border-transparent` |
-
-### TabsContent
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | **required** | Must match a `TabsTrigger` value |
-| `className` | `string` | `undefined` | Additional CSS classes |
-
-## Usage
-
-### Basic Tabs (Default Variant)
+Visual: lista `h-8`, trigger `text-xs px-1.5`, conteúdo `text-xs/relaxed`.
+Estado: trigger ativo `data-active`; estilos internos usam `data-horizontal`/`data-vertical`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
+import { ChartBarIcon, GearIcon } from "@phosphor-icons/react";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@blips/ui/components/card"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+} from "@blips/ui/components/card";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@blips/ui/components/tabs"
+} from "@blips/ui/components/tabs";
 
-export default function TabsDemo() {
+export function AbasDoContrato() {
   return (
-    <div className="flex w-full max-w-sm flex-col gap-6">
-      <Tabs defaultValue="account">
-        <TabsList>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger>
-        </TabsList>
-        <TabsContent value="account">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>
-                Make changes to your account here. Click save when you're done.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-name">Name</Label>
-                <Input id="tabs-demo-name" defaultValue="Pedro Duarte" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-username">Username</Label>
-                <Input id="tabs-demo-username" defaultValue="@peduarte" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save changes</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="password">
-          <Card>
-            <CardHeader>
-              <CardTitle>Password</CardTitle>
-              <CardDescription>
-                Change your password here. After saving, you'll be logged out.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-current">Current password</Label>
-                <Input id="tabs-demo-current" type="password" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-new">New password</Label>
-                <Input id="tabs-demo-new" type="password" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save password</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
+    <Tabs defaultValue="resumo" className="w-full max-w-md">
+      <TabsList>
+        <TabsTrigger value="resumo">
+          <ChartBarIcon data-icon="inline-start" />
+          Resumo
+        </TabsTrigger>
+        <TabsTrigger value="configuracoes">
+          <GearIcon data-icon="inline-start" />
+          Configurações
+        </TabsTrigger>
+      </TabsList>
+      <TabsContent value="resumo">
+        <Card>
+          <CardHeader>
+            <CardTitle>Resumo</CardTitle>
+            <CardDescription>Situação atual do contrato.</CardDescription>
+          </CardHeader>
+          <CardContent>…</CardContent>
+        </Card>
+      </TabsContent>
+      <TabsContent value="configuracoes">…</TabsContent>
+    </Tabs>
+  );
 }
 ```
 
-### Underline Variant
+Sublinhado e com ativação automática ao focar (como era no Radix):
 
 ```tsx
+<Tabs defaultValue="todos">
+  <TabsList variant="line" activateOnFocus>
+    <TabsTrigger value="todos">Todos</TabsTrigger>
+    <TabsTrigger value="abertos">Abertos</TabsTrigger>
+  </TabsList>
+</Tabs>
+```
+
+### Armadilhas
+
+- `activationMode` não existe no `Tabs`: use `activateOnFocus` no `TabsList` (o padrão agora é manual).
+- `data-[state=active]:` não casa: use `data-active:` (ex.: `group-data-active:`).
+- `forceMount` não existe: `keepMounted`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-tabs`.
+
+| Componente | Props |
+|---|---|
+| `Tabs` | `value` / `defaultValue` (**string**; sem `defaultValue`, nenhum painel fica ativo), `onValueChange(value: string)`, `orientation`, **`activationMode`** (`"automatic"` padrão, ou `"manual"`), `dir`. |
+| `TabsList` | `variant`, `loop`. |
+| `TabsTrigger` | `value`, `disabled`, `asChild`. |
+| `TabsContent` | `value`, `forceMount`. |
+
+Visual: lista `h-9`, trigger `text-sm px-2`.
+Estado: trigger ativo `data-state="active"`; orientação `data-[orientation=*]`.
+
+```tsx
+import { ChartBar, Gear } from "@phosphor-icons/react"
 import {
   Tabs,
   TabsContent,
@@ -156,105 +116,26 @@ import {
   TabsTrigger,
 } from "@blips/ui/components/tabs"
 
-export default function TabsUnderline() {
+export function AbasDoContrato() {
   return (
-    <Tabs defaultValue="overview">
-      <TabsList variant="underline">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        <TabsTrigger value="reports">Reports</TabsTrigger>
+    <Tabs defaultValue="resumo" className="w-full max-w-md">
+      <TabsList variant="line">
+        <TabsTrigger value="resumo">
+          <ChartBar />
+          Resumo
+        </TabsTrigger>
+        <TabsTrigger value="configuracoes">
+          <Gear />
+          Configurações
+        </TabsTrigger>
       </TabsList>
-      <TabsContent value="overview">Overview content here.</TabsContent>
-      <TabsContent value="analytics">Analytics content here.</TabsContent>
-      <TabsContent value="reports">Reports content here.</TabsContent>
+      <TabsContent value="resumo">…</TabsContent>
+      <TabsContent value="configuracoes">…</TabsContent>
     </Tabs>
   )
 }
 ```
 
-## All Example Variants
+## Exemplos na docs
 
-### tabs-demo
-
-Tabs with Card content panels, default pill variant.
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@blips/ui/components/card"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@blips/ui/components/tabs"
-
-export default function TabsDemo() {
-  return (
-    <div className="flex w-full max-w-sm flex-col gap-6">
-      <Tabs defaultValue="account">
-        <TabsList>
-          <TabsTrigger value="account">Account</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger>
-        </TabsList>
-        <TabsContent value="account">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>
-                Make changes to your account here. Click save when you&apos;re
-                done.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-name">Name</Label>
-                <Input id="tabs-demo-name" defaultValue="Pedro Duarte" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-username">Username</Label>
-                <Input id="tabs-demo-username" defaultValue="@peduarte" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save changes</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-        <TabsContent value="password">
-          <Card>
-            <CardHeader>
-              <CardTitle>Password</CardTitle>
-              <CardDescription>
-                Change your password here. After saving, you&apos;ll be logged
-                out.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-current">Current password</Label>
-                <Input id="tabs-demo-current" type="password" />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="tabs-demo-new">New password</Label>
-                <Input id="tabs-demo-new" type="password" />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button>Save password</Button>
-            </CardFooter>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  )
-}
-```
+`tabs-demo`, `tabs-line`, `tabs-vertical`, `tabs-icons`, `tabs-icon-only`, `tabs-disabled`, `tabs-dropdown` (em `apps/docs/examples/`, escritos para a v3).

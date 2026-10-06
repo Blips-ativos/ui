@@ -1,11 +1,16 @@
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "@blips/ui/components/field";
 import { Input } from "@blips/ui/components/input";
-import { Label } from "@blips/ui/components/label";
 
 export default function InputFile() {
   return (
-    <div className="grid w-full max-w-sm items-center gap-3">
-      <Label htmlFor="picture">Picture</Label>
+    <Field className="max-w-xs">
+      <FieldLabel htmlFor="picture">Foto</FieldLabel>
       <Input id="picture" type="file" />
-    </div>
+      <FieldDescription>Selecione uma imagem para enviar.</FieldDescription>
+    </Field>
   );
 }

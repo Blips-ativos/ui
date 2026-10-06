@@ -2,6 +2,10 @@
 
 Implementação de visibilidade de colunas em data tables.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Setup Básico](#setup-básico)
@@ -16,6 +20,8 @@ Implementação de visibilidade de colunas em data tables.
 - [Toggle All Columns](#toggle-all-columns)
 - [Responsive Visibility](#responsive-visibility)
 - [Integração com Column Header](#integração-com-column-header)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Setup Básico
 
@@ -71,13 +77,14 @@ const table = useReactTable({
 "use client";
 
 import { Table } from "@tanstack/react-table";
-import { GearSix } from "@phosphor-icons/react";
+import { GearSixIcon } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -94,14 +101,16 @@ export function DataTableViewOptions<TData>({
 }: DataTableViewOptionsProps<TData>) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="ml-auto h-8">
-          <GearSix className="mr-2 h-4 w-4" />
-          Colunas
-        </Button>
+      <DropdownMenuTrigger
+        render={<Button variant="outline" size="sm" className="ml-auto h-8" />}
+      >
+        <GearSixIcon className="mr-2 h-4 w-4" />
+        Colunas
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[180px]">
-        <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -421,30 +430,62 @@ cell: ({ row, column }) => (
 ```tsx
 // No DataTableColumnHeader, adicionar opção de ocultar
 <DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="ghost" size="sm">
-      {title}
-      {/* ícone de sorting */}
-    </Button>
+  <DropdownMenuTrigger render={<Button variant="ghost" size="sm" />}>
+    {title}
+    {/* ícone de sorting */}
   </DropdownMenuTrigger>
   <DropdownMenuContent align="start">
     <DropdownMenuItem onClick={() => column.toggleSorting(false)}>
-      <ArrowUp className="mr-2 h-3.5 w-3.5" />
+      <ArrowUpIcon className="mr-2 h-3.5 w-3.5" />
       Crescente
     </DropdownMenuItem>
     <DropdownMenuItem onClick={() => column.toggleSorting(true)}>
-      <ArrowDown className="mr-2 h-3.5 w-3.5" />
+      <ArrowDownIcon className="mr-2 h-3.5 w-3.5" />
       Decrescente
     </DropdownMenuItem>
     {column.getCanHide() && (
       <>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => column.toggleVisibility(false)}>
-          <EyeSlash className="mr-2 h-3.5 w-3.5" />
+          <EyeSlashIcon className="mr-2 h-3.5 w-3.5" />
           Ocultar coluna
         </DropdownMenuItem>
       </>
     )}
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## v3.x — Base UI
+
+- Trigger do dropdown de colunas com `render={<Button … />}`.
+- `DropdownMenuLabel` dentro de `DropdownMenuGroup`.
+- `DropdownMenuCheckboxItem`: `checked` boolean, `onCheckedChange(checked, eventDetails)`;
+  `closeOnClick={false}` mantém o menu aberto ao alternar várias colunas.
+
+## v2.x — Radix
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="outline" size="sm" className="ml-auto h-8">
+      <GearSix className="mr-2 h-4 w-4" />
+      Colunas
+    </Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end">
+    <DropdownMenuLabel>Alternar colunas</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    {table.getAllColumns().filter((column) => column.getCanHide()).map((column) => (
+      <DropdownMenuCheckboxItem
+        key={column.id}
+        checked={column.getIsVisible()}
+        onCheckedChange={(value) => column.toggleVisibility(!!value)}
+        onSelect={(event) => event.preventDefault()} // mantém aberto
+      >
+        {column.columnDef.meta?.title ?? column.id}
+      </DropdownMenuCheckboxItem>
+    ))}
   </DropdownMenuContent>
 </DropdownMenu>
 ```

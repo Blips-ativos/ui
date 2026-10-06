@@ -14,6 +14,7 @@ npm install @blips/ui
 ## Uso
 
 ```tsx
+import { Button } from "@blips/ui/components/button"
 import {
   Popover,
   PopoverContent,
@@ -26,8 +27,8 @@ import {
 
 ```tsx
 <Popover>
-  <PopoverTrigger asChild>
-    <Button variant="outline">Abrir Popover</Button>
+  <PopoverTrigger render={<Button variant="outline" />}>
+    Abrir popover
   </PopoverTrigger>
   <PopoverContent>
     <PopoverHeader>
@@ -40,12 +41,56 @@ import {
 
 ## Exemplos
 
-### Exemplo
+### Básico
 
-Um popover com campos de formulário para ajustar as dimensões de uma camada.
+Um popover só com cabeçalho. `PopoverTitle` e `PopoverDescription` ligam `aria-labelledby` e `aria-describedby` automaticamente.
 
-<ComponentPreview name="popover-demo" />
+<ComponentPreview name="popover-basic" />
+
+### Lados
+
+Use a prop `side` no `PopoverContent` para escolher de que lado do gatilho o popover abre.
+
+<ComponentPreview name="popover-sides" />
+
+### Alinhamento
+
+Use a prop `align` para alinhar o popover ao início, ao centro ou ao fim do gatilho.
+
+<ComponentPreview name="popover-alignments" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Popover](https://base-ui.com/react/components/popover).
+
+- `asChild` saiu do `PopoverTrigger`. Use `render`.
+- `onOpenChange` recebe `(open, eventDetails)`. `modal` aceita `boolean | "trap-focus"`.
+- O `PopoverContent` mantém `side`, `sideOffset`, `align` e `alignOffset`, e ganha `anchor`. Saem `onOpenAutoFocus`, `onEscapeKeyDown`, `onInteractOutside`, `forceMount`, `avoidCollisions` e `collisionPadding`; para foco, use `initialFocus`/`finalFocus`.
+- O `PopoverAnchor` não aceita mais `asChild`: ele é uma `<div>` que precisa ficar dentro do mesmo `<Popover>`.
+- Variáveis CSS: `--radix-popover-trigger-width` vira `--anchor-width`, `--radix-popover-content-available-height` vira `--available-height` e `--radix-popover-content-transform-origin` vira `--transform-origin`. Seletores `data-[state=open]` viram `data-open`/`data-closed`.
+
+```tsx
+// v2
+<PopoverTrigger asChild>
+  <Button variant="outline">Abrir</Button>
+</PopoverTrigger>
+<PopoverContent className="w-[--radix-popover-trigger-width]" />
+
+// v3
+<PopoverTrigger render={<Button variant="outline" />}>Abrir</PopoverTrigger>
+<PopoverContent className="w-(--anchor-width)" />
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI Popover](https://www.radix-ui.com/docs/primitives/components/popover#api-reference).
+### PopoverContent
+
+| Prop          | Tipo                                     | Padrão     |
+| ------------- | ---------------------------------------- | ---------- |
+| `side`        | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` |
+| `sideOffset`  | `number`                                 | `4`        |
+| `align`       | `"start" \| "center" \| "end"`           | `"center"` |
+| `alignOffset` | `number`                                 | `0`        |
+| `anchor`      | `Element \| RefObject \| VirtualElement` | -          |
+
+Para as demais props, consulte a documentação do [Base UI Popover](https://base-ui.com/react/components/popover).

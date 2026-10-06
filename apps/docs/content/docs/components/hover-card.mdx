@@ -23,21 +23,24 @@ import {
 
 ```tsx
 <HoverCard>
-  <HoverCardTrigger>Passe o mouse</HoverCardTrigger>
+  <HoverCardTrigger href="https://nextjs.org">Passe o mouse</HoverCardTrigger>
   <HoverCardContent>
-    O framework React – criado e mantido por @vercel.
+    O framework React, criado e mantido pela @vercel.
   </HoverCardContent>
 </HoverCard>
 ```
 
+Por padrão o `HoverCardTrigger` renderiza um `<a>`. Para usar outro elemento, passe-o pela prop `render`.
+
 ## Atrasos de acionamento
 
-Use `openDelay` e `closeDelay` no `HoverCard` para controlar quando o card abre e
-fecha.
+Use `delay` e `closeDelay` no `HoverCardTrigger` para controlar quando o card abre e fecha.
 
 ```tsx
-<HoverCard openDelay={100} closeDelay={200}>
-  <HoverCardTrigger>Passe o mouse</HoverCardTrigger>
+<HoverCard>
+  <HoverCardTrigger delay={100} closeDelay={200}>
+    Passe o mouse
+  </HoverCardTrigger>
   <HoverCardContent>Conteúdo</HoverCardContent>
 </HoverCard>
 ```
@@ -57,12 +60,51 @@ Use as props `side` e `align` no `HoverCardContent` para controlar o posicioname
 
 ## Exemplos
 
-### Básico
+### Lados
 
-Pré-visualização de conteúdo disponível por trás de um link.
+<ComponentPreview name="hover-card-sides" />
 
-<ComponentPreview name="hover-card-demo" />
+## Migrando da v2
+
+A primitiva passou de Radix Hover Card para [Base UI Preview Card](https://base-ui.com/react/components/preview-card).
+
+- `asChild` saiu do `HoverCardTrigger`. Use `render`.
+- `openDelay` e `closeDelay` saíram do `HoverCard` (root) e foram para o `HoverCardTrigger`, como `delay` e `closeDelay`.
+- `onOpenChange` recebe `(open, eventDetails)`.
+- O `alignOffset` padrão do `HoverCardContent` passou de `0` para `4`.
+- Variáveis CSS `--radix-hover-card-*` viram `--anchor-width`, `--available-height` e `--transform-origin`. Seletores `data-[state=*]` viram `data-open`/`data-closed`.
+
+```tsx
+// v2
+<HoverCard openDelay={100} closeDelay={200}>
+  <HoverCardTrigger asChild>
+    <Button variant="link">@nextjs</Button>
+  </HoverCardTrigger>
+  <HoverCardContent>{/* ... */}</HoverCardContent>
+</HoverCard>
+
+// v3
+<HoverCard>
+  <HoverCardTrigger
+    delay={100}
+    closeDelay={200}
+    render={<Button variant="link" />}
+  >
+    @nextjs
+  </HoverCardTrigger>
+  <HoverCardContent>{/* ... */}</HoverCardContent>
+</HoverCard>
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/hover-card#api-reference) para mais informações.
+### HoverCardContent
+
+| Prop          | Tipo                                     | Padrão     |
+| ------------- | ---------------------------------------- | ---------- |
+| `side`        | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` |
+| `sideOffset`  | `number`                                 | `4`        |
+| `align`       | `"start" \| "center" \| "end"`           | `"center"` |
+| `alignOffset` | `number`                                 | `4`        |
+
+Consulte a documentação do [Base UI Preview Card](https://base-ui.com/react/components/preview-card) para mais informações.

@@ -1,4 +1,5 @@
 "use client";
+
 import { Card, CardContent } from "@blips/ui/components/card";
 import {
   Carousel,
@@ -7,24 +8,27 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@blips/ui/components/carousel";
+
+const slides = [1, 2, 3, 4, 5];
+
 export default function CarouselDemo() {
   return (
-    <Carousel className="w-full max-w-xs">
+    <Carousel className="mx-auto w-full max-w-xs sm:max-w-sm">
       <CarouselContent>
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index}>
+        {slides.map((slide) => (
+          <CarouselItem key={slide}>
             <div className="p-1">
               <Card>
                 <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-4xl font-semibold">{index + 1}</span>
+                  <span className="text-4xl font-semibold">{slide}</span>
                 </CardContent>
               </Card>
             </div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="hidden sm:inline-flex" />
+      <CarouselNext className="hidden sm:inline-flex" />
     </Carousel>
   );
 }

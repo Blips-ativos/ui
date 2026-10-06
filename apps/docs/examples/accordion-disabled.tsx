@@ -5,32 +5,43 @@ import {
   AccordionTrigger,
 } from "@blips/ui/components/accordion";
 
+const items = [
+  {
+    value: "item-1",
+    trigger: "Consigo ver o histórico da minha conta?",
+    content:
+      "Sim. O histórico completo, com transações, mudanças de plano e chamados de suporte, fica na seção Histórico do painel.",
+    disabled: false,
+  },
+  {
+    value: "item-2",
+    trigger: "Recursos do plano premium",
+    content:
+      "Esta seção traz informações sobre os recursos premium. Faça upgrade do plano para acessar este conteúdo.",
+    disabled: true,
+  },
+  {
+    value: "item-3",
+    trigger: "Como atualizo meu e-mail?",
+    content:
+      "Você pode atualizar o e-mail nas configurações da conta. Enviaremos uma mensagem de verificação para o novo endereço confirmar a troca.",
+    disabled: false,
+  },
+];
+
 export default function AccordionDisabled() {
   return (
-    <Accordion type="single" collapsible className="w-full">
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Can I access my account history?</AccordionTrigger>
-        <AccordionContent>
-          Yes, you can view your complete account history including all
-          transactions, plan changes, and support tickets in the Account History
-          section of your dashboard.
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2" disabled>
-        <AccordionTrigger>Premium feature information</AccordionTrigger>
-        <AccordionContent>
-          This section contains information about premium features. Upgrade your
-          plan to access this content.
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>How do I update my email address?</AccordionTrigger>
-        <AccordionContent>
-          You can update your email address in your account settings.
-          You&apos;ll receive a verification email at your new address to
-          confirm the change.
-        </AccordionContent>
-      </AccordionItem>
+    <Accordion className="mx-auto max-w-lg">
+      {items.map((item) => (
+        <AccordionItem
+          key={item.value}
+          value={item.value}
+          disabled={item.disabled}
+        >
+          <AccordionTrigger>{item.trigger}</AccordionTrigger>
+          <AccordionContent>{item.content}</AccordionContent>
+        </AccordionItem>
+      ))}
     </Accordion>
   );
 }

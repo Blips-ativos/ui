@@ -1,0 +1,91 @@
+---
+title: Native Select
+description: Um select nativo do navegador, estilizado para combinar com os outros campos de formulário.
+---
+
+<ComponentPreview name="native-select-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  NativeSelect,
+  NativeSelectOptGroup,
+  NativeSelectOption,
+} from "@blips/ui/components/native-select"
+```
+
+```tsx
+<NativeSelect>
+  <NativeSelectOption value="">Selecione uma fruta</NativeSelectOption>
+  <NativeSelectOption value="maca">Maçã</NativeSelectOption>
+  <NativeSelectOption value="banana">Banana</NativeSelectOption>
+</NativeSelect>
+```
+
+O `NativeSelect` é um `<select>` de verdade: aceita todas as props nativas (`value`, `defaultValue`, `onChange`, `name`, `required`) e funciona sem JavaScript. O `className` vai para o wrapper, que controla a largura (`w-fit` por padrão).
+
+## Native Select ou Select?
+
+| Use **`NativeSelect`** quando…                          | Use **`Select`** quando…                                  |
+| ------------------------------------------------------- | --------------------------------------------------------- |
+| Quer o seletor do sistema (roda melhor no celular)       | Precisa de itens com ícone, descrição ou layout próprio    |
+| O formulário é HTML nativo, sem estado controlado        | Precisa de seleção múltipla com rótulo customizado         |
+| A lista é simples (texto)                                | Quer o mesmo visual do popup em todos os navegadores       |
+
+Para listas longas com busca, use o [Combobox](/docs/components/combobox).
+
+## Exemplos
+
+### Grupos
+
+Use `NativeSelectOptGroup` para agrupar as opções.
+
+<ComponentPreview name="native-select-groups" />
+
+### Tamanhos
+
+Use a prop `size` com `"sm"` ou `"default"`.
+
+<ComponentPreview name="native-select-sizes" />
+
+### Com Field
+
+Associe o `FieldLabel` ao select pelo `id`.
+
+<ComponentPreview name="native-select-field" />
+
+### Desabilitado
+
+<ComponentPreview name="native-select-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` no select e `data-invalid` no `Field`.
+
+<ComponentPreview name="native-select-invalid" />
+
+## Referência da API
+
+### NativeSelect
+
+Todas as props de `<select>`, exceto o `size` nativo, que foi trocado pela variante de tamanho.
+
+| Prop        | Tipo                | Padrão      |
+| ----------- | ------------------- | ----------- |
+| `size`      | `"sm" \| "default"` | `"default"` |
+| `className` | `string`            |             |
+
+### NativeSelectOption
+
+Todas as props de `<option>`.
+
+### NativeSelectOptGroup
+
+Todas as props de `<optgroup>`, incluindo `label`.

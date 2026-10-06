@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Select,
   SelectContent,
@@ -7,67 +9,77 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@blips/ui/components/select";
-import * as React from "react";
+
+const timezones = [
+  {
+    label: "Brasil",
+    items: [
+      { label: "Horário de Brasília (BRT)", value: "brt" },
+      { label: "Horário do Amazonas (AMT)", value: "amt" },
+      { label: "Horário do Acre (ACT)", value: "act" },
+      { label: "Fernando de Noronha (FNT)", value: "fnt" },
+    ],
+  },
+  {
+    label: "América do Sul",
+    items: [
+      { label: "Horário da Argentina (ART)", value: "art" },
+      { label: "Horário da Bolívia (BOT)", value: "bot" },
+      { label: "Horário do Chile (CLT)", value: "clt" },
+      { label: "Horário do Uruguai (UYT)", value: "uyt" },
+    ],
+  },
+  {
+    label: "América do Norte",
+    items: [
+      { label: "Horário do Leste (EST)", value: "est" },
+      { label: "Horário Central (CST)", value: "cst" },
+      { label: "Horário das Montanhas (MST)", value: "mst" },
+      { label: "Horário do Pacífico (PST)", value: "pst" },
+    ],
+  },
+  {
+    label: "Europa e África",
+    items: [
+      { label: "Horário de Greenwich (GMT)", value: "gmt" },
+      { label: "Horário da Europa Central (CET)", value: "cet" },
+      { label: "Horário da Europa Oriental (EET)", value: "eet" },
+      { label: "Horário da África Central (CAT)", value: "cat" },
+    ],
+  },
+  {
+    label: "Ásia e Oceania",
+    items: [
+      { label: "Horário de Moscou (MSK)", value: "msk" },
+      { label: "Horário da Índia (IST)", value: "ist" },
+      { label: "Horário do Japão (JST)", value: "jst" },
+      { label: "Horário da Austrália Oriental (AEST)", value: "aest" },
+    ],
+  },
+];
+
+const items = [
+  { label: "Selecione um fuso horário", value: null },
+  ...timezones.flatMap((group) => group.items),
+];
 
 export default function SelectScrollable() {
   return (
-    <Select>
-      <SelectTrigger className="w-[280px]">
-        <SelectValue placeholder="Select a timezone" />
+    <Select items={items}>
+      <SelectTrigger className="w-72">
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectGroup>
-          <SelectLabel>North America</SelectLabel>
-          <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
-          <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
-          <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>
-          <SelectItem value="pst">Pacific Standard Time (PST)</SelectItem>
-          <SelectItem value="akst">Alaska Standard Time (AKST)</SelectItem>
-          <SelectItem value="hst">Hawaii Standard Time (HST)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Europe & Africa</SelectLabel>
-          <SelectItem value="gmt">Greenwich Mean Time (GMT)</SelectItem>
-          <SelectItem value="cet">Central European Time (CET)</SelectItem>
-          <SelectItem value="eet">Eastern European Time (EET)</SelectItem>
-          <SelectItem value="west">
-            Western European Summer Time (WEST)
-          </SelectItem>
-          <SelectItem value="cat">Central Africa Time (CAT)</SelectItem>
-          <SelectItem value="eat">East Africa Time (EAT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Asia</SelectLabel>
-          <SelectItem value="msk">Moscow Time (MSK)</SelectItem>
-          <SelectItem value="ist">India Standard Time (IST)</SelectItem>
-          <SelectItem value="cst_china">China Standard Time (CST)</SelectItem>
-          <SelectItem value="jst">Japan Standard Time (JST)</SelectItem>
-          <SelectItem value="kst">Korea Standard Time (KST)</SelectItem>
-          <SelectItem value="ist_indonesia">
-            Indonesia Central Standard Time (WITA)
-          </SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>Australia & Pacific</SelectLabel>
-          <SelectItem value="awst">
-            Australian Western Standard Time (AWST)
-          </SelectItem>
-          <SelectItem value="acst">
-            Australian Central Standard Time (ACST)
-          </SelectItem>
-          <SelectItem value="aest">
-            Australian Eastern Standard Time (AEST)
-          </SelectItem>
-          <SelectItem value="nzst">New Zealand Standard Time (NZST)</SelectItem>
-          <SelectItem value="fjt">Fiji Time (FJT)</SelectItem>
-        </SelectGroup>
-        <SelectGroup>
-          <SelectLabel>South America</SelectLabel>
-          <SelectItem value="art">Argentina Time (ART)</SelectItem>
-          <SelectItem value="bot">Bolivia Time (BOT)</SelectItem>
-          <SelectItem value="brt">Brasilia Time (BRT)</SelectItem>
-          <SelectItem value="clt">Chile Standard Time (CLT)</SelectItem>
-        </SelectGroup>
+        {timezones.map((group) => (
+          <SelectGroup key={group.label}>
+            <SelectLabel>{group.label}</SelectLabel>
+            {group.items.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        ))}
       </SelectContent>
     </Select>
   );

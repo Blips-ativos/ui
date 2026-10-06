@@ -11,7 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@blips/ui/components/drawer";
-import { Minus, Plus } from "@phosphor-icons/react";
+import { MinusIcon, PlusIcon } from "@phosphor-icons/react";
 import * as React from "react";
 import { Bar, BarChart, ResponsiveContainer } from "recharts";
 
@@ -66,44 +66,46 @@ export default function DrawerDemo() {
 
   return (
     <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Drawer</Button>
+      <DrawerTrigger render={<Button variant="outline" />}>
+        Abrir drawer
       </DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>Move Goal</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+            <DrawerTitle>Meta diária</DrawerTitle>
+            <DrawerDescription>
+              Defina a sua meta diária de atividade.
+            </DrawerDescription>
           </DrawerHeader>
           <div className="p-4 pb-0">
             <div className="flex items-center justify-center space-x-2">
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 shrink-0 rounded-full"
+                className="size-8 shrink-0 rounded-full"
                 onClick={() => onClick(-10)}
                 disabled={goal <= 200}
               >
-                <Minus />
-                <span className="sr-only">Decrease</span>
+                <MinusIcon />
+                <span className="sr-only">Diminuir</span>
               </Button>
               <div className="flex-1 text-center">
                 <div className="text-7xl font-bold tracking-tighter">
                   {goal}
                 </div>
                 <div className="text-[0.70rem] text-muted-foreground uppercase">
-                  Calories/day
+                  Calorias/dia
                 </div>
               </div>
               <Button
                 variant="outline"
                 size="icon"
-                className="h-8 w-8 shrink-0 rounded-full"
+                className="size-8 shrink-0 rounded-full"
                 onClick={() => onClick(10)}
                 disabled={goal >= 400}
               >
-                <Plus />
-                <span className="sr-only">Increase</span>
+                <PlusIcon />
+                <span className="sr-only">Aumentar</span>
               </Button>
             </div>
             <div className="mt-3 h-[120px]">
@@ -113,7 +115,7 @@ export default function DrawerDemo() {
                     dataKey="goal"
                     style={
                       {
-                        fill: "hsl(var(--foreground))",
+                        fill: "var(--foreground)",
                         opacity: 0.9,
                       } as React.CSSProperties
                     }
@@ -123,9 +125,9 @@ export default function DrawerDemo() {
             </div>
           </div>
           <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
+            <Button>Salvar</Button>
+            <DrawerClose render={<Button variant="outline" />}>
+              Cancelar
             </DrawerClose>
           </DrawerFooter>
         </div>

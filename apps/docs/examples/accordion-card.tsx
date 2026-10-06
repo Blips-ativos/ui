@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@blips/ui/components/accordion";
+import { Button } from "@blips/ui/components/button";
 import {
   Card,
   CardContent,
@@ -11,40 +12,64 @@ import {
   CardHeader,
   CardTitle,
 } from "@blips/ui/components/card";
+import { ArrowUpRightIcon } from "@phosphor-icons/react";
 
 const items = [
   {
     value: "plans",
-    trigger: "What subscription plans do you offer?",
-    content:
-      "We offer three subscription tiers: Starter ($9/month), Professional ($29/month), and Enterprise ($99/month). Each plan includes increasing storage limits, API access, priority support, and team collaboration features.",
+    trigger: "Quais planos de assinatura vocês oferecem?",
+    content: (
+      <>
+        <p>
+          Temos três planos: Inicial (R$ 49/mês), Profissional (R$ 149/mês) e
+          Empresarial (R$ 499/mês). Cada plano amplia o armazenamento, o acesso
+          à API, a prioridade no suporte e os recursos de colaboração.
+        </p>
+        <p>
+          <a href="#planos">A cobrança anual</a> tem 20% de desconto. Todos os
+          planos incluem 14 dias de teste grátis, sem cartão de crédito.
+        </p>
+        <Button size="sm">
+          Ver planos
+          <ArrowUpRightIcon data-icon="inline-end" />
+        </Button>
+      </>
+    ),
   },
   {
     value: "billing",
-    trigger: "How does billing work?",
-    content:
-      "Billing occurs automatically at the start of each billing cycle. We accept all major credit cards, PayPal, and ACH transfers for enterprise customers. You'll receive an invoice via email after each payment.",
+    trigger: "Como funciona a cobrança?",
+    content: (
+      <p>
+        A cobrança acontece automaticamente no início de cada ciclo. Aceitamos
+        cartões de crédito, Pix e boleto. Você recebe a nota fiscal por e-mail
+        após cada pagamento.
+      </p>
+    ),
   },
   {
     value: "cancel",
-    trigger: "How do I cancel my subscription?",
-    content:
-      "You can cancel your subscription anytime from your account settings. There are no cancellation fees or penalties. Your access will continue until the end of your current billing period.",
+    trigger: "Como cancelo minha assinatura?",
+    content: (
+      <p>
+        Você pode cancelar a qualquer momento nas configurações da conta, sem
+        multa. O acesso continua até o fim do período já pago.
+      </p>
+    ),
   },
 ];
 
 export default function AccordionCard() {
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="mx-auto w-full max-w-lg gap-4">
       <CardHeader>
-        <CardTitle>Subscription & Billing</CardTitle>
+        <CardTitle>Assinatura e cobrança</CardTitle>
         <CardDescription>
-          Common questions about your account, plans, payments and
-          cancellations.
+          Perguntas frequentes sobre conta, planos e pagamentos
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Accordion type="single" collapsible defaultValue="plans">
+        <Accordion multiple defaultValue={["plans"]}>
           {items.map((item) => (
             <AccordionItem key={item.value} value={item.value}>
               <AccordionTrigger>{item.trigger}</AccordionTrigger>

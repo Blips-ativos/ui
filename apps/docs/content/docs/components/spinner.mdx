@@ -5,7 +5,7 @@ description: Um indicador que pode ser usado para exibir um estado de carregamen
 
 <ComponentPreview name="spinner-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -21,40 +21,31 @@ import { Spinner } from "@blips/ui/components/spinner"
 <Spinner />
 ```
 
-## Customizacao
+## Customização
 
-Voce pode substituir o icone padrao do spinner por qualquer outro icone editando o componente `Spinner`.
+O spinner é um ícone do Phosphor (`SpinnerIcon`) com `animate-spin`, `role="status"` e `aria-label`. Para usar outro glifo, renderize o ícone desejado com as mesmas props:
 
-```tsx title="components/ui/spinner.tsx"
-import { CircleNotch } from "@phosphor-icons/react"
+```tsx
+import { CircleNotchIcon } from "@phosphor-icons/react"
 
-import { cn } from "@/lib/utils"
-
-function Spinner({ className, ...props }: React.ComponentProps<"svg">) {
-  return (
-    <CircleNotch
-      role="status"
-      aria-label="Carregando"
-      className={cn("size-4 animate-spin", className)}
-      {...props}
-    />
-  )
-}
-
-export { Spinner }
+<CircleNotchIcon
+  role="status"
+  aria-label="Carregando"
+  className="size-4 animate-spin"
+/>
 ```
 
 ## Exemplos
 
 ### Tamanho
 
-Use a classe utilitaria `size-*` para alterar o tamanho do spinner.
+Use a classe utilitária `size-*` para alterar o tamanho do spinner.
 
 <ComponentPreview name="spinner-size" />
 
-### Botao
+### Botão
 
-Adicione um spinner a um botao para indicar um estado de carregamento.
+Adicione um spinner a um botão para indicar um estado de carregamento. Use `data-icon="inline-start"` para o botão ajustar o padding.
 
 <ComponentPreview name="spinner-button" />
 
@@ -69,3 +60,35 @@ Adicione um spinner a um badge para indicar um estado de carregamento.
 Use um spinner dentro de um input group para indicar processamento.
 
 <ComponentPreview name="spinner-input-group" />
+
+### Estado vazio
+
+Use o spinner como mídia de um `Empty` enquanto o conteúdo é preparado.
+
+<ComponentPreview name="spinner-empty" />
+
+## Referência da API
+
+### Spinner
+
+Aceita todas as props de um `<svg>`. Expõe `data-slot="spinner"`.
+
+| Prop         | Tipo     | Padrão      |
+| ------------ | -------- | ----------- |
+| `className`  | `string` | -           |
+| `aria-label` | `string` | `"Loading"` |
+
+## Migrando da v2
+
+- **Ícone**: trocou de `CircleNotch` (arco) para `SpinnerIcon` (raios) do Phosphor. É só mudança visual; a API é a mesma.
+- **`data-slot="spinner"`** passou a existir no elemento.
+
+Se preferir o arco antigo, use o ícone direto:
+
+```tsx
+// v2 (visual)
+<Spinner />
+
+// v3 com o arco da v2
+<CircleNotchIcon role="status" aria-label="Carregando" className="size-4 animate-spin" />
+```

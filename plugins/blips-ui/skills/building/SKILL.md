@@ -1,15 +1,38 @@
 ---
 name: building
-description: "Padrões, APIs e convenções da biblioteca de componentes Blips UI (@blips/ui) — shadcn/ui + Radix. Use esta skill sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização. Isso inclui: editar arquivos .tsx que usam componentes de @blips/ui, construir com Tailwind CSS, trabalhar com react-hook-form, TanStack Table, Recharts ou primitivas Radix. Até mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout) se beneficiam desta skill para garantir que as convenções da biblioteca sejam seguidas. Dispara em qualquer tarefa de UI: criação de componente, layout de página, construção de formulário, data table, gráfico, modal, sheet, sidebar, estilização, design responsivo, acessibilidade, loading states, empty states ou refatoração de UI."
+description: "Padrões, APIs e convenções da biblioteca de componentes Blips UI (@blips/ui) — shadcn/ui sobre Base UI (v3.x) ou Radix (v2.x), com instruções separadas para cada versão. Use esta skill sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização. Isso inclui: editar arquivos .tsx que usam componentes de @blips/ui, construir com Tailwind CSS, trabalhar com react-hook-form, TanStack Table, Recharts ou primitivas Base UI/Radix. Até mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout) se beneficiam desta skill para garantir que as convenções da biblioteca sejam seguidas. Dispara em qualquer tarefa de UI: criação de componente, layout de página, construção de formulário, data table, gráfico, modal, sheet, sidebar, estilização, design responsivo, acessibilidade, loading states, empty states ou refatoração de UI."
 ---
 
 # Construindo Componentes UI
 
-Esta skill contém a referência completa para construir UI com a biblioteca Blips UI. Utiliza primitivas Radix UI via `@blips/ui/components/*`, Tailwind CSS e ícones Phosphor (`@phosphor-icons/react`). Os exemplos de busca de dados são agnósticos — conecte os componentes à camada de dados do seu app (React Query, SWR, tRPC, etc.).
+Esta skill contém a referência completa para construir UI com a biblioteca Blips UI. A lib tem duas linhas: **v3.x**, sobre primitivas **Base UI** (`@base-ui/react`, estilo shadcn base-mira), e **v2.x**, sobre primitivas **Radix UI**. Nas duas, os componentes vêm de `@blips/ui/components/*`, com Tailwind CSS e ícones Phosphor (`@phosphor-icons/react`). Os exemplos de busca de dados são agnósticos — conecte os componentes à camada de dados do seu app (React Query, SWR, tRPC, etc.).
 
 ## Protocolo de Raciocínio
 
 Antes de escrever ou modificar QUALQUER código de UI, você DEVE seguir este processo de raciocínio e compartilhá-lo com o usuário. Isso garante que os componentes certos sejam usados com os padrões corretos.
+
+### Passo 0: Detectar a versão da @blips/ui
+
+Antes de tudo, descubra qual linha da lib o repositório usa — a API muda entre elas
+(`render` vs `asChild`, `data-open` vs `data-[state=open]`, Accordion com arrays,
+AlertDialogAction que não fecha sozinho, ícones `*Icon`…):
+
+1. Leia `package.json` → `dependencies["@blips/ui"]` (ou `devDependencies`).
+2. Se o valor for ambíguo (`workspace:*`, `latest`, range), leia
+   `node_modules/@blips/ui/package.json` → `version`.
+
+| Versão | Trilha a seguir em cada reference |
+|---|---|
+| `2.x` | seção **`## v2.x — Radix`** |
+| `3.x` | seção **`## v3.x — Base UI`** |
+| sem `@blips/ui` (instalação nova) | **v3.x — Base UI** |
+
+Declare a trilha no raciocínio ("Repo em @blips/ui 3.1.0 → trilha v3.x — Base UI")
+e leia **só** a seção correspondente de cada reference. Nunca aplique instrução v3
+num repo v2, nem o contrário. As diferenças transversais (render/asChild, atributos
+de estado, Tooltip, Separator, ícones, densidade, recharts, componentes só da v3)
+estão em [`references/v2-vs-v3.md`](references/v2-vs-v3.md) — leia-o na primeira
+tarefa de UI do repo e sempre que for migrar código entre versões.
 
 ### Passo 1: Identificar a Tarefa de UI
 
@@ -33,11 +56,13 @@ Nomeie cada componente que será utilizado. Para cada um, declare:
 - Qual arquivo de referência será consultado (ex: `references/button.md`)
 - Se precisa de um guia de composição (ex: `components/forms/forms.md`)
 - Quais padrões compartilhados se aplicam (formRef, Popover modal, Sheet width override)
+- Em qual trilha (v3.x ou v2.x) a API será lida
 
 ### Passo 3: Ler Antes de Escrever
 
 Leia os arquivos de referência relevantes. Só então escreva código. Isso previne:
-- Usar props/variantes erradas (ex: `sm:max-w-lg` em vez de `sm:data-[side=right]:max-w-lg` no Sheet)
+- Usar props/variantes erradas (ex.: na v3.x, `sm:max-w-lg` em vez de `sm:data-[side=right]:max-w-lg` no Sheet)
+- Usar a API da versão errada (ex: `asChild` num repo v3, `render` num repo v2)
 - Perder convenções do projeto (ex: esquecer prop `modal` no Popover dentro de Sheet)
 - Reinventar padrões que já existem no codebase
 
@@ -45,6 +70,7 @@ Leia os arquivos de referência relevantes. Só então escreva código. Isso pre
 
 > Construindo formulário de edição de aluno dentro de um Sheet.
 >
+> Versão: `@blips/ui` 3.0.0 no package.json → trilha **v3.x — Base UI** (triggers com `render`, ícones `*Icon`).
 > Componentes: Sheet, Form, Input, Select, Button, Sonner (para toast de feedback)
 > Referências a consultar: `references/sheet.md`, `references/form.md`, `references/input.md`, `references/select.md`
 > Guia de composição: `components/sheet.md`, `components/forms/forms.md`, `components/forms/schemas.md`
@@ -58,21 +84,25 @@ Esta skill é organizada em 3 níveis. Leia apenas o que precisa — comece pelo
 
 | Nível | Diretório | Conteúdo | Quando ler |
 |-------|-----------|----------|------------|
-| **1. Atômico** | [`references/`](references/) | API shadcn/ui por componente (props, variantes, exports, exemplos) | Precisa da API exata de um componente base |
+| **1. Atômico** | [`references/`](references/) | API shadcn/ui por componente (props, variantes, exports, exemplos), com seções v3.x e v2.x | Precisa da API exata de um componente base |
 | **2. Composição** | [`components/`](components/) | Padrões compostos específicos do projeto | Construindo UI composta com convenções do projeto |
 | **3. Página** | [`blocks/`](blocks/) | Padrões de página/seção completos | Montando páginas inteiras ou seções principais |
 
 ---
 
-## Nível 1: Referências (54 componentes)
+## Nível 1: Referências
 
-Um arquivo por componente shadcn/ui instalado em `references/<nome-do-componente>.md`.
+Um arquivo por componente em `references/<nome-do-componente>.md`.
 
 Para consultar a API de um componente: leia `references/<nome>.md` onde `<nome>` corresponde ao arquivo do componente em `packages/ui/src/components/`.
 
-Disponíveis: accordion, alert, alert-dialog, aspect-ratio, avatar, badge, breadcrumb, button, button-group, calendar, card, carousel, chart, checkbox, collapsible, command, context-menu, dialog, drawer, dropdown-menu, empty, field, form, hover-card, input, input-group, input-otp, item, kbd, label, menubar, native-select, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sheet, sidebar, skeleton, slider, sonner, spinner, switch, table, tabs, textarea, toggle, toggle-group, tooltip.
+Disponíveis nas duas versões: accordion, alert, alert-dialog, aspect-ratio, avatar, badge, breadcrumb, button, button-group, calendar, card, carousel, chart, checkbox, collapsible, command, context-menu, dialog, drawer, dropdown-menu, empty, field, form, hover-card, input, input-group, input-otp, kbd, label, menubar, navigation-menu, pagination, popover, progress, radio-group, resizable, scroll-area, select, separator, sheet, sidebar, skeleton, slider, sonner, spinner, switch, table, tabs, textarea, toggle, toggle-group, tooltip.
 
-Cada arquivo contém: caminho de importação, sub-componentes, props/variantes com classes CSS, exemplos de uso e notas específicas do projeto.
+**Só na v3.x** (não existem num repo v2): attachment, bubble, combobox, direction, item, marker, message, message-scroller, native-select, questionnaire, toast.
+
+Diferenças transversais entre as versões: [`references/v2-vs-v3.md`](references/v2-vs-v3.md).
+
+Cada arquivo contém: caminho de importação e conteúdo comum primeiro; depois as seções `## v3.x — Base UI` e `## v2.x — Radix`, cada uma com sub-componentes, props, exemplos e notas daquela versão. Quando a API é igual nas duas, o arquivo diz "API igual na v2.x e na v3.x." e traz um único exemplo.
 
 ---
 
@@ -147,7 +177,7 @@ Cada arquivo contém: caminho de importação, sub-componentes, props/variantes 
 
 | Necessidade | Componente | Por quê |
 |-------------|-----------|---------|
-| Select com busca | **Combobox** | Popover + Command: busca, navegação por teclado, toggle |
+| Select com busca | **Combobox** | v2.x: Popover + Command (`components/combobox.md`). v3.x: primitivo `Combobox` da lib (`references/combobox.md`), ou o mesmo padrão Popover + Command |
 | Ação rápida/confirmação | **Dialog** | Modal centralizado, atenção focada |
 | Confirmação destrutiva | **AlertDialog** | Sem fechar ao clicar fora |
 | Visualização detalhada / formulário complexo | **Sheet** | Painel lateral, scroll full-height, footer fixo |
@@ -166,7 +196,7 @@ Estes padrões aparecem frequentemente entre componentes. Internalize-os:
 - **Form em Sheet**: Envolva `SheetBody`/`SheetFooter` em `<form className="flex flex-1 flex-col overflow-hidden">`. Dialog não precisa disso.
 - **FormRef**: Quando o botão de submit está fora do formulário (ex: SheetFooter), use `formRef.current?.requestSubmit()`.
 - **Popover em Sheet/Dialog**: Sempre adicione a prop `modal` no Popover para corrigir scroll.
-- **Largura do Sheet**: Use `sm:data-[side=right]:max-w-lg` (não `sm:max-w-lg`).
+- **Largura do Sheet**: na v3.x, use `sm:data-[side=right]:max-w-lg` (o `SheetContent` emite `data-side` e a largura base vem de `data-[side=right]:sm:max-w-sm`, que um `sm:max-w-lg` solto não vence). Na v2.x, use `sm:max-w-lg`: o `SheetContent` Radix não emite `data-side`, então `sm:data-[side=right]:` nunca casa.
 - **Estados vazios**: Sempre trate estados vazios/nulos (CommandEmpty, verificações de no-data).
 
 ---
@@ -185,6 +215,7 @@ operacional durante a construção, não o critério de aceite.
 
 ### FAÇA
 
+- Detecte a versão da `@blips/ui` (Passo 0) e leia só a seção da trilha certa
 - Leia o arquivo de referência relevante antes de usar qualquer componente
 - Use `cn()` para classes condicionais
 - Inclua componentes Title para acessibilidade (DialogTitle, SheetTitle)
@@ -192,14 +223,15 @@ operacional durante a construção, não o critério de aceite.
 - Use `formRef` quando o botão de submit estiver fora do formulário
 - Use `satisfies ChartConfig` para segurança de tipos
 - Adicione `min-h-[VALUE]` no ChartContainer
-- Adicione `accessibilityLayer` nos componentes raiz dos gráficos
+- Adicione `accessibilityLayer` nos componentes raiz dos gráficos (v2.x/recharts 2; na v3.x o recharts 3 já liga por padrão)
 - Use a prop `tooltip` no SidebarMenuButton para modo ícone
 - Defina `meta.title` em todas as colunas da tabela
 - Use paginação server-side para listas > 100 itens
 
 ### NÃO FAÇA
 
-- Não pule o protocolo de raciocínio — sempre identifique os componentes primeiro
+- Não pule o protocolo de raciocínio — sempre identifique a versão e os componentes primeiro
+- Não misture trilhas: nada de `asChild`, `data-[state=…]` ou ícone sem sufixo em repo v3; nada de `render`, `data-open` ou componente só da v3 em repo v2
 - Não use `useEffect` para medições de layout — use `useLayoutEffect`
 - Não aninhe múltiplos modais
 - Não use `useFieldArray` — prefira controle manual
@@ -214,7 +246,7 @@ operacional durante a construção, não o critério de aceite.
 
 Na biblioteca `@blips/ui`:
 
-- `packages/ui/src/components/` — Componentes base Radix/shadcn
+- `packages/ui/src/components/` — Componentes base shadcn (Base UI na v3.x, Radix na v2.x)
 - `packages/ui/src/hooks/` — Hooks customizados (use-file-upload, use-mobile)
 
 Componentes compostos (data tables, comboboxes de entidade, etc.) e utilitários de domínio (máscaras de input) vivem no app que consome a biblioteca.

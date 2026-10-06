@@ -2,206 +2,82 @@
 
 Import: `@blips/ui/components/scroll-area`
 
-## Sub-components
+Área rolável com barra de rolagem estilizada e igual em todos os navegadores. Use
+em listas longas dentro de painéis, popovers e cards. Precisa de altura (ou
+largura) limitada para rolar.
 
-| Component | Description |
-|---|---|
-| `ScrollArea` | Root container wrapping `@radix-ui/react-scroll-area` Root. Provides custom scrollbar styling with a Viewport, ScrollBar, and Corner. |
-| `ScrollBar` | Custom scrollbar wrapping `@radix-ui/react-scroll-area` ScrollAreaScrollbar. Supports vertical and horizontal orientations. |
+Exports (iguais nas duas versões): `ScrollArea`, `ScrollBar`.
 
-## Props & Variants
+## Notas comuns
 
-### ScrollArea
+- `ScrollArea` já renderiza Viewport + `ScrollBar` vertical + Corner. O elemento que rola é o Viewport (`data-slot="scroll-area-viewport"`).
+- Rolagem horizontal: adicione `<ScrollBar orientation="horizontal" />` dentro do `ScrollArea` e dê ao conteúdo `flex` sem quebra (`w-max` ou `shrink-0` nos filhos).
+- Barra fina (`w-2.5`/`h-2.5`) com thumb `rounded-full bg-border`.
 
-Extends `React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `type` | `"auto" \| "always" \| "scroll" \| "hover"` | `"hover"` | Scrollbar visibility behavior. |
-| `scrollHideDelay` | `number` | `600` | Delay in ms before scrollbars hide (when type is `"scroll"` or `"hover"`). |
-| `dir` | `"ltr" \| "rtl"` | -- | Reading direction. |
-| `className` | `string` | -- | Additional CSS classes. Base: `relative overflow-hidden`. |
+## v3.x — Base UI
 
-**Internal structure:** Automatically includes a vertical `ScrollBar` and a `Corner`. For horizontal scrolling, add a `<ScrollBar orientation="horizontal" />` explicitly.
+Primitiva: `@base-ui/react/scroll-area`.
 
-### ScrollBar
-
-Extends `React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>`.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `orientation` | `"vertical" \| "horizontal"` | `"vertical"` | Scrollbar direction. |
-| `forceMount` | `boolean` | -- | Force the scrollbar to always render. |
-| `className` | `string` | -- | Additional CSS classes. |
-
-**Styles by orientation:**
-- **Vertical:** `h-full w-2.5 border-l border-l-transparent p-[1px]`
-- **Horizontal:** `h-2.5 flex-col border-t border-t-transparent p-[1px]`
-
-The thumb is styled with: `relative flex-1 rounded-full bg-border`.
-
-## Usage
-
-### Vertical Scroll Area
+- `ScrollArea`: `ScrollArea.Root.Props` (`overflowEdgeThreshold`, `render`). **Não existem** `type` (`auto`/`always`/`scroll`/`hover`) nem `scrollHideDelay`.
+- `ScrollBar`: `orientation` (`"vertical"` padrão), `keepMounted` (no lugar de `forceMount`).
+- Estado para estilizar: `data-horizontal`/`data-vertical`, `data-hovering`, `data-scrolling` na barra; no Root, `data-has-overflow-x`/`-y` e `data-overflow-*`. A barra se esconde quando não há overflow.
 
 ```tsx
-import * as React from "react"
-import { ScrollArea } from "@blips/ui/components/scroll-area"
-import { Separator } from "@blips/ui/components/separator"
+import { ScrollArea } from "@blips/ui/components/scroll-area";
+import { Separator } from "@blips/ui/components/separator";
 
-const tags = Array.from({ length: 50 }).map(
-  (_, i, a) => `v1.2.0-beta.${a.length - i}`
-)
+const tags = Array.from({ length: 50 }, (_, i) => `v1.2.0-beta.${50 - i}`);
 
-export default function ScrollAreaDemo() {
+export function ListaDeVersoes() {
   return (
     <ScrollArea className="h-72 w-48 rounded-md border">
       <div className="p-4">
-        <h4 className="mb-4 text-sm leading-none font-medium">Tags</h4>
+        <h4 className="mb-4 text-sm font-medium">Versões</h4>
         {tags.map((tag) => (
-          <React.Fragment key={tag}>
-            <div className="text-sm">{tag}</div>
+          <div key={tag} className="text-xs">
+            {tag}
             <Separator className="my-2" />
-          </React.Fragment>
+          </div>
         ))}
       </div>
     </ScrollArea>
-  )
+  );
 }
 ```
 
-### Horizontal Scroll Area
+Barra que só aparece ao rolar ou passar o mouse: o `ScrollArea` já desenha a
+barra vertical e não repassa `className` a ela (um `<ScrollBar />` a mais criaria
+uma segunda barra vertical). Mire a barra embutida pelo `data-slot`, a partir do
+`ScrollArea`:
 
 ```tsx
-import { ScrollArea, ScrollBar } from "@blips/ui/components/scroll-area"
-
-export default function ScrollAreaHorizontalDemo() {
-  return (
-    <ScrollArea className="w-96 rounded-md border whitespace-nowrap">
-      <div className="flex w-max space-x-4 p-4">
-        {works.map((artwork) => (
-          <figure key={artwork.artist} className="shrink-0">
-            <div className="overflow-hidden rounded-md">
-              <img
-                src={artwork.art}
-                alt={`Photo by ${artwork.artist}`}
-                className="aspect-[3/4] h-fit w-fit object-cover"
-                width={300}
-                height={400}
-              />
-            </div>
-            <figcaption className="pt-2 text-xs text-muted-foreground">
-              Photo by{" "}
-              <span className="font-semibold text-foreground">
-                {artwork.artist}
-              </span>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-      <ScrollBar orientation="horizontal" />
-    </ScrollArea>
-  )
-}
-```
-
-### Both Directions
-
-```tsx
-<ScrollArea className="h-[300px] w-[400px] rounded-md border">
-  <div className="w-[600px] p-4">
-    {/* Content wider and taller than container */}
-  </div>
-  <ScrollBar orientation="horizontal" />
+<ScrollArea className="h-72 [&_[data-slot=scroll-area-scrollbar]]:opacity-0 [&_[data-slot=scroll-area-scrollbar]]:transition-opacity [&_[data-slot=scroll-area-scrollbar][data-hovering]]:opacity-100 [&_[data-slot=scroll-area-scrollbar][data-scrolling]]:opacity-100">
+  {/* conteúdo */}
 </ScrollArea>
 ```
 
-## All Examples
+Na barra horizontal, que você mesmo adiciona, o `className` funciona direto:
+`<ScrollBar orientation="horizontal" className="opacity-0 transition-opacity data-hovering:opacity-100 data-scrolling:opacity-100" />`.
 
-- `scroll-area-demo` -- Vertical scroll area with a list of tags
-- `scroll-area-horizontal-demo` -- Horizontal scroll area with artwork images
+## v2.x — Radix
 
-## All Example Variants
+Primitiva: `@radix-ui/react-scroll-area`.
 
-### scroll-area-demo
-
-```tsx
-import * as React from "react"
-
-import { ScrollArea } from "@blips/ui/components/scroll-area"
-import { Separator } from "@blips/ui/components/separator"
-
-const tags = Array.from({ length: 50 }).map(
-  (_, i, a) => `v1.2.0-beta.${a.length - i}`
-)
-
-export default function ScrollAreaDemo() {
-  return (
-    <ScrollArea className="h-72 w-48 rounded-md border">
-      <div className="p-4">
-        <h4 className="mb-4 text-sm leading-none font-medium">Tags</h4>
-        {tags.map((tag) => (
-          <React.Fragment key={tag}>
-            <div className="text-sm">{tag}</div>
-            <Separator className="my-2" />
-          </React.Fragment>
-        ))}
-      </div>
-    </ScrollArea>
-  )
-}
-```
-
-### scroll-area-horizontal-demo
+- `ScrollArea`: `type` (`"hover"` padrão Radix; também `"auto"`, `"always"`, `"scroll"`), `scrollHideDelay` (ms), `dir`, `asChild`.
+- `ScrollBar`: `orientation`, `forceMount`.
+- Estado: `data-state="visible" | "hidden"`, `data-orientation`.
 
 ```tsx
-import * as React from "react"
-import Image from "next/image"
-
 import { ScrollArea, ScrollBar } from "@blips/ui/components/scroll-area"
 
-export interface Artwork {
-  artist: string
-  art: string
-}
-
-export const works: Artwork[] = [
-  {
-    artist: "Ornella Binni",
-    art: "https://images.unsplash.com/photo-1465869185982-5a1a7522cbcb?auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    artist: "Tom Byrom",
-    art: "https://images.unsplash.com/photo-1548516173-3cabfa4607e9?auto=format&fit=crop&w=300&q=80",
-  },
-  {
-    artist: "Vladimir Malyavko",
-    art: "https://images.unsplash.com/photo-1494337480532-3725c85fd2ab?auto=format&fit=crop&w=300&q=80",
-  },
-]
-
-export default function ScrollAreaHorizontalDemo() {
+export function Galeria({ fotos }: { fotos: { id: string; src: string }[] }) {
   return (
-    <ScrollArea className="w-96 rounded-md border whitespace-nowrap">
-      <div className="flex w-max space-x-4 p-4">
-        {works.map((artwork) => (
-          <figure key={artwork.artist} className="shrink-0">
-            <div className="overflow-hidden rounded-md">
-              <Image
-                src={artwork.art}
-                alt={`Photo by ${artwork.artist}`}
-                className="aspect-[3/4] h-fit w-fit object-cover"
-                width={300}
-                height={400}
-              />
-            </div>
-            <figcaption className="pt-2 text-xs text-muted-foreground">
-              Photo by{" "}
-              <span className="font-semibold text-foreground">
-                {artwork.artist}
-              </span>
-            </figcaption>
-          </figure>
+    <ScrollArea type="always" className="w-96 rounded-md border whitespace-nowrap">
+      <div className="flex w-max gap-4 p-4">
+        {fotos.map((foto) => (
+          <img key={foto.id} src={foto.src} alt="" className="h-40 w-32 rounded-md object-cover" />
         ))}
       </div>
       <ScrollBar orientation="horizontal" />
@@ -210,8 +86,6 @@ export default function ScrollAreaHorizontalDemo() {
 }
 ```
 
-## Project Notes
+## Exemplos na docs
 
-- The `ScrollArea` automatically includes a vertical `ScrollBar`. For horizontal scrolling, you must explicitly add `<ScrollBar orientation="horizontal" />` as a child.
-- Set explicit `h-*` and `w-*` on `ScrollArea` to constrain the scrollable viewport.
-- Use `whitespace-nowrap` on the `ScrollArea` for horizontal layouts.
+`scroll-area-demo`, `scroll-area-horizontal-demo` (em `apps/docs/examples/`, escritos para a v3).

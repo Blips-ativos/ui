@@ -4,16 +4,28 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@blips/ui/components/avatar";
-import { Plus } from "@phosphor-icons/react";
+import { CheckIcon, PlusIcon } from "@phosphor-icons/react";
 
-export function AvatarBadgeIconExample() {
+export default function AvatarBadgeIcon() {
   return (
-    <Avatar className="grayscale">
-      <AvatarImage src="https://github.com/pranathip.png" alt="@pranathip" />
-      <AvatarFallback>PP</AvatarFallback>
-      <AvatarBadge>
-        <Plus />
-      </AvatarBadge>
-    </Avatar>
+    <div className="flex flex-wrap items-center gap-2">
+      <Avatar size="lg">
+        <AvatarImage
+          src="https://github.com/pranathip.png"
+          alt="@pranathip"
+          className="grayscale"
+        />
+        <AvatarFallback>PP</AvatarFallback>
+        <AvatarBadge>
+          <PlusIcon />
+        </AvatarBadge>
+      </Avatar>
+      <Avatar size="lg">
+        <AvatarFallback>PP</AvatarFallback>
+        <AvatarBadge>
+          <CheckIcon />
+        </AvatarBadge>
+      </Avatar>
+    </div>
   );
 }

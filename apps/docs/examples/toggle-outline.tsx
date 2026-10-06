@@ -1,10 +1,17 @@
 import { Toggle } from "@blips/ui/components/toggle";
-import { TextItalic } from "@phosphor-icons/react";
+import { TextBIcon, TextItalicIcon } from "@phosphor-icons/react";
 
 export default function ToggleOutline() {
   return (
-    <Toggle variant="outline" aria-label="Toggle italic">
-      <TextItalic />
-    </Toggle>
+    <div className="flex flex-wrap items-center gap-2">
+      <Toggle variant="outline" aria-label="Alternar itálico">
+        <TextItalicIcon />
+        Itálico
+      </Toggle>
+      <Toggle variant="outline" aria-label="Alternar negrito">
+        <TextBIcon />
+        Negrito
+      </Toggle>
+    </div>
   );
 }

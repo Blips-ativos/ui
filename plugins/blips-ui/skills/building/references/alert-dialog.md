@@ -2,60 +2,161 @@
 
 Import: `@blips/ui/components/alert-dialog`
 
-## Sub-components
+Modal de confirmação que interrompe o usuário e exige resposta. Use para ações
+destrutivas ou irreversíveis. Não fecha ao clicar fora.
 
-| Component | Description |
-|---|---|
-| `AlertDialog` | Root component. Wraps `@radix-ui/react-alert-dialog` Root. Manages open/close state. |
-| `AlertDialogTrigger` | Button that opens the dialog. Wraps Radix `Trigger`. Use `asChild` to render a custom trigger element. |
-| `AlertDialogPortal` | Portals the dialog content to `document.body`. |
-| `AlertDialogOverlay` | Semi-transparent backdrop (`bg-black/80`). Includes fade-in/fade-out animations. |
-| `AlertDialogContent` | The dialog panel itself. Centered, max-width `lg`, with slide/zoom animations. Automatically renders overlay. |
-| `AlertDialogHeader` | Flex container for title and description. Centered on mobile, left-aligned on `sm:`. |
-| `AlertDialogFooter` | Flex container for action buttons. Column on mobile, row on `sm:` with `justify-end`. |
-| `AlertDialogTitle` | Dialog heading. Styled `font-semibold text-lg`. |
-| `AlertDialogDescription` | Dialog body text. Styled `text-muted-foreground text-sm`. |
-| `AlertDialogAction` | Confirm/primary action button. Accepts `variant` prop from `buttonVariants`. |
-| `AlertDialogCancel` | Cancel/dismiss button. Renders with `variant="outline"` styling. |
+Exports (iguais nas duas versões): `AlertDialog`, `AlertDialogTrigger`,
+`AlertDialogPortal`, `AlertDialogOverlay`, `AlertDialogContent`,
+`AlertDialogHeader`, `AlertDialogFooter`, `AlertDialogMedia`, `AlertDialogTitle`,
+`AlertDialogDescription`, `AlertDialogAction`, `AlertDialogCancel`.
 
-## Props & Variants
+## Notas comuns
 
-### AlertDialog (Root)
+- `AlertDialogContent` já renderiza Portal + Overlay.
+- `AlertDialogContent` aceita `size?: "default" | "sm"` (`data-size`). Em `sm`, o footer vira grid de 2 colunas.
+- `AlertDialogMedia` é um slot para ícone no header (o header se reorganiza com `has-data-[slot=alert-dialog-media]`).
+- `AlertDialogAction` aceita `variant` e `size` do Button — use `variant="destructive"` na confirmação destrutiva. `AlertDialogCancel` usa `variant="outline"` por padrão.
+- Sempre inclua `AlertDialogTitle` (acessibilidade).
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `open` | `boolean` | - | Controlled open state. |
-| `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes. |
-| `defaultOpen` | `boolean` | `false` | Default open state (uncontrolled). |
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-### AlertDialogTrigger
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `asChild` | `boolean` | `false` | Merge props onto child element instead of rendering a button. |
+Primitiva: `@base-ui/react/alert-dialog`.
 
-### AlertDialogContent
+> **Mudança de comportamento:** `AlertDialogAction` é um `Button` comum e **não fecha o diálogo**. Controle `open`/`onOpenChange` e feche no `onClick` (inclusive depois de uma ação assíncrona). Não há erro de tipo se você esquecer — o botão simplesmente não fecha.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | - | Additional CSS classes. Base: centered fixed positioning, `max-w-lg`, `p-6`, `gap-4`, `border`, `bg-background`, `shadow-lg`, `sm:rounded-lg`. |
+### Sub-componentes e props
 
-### AlertDialogAction
+| Componente | Base | Props relevantes |
+|---|---|---|
+| `AlertDialog` | `AlertDialog.Root` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `onOpenChangeComplete(open)`, `actionsRef`, `handle` |
+| `AlertDialogTrigger` | `AlertDialog.Trigger` | `render`, `nativeButton`, `payload`, `handle`. Estado: `data-popup-open` |
+| `AlertDialogPortal` | `AlertDialog.Portal` | `container`, `keepMounted` |
+| `AlertDialogOverlay` | `AlertDialog.Backdrop` | `bg-black/80` + `backdrop-blur-xs` |
+| `AlertDialogContent` | `AlertDialog.Popup` | `size`, `initialFocus`, `finalFocus`. `p-4 gap-3 rounded-xl ring-1 ring-foreground/10`; largura `max-w-xs sm:max-w-sm` (default) ou `max-w-64` (sm) |
+| `AlertDialogMedia` | `div` | `size-8`, svg `size-4` |
+| `AlertDialogTitle` | `AlertDialog.Title` | `font-heading text-sm font-medium` |
+| `AlertDialogDescription` | `AlertDialog.Description` | `text-xs/relaxed text-balance` |
+| `AlertDialogAction` | `Button` | todas as props do Button (`variant`, `size`, `render`, `onClick`…). **Não fecha.** |
+| `AlertDialogCancel` | `AlertDialog.Close` com `render={<Button />}` | `variant` (default `"outline"`), `size`. Fecha o diálogo |
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `variant` | Button variant type | `"default"` | Accepts any `buttonVariants` variant: `"default"`, `"destructive"`, `"outline"`, `"secondary"`, `"ghost"`, `"link"`. |
-| `className` | `string` | - | Additional CSS classes. |
+Não existem mais `onEscapeKeyDown`, `onOpenAutoFocus`, `onCloseAutoFocus` nem `forceMount`. Estado do Popup/Backdrop: `data-open`/`data-closed`.
 
-### AlertDialogCancel
+### Exemplos
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | - | Additional CSS classes. Base: `buttonVariants({ variant: 'outline' })` + `mt-2 sm:mt-0`. |
+```tsx
+"use client";
 
-## Usage
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@blips/ui/components/alert-dialog";
+import { Button } from "@blips/ui/components/button";
+import * as React from "react";
 
-### Basic confirmation dialog
+export function ConfirmarExclusao() {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger render={<Button variant="outline" />}>
+        Excluir conta
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Esta ação não pode ser desfeita. A conta e os dados serão removidos
+            dos nossos servidores.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={() => setOpen(false)}>
+            Continuar
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+```
+
+Destrutivo, com mídia, tamanho `sm` e ação assíncrona:
+
+```tsx
+import { TrashIcon } from "@phosphor-icons/react";
+
+const [open, setOpen] = React.useState(false);
+const [excluindo, setExcluindo] = React.useState(false);
+
+<AlertDialog open={open} onOpenChange={setOpen}>
+  <AlertDialogTrigger render={<Button variant="destructive" />}>
+    Excluir conversa
+  </AlertDialogTrigger>
+  <AlertDialogContent size="sm">
+    <AlertDialogHeader>
+      <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20">
+        <TrashIcon />
+      </AlertDialogMedia>
+      <AlertDialogTitle>Excluir conversa?</AlertDialogTitle>
+      <AlertDialogDescription>
+        A conversa será excluída permanentemente.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel variant="ghost">Cancelar</AlertDialogCancel>
+      <AlertDialogAction
+        variant="destructive"
+        disabled={excluindo}
+        onClick={async () => {
+          setExcluindo(true);
+          await excluirConversa();
+          setExcluindo(false);
+          setOpen(false);
+        }}
+      >
+        Excluir
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+Alternativa sem estado controlado: um botão que fecha, via a primitiva crua —
+`<AlertDialogPrimitive.Close render={<Button variant="destructive" />}>` (importando
+`AlertDialog as AlertDialogPrimitive` de `@base-ui/react/alert-dialog`).
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-alert-dialog`.
+
+### Sub-componentes e props
+
+| Componente | Base | Props relevantes |
+|---|---|---|
+| `AlertDialog` | Radix `Root` | `open`, `defaultOpen`, `onOpenChange(open)` |
+| `AlertDialogTrigger` | Radix `Trigger` | `asChild` |
+| `AlertDialogPortal` | Radix `Portal` | `container`, `forceMount` |
+| `AlertDialogOverlay` | Radix `Overlay` | `bg-black/50` |
+| `AlertDialogContent` | Radix `Content` | `size`, `onEscapeKeyDown`, `onOpenAutoFocus`, `onCloseAutoFocus`, `forceMount`. `p-6 gap-4 rounded-lg border shadow-lg`; largura `sm:max-w-lg` (default) ou `max-w-xs` (sm) |
+| `AlertDialogMedia` | `div` | `size-16`, svg `size-8` |
+| `AlertDialogTitle` | Radix `Title` | `text-lg font-semibold` |
+| `AlertDialogDescription` | Radix `Description` | `text-sm text-muted-foreground` |
+| `AlertDialogAction` | Radix `Action` dentro de `Button asChild` | `variant` (default `"default"`), `size`. **Fecha o diálogo** ao clicar |
+| `AlertDialogCancel` | Radix `Cancel` dentro de `Button asChild` | `variant` (default `"outline"`), `size`. Fecha |
+
+Estado: `data-state="open" | "closed"`.
+
+### Exemplos
 
 ```tsx
 import {
@@ -71,23 +172,23 @@ import {
 } from "@blips/ui/components/alert-dialog"
 import { Button } from "@blips/ui/components/button"
 
-export function AlertDialogExample() {
+export function ConfirmarExclusao() {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="outline">Show Dialog</Button>
+        <Button variant="outline">Excluir conta</Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Você tem certeza absoluta?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Esta ação não pode ser desfeita. A conta e os dados serão removidos
+            dos nossos servidores.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction>Continue</AlertDialogAction>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+          <AlertDialogAction>Continuar</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -95,29 +196,29 @@ export function AlertDialogExample() {
 }
 ```
 
-### Destructive action dialog
+Destrutivo:
 
 ```tsx
 <AlertDialog>
   <AlertDialogTrigger asChild>
-    <Button variant="destructive">Delete Account</Button>
+    <Button variant="destructive">Excluir conta</Button>
   </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>Delete account?</AlertDialogTitle>
+      <AlertDialogTitle>Excluir conta?</AlertDialogTitle>
       <AlertDialogDescription>
-        This will permanently delete your account and all associated data.
+        A conta e todos os dados associados serão excluídos.
       </AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction variant="destructive">Delete</AlertDialogAction>
+      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+      <AlertDialogAction variant="destructive">Excluir</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
 ```
 
-### Controlled dialog
+Controlado (útil para ação assíncrona: `event.preventDefault()` no `onClick` do Action impede o fechamento automático):
 
 ```tsx
 const [open, setOpen] = useState(false)
@@ -125,23 +226,17 @@ const [open, setOpen] = useState(false)
 <AlertDialog open={open} onOpenChange={setOpen}>
   <AlertDialogContent>
     <AlertDialogHeader>
-      <AlertDialogTitle>Confirm action</AlertDialogTitle>
-      <AlertDialogDescription>Are you sure?</AlertDialogDescription>
+      <AlertDialogTitle>Confirmar ação</AlertDialogTitle>
+      <AlertDialogDescription>Tem certeza?</AlertDialogDescription>
     </AlertDialogHeader>
     <AlertDialogFooter>
-      <AlertDialogCancel>No</AlertDialogCancel>
-      <AlertDialogAction onClick={handleConfirm}>Yes</AlertDialogAction>
+      <AlertDialogCancel>Não</AlertDialogCancel>
+      <AlertDialogAction onClick={handleConfirm}>Sim</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
 ```
 
-## Project Notes
+## Exemplos na docs
 
-- `AlertDialogAction` accepts `variant` prop from `buttonVariants` (imported from `@blips/ui/components/button`), allowing destructive-styled confirm buttons.
-- The overlay uses `bg-black/80` for the backdrop.
-- Animations: fade-in/out, zoom-in/out (95%), and slide from center.
-
-## All Examples
-
-- `alert-dialog-demo`
+`alert-dialog-demo`, `alert-dialog-destructive`, `alert-dialog-media`, `alert-dialog-small` (v3).

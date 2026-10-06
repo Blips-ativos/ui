@@ -1,11 +1,11 @@
 ---
 title: Switch
-description: Um controle que permite ao usuario alternar entre marcado e nao marcado.
+description: Um controle que permite ao usuário alternar entre ligado e desligado.
 ---
 
 <ComponentPreview name="switch-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -23,12 +23,50 @@ import { Switch } from "@blips/ui/components/switch"
 
 ## Exemplos
 
-### Exemplo
+### Com descrição
 
-Um `Switch` simples acompanhado de um `Label` associado.
+Envolva o `Field` em um `FieldLabel` para transformar o cartão inteiro em alvo de clique.
 
-<ComponentPreview name="switch-demo" />
+<ComponentPreview name="switch-description" />
 
-## Referencia da API
+### Tamanhos
 
-Consulte a documentacao do [Radix Switch](https://www.radix-ui.com/docs/primitives/components/switch#api-reference).
+Use a prop `size` com `"sm"` ou `"default"`.
+
+<ComponentPreview name="switch-sizes" />
+
+### Desabilitado
+
+<ComponentPreview name="switch-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` no switch e `data-invalid` no `Field`.
+
+<ComponentPreview name="switch-invalid" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Switch](https://base-ui.com/react/components/switch).
+
+- `onCheckedChange` recebe `(checked, eventDetails)`.
+- **Atributos de estado:** `data-state="checked" | "unchecked"` vira `data-checked` e `data-unchecked`; o estado desabilitado vira `data-disabled`.
+- O elemento raiz é um `<span role="switch">` com um `<input>` oculto, não mais um `<button>`.
+- `asChild` vira `render`.
+- A prop `size` continua. Visual menor (padrão 28 × 16,6 px, thumb `size-3.5`), foco `ring-2` e estilo para `aria-invalid`.
+
+```tsx
+// v2
+<Switch className="data-[state=checked]:bg-green-600" />
+
+// v3
+<Switch className="data-checked:bg-green-600" />
+```
+
+## Referência da API
+
+| Prop   | Tipo                | Padrão      |
+| ------ | ------------------- | ----------- |
+| `size` | `"sm" \| "default"` | `"default"` |
+
+Consulte a documentação do [Base UI Switch](https://base-ui.com/react/components/switch) para as demais props.

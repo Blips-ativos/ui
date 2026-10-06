@@ -8,7 +8,7 @@ description: "Use quando um repositório React/Next.js for instalar, configurar 
 ## Visão geral
 
 Setup canônico e **verificado** da `@blips/ui` (builds reais em Vite e Next,
-React 17/18/19, lib v2.0.0). O contrato do pacote já foi inspecionado e cada
+React 17/18/19, lib v2.0.0; setup da v3.x conferido no pacote da v3). O contrato do pacote já foi inspecionado e cada
 decisão abaixo tem evidência — **siga o procedimento em vez de redescobrir**
 (inspecionar tarball, testar imports, decidir convenções do zero custa ~5min e
 50k tokens por repo, e produz convenções divergentes entre repos).
@@ -25,9 +25,27 @@ aponte a skill certa.
 
 **Anuncie ao começar:** "Usando blips-ui:installing para configurar a lib neste repo."
 
+## Detecção de versão (qual trilha instalar)
+
+A lib tem duas linhas: **v2.x — Radix** e **v3.x — Base UI** (estilo shadcn base-mira).
+O setup de Tailwind/tema/fontes/imports é o mesmo nas duas; mudam as primitivas embutidas,
+o recharts e a API dos componentes (`asChild` × `render`).
+
+| Situação do repo | Trilha | O que fazer |
+| --- | --- | --- |
+| Sem `@blips/ui` (instalação nova) | **v3.x — Base UI** | `pnpm add @blips/ui@^3` |
+| `@blips/ui` `2.x` em `dependencies` (ou `node_modules/@blips/ui/package.json` → `version` 2.x / deps com `@radix-ui/*`) | **v2.x — Radix** | Mantenha a major: normalize dentro da 2.x. Subir para 3.x é **migração** (API muda) — só com pedido explícito do usuário |
+| `@blips/ui` `3.x` (ou deps com `@base-ui/react`) | **v3.x — Base UI** | Normalize dentro da 3.x |
+
+Com `workspace:*`/`latest`, leia `node_modules/@blips/ui/package.json`: `dependencies` com
+`@base-ui/react` → v3.x; com `@radix-ui/*` → v2.x. Registre a trilha no relatório e no
+CLAUDE.md do repo (templates do Passo 6) para as skills building/reviewing seguirem a
+trilha certa. Diferenças de API: `../building/references/v2-vs-v3.md`.
+
 ## Checklist (crie um todo por item)
 
-1. **Detectar a stack** — bundler, versão do React, App Router, monorepo
+1. **Detectar a stack** — bundler, versão do React, App Router, monorepo e a **trilha da
+   `@blips/ui`** (instalação nova → v3.x; repo já em 2.x → fica na v2.x)
 2. **Ler a reference da stack** — `references/nextjs.md` ou `references/vite.md`
 3. **Instalar e configurar** — seguindo a reference à risca
 4. **Aplicar num exemplo visível** — a tela/componente que o usuário pediu
@@ -45,7 +63,7 @@ aponte a skill certa.
 | `app/` com layout.tsx | raiz | App Router → gotchas RSC da reference |
 | `pnpm-workspace.yaml` com packages | raiz | Monorepo: instale no app que consome; configs (postcss/transpile/CSS) ficam no app; CLAUDE.md → templates `monorepo-*` (Passo 6) |
 | `tailwind.config.{js,ts}` JÁ existe | raiz/app | Tailwind v3 em uso → **GATE**: seção "Tailwind v3 pré-existente" abaixo. Não siga a rota canônica antes de resolver o gate |
-| `@blips/ui` JÁ em dependencies (versão antiga) | `package.json` | Meia-adoção: normalize — atualize para a versão atual e corrija imports para a regra do React do repo (valide os consumidores com typecheck) |
+| `@blips/ui` JÁ em dependencies (versão antiga) | `package.json` | Meia-adoção: normalize — atualize para a versão mais recente **da mesma major** (2.x fica em 2.x; 3.x em 3.x) e corrija imports para a regra do React do repo (valide os consumidores com typecheck). Trocar de major é migração, não adoção |
 
 Outra stack (CRA, Remix, etc.): aplique a reference mais próxima (Vite para
 SPA, Next para SSR) adaptando a integração do Tailwind v4 ao bundler — e
@@ -61,15 +79,29 @@ sinalize ao usuário que a rota não é canônica.
 - **`./globals.css`** = tema completo: `@import "tailwindcss"`,
   tw-animate-css, fontes Google (Inter, Quicksand, JetBrains Mono), tokens
   shadcn + amarelo Blips `#FCBA28` como `primary`, dark mode via `.dark`.
-- **peerDependencies**: só `react`/`react-dom` `^17 || ^18 || ^19`.
-- **Já vêm com a lib (não reinstale)**: Radix, CVA, clsx, tailwind-merge,
-  cmdk, recharts, sonner, vaul, date-fns, embla, react-day-picker,
-  next-themes, react-hook-form, zod, @hookform/resolvers, @phosphor-icons/react.
+- **peerDependencies**: só `react`/`react-dom` `^17 || ^18 || ^19` — **igual na v2.x e na
+  v3.x** (o Base UI aceita a mesma faixa).
+- **Já vêm com a lib (não reinstale)**: CVA, clsx, tailwind-merge, cmdk, recharts, sonner,
+  date-fns, embla, react-day-picker, next-themes, react-hook-form, zod,
+  @hookform/resolvers, @phosphor-icons/react, input-otp, react-resizable-panels,
+  tw-animate-css. Primitivas por trilha:
+
+  | | v2.x — Radix | v3.x — Base UI |
+  | --- | --- | --- |
+  | Primitivas | `@radix-ui/react-*`, `vaul` | `@base-ui/react`, `@shadcn/react` |
+  | recharts | `2.15.4` | `3.10.1` |
+
+- **recharts no app**: se o código do app importa `recharts` (gráficos com `Bar`, `XAxis`…),
+  declare-o como dep direta **na mesma major da lib** — `recharts@^3` na v3.x,
+  `recharts@2.15.4` na v2.x. Majors diferentes geram duas cópias e tipos incompatíveis com
+  `ChartTooltipContent`/`ChartLegendContent`. O recharts 3 tem `react-is` como peer (o pnpm
+  resolve com auto-install-peers; se avisar, instale `react-is` na major do React).
 - **O consumidor instala**: `@blips/ui`; `tailwindcss` v4 + integração do
   bundler (`@tailwindcss/vite` ou `@tailwindcss/postcss`); e **como dep direta
   tudo que o código do app importar** (`@phosphor-icons/react`,
-  `react-hook-form`, `zod`...) — com pnpm estrito, transitivas não são
-  importáveis pelo app.
+  `react-hook-form`, `zod`, `recharts`...) — com pnpm estrito, transitivas não são
+  importáveis pelo app. Nunca instale `@radix-ui/*` ou `vaul` num app v3.x nem
+  `@base-ui/react` num app v2.x para "completar" a lib.
 - ⚠️ **Bug conhecido (≤ 2.0.0)**: o export `@blips/ui/postcss.config` aponta
   para arquivo **fora do tarball**. Crie o postcss.config do app diretamente
   (conteúdo na reference do Next).
@@ -119,7 +151,9 @@ apresentar custos reais e não estimativas.
 | Situação | Faça |
 | --- | --- |
 | Ícone Phosphor em **Server Component** | Importe de `@phosphor-icons/react/dist/ssr` (o entrypoint padrão usa Context e quebra em RSC) |
-| React 17 | Sem `Command`, `Toaster` (sonner) e `Resizable` — deps transitivas pedem React 18+. Peer warnings dessas três no install são esperados e inofensivos |
+| React 17 | Sem `Command`, `Toaster` (sonner) e `Resizable` — deps transitivas pedem React 18+. Peer warnings dessas três no install são esperados e inofensivos (vale nas duas trilhas) |
+| v3.x em React 17/18 | `Questionnaire` e `MessageScroller` vêm de `@shadcn/react`, que declara peer `react >=19` (opcional: o install não falha). Em React 17 eles quebram em runtime (`React.useId` não existe); em React 18 a faixa do peer não é atendida e `ref` não chega como prop. Use-os só em React 19 |
+| Ícones na v3.x | Use os nomes com sufixo `Icon` (`CaretDownIcon`); os sem sufixo estão `@deprecated` no Phosphor 2.1.10. Na v2.x os dois funcionam — prefira o sufixo em código novo |
 | pnpm 10 avisa "Ignored build scripts: esbuild" | Inofensivo — o binário vem por optionalDependencies |
 | Fontes | Já vêm por `@import url(...)` no globals da lib. Opcional: `<link rel="preconnect">` para fonts.googleapis.com/fonts.gstatic.com |
 | CSS legado do app | Mantenha abaixo do `@import` do globals durante a migração — o cascade preserva telas antigas |
@@ -187,6 +221,8 @@ Depois da adoção, a construção de telas/componentes é guiada pela skill
 - Migração Tailwind v3→v4 executada sem o usuário escolher a rota (gate pulado)
 - Tokens/tema copiados para o CSS do app
 - `lucide-react` (ou react-icons/heroicons) instalado
+- Major da `@blips/ui` trocada (2.x → 3.x) durante uma adoção, sem pedido de migração
+- `recharts` do app em major diferente da lib (2 com lib v3.x, ou 3 com lib v2.x)
 - `@source` adicionado "por garantia"
 - CLAUDE.md do repo reescrito/perdendo seções na mesclagem
 - Sucesso reportado sem rodar o build

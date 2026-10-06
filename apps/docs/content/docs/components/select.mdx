@@ -1,6 +1,6 @@
 ---
 title: Select
-description: Exibe uma lista de opções para o usuário escolher—acionada por um botão.
+description: Exibe uma lista de opções para o usuário escolher, acionada por um botão.
 ---
 
 <ComponentPreview name="select-demo" />
@@ -25,28 +25,135 @@ import {
 ```
 
 ```tsx
-<Select>
-  <SelectTrigger className="w-[180px]">
-    <SelectValue placeholder="Tema" />
+const items = [
+  { label: "Tema", value: null },
+  { label: "Claro", value: "light" },
+  { label: "Escuro", value: "dark" },
+  { label: "Sistema", value: "system" },
+]
+
+<Select items={items}>
+  <SelectTrigger className="w-44">
+    <SelectValue />
   </SelectTrigger>
   <SelectContent>
     <SelectGroup>
-      <SelectItem value="light">Claro</SelectItem>
-      <SelectItem value="dark">Escuro</SelectItem>
-      <SelectItem value="system">Sistema</SelectItem>
+      {items.map((item) => (
+        <SelectItem key={item.label} value={item.value}>
+          {item.label}
+        </SelectItem>
+      ))}
     </SelectGroup>
   </SelectContent>
 </Select>
 ```
 
+Passe a lista de opções em `items` (array de `{ label, value }` ou um objeto `{ [value]: label }`). Com ela, o `SelectValue` mostra o rótulo do item selecionado antes de o popup abrir; sem ela, mostra o `value` cru. Um item com `value: null` funciona como placeholder.
+
 ## Exemplos
 
 ### Rolável
 
-Um select com muitos itens que rola.
+Um select com muitos itens, agrupados com `SelectLabel`.
 
 <ComponentPreview name="select-scrollable" />
 
+### Tamanhos
+
+O `SelectTrigger` aceita `size="sm"` e `size="default"`.
+
+<ComponentPreview name="select-sizes" />
+
+### Posicionamento
+
+Por padrão (`alignItemWithTrigger`), o popup se sobrepõe ao trigger, alinhando o item selecionado a ele. Passe `alignItemWithTrigger={false}` para abrir o popup ao lado do trigger e escolher o lado com `side`.
+
+<ComponentPreview name="select-popper" />
+
+### Seleção múltipla
+
+Use `multiple` e uma função como filho do `SelectValue` para montar o texto do trigger.
+
+<ComponentPreview name="select-multiple" />
+
+### Desabilitado
+
+Use `disabled` no `Select` para desabilitar tudo, ou no `SelectItem` para desabilitar uma opção.
+
+<ComponentPreview name="select-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` no `SelectTrigger` e `data-invalid` no `Field`.
+
+<ComponentPreview name="select-invalid" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Select](https://base-ui.com/react/components/select).
+
+- **Rótulo do valor:** passe `items` ao `Select`. Sem isso, o `SelectValue` mostra o `value` (ex.: `"dark"`) até o popup abrir pela primeira vez.
+- **`value` não precisa ser string:** aceita qualquer valor, inclusive objetos e `null`. `onValueChange` e `onOpenChange` recebem um segundo argumento, `eventDetails`.
+- **Placeholder:** além do `placeholder` do `SelectValue`, um item com `value: null` em `items` serve de placeholder (e tem precedência). O atributo de estado é `data-placeholder` no trigger.
+- **`position="popper"` saiu.** O padrão agora é `alignItemWithTrigger` (parecido com o `item-aligned` do Radix). Para o comportamento popper, use `alignItemWithTrigger={false}`. As props `side` (padrão `"bottom"`), `sideOffset`, `align` e `alignOffset` continuam no `SelectContent`.
+- **`SelectLabel` precisa estar dentro de um `SelectGroup`** (agora é o `GroupLabel` do Base UI).
+- **CSS vars:** `--radix-select-trigger-width` vira `--anchor-width`, `--radix-select-content-available-height` vira `--available-height`, e a origem é `--transform-origin`.
+- **Estados:** `data-[state=open]`/`data-[state=closed]` viram `data-open`/`data-closed`; `data-[disabled]` vira `data-disabled`.
+- `asChild` vira `render`. Visual mais denso: trigger `h-7` (`h-6` no `sm`), texto `text-xs/relaxed`, itens `min-h-7`.
+
+```tsx
+// v2
+<Select>
+  <SelectTrigger className="w-44">
+    <SelectValue placeholder="Tema" />
+  </SelectTrigger>
+  <SelectContent position="popper">
+    <SelectItem value="light">Claro</SelectItem>
+    <SelectItem value="dark">Escuro</SelectItem>
+  </SelectContent>
+</Select>
+
+// v3
+const items = [
+  { label: "Tema", value: null },
+  { label: "Claro", value: "light" },
+  { label: "Escuro", value: "dark" },
+]
+
+<Select items={items}>
+  <SelectTrigger className="w-44">
+    <SelectValue />
+  </SelectTrigger>
+  <SelectContent alignItemWithTrigger={false}>
+    <SelectGroup>
+      {items.map((item) => (
+        <SelectItem key={item.label} value={item.value}>
+          {item.label}
+        </SelectItem>
+      ))}
+    </SelectGroup>
+  </SelectContent>
+</Select>
+```
+
+Para uma lista com busca, use o [Combobox](/docs/components/combobox). Para o `<select>` nativo do navegador, use o [Native Select](/docs/components/native-select).
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI Select](https://www.radix-ui.com/docs/primitives/components/select#api-reference).
+### SelectTrigger
+
+| Prop   | Tipo                | Padrão      |
+| ------ | ------------------- | ----------- |
+| `size` | `"sm" \| "default"` | `"default"` |
+
+### SelectContent
+
+| Prop                   | Tipo                                                                     | Padrão     |
+| ---------------------- | ------------------------------------------------------------------------ | ---------- |
+| `side`                 | `"top" \| "bottom" \| "left" \| "right" \| "inline-start" \| "inline-end"` | `"bottom"` |
+| `sideOffset`           | `number`                                                                 | `4`        |
+| `align`                | `"start" \| "center" \| "end"`                                           | `"center"` |
+| `alignOffset`          | `number`                                                                 | `0`        |
+| `alignItemWithTrigger` | `boolean`                                                                | `true`     |
+
+Consulte a documentação do [Base UI Select](https://base-ui.com/react/components/select) para as demais props.

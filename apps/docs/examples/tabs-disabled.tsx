@@ -1,12 +1,12 @@
 import { Tabs, TabsList, TabsTrigger } from "@blips/ui/components/tabs";
 
-export function TabsDisabled() {
+export default function TabsDisabled() {
   return (
     <Tabs defaultValue="home">
       <TabsList>
-        <TabsTrigger value="home">Home</TabsTrigger>
+        <TabsTrigger value="home">Início</TabsTrigger>
         <TabsTrigger value="settings" disabled>
-          Disabled
+          Desabilitada
         </TabsTrigger>
       </TabsList>
     </Tabs>

@@ -1,41 +1,48 @@
 "use client";
 
 import { Button } from "@blips/ui/components/button";
+import { Toaster } from "@blips/ui/components/sonner";
 import { toast } from "sonner";
+
+const TOASTER_ID = "sonner-types";
+const options = { toasterId: TOASTER_ID };
 
 export default function SonnerTypes() {
   return (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" onClick={() => toast("Event has been created")}>
-        Default
+      <Button
+        variant="outline"
+        onClick={() => toast("O evento foi criado", options)}
+      >
+        Padrão
       </Button>
       <Button
         variant="outline"
-        onClick={() => toast.success("Event has been created")}
+        onClick={() => toast.success("O evento foi criado", options)}
       >
-        Success
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() =>
-          toast.info("Be at the area 10 minutes before the event time")
-        }
-      >
-        Info
+        Sucesso
       </Button>
       <Button
         variant="outline"
         onClick={() =>
-          toast.warning("Event start time cannot be earlier than 8am")
+          toast.info("Chegue ao local 10 minutos antes do evento", options)
         }
       >
-        Warning
+        Informação
       </Button>
       <Button
         variant="outline"
-        onClick={() => toast.error("Event has not been created")}
+        onClick={() =>
+          toast.warning("O evento não pode começar antes das 8h", options)
+        }
       >
-        Error
+        Aviso
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => toast.error("O evento não foi criado", options)}
+      >
+        Erro
       </Button>
       <Button
         variant="outline"
@@ -43,18 +50,20 @@ export default function SonnerTypes() {
           toast.promise<{ name: string }>(
             () =>
               new Promise((resolve) =>
-                setTimeout(() => resolve({ name: "Event" }), 2000)
+                setTimeout(() => resolve({ name: "Evento" }), 2000)
               ),
             {
-              loading: "Loading...",
-              success: (data) => `${data.name} has been created`,
-              error: "Error",
+              loading: "Carregando...",
+              success: (data) => `${data.name} criado`,
+              error: "Erro",
+              ...options,
             }
           );
         }}
       >
         Promise
       </Button>
+      <Toaster id={TOASTER_ID} />
     </div>
   );
 }

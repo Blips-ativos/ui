@@ -1,273 +1,97 @@
 # Sonner
 
-Import: `@blips/ui/components/sonner`
+Import: `@blips/ui/components/sonner` (o `Toaster`) e `sonner` (a função `toast`).
 
-## Sub-components
+Notificações efêmeras (toasts) com a lib `sonner`: confirmação de ação ("Cliente
+salvo"), erro não bloqueante, progresso de promessa. Para erro que exige ação,
+use Alert ou Alert Dialog. Na v3 existe também um Toast sobre Base UI
+(`toast.md`); o padrão do projeto continua sendo o Sonner, a menos que o repo já
+use o outro.
 
-- **`Toaster`** - The toast container component that renders notifications. Place once in your root layout. Automatically integrates with `next-themes` for dark/light mode support.
+Export (igual nas duas versões): `Toaster`.
 
-> **Note**: The `toast()` function is imported directly from the `sonner` package, not from the UI library. Only the `<Toaster />` provider comes from `@blips/ui/components/sonner`.
+## Notas comuns
 
-## Props & Variants
+- Monte **um** `<Toaster />` na raiz (layout) e dispare com `toast(...)` importado de `sonner`.
+- O `Toaster` lê o tema do `next-themes` (`useTheme`) e usa as cores do tema (`--popover`, `--border`, `--radius`). Aceita todas as props do `Toaster` do sonner (`position`, `richColors`, `expand`, `duration`, `closeButton`, `toastOptions`…).
+- API do `toast`: `toast(msg)`, `toast.success`, `toast.error`, `toast.info`, `toast.warning`, `toast.loading`, `toast.promise(promise, { loading, success, error })`, `toast.dismiss(id?)`. Opções: `description`, `action: { label, onClick }`, `cancel`, `duration`, `id` (deduplicar), `position`, `classNames`.
+- Textos em pt-BR, curtos, no passado para confirmação ("Contrato enviado").
 
-### Toaster Props
+API igual na v2.x e na v3.x.
 
-The `Toaster` component accepts all props from the `sonner` `Toaster` component (`React.ComponentProps<typeof Sonner>`).
+Detecção de versão: `SKILL.md`, Passo 0. Diferenças transversais entre as versões: `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `theme` | `'light' \| 'dark' \| 'system'` | Auto from `useTheme()` | Theme for toast styling |
-| `position` | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'` | `'bottom-right'` | Position of toasts on screen |
-| `richColors` | `boolean` | `false` | Enable rich colors for different toast types |
-| `expand` | `boolean` | `false` | Expand toasts by default |
-| `duration` | `number` | `4000` | Duration in ms before toast auto-dismisses |
-| `closeButton` | `boolean` | `false` | Show close button on toasts |
+Diferença só nos ícones Phosphor do `Toaster`:
 
-### toast() Function API
-
-| Method | Description |
-|--------|-------------|
-| `toast(message)` | Default toast |
-| `toast.success(message)` | Success toast with check icon |
-| `toast.error(message)` | Error toast with error icon |
-| `toast.info(message)` | Info toast with info icon |
-| `toast.warning(message)` | Warning toast with warning icon |
-| `toast.promise(promise, opts)` | Promise-based toast with loading/success/error states |
-| `toast.loading(message)` | Loading toast with spinner |
-| `toast.dismiss(id?)` | Dismiss a specific toast or all toasts |
-
-### toast() Options
-
-| Option | Type | Description |
-|--------|------|-------------|
-| `description` | `ReactNode` | Secondary text below the main message |
-| `action` | `{ label: string, onClick: () => void }` | Action button on the toast |
-| `cancel` | `{ label: string, onClick: () => void }` | Cancel button on the toast |
-| `duration` | `number` | Override default duration |
-| `position` | `string` | Override default position |
-| `id` | `string \| number` | Custom toast ID for deduplication |
-| `classNames` | `object` | Custom class names for toast parts |
-
-### Project Customizations
-
-The project's Toaster uses custom icons from `@phosphor-icons/react` and the `Spinner` component for loading state:
-
-- **success**: `CircleCheck`
-- **info**: `Info`
-- **warning**: `TriangleAlert`
-- **error**: `OctagonX`
-- **loading**: `Spinner` (size-4)
-
-## Usage
-
-### Setup (Root Layout)
+| Tipo | v2.x — Radix | v3.x — Base UI |
+|---|---|---|
+| success | `CheckCircle` | `CheckCircleIcon` |
+| info | `Info` | `InfoIcon` |
+| warning | `Warning` | `WarningIcon` |
+| error | `WarningOctagon` | `XCircleIcon` |
+| loading | `CircleNotch` girando | `SpinnerIcon` girando |
 
 ```tsx
-import { Toaster } from "@blips/ui/components/sonner"
+// app/layout.tsx
+import { Toaster } from "@blips/ui/components/sonner";
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html>
+    <html lang="pt-BR" suppressHydrationWarning>
       <body>
         {children}
-        <Toaster />
+        <Toaster position="top-right" />
       </body>
     </html>
-  )
+  );
 }
 ```
 
-### Basic Toast
-
 ```tsx
-"use client"
+"use client";
 
-import { toast } from "sonner"
-import { Button } from "@blips/ui/components/button"
+import { toast } from "sonner";
+import { Button } from "@blips/ui/components/button";
 
-export default function SonnerDemo() {
-  return (
-    <Button
-      variant="outline"
-      onClick={() =>
-        toast("Event has been created", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
-          action: {
-            label: "Undo",
-            onClick: () => console.log("Undo"),
-          },
-        })
-      }
-    >
-      Show Toast
-    </Button>
-  )
-}
-```
-
-### Toast Types
-
-```tsx
-"use client"
-
-import { toast } from "sonner"
-import { Button } from "@blips/ui/components/button"
-
-export default function SonnerTypes() {
+export function AcoesComToast({
+  desfazer,
+  enviarContrato,
+}: {
+  desfazer: () => void;
+  enviarContrato: () => Promise<unknown>;
+}) {
   return (
     <div className="flex flex-wrap gap-2">
-      <Button variant="outline" onClick={() => toast("Event has been created")}>
-        Default
-      </Button>
       <Button
         variant="outline"
-        onClick={() => toast.success("Event has been created")}
+        onClick={() =>
+          toast.success("Cliente salvo", {
+            description: "Os dados já aparecem na listagem.",
+            action: { label: "Desfazer", onClick: desfazer },
+          })
+        }
       >
-        Success
+        Salvar
       </Button>
       <Button
         variant="outline"
         onClick={() =>
-          toast.info("Be at the area 10 minutes before the event time")
+          toast.promise(enviarContrato(), {
+            loading: "Enviando contrato...",
+            success: "Contrato enviado",
+            error: "Não foi possível enviar o contrato",
+          })
         }
       >
-        Info
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() =>
-          toast.warning("Event start time cannot be earlier than 8am")
-        }
-      >
-        Warning
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => toast.error("Event has not been created")}
-      >
-        Error
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => {
-          toast.promise<{ name: string }>(
-            () =>
-              new Promise((resolve) =>
-                setTimeout(() => resolve({ name: "Event" }), 2000)
-              ),
-            {
-              loading: "Loading...",
-              success: (data) => `${data.name} has been created`,
-              error: "Error",
-            }
-          )
-        }}
-      >
-        Promise
+        Enviar contrato
       </Button>
     </div>
-  )
+  );
 }
 ```
 
-## All Examples
+> Cuidado ao usar o Toast da v3 no mesmo arquivo: `@blips/ui/components/toast` também exporta `Toaster` e `toast`. Não importe os dois com o mesmo nome (use alias, ex. `import { toast as sonnerToast } from "sonner"`).
 
-- `sonner-demo` - Basic toast with description and action button
-- `sonner-types` - All toast types (default, success, info, warning, error, promise)
+## Exemplos na docs
 
-## All Example Variants
-
-### sonner-demo
-
-```tsx
-"use client"
-
-import { toast } from "sonner"
-
-import { Button } from "@blips/ui/components/button"
-
-export default function SonnerDemo() {
-  return (
-    <Button
-      variant="outline"
-      onClick={() =>
-        toast("Event has been created", {
-          description: "Sunday, December 03, 2023 at 9:00 AM",
-          action: {
-            label: "Undo",
-            onClick: () => console.log("Undo"),
-          },
-        })
-      }
-    >
-      Show Toast
-    </Button>
-  )
-}
-```
-
-### sonner-types
-
-```tsx
-"use client"
-
-import { toast } from "sonner"
-
-import { Button } from "@blips/ui/components/button"
-
-export default function SonnerTypes() {
-  return (
-    <div className="flex flex-wrap gap-2">
-      <Button variant="outline" onClick={() => toast("Event has been created")}>
-        Default
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => toast.success("Event has been created")}
-      >
-        Success
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() =>
-          toast.info("Be at the area 10 minutes before the event time")
-        }
-      >
-        Info
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() =>
-          toast.warning("Event start time cannot be earlier than 8am")
-        }
-      >
-        Warning
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => toast.error("Event has not been created")}
-      >
-        Error
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => {
-          toast.promise<{ name: string }>(
-            () =>
-              new Promise((resolve) =>
-                setTimeout(() => resolve({ name: "Event" }), 2000)
-              ),
-            {
-              loading: "Loading...",
-              success: (data) => `${data.name} has been created`,
-              error: "Error",
-            }
-          )
-        }}
-      >
-        Promise
-      </Button>
-    </div>
-  )
-}
-```
+`sonner-demo`, `sonner-types` (em `apps/docs/examples/`, escritos para a v3).
