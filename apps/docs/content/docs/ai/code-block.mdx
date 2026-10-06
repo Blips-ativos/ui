@@ -98,14 +98,16 @@ nativos, que mudam de assinatura.
 | `timeout`  | `number` (ms)            | `2000`                     |
 | `children` | `ReactNode`              | ícone de copiar/confirmado |
 
-Sem a Clipboard API, `onError` recebe `Error("Clipboard API not available")`.
+Sem a Clipboard API, `onError` recebe `Error("Clipboard API not available")`. Sem `children`, o botão
+recebe `aria-label` em inglês (`"Copy code"`, e `"Copied"` depois de copiar); passe o seu `aria-label` em
+pt-BR, como nas demos.
 
 ### CodeBlockLanguageSelector
 
 | Componente                          | Base                                                                     |
 | ----------------------------------- | ------------------------------------------------------------------------ |
 | `CodeBlockLanguageSelector`         | `Select` (`value`, `onValueChange(value, eventDetails)`, `items`...)     |
-| `CodeBlockLanguageSelectorTrigger`  | `SelectTrigger` `size="sm"`, sem borda; `className` aceita função do estado |
+| `CodeBlockLanguageSelectorTrigger`  | `SelectTrigger` `size="sm"`, sem borda; `className` só aceita string |
 | `CodeBlockLanguageSelectorValue`    | `SelectValue`                                                            |
 | `CodeBlockLanguageSelectorContent`  | `SelectContent` com `align="end"` e `alignItemWithTrigger={false}`       |
 | `CodeBlockLanguageSelectorItem`     | `SelectItem`                                                             |

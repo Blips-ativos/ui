@@ -5,12 +5,17 @@
 // Modificado pela Blips: primitivas Base UI da @blips/ui, ícones Phosphor e tokens da @blips/ui.
 
 import { Button } from "@blips/ui/components/button";
-import { ScrollArea, ScrollBar } from "@blips/ui/components/scroll-area";
+import { ScrollArea } from "@blips/ui/components/scroll-area";
 import { cn } from "@blips/ui/lib/utils";
 import type { ComponentProps } from "react";
 import { useCallback } from "react";
 
 export type SuggestionsProps = ComponentProps<typeof ScrollArea>;
+
+// O upstream passava um ScrollBar horizontal oculto como filho: no Radix ele
+// habilitava a rolagem em x. No Base UI o Viewport já rola nos dois eixos, e o
+// ScrollArea da @blips/ui põe os filhos dentro do Viewport, então a barra
+// acabava dentro do conteúdo rolável. Foi removida.
 
 export const Suggestions = ({
   className,
@@ -21,7 +26,6 @@ export const Suggestions = ({
     <div className={cn("flex w-max flex-nowrap items-center gap-2", className)}>
       {children}
     </div>
-    <ScrollBar className="hidden" orientation="horizontal" />
   </ScrollArea>
 );
 

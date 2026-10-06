@@ -38,14 +38,17 @@ Não existe barrel: importe cada componente pelo subpath (`@blips/ai/components/
 
 ### Estilos do Streamdown
 
-Quem usa o `MessageResponse` (componente `message`) precisa que o Tailwind do app varra o Streamdown e importe o CSS dele. Ajuste os caminhos `../` conforme a posição do seu CSS em relação ao `node_modules`:
+Quem usa o `MessageResponse` (componente `message`) ou o `ReasoningContent` (componente `reasoning`) precisa que o Tailwind do app varra o Streamdown e importe o CSS dele. Ajuste os caminhos `../` conforme a posição do seu CSS em relação ao `node_modules`:
 
 ```css
 @import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
 @source "../node_modules/streamdown/dist/*.js";
 @source "../node_modules/@streamdown/code/dist/*.js";
 /* repita para @streamdown/math, @streamdown/mermaid e @streamdown/cjk se estiverem instalados */
 ```
+
+O plugin de matemática (`@streamdown/math`) é sempre carregado e usa o KaTeX, que não injeta o próprio CSS: instale `katex` (`pnpm add katex`) e importe `katex/dist/katex.min.css`, senão as fórmulas saem sem estilo.
 
 ## Componentes apresentacionais
 

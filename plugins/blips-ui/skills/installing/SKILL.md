@@ -174,8 +174,8 @@ antes de instalar. Resumo do contrato:
 | --- | --- |
 | Gate | `@blips/ui` **^3** e React **19**. Repo 2.x ou React < 19: pare e alinhe com o usuário (não migre por conta própria) |
 | Instalação | `pnpm add @blips/ai` + os **peers do componente** que o app importar (tabela na reference: `message`/`reasoning` → `streamdown` + `@streamdown/{code,math,mermaid,cjk}`; `code-block`/`tool` → `shiki`; `ai` para os tipos de `conversation`, `message`, `tool`, `confirmation`, `context`, `prompt-input`) |
-| `ai` | Só tipos (`import type`), mas o `tsc` do app precisa dele: sem `ai`, TS2307 dentro de `node_modules/@blips/ai/src` (verificado). `devDependencies` se o app não usa o runtime do AI SDK |
-| CSS | `@import "@blips/ui/globals.css";` **depois** `@import "@blips/ai/styles.css";` (só `@source` do pacote). Com `message`/`reasoning`, também os `@source` do Streamdown (legítimos: conteúdo fora da auto-detecção) |
+| `ai` | Peer opcional **só de tipos** (o pacote não usa runtime dele). Como o pacote publica `.tsx`, o `tsc` do app precisa dele (sem `ai`, TS2307 dentro de `node_modules/@blips/ai/src`, verificado): em projeto TypeScript, `pnpm add -D ai`. `dependencies` só se o código do app usar runtime do `ai` |
+| CSS | `@import "@blips/ui/globals.css";` **depois** `@import "@blips/ai/styles.css";` (só `@source` do pacote). Com `message` (`MessageResponse`) ou `reasoning`: `@import "streamdown/styles.css";` e `@source` do `streamdown/dist` e de cada plugin `@streamdown/*` instalado (legítimos: conteúdo fora da auto-detecção) |
 | Next | `transpilePackages: ["@blips/ui", "@blips/ai"]` |
 | Imports | Só subpath: `@blips/ai/components/<x>` e `@blips/ai/fx/<x>`. Não existe barrel `@blips/ai` |
 

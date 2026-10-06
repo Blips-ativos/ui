@@ -148,21 +148,19 @@ export const ContextTrigger = ({
   );
 };
 
-export type ContextContentProps = ComponentProps<typeof HoverCardContent>;
+// `className` só string: o HoverCardContent da @blips/ui mescla com `cn` (clsx), que
+// descarta funções; uma função do estado sumiria junto com as classes padrão.
+export type ContextContentProps = Omit<
+  ComponentProps<typeof HoverCardContent>,
+  "className"
+> & { className?: string };
 
-// No Base UI, `className` pode ser função do estado; resolve antes de mesclar
-// para não perder a classe do consumidor (o clsx descarta funções).
 export const ContextContent = ({
   className,
   ...props
 }: ContextContentProps) => (
   <HoverCardContent
-    className={(state) =>
-      cn(
-        "min-w-60 divide-y overflow-hidden p-0",
-        typeof className === "function" ? className(state) : className
-      )
-    }
+    className={cn("min-w-60 divide-y overflow-hidden p-0", className)}
     {...props}
   />
 );
@@ -198,7 +196,9 @@ export const ContextContentHeader = ({
             </p>
           </div>
           <div className="space-y-2">
-            <Progress className="bg-muted" value={usedPercent * PERCENT_MAX} />
+            {/* Sem o `bg-muted` do upstream: na @blips/ui a raiz do Progress envolve a
+                trilha (que já é bg-muted e arredondada); o fundo na raiz vazava nos cantos. */}
+            <Progress value={usedPercent * PERCENT_MAX} />
           </div>
         </>
       )}

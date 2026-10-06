@@ -104,9 +104,12 @@ export const InlineCitationCardTrigger = ({
   </HoverCardTrigger>
 );
 
-export type InlineCitationCardBodyProps = ComponentProps<
-  typeof HoverCardContent
->;
+// `className` só string: o HoverCardContent da @blips/ui mescla com `cn` (clsx),
+// que descarta funções do estado.
+export type InlineCitationCardBodyProps = Omit<
+  ComponentProps<typeof HoverCardContent>,
+  "className"
+> & { className?: string };
 
 export const InlineCitationCardBody = ({
   className,

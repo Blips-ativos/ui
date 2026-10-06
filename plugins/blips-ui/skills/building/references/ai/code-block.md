@@ -35,6 +35,11 @@ quebra o build.
 pnpm add @blips/ai shiki
 ```
 
+O componente não importa `ai`: não é preciso instalá-lo. Se o seu código
+tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
+`import type`), e num projeto TypeScript entra como **devDependency**
+(`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
+
 ## API
 
 | Export | Props | Notas |

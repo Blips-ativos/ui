@@ -27,14 +27,17 @@ export default function AiMessageStreaming() {
   const [length, setLength] = React.useState(0);
   const isAnimating = length < fullText.length;
 
+  // Um intervalo só por transmissão: o efeito depende apenas de isAnimating,
+  // então um setTimeout aqui dispararia uma vez e pararia nos 6 primeiros
+  // caracteres. O intervalo é limpo quando o texto termina (isAnimating vira false).
   React.useEffect(() => {
     if (!isAnimating) {
       return;
     }
-    const timer = window.setTimeout(() => {
+    const timer = window.setInterval(() => {
       setLength((current) => Math.min(current + 6, fullText.length));
     }, 30);
-    return () => window.clearTimeout(timer);
+    return () => window.clearInterval(timer);
   }, [isAnimating]);
 
   return (

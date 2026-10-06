@@ -60,8 +60,9 @@ const { sendMessage, status, stop } = useChat()
 
 O `PromptInput` é um `<form>` com um [Input Group](/docs/components/input-group) da `@blips/ui` dentro.
 No envio, ele chama `onSubmit({ text, files }, event)` com os anexos já convertidos de `blob:` para
-data URL e limpa o campo e os anexos. Se `onSubmit` devolver uma Promise rejeitada, nada é limpo, para o
-usuário tentar de novo.
+data URL e limpa o campo e os anexos. Se `onSubmit` lançar erro ou devolver uma Promise rejeitada, os anexos
+ficam, para o usuário tentar de novo. O texto só fica dentro de um `PromptInputProvider`: sem ele, o campo é
+limpo (`form.reset()`) logo no envio, antes de chamar `onSubmit`.
 
 O componente é apresentacional: não chama API nenhuma. O `status` vem de onde o app quiser — do `useChat`
 do AI SDK ou do mapeamento dos eventos de streaming do seu backend (por exemplo, AgentOS do Agno) para os
@@ -72,7 +73,7 @@ campo vazio remove o último anexo. Enter não envia enquanto o botão de envio 
 composição de IME.
 
 Os textos padrão (placeholder, rótulos dos itens do menu, `aria-label` e mensagens de `onError`) estão em
-inglês, como no original. Passe `placeholder` e `label` em pt-BR.
+inglês, como no original. Passe `placeholder`, `label` e `aria-label` (o do `PromptInputSubmit` é `"Submit"`/`"Stop"` por padrão) em pt-BR.
 
 ## Exemplos
 

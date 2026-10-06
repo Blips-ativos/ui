@@ -26,9 +26,18 @@ e paletas (`Command`, `HoverCard`). Monta sobre o `InputGroup` da @blips/ui
 
 ## Peers exigidos
 
-Nenhum obrigatório. `nanoid` e `@phosphor-icons/react` são dependências da
-@blips/ai. `ai` é opcional e só como tipo (`ChatStatus`, `FileUIPart`,
-`SourceDocumentUIPart`).
+Nenhum peer de runtime. `nanoid` e `@phosphor-icons/react` são dependências
+da @blips/ai.
+
+`ai` é peer opcional e só de tipos (`ChatStatus`, `FileUIPart`,
+`SourceDocumentUIPart`), nenhum código de runtime. Como a @blips/ai publica o
+fonte `.tsx`, num projeto TypeScript instale como **devDependency** para o
+compilador resolver os tipos:
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
 
 ## API
 
@@ -38,7 +47,7 @@ Nenhum obrigatório. `nanoid` e `@phosphor-icons/react` são dependências da
 
 | Prop | Tipo | Notas |
 |---|---|---|
-| `onSubmit` | `(message: { text: string; files: FileUIPart[] }, event) => void \| Promise<void>` | **Obrigatória.** Os anexos chegam com `url` convertida de `blob:` para data URL. Limpa texto e anexos se não lançar (ou se a Promise resolver); se lançar/rejeitar, mantém para a pessoa tentar de novo. |
+| `onSubmit` | `(message: { text: string; files: FileUIPart[] }, event) => void \| Promise<void>` | **Obrigatória.** Os anexos chegam com `url` convertida de `blob:` para data URL. Limpa os anexos se não lançar (ou se a Promise resolver); se lançar/rejeitar, mantém os anexos. O **texto**: no modo não controlado, o `form.reset()` roda **antes** do `onSubmit`, então o texto some mesmo com erro; com `PromptInputProvider`, o texto também só é limpo no sucesso. |
 | `accept` | `string` | Ex.: `"image/*,application/pdf"`. Vazio = qualquer tipo. |
 | `multiple` | `boolean` | Seleção múltipla no seletor de arquivos. |
 | `maxFiles` | `number` | Excedentes são descartados com `onError`. |
@@ -245,7 +254,9 @@ evento de conteúdo, `ready` no fim, `error` na falha). Ver
   `event.preventDefault()` no seu `onClick` cancela a ação interna. O menu
   fecha ao clicar (para manter aberto, `closeOnClick={false}`).
 - No modo não controlado, o texto vem do `FormData` (`name="message"`): não
-  troque o `name` do textarea. Para controlar o valor, use
+  troque o `name` do textarea. E o form é resetado antes do `onSubmit`: se o
+  envio falhar, o texto digitado se perde (só os anexos ficam). Para manter o
+  texto e permitir tentar de novo, use o `PromptInputProvider`. Para controlar o valor, use
   `PromptInputProvider` (não `value`/`onChange` soltos no textarea).
 - `usePromptInputAttachments()` só funciona **dentro** do `PromptInput` (ou do
   provider): por isso o exemplo extrai `AnexosDoPrompt` como componente filho.

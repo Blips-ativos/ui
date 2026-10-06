@@ -113,7 +113,11 @@ Pacote à parte, `@blips/ai`, que **compõe** a @blips/ui v3.x (exige `@blips/ui
 (`@blips/ai/components/<nome>` ou `@blips/ai/fx/<nome>`). Os componentes são
 apresentacionais: recebem `parts`/`state`/`status` prontos, e o mapeamento do
 AI SDK ou de eventos próprios (ex.: AgentOS do Agno) fica no app. Alguns exigem
-peers opcionais (Streamdown, Shiki, `ai` para tipos): cada reference diz quais.
+peers opcionais (Streamdown, Shiki, `ai`): cada reference diz quais. `ai` é peer
+só de tipos (sem runtime); como o pacote publica `.tsx`, em projeto TypeScript
+instale como devDependency (`pnpm add -D ai`). Quem usa `MessageResponse` (ou
+`Reasoning`) importa `streamdown/styles.css` e declara `@source` do dist do
+`streamdown` e dos plugins `@streamdown/*` (setup: skill **blips-ui:installing**).
 Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-chat.md).
 
 | Componente | Import | Reference | Quando usar |

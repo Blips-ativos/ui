@@ -9,14 +9,15 @@ type AgnoEvent = {
   event: string;
   run_id?: string;
   parent_run_id?: string | null;
-  content?: string;
-  reasoning_content?: string;
+  // string em RunContent; objeto em ReasoningStep e com saída estruturada
+  content?: unknown;
+  reasoning_content?: string | null;
+  error?: string | null; // ToolCallError: o erro vem no evento, não no tool
   tool?: {
     tool_call_id?: string;
     tool_name?: string;
     tool_args?: Record<string, unknown>;
     result?: unknown;
-    error?: string;
   };
 };
 
@@ -62,16 +63,16 @@ export function applyAgnoEvent(parts: Part[], ev: AgnoEvent): Part[] {
       if (ev.reasoning_content) {
         next = appendDelta(next, "reasoning", ev.reasoning_content);
       }
-      return ev.content ? appendDelta(next, "text", ev.content) : next;
+      return typeof ev.content === "string" && ev.content
+        ? appendDelta(next, "text", ev.content)
+        : next;
     }
     case "ReasoningStep":
     case "ReasoningContentDelta":
-      return ev.reasoning_content || ev.content
-        ? appendDelta(
-            parts,
-            "reasoning",
-            ev.reasoning_content ?? ev.content ?? ""
-          )
+    case "TeamReasoningStep":
+    case "TeamReasoningContentDelta":
+      return ev.reasoning_content
+        ? appendDelta(parts, "reasoning", ev.reasoning_content)
         : parts;
     case "ToolCallStarted":
     case "TeamToolCallStarted":
@@ -100,7 +101,7 @@ export function applyAgnoEvent(parts: Part[], ev: AgnoEvent): Part[] {
         toolName: ev.tool?.tool_name ?? "ferramenta",
         state: "output-error",
         input: ev.tool?.tool_args,
-        errorText: ev.tool?.error ?? "Falha na ferramenta",
+        errorText: ev.error ?? "Falha na ferramenta",
       });
     case "RunCompleted":
     case "TeamRunCompleted":

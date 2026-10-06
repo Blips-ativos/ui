@@ -18,7 +18,7 @@ export default function AiThinkingOrbsTones() {
     <div className="flex flex-wrap items-end justify-center gap-6">
       {tons.map((tone) => (
         <div className="flex flex-col items-center gap-2" key={tone}>
-          <BlipsThinkingOrb aria-label={tone} size={32} tone={tone} />
+          <BlipsThinkingOrb aria-label={`Tom ${tone}`} size={32} tone={tone} />
           <span className="font-mono text-muted-foreground text-xs">
             {tone}
           </span>

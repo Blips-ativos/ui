@@ -73,6 +73,9 @@ export default function AiConversationDemo() {
         <ConversationDownload
           aria-label="Baixar conversa"
           filename="conversa.md"
+          formatMessage={(message) =>
+            `**${message.role === "user" ? "Cliente" : "Assistente"}:** ${getText(message)}`
+          }
           messages={messages}
         />
         <ConversationScrollButton aria-label="Ir para o fim" />

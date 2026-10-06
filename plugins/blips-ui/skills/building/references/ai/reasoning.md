@@ -40,11 +40,18 @@ O componente importa o Streamdown em runtime. Sem estes pacotes no
 `package.json` do app, o build quebra:
 
 ```bash
-pnpm add streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk
+pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk
 ```
 
-`ai` só é necessário se você tipar as parts com `ReasoningUIPart` (import
-type, como no exemplo).
+Como o `ReasoningContent` renderiza com o Streamdown, valem os mesmos estilos
+do `MessageResponse`: `@import "streamdown/styles.css"` e os `@source` do
+`dist` do Streamdown e dos plugins no CSS do app (ver "Estilos do Streamdown"
+em `message.md`).
+
+O componente não importa `ai`. O pacote só entra se você tipar as parts com
+`ReasoningUIPart`, como no exemplo: peer opcional e só de tipos (sempre
+`import type`), e como a @blips/ai publica o fonte `.tsx`, num projeto
+TypeScript instale como **devDependency** (`pnpm add -D ai`).
 
 ## API
 
@@ -80,14 +87,19 @@ import {
 import { Shimmer } from "@blips/ai/components/shimmer";
 import type { ReasoningUIPart } from "ai";
 
+// O ReasoningTrigger é um <button>: use <span> (e Shimmer as="span"), não <p>.
 const mensagemDeRaciocinio = (isStreaming: boolean, duration?: number) => {
   if (isStreaming || duration === 0) {
-    return <Shimmer duration={1}>Pensando…</Shimmer>;
+    return (
+      <Shimmer as="span" duration={1}>
+        Pensando…
+      </Shimmer>
+    );
   }
   if (duration === undefined) {
-    return <p>Pensou por alguns segundos</p>;
+    return <span>Pensou por alguns segundos</span>;
   }
-  return <p>Pensou por {duration} s</p>;
+  return <span>Pensou por {duration} s</span>;
 };
 
 export function RaciocinioDoAgente({
@@ -116,11 +128,20 @@ export function RaciocinioDoAgente({
 - **`isStreaming` em todas as partes.** Passar o `status` do chat cru para
   todos os blocos reabre raciocínios antigos. Restrinja à última parte da
   última mensagem.
+- **Não fecha durante o streaming.** Enquanto `isStreaming` for `true` (e
+  sem `defaultOpen={false}`), o efeito de auto-abertura reabre o bloco no
+  mesmo instante em que a pessoa clica para fechar. Se precisar permitir
+  fechar no meio, passe `defaultOpen={false}` (perde a auto-abertura) ou
+  controle com `open` + `onOpenChange`.
 - **Fecha sozinho uma vez.** Depois do auto-close, o bloco não fecha de novo
   sozinho; se o usuário reabrir, fica aberto. Para controle total, use
   `open` + `onOpenChange`.
 - **`children` não-string em `ReasoningContent`** não compila. Para conteúdo
   rico, monte com `CollapsibleContent` da @blips/ui dentro do `Reasoning`.
+- **`<p>` dentro do trigger.** O `ReasoningTrigger` renderiza um `<button>`
+  (`CollapsibleTrigger` do Base UI); o `getThinkingMessage` padrão devolve
+  `<p>`, que é HTML inválido ali. Na sua função, devolva `<span>` e
+  `<Shimmer as="span">`.
 - **Peers esquecidos.** `streamdown` e os quatro `@streamdown/*` são
   opcionais no `package.json` da lib, mas obrigatórios para quem importa
   este componente.

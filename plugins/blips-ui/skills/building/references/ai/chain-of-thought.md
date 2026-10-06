@@ -38,6 +38,11 @@ import {
 Nenhum além de `@blips/ai` + `@blips/ui` ^3. Ícones de passo vêm de
 `@phosphor-icons/react` (já é dependência da lib).
 
+O componente não importa `ai`: não é preciso instalá-lo. Se o seu código
+tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
+`import type`), e num projeto TypeScript entra como **devDependency**
+(`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
+
 ## API
 
 | Componente | Props reais | Notas |

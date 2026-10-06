@@ -138,7 +138,15 @@ export default function AiPromptInputDemo() {
             </PromptInputSelectContent>
           </PromptInputSelect>
         </PromptInputTools>
-        <PromptInputSubmit onStop={stop} status={status} />
+        <PromptInputSubmit
+          aria-label={
+            status === "submitted" || status === "streaming"
+              ? "Parar"
+              : "Enviar"
+          }
+          onStop={stop}
+          status={status}
+        />
       </PromptInputFooter>
     </PromptInput>
   );

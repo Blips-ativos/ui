@@ -502,6 +502,8 @@ export const CodeBlockCopyButton = ({
 
   return (
     <Button
+      // Sem `children`, o botão é só ícone e ficaria sem nome acessível.
+      aria-label={children ? undefined : isCopied ? "Copied" : "Copy code"}
       className={cn("shrink-0", className)}
       onClick={copyToClipboard}
       size="icon"
@@ -519,23 +521,25 @@ export const CodeBlockLanguageSelector = (
   props: CodeBlockLanguageSelectorProps
 ) => <Select {...props} />;
 
-export type CodeBlockLanguageSelectorTriggerProps = ComponentProps<
-  typeof SelectTrigger
->;
+// O SelectTrigger da @blips/ui mescla `className` com `cn` antes de repassar ao
+// Base UI, e o clsx descarta funções: um `className` função do estado sumiria
+// junto com as classes deste wrapper. Por isso aqui ele é só string, como no upstream.
+export type CodeBlockLanguageSelectorTriggerProps = Omit<
+  ComponentProps<typeof SelectTrigger>,
+  "className"
+> & {
+  className?: string;
+};
 
-// No Base UI, `className` pode ser função do estado; resolve antes de mesclar
-// para não perder a classe do consumidor (o clsx descarta funções).
 export const CodeBlockLanguageSelectorTrigger = ({
   className,
   ...props
 }: CodeBlockLanguageSelectorTriggerProps) => (
   <SelectTrigger
-    className={(state) =>
-      cn(
-        "h-7 border-none bg-transparent px-2 text-xs shadow-none",
-        typeof className === "function" ? className(state) : className
-      )
-    }
+    className={cn(
+      "h-7 border-none bg-transparent px-2 text-xs shadow-none",
+      className
+    )}
     size="sm"
     {...props}
   />

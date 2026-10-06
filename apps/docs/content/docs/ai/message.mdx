@@ -11,12 +11,29 @@ description: Resposta do assistente em markdown com streaming, ações, ramos de
 pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk
 ```
 
-O `MessageResponse` renderiza markdown com o [Streamdown](https://streamdown.ai) e carrega os plugins de código, matemática, Mermaid e CJK, por isso os cinco pacotes são obrigatórios para este componente. O pacote `ai` é opcional: só entra como tipo (`UIMessage["role"]` no `messageAlign`).
+O `MessageResponse` renderiza markdown com o [Streamdown](https://streamdown.ai) e carrega os plugins de código, matemática, Mermaid e CJK, por isso os cinco pacotes são obrigatórios para este componente.
+
+Do pacote `ai` o componente importa só um tipo (`UIMessage["role"]`, no `messageAlign`), nenhum código de runtime. Como o `@blips/ai` publica o fonte `.tsx`, em projetos TypeScript instale o `ai` como devDependency para o compilador resolver o tipo:
+
+```bash
+pnpm add -D ai
+```
+
+Importe o CSS depois do tema da `@blips/ui`, junto com o CSS do Streamdown e os `@source` que deixam o Tailwind do app gerar as classes dele (ajuste os caminhos `../` conforme a posição do seu CSS em relação ao `node_modules`):
 
 ```css
 @import "@blips/ui/globals.css";
 @import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
 ```
+
+O plugin de matemática (`@streamdown/math`) é sempre carregado e usa o KaTeX, que não injeta o próprio CSS: instale `katex` (`pnpm add katex`) e importe `katex/dist/katex.min.css`, senão as fórmulas saem sem estilo.
 
 ## Uso
 

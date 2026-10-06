@@ -45,6 +45,11 @@ tamanho 64.
 Nenhum: `thinking-orbs` é dependência da `@blips/ai`. Componente client
 (renderiza em canvas; no servidor não pinta nada).
 
+O componente não importa `ai`: não é preciso instalá-lo. Se o seu código
+tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
+`import type`), e num projeto TypeScript entra como **devDependency**
+(`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
+
 ## API
 
 `BlipsThinkingOrb` aceita todas as props do `ThinkingOrb` original mais
@@ -55,7 +60,7 @@ Nenhum: `thinking-orbs` é dependência da `@blips/ai`. Componente client
 | `tone` | `"primary" \| "chart-1" … "chart-5" \| "neutral"` | `"primary"` | Só no wrapper. `primary`: #FCBA28 no escuro, #a65f00 no claro. `neutral`: tinta cinza do upstream. Ignorado se `color` for passado. |
 | `state` | `"working" \| "searching" \| "solving" \| "listening" \| "connecting" \| "weaving" \| "composing" \| "breathing" \| "shaping"` | `"working"` | Cada estado é uma animação própria. |
 | `size` | `64 \| 32 \| 20` | `20` (`64`) | 20 = linha de texto; 32 = avatar compacto; 64 = avatar de chat. Não aceita outros valores. |
-| `theme` | `"auto" \| "dark" \| "light"` | `"auto"` | `auto` lê `data-theme`/classe `dark` de um ancestral, depois `prefers-color-scheme`. Também escolhe o lado claro/escuro do `tone`. |
+| `theme` | `"auto" \| "dark" \| "light"` | `"auto"` | `auto` (no orb) lê `data-theme`/classe `dark` de um ancestral, depois `prefers-color-scheme`. Também escolhe o lado claro/escuro do `tone`, mas aí o wrapper olha só o `<html>` (`data-theme`/classe), não um ancestral: numa seção com `.dark` local dentro de página clara, passe `theme` explícito. |
 | `color` | `string` (`#rgb`, `#rrggbb`, `rgb()`) | — | Tinta livre; vence `tone`. **Não aceita `var()` nem `oklch()`.** |
 | `speed` | `number` | `1` | Multiplicador de velocidade. |
 | `paused` | `boolean` | `false` | Congela no quadro atual. |

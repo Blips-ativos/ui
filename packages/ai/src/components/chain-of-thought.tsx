@@ -62,46 +62,56 @@ export const ChainOfThought = memo(
       [isOpen, setIsOpen]
     );
 
+    // Diferente do upstream (um Collapsible no header e outro no conteúdo), um
+    // único Collapsible na raiz: trigger e painel ficam no mesmo root e o
+    // `aria-controls` do header aponta para o painel que existe de fato.
+    // O Base UI chama onOpenChange(open, eventDetails); setIsOpen usa só o booleano.
     return (
       <ChainOfThoughtContext.Provider value={chainOfThoughtContext}>
-        <div className={cn("not-prose w-full space-y-4", className)} {...props}>
+        <Collapsible
+          className={cn("not-prose w-full space-y-4", className)}
+          onOpenChange={(next) => setIsOpen(next)}
+          open={isOpen}
+          {...props}
+        >
           {children}
-        </div>
+        </Collapsible>
       </ChainOfThoughtContext.Provider>
     );
   }
 );
 
+// Em ChainOfThoughtHeader e ChainOfThoughtContent: no Base UI, `className` pode ser função do estado; resolve antes de mesclar
+// para não perder a classe do consumidor (o clsx descarta funções).
 export type ChainOfThoughtHeaderProps = ComponentProps<
   typeof CollapsibleTrigger
 >;
 
 export const ChainOfThoughtHeader = memo(
   ({ className, children, ...props }: ChainOfThoughtHeaderProps) => {
-    const { isOpen, setIsOpen } = useChainOfThought();
+    const { isOpen } = useChainOfThought();
 
     return (
-      // O Base UI chama onOpenChange(open, eventDetails); setIsOpen usa só o booleano.
-      <Collapsible onOpenChange={(next) => setIsOpen(next)} open={isOpen}>
-        <CollapsibleTrigger
-          className={cn(
+      <CollapsibleTrigger
+        className={(state) =>
+          cn(
             "flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground",
-            className
+            typeof className === "function" ? className(state) : className
+          )
+        }
+        {...props}
+      >
+        <BrainIcon className="size-4" />
+        <span className="flex-1 text-left">
+          {children ?? "Chain of Thought"}
+        </span>
+        <CaretDownIcon
+          className={cn(
+            "size-4 transition-transform",
+            isOpen ? "rotate-180" : "rotate-0"
           )}
-          {...props}
-        >
-          <BrainIcon className="size-4" />
-          <span className="flex-1 text-left">
-            {children ?? "Chain of Thought"}
-          </span>
-          <CaretDownIcon
-            className={cn(
-              "size-4 transition-transform",
-              isOpen ? "rotate-180" : "rotate-0"
-            )}
-          />
-        </CollapsibleTrigger>
-      </Collapsible>
+        />
+      </CollapsibleTrigger>
     );
   }
 );
@@ -185,21 +195,22 @@ export type ChainOfThoughtContentProps = ComponentProps<
 
 export const ChainOfThoughtContent = memo(
   ({ className, children, ...props }: ChainOfThoughtContentProps) => {
-    const { isOpen } = useChainOfThought();
+    // Garante o erro de uso fora do ChainOfThought, como no upstream.
+    useChainOfThought();
 
     return (
-      <Collapsible open={isOpen}>
-        <CollapsibleContent
-          className={cn(
+      <CollapsibleContent
+        className={(state) =>
+          cn(
             "mt-2 space-y-3",
             "data-closed:fade-out-0 data-closed:slide-out-to-top-2 data-open:slide-in-from-top-2 text-popover-foreground outline-none data-closed:animate-out data-open:animate-in",
-            className
-          )}
-          {...props}
-        >
-          {children}
-        </CollapsibleContent>
-      </Collapsible>
+            typeof className === "function" ? className(state) : className
+          )
+        }
+        {...props}
+      >
+        {children}
+      </CollapsibleContent>
     );
   }
 );

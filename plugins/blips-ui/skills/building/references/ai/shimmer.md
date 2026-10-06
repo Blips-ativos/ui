@@ -6,7 +6,7 @@
 
 Import: `@blips/ai/components/shimmer`
 
-Texto com um brilho que atravessa da direita para a esquerda em loop: o
+Texto com um brilho que atravessa da esquerda para a direita em loop: o
 "Pensando…", "Buscando contratos…", "Gerando resposta…" de um agente enquanto o
 primeiro token não chega. Feito com `motion` (gradiente em `background-clip:
 text`), usando os tokens `--color-muted-foreground` e `--color-background` do
@@ -28,6 +28,11 @@ tema da @blips/ui.
 
 Nenhum. `motion` já é dependência da @blips/ai.
 
+O componente não importa `ai`: não é preciso instalá-lo. Se o seu código
+tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
+`import type`), e num projeto TypeScript entra como **devDependency**
+(`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
+
 ## API
 
 Export: `Shimmer` (memo) e o tipo `TextShimmerProps`.
@@ -38,7 +43,7 @@ Export: `Shimmer` (memo) e o tipo `TextShimmerProps`.
 | `as` | `ElementType` | `"p"` | Elemento renderizado (via `motion.create`, com cache por tag). Use `"span"` dentro de frase/botão. |
 | `className` | `string` | — | Mesclado com `cn`. A cor base vem do gradiente; não use `text-*` para colorir (o texto é transparente). |
 | `duration` | `number` | `2` | Segundos por passada. |
-| `spread` | `number` | `2` | Largura do brilho = `children.length * spread` px. |
+| `spread` | `number` | `2` | Meia-largura do brilho = `children.length * spread` px (o gradiente vai de `50% - spread` a `50% + spread`). |
 
 ## Composição com a @blips/ui
 

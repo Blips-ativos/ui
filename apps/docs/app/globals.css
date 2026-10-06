@@ -8,6 +8,7 @@
    dele e dos plugins instalados, e o CSS próprio dele precisa ser importado.
    Caminhos relativos a este arquivo (apps/docs/app → apps/docs/node_modules). */
 @import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
 @source "../node_modules/streamdown/dist/*.js";
 @source "../node_modules/@streamdown/code/dist/*.js";
 @source "../node_modules/@streamdown/math/dist/*.js";

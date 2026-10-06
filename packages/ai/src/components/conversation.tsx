@@ -87,7 +87,9 @@ export const ConversationScrollButton = ({
 
   return (
     !isAtBottom && (
+      // Botão só com ícone: o aria-label dá o nome acessível (o upstream não tinha).
       <Button
+        aria-label="Rolar até a última mensagem"
         className={cn(
           "absolute bottom-4 left-[50%] translate-x-[-50%] rounded-full dark:bg-background dark:hover:bg-muted",
           className
@@ -155,7 +157,9 @@ export const ConversationDownload = ({
   }, [messages, filename, formatMessage]);
 
   return (
+    // Botão só com ícone: o aria-label dá o nome acessível (o upstream não tinha).
     <Button
+      aria-label="Baixar conversa"
       className={cn(
         "absolute top-4 right-4 rounded-full dark:bg-background dark:hover:bg-muted",
         className

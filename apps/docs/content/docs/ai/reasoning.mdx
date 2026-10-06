@@ -13,12 +13,21 @@ pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/merm
 
 O `ReasoningContent` renderiza markdown com o [Streamdown](https://streamdown.ai), por isso o `streamdown` e os quatro plugins `@streamdown/*` são obrigatórios para este componente, mesmo sendo peers opcionais do pacote. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
 
-Importe o CSS depois do da `@blips/ui`:
+Importe o CSS depois do da `@blips/ui`, junto com o CSS do Streamdown e do KaTeX e os `@source` que deixam o Tailwind do app gerar as classes do Streamdown (ajuste os caminhos `../` conforme a posição do seu CSS em relação ao `node_modules`):
 
 ```css
 @import "@blips/ui/globals.css";
 @import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
 ```
+
+O plugin de matemática (`@streamdown/math`) é sempre carregado e usa o KaTeX, que não injeta o próprio CSS: instale `katex` (`pnpm add katex`) e importe `katex/dist/katex.min.css`, senão as fórmulas saem sem estilo.
 
 ## Uso
 

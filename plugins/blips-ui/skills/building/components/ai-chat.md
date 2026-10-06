@@ -13,7 +13,7 @@ chamadas de ferramenta, fontes, campo de prompt e sugestões.
 
 - [Quando usar](#quando-usar)
 - [Peças e onde estão documentadas](#peças-e-onde-estão-documentadas)
-- [Peers para esta tela](#peers-para-esta-tela)
+- [Peers e CSS para esta tela](#peers-e-css-para-esta-tela)
 - [Anatomia](#anatomia)
 - [Regra de ouro: a lib é apresentacional](#regra-de-ouro-a-lib-é-apresentacional)
 - [Renderizando um UIMessage](#renderizando-um-uimessage)
@@ -56,7 +56,7 @@ Leia a reference de cada peça antes de escrever código (props reais, armadilha
 | Citação no meio do texto | `@blips/ai/components/inline-citation` | `../references/ai/inline-citation.md` |
 | Uso de tokens/contexto | `@blips/ai/components/context` | `../references/ai/context.md` |
 
-## Peers para esta tela
+## Peers e CSS para esta tela
 
 A tela completa abaixo importa `message` e `reasoning` (Streamdown) e `tool`
 (que usa o `CodeBlock`, sobre o Shiki). O app declara:
@@ -66,8 +66,25 @@ pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/merm
 pnpm add -D ai   # tipos UIMessage/ChatStatus: o tsc do app compila o fonte .tsx do pacote
 ```
 
-Com o caminho (a), `ai` e `@ai-sdk/react` vão em `dependencies` (runtime do
-`useChat`). Com o caminho (b), `ai` fica só em `devDependencies`.
+`ai` é peer opcional **só de tipos**: o `@blips/ai` não usa runtime dele, mas
+publica o fonte `.tsx`, então em projeto TypeScript ele entra como
+`devDependency` nos dois caminhos. No caminho (a), acrescente
+`pnpm add @ai-sdk/react` (ele já traz o runtime do `ai` como dependência
+própria); mantenha o `ai` do app na mesma versão que o `@ai-sdk/react` fixa.
+`ai` só vai para `dependencies` se o código do app importar runtime dele (ex.:
+`DefaultChatTransport`).
+
+E o CSS, porque o `MessageResponse` e o `ReasoningContent` renderizam com o
+Streamdown (ajuste os `../` até o `node_modules`; em monorepo, o da raiz):
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+/* repita para @streamdown/math, @streamdown/mermaid e @streamdown/cjk */
+```
 
 ## Anatomia
 
@@ -431,10 +448,10 @@ função pura e expõe a mesma forma do `useChat` (`messages`, `status`,
 | Evento do AgentOS | Vira |
 |---|---|
 | `TeamRunContent` / `RunContent` com `content` | delta numa part `text` (`state: "streaming"`) |
-| `reasoning_content` (no `*RunContent`), `ReasoningStep`, `ReasoningContentDelta` | delta numa part `reasoning` |
+| `reasoning_content` (no `*RunContent`), `ReasoningStep` / `TeamReasoningStep`, `ReasoningContentDelta` / `TeamReasoningContentDelta` | delta numa part `reasoning` (só o campo `reasoning_content`: o `content` do `ReasoningStep` é objeto) |
 | `ToolCallStarted` / `TeamToolCallStarted` | part `dynamic-tool`, `state: "input-available"`, `input = tool.tool_args` |
 | `ToolCallCompleted` / `TeamToolCallCompleted` | mesma part (por `tool_call_id`), `state: "output-available"`, `output = tool.result` |
-| `ToolCallError` / `TeamToolCallError` | `state: "output-error"`, `errorText` |
+| `ToolCallError` / `TeamToolCallError` | `state: "output-error"`, `errorText = error` (campo do evento; o `tool` não tem erro) |
 | `TeamRunCompleted` / `RunCompleted` | fecha as parts (`state: "done"`), `status: "ready"` |
 | `TeamRunError` / `RunError` | `status: "error"` |
 | `TeamRunPaused` (ferramenta pedindo confirmação) | part com `state: "approval-requested"` → `Confirmation` |
@@ -454,14 +471,15 @@ type AgnoEvent = {
   event: string;
   run_id?: string;
   parent_run_id?: string | null;
-  content?: string;
-  reasoning_content?: string;
+  // string em RunContent; objeto em ReasoningStep e com saída estruturada
+  content?: unknown;
+  reasoning_content?: string | null;
+  error?: string | null; // ToolCallError: o erro vem no evento, não no tool
   tool?: {
     tool_call_id?: string;
     tool_name?: string;
     tool_args?: Record<string, unknown>;
     result?: unknown;
-    error?: string;
   };
 };
 
@@ -507,16 +525,16 @@ export function applyAgnoEvent(parts: Part[], ev: AgnoEvent): Part[] {
       if (ev.reasoning_content) {
         next = appendDelta(next, "reasoning", ev.reasoning_content);
       }
-      return ev.content ? appendDelta(next, "text", ev.content) : next;
+      return typeof ev.content === "string" && ev.content
+        ? appendDelta(next, "text", ev.content)
+        : next;
     }
     case "ReasoningStep":
     case "ReasoningContentDelta":
-      return ev.reasoning_content || ev.content
-        ? appendDelta(
-            parts,
-            "reasoning",
-            ev.reasoning_content ?? ev.content ?? ""
-          )
+    case "TeamReasoningStep":
+    case "TeamReasoningContentDelta":
+      return ev.reasoning_content
+        ? appendDelta(parts, "reasoning", ev.reasoning_content)
         : parts;
     case "ToolCallStarted":
     case "TeamToolCallStarted":
@@ -545,7 +563,7 @@ export function applyAgnoEvent(parts: Part[], ev: AgnoEvent): Part[] {
         toolName: ev.tool?.tool_name ?? "ferramenta",
         state: "output-error",
         input: ev.tool?.tool_args,
-        errorText: ev.tool?.error ?? "Falha na ferramenta",
+        errorText: ev.error ?? "Falha na ferramenta",
       });
     case "RunCompleted":
     case "TeamRunCompleted":
@@ -714,8 +732,10 @@ export default function AgnoChatPage() {
 ```
 
 A rota `/api/agentos/...` é do app (route handler do Next ou proxy do Vite) e
-injeta `Authorization: Bearer …` no servidor. Os nomes de evento acima são os
-do Agno 2.x (`agno/run/team.py`); confira contra a versão que o agente roda.
+injeta `Authorization: Bearer …` no servidor. Os nomes de evento e campos acima
+foram conferidos no Agno 3.1 (`agno/run/team.py` e `agno/run/agent.py`): no Team,
+todo evento tem prefixo `Team` (inclusive os de raciocínio). Confira contra a
+versão que o agente roda.
 
 ## Estados da tela
 
@@ -755,13 +775,20 @@ do Agno 2.x (`agno/run/team.py`); confira contra a versão que o agente roda.
 - **Keys.** Use `message.id` nas mensagens e `${message.id}-${index}` nas parts
   (parts não têm id próprio, exceto ferramentas: `toolCallId`).
 - **`onClick` do `Suggestion` recebe a string**, não o evento.
-- **`PromptInput.onSubmit` recebe `{ text, files }`** e limpa o campo sozinho.
-  Se `onSubmit` devolver uma Promise que rejeita, o campo não é limpo (o
-  usuário pode tentar de novo); por isso o exemplo usa `void sendMessage(...)`.
-- **`ai` é peer de tipos, mas o `tsc` do app precisa dele.** Os exports apontam
-  para o fonte `.tsx`; sem `ai` instalado, `conversation`, `message`, `tool`,
-  `confirmation`, `context` e `prompt-input` dão TS2307 no `tsc` do app.
-  Instale como `devDependency` quando não usar o runtime do AI SDK.
+- **`PromptInput.onSubmit` recebe `{ text, files }`.** Sem
+  `PromptInputProvider`, o texto é limpo na hora do envio (`form.reset()`),
+  antes de `onSubmit` rodar. Os anexos (e o texto, com `PromptInputProvider`) só
+  são limpos se `onSubmit` não lançar ou se a Promise devolvida resolver; se ela
+  rejeitar, ficam para o usuário tentar de novo. O exemplo usa
+  `void sendMessage(...)`: devolve `undefined`, então tudo é limpo na hora e o
+  erro aparece pelo `status === "error"`.
+- **`ai` é peer só de tipos, mas o `tsc` do app precisa dele.** Os exports
+  apontam para o fonte `.tsx`; sem `ai` instalado, `conversation`, `message`,
+  `tool`, `confirmation`, `context` e `prompt-input` dão TS2307 no `tsc` do app.
+  Em projeto TypeScript: `pnpm add -D ai`.
+- **Markdown sem estilo.** Faltou o CSS do Streamdown (`streamdown/styles.css`
+  e o `@source` do `streamdown/dist`, seção [Peers e CSS para esta tela](#peers-e-css-para-esta-tela)).
+  O `@blips/ai/styles.css` só cobre as classes do próprio pacote.
 - **Nada de helper runtime do `ai` no caminho (b).** `isToolUIPart`,
   `getToolName` e afins puxam o runtime do AI SDK. Um type guard de uma linha
   (`part.type === "dynamic-tool" || part.type.startsWith("tool-")`) resolve.

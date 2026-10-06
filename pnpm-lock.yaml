@@ -80,6 +80,9 @@ importers:
       input-otp:
         specifier: ^1.4.2
         version: 1.4.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      katex:
+        specifier: ^0.16.0
+        version: 0.16.47
       next:
         specifier: ^16.1.6
         version: 16.2.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)

@@ -23,8 +23,16 @@ saída, raciocínio e cache, e custo estimado em USD (via `tokenlens`).
 
 ## Peers exigidos
 
-Nenhum obrigatório. `tokenlens` é dependência da @blips/ai. `ai` é opcional e só
-como tipo (`LanguageModelUsage`).
+Nenhum peer de runtime. `tokenlens` é dependência da @blips/ai.
+
+`ai` é peer opcional e só de tipos (`LanguageModelUsage`), nenhum código de
+runtime. Como a @blips/ai publica o fonte `.tsx`, num projeto TypeScript
+instale como **devDependency** para o compilador resolver o tipo:
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
 
 ## API
 
@@ -52,7 +60,13 @@ monte esse objeto no app a partir das métricas do run.
 - Lugar natural: `PromptInputTools` (`prompt-input.md`) ou o cabeçalho da tela
   do chat, ao lado do seletor de modelo.
 - Para o cartão inteiro em pt-BR, passe `children` em `ContextContentFooter` e
-  nas linhas de uso, formatando com `Intl.NumberFormat("pt-BR")`.
+  nas linhas de uso, formatando com `Intl.NumberFormat("pt-BR")`. Atenção: nas
+  linhas de uso (`ContextInputUsage` etc.), `children` substitui a linha
+  inteira, sem a `<div>` de layout (`className` e demais props são
+  ignorados) e sem a regra de sumir com 0: monte a linha completa (ex.:
+  `<div className="flex items-center justify-between text-xs">`). No
+  `ContextContentFooter`/`ContextContentHeader` a `<div>` com as classes se
+  mantém.
 
 ## Exemplo v3
 
@@ -118,12 +132,12 @@ export function UsoDeContexto({
 - **Custo `$0.00`** quando não há `modelId` ou quando o id não existe no
   catálogo do `tokenlens`, o que é o caso dos nomes de deployment do LiteLLM
   (ex.: `salvador-default`). O formato é `provedor:modelo` com dois-pontos
-  (`openai:gpt-4.1`, `anthropic:claude-sonnet-4-20250514`); com barra
-  (`openai/gpt-4.1`) sai zero, e modelos recentes podem não estar no catálogo
-  do `tokenlens` 1.3 (em 2026-10, `anthropic:claude-sonnet-4-5` não resolvia).
+  (`openai:gpt-4.1`, `anthropic:claude-sonnet-4-20250514`; o `tokenlens` 1.3
+  também resolve `openai/gpt-4.1`), e modelos recentes podem não estar no
+  catálogo (em 2026-10, `anthropic:claude-sonnet-4-5` não resolvia).
   Confira o custo antes de exibir, ou esconda o rodapé.
 - `maxTokens` é seu: o componente não sabe o tamanho da janela do modelo.
-  `maxTokens={0}` gera `Infinity%`.
+  `maxTokens={0}` gera `∞%` (ou `NaN%` com `usedTokens={0}`) e quebra o anel.
 - `usedTokens` também é seu: decida se conta só a entrada do último turno
   (o que de fato ocupa a janela) ou entrada + saída.
 - Os campos antigos `usage.reasoningTokens` / `usage.cachedInputTokens` (AI

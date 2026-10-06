@@ -60,6 +60,8 @@ export type ReasoningProps = Omit<
   duration?: number;
 };
 
+// Em Reasoning, ReasoningTrigger e ReasoningContent: no Base UI, `className` pode ser função do estado; resolve antes de mesclar
+// para não perder a classe do consumidor (o clsx descarta funções).
 const AUTO_CLOSE_DELAY = 1000;
 const MS_IN_S = 1000;
 
@@ -145,7 +147,12 @@ export const Reasoning = memo(
     return (
       <ReasoningContext.Provider value={contextValue}>
         <Collapsible
-          className={cn("not-prose mb-4", className)}
+          className={(state) =>
+            cn(
+              "not-prose mb-4",
+              typeof className === "function" ? className(state) : className
+            )
+          }
           onOpenChange={handleOpenChange}
           open={isOpen}
           {...props}
@@ -184,10 +191,12 @@ export const ReasoningTrigger = memo(
 
     return (
       <CollapsibleTrigger
-        className={cn(
-          "flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground",
-          className
-        )}
+        className={(state) =>
+          cn(
+            "flex w-full items-center gap-2 text-muted-foreground text-sm transition-colors hover:text-foreground",
+            typeof className === "function" ? className(state) : className
+          )
+        }
         {...props}
       >
         {children ?? (
@@ -218,11 +227,13 @@ const streamdownPlugins = { cjk, code, math, mermaid };
 export const ReasoningContent = memo(
   ({ className, children, ...props }: ReasoningContentProps) => (
     <CollapsibleContent
-      className={cn(
-        "mt-4 text-sm",
-        "data-closed:fade-out-0 data-closed:slide-out-to-top-2 data-open:slide-in-from-top-2 text-muted-foreground outline-none data-closed:animate-out data-open:animate-in",
-        className
-      )}
+      className={(state) =>
+        cn(
+          "mt-4 text-sm",
+          "data-closed:fade-out-0 data-closed:slide-out-to-top-2 data-open:slide-in-from-top-2 text-muted-foreground outline-none data-closed:animate-out data-open:animate-in",
+          typeof className === "function" ? className(state) : className
+        )
+      }
       {...props}
     >
       <Streamdown plugins={streamdownPlugins}>{children}</Streamdown>

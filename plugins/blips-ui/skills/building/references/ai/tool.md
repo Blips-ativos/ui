@@ -38,8 +38,15 @@ import {
 
 - `shiki` (o `ToolInput`/`ToolOutput` usam o `CodeBlock`, que importa o Shiki
   em runtime): `pnpm add shiki`.
-- `ai` só para tipos (`ToolPart` = `ToolUIPart | DynamicToolUIPart`). Use
-  sempre `import type` do `ai`; a lib não executa nada do AI SDK.
+- `ai`: peer opcional e só de tipos (`ToolPart` = `ToolUIPart |
+  DynamicToolUIPart`), nenhum código de runtime. Como a @blips/ai publica o
+  fonte `.tsx`, num projeto TypeScript o compilador precisa resolver esses
+  tipos: instale como **devDependency**. No seu código, sempre `import type`.
+
+```bash
+pnpm add @blips/ai shiki
+pnpm add -D ai
+```
 
 ## API
 

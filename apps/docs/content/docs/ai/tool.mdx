@@ -12,7 +12,7 @@ pnpm add @blips/ai shiki
 pnpm add -D ai
 ```
 
-O `ToolInput` e o `ToolOutput` destacam o JSON com o [CodeBlock](/docs/ai/code-block), que usa o [Shiki](https://shiki.style). Por isso o `shiki` é obrigatório para este componente, mesmo sendo peer opcional do pacote. O `ai` entra só pelos tipos (`ToolUIPart`, `DynamicToolUIPart`): nada dele roda no navegador, mas o TypeScript precisa do pacote para resolver as props. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+O `ToolInput` e o `ToolOutput` destacam o JSON com o [CodeBlock](/docs/ai/code-block), que usa o [Shiki](https://shiki.style). Por isso o `shiki` é obrigatório para este componente, mesmo sendo peer opcional do pacote. O `ai` entra só pelos tipos (`ToolUIPart`, `DynamicToolUIPart`): nada dele roda no navegador. Em projeto TypeScript, instale-o como devDependency (`pnpm add -D ai`): a `@blips/ai` publica o fonte `.tsx`, e o `tsc` do app checa esse fonte e precisa resolver os tipos do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
 
 Importe o CSS depois do da `@blips/ui`:
 
@@ -152,7 +152,7 @@ Objeto vira JSON formatado, string vai para o `CodeBlock` como JSON e um element
 
 ### ToolPart
 
-Tipo `ToolUIPart | DynamicToolUIPart`, reexportado do `ai`.
+Tipo `ToolUIPart | DynamicToolUIPart`, montado com os tipos do `ai` (`import type`).
 
 ## Origem
 

@@ -32,7 +32,7 @@ import { BlipsThinkingOrb } from "@blips/ai/fx/thinking-orbs"
 </div>
 ```
 
-O orb desenha num `<canvas>` e só renderiza no cliente. Os padrões Blips: tamanho `20` (escala de texto),
+O orb é um `<canvas>`: no servidor sai o canvas vazio, no tamanho certo, e a animação só começa no cliente. Os padrões Blips: tamanho `20` (escala de texto),
 estado `working` e tinta no amarelo da marca no tema escuro, trocada por âmbar (`--chart-4`) no claro, onde
 o amarelo puro some contra o fundo branco.
 
@@ -83,7 +83,7 @@ Aceita todas as props do `ThinkingOrb` (e as do `<canvas>`) mais `tone`.
 (`BLIPS_ORB_TONES`). `BLIPS_THINKING_ORB_DEFAULTS` exporta os padrões. Também são exportados os tipos
 `ThinkingOrbProps`, `OrbState`, `OrbSize`, `OrbTheme`, `BlipsOrbTone` e `BlipsThinkingOrbProps`.
 
-Passe `aria-label` descrevendo o que o agente está fazendo.
+Passe `aria-label` descrevendo o que o agente está fazendo: sem ele, o canvas (`role="img"`) recebe o rótulo padrão do pacote, em inglês.
 
 ## Origem
 

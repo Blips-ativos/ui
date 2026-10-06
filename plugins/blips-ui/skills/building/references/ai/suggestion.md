@@ -26,6 +26,11 @@ Cada sugestão é um `Button` da @blips/ui em formato pílula; a faixa é um
 
 Nenhum.
 
+O componente não importa `ai`: não é preciso instalá-lo. Se o seu código
+tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
+`import type`), e num projeto TypeScript entra como **devDependency**
+(`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
+
 ## API
 
 | Export | Props | Notas |

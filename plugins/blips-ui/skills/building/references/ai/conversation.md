@@ -27,9 +27,22 @@ markdown.
 
 ## Peers exigidos
 
-Nenhum obrigatório. `use-stick-to-bottom` é dependência da @blips/ai. `ai` é
-opcional e só como tipo (`UIMessage`, em `ConversationDownload` e
-`messagesToMarkdown`).
+Nenhum peer de runtime. `use-stick-to-bottom` é dependência da @blips/ai.
+
+`ai` é peer opcional e só de tipos: o arquivo importa `UIMessage` (em
+`ConversationDownload` e `messagesToMarkdown`), nenhum código de runtime. Como
+a @blips/ai publica o fonte `.tsx`, num projeto TypeScript instale como
+**devDependency** para o compilador resolver o tipo:
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
+
+O exemplo abaixo também usa o `MessageResponse` (`message.md`): aí entram os
+peers do Streamdown (`streamdown` + `@streamdown/{code,math,mermaid,cjk}`), o
+`@import "streamdown/styles.css"` e os `@source` do `dist` deles (ver
+"Estilos do Streamdown" em `message.md`).
 
 ## API
 

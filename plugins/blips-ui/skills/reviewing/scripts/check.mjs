@@ -9,7 +9,8 @@
  * Heurísticas marcadas com verify:true exigem confirmação do revisor.
  * Dimensões: imports, icones, api-versao, tailwind, formatacao, a11y, anti-slop,
  * tipografia, motion, construcao e blips-ai (só quando o app tem @blips/ai:
- * subpath, peers por componente, `ai` só tipo, chat recriado, CSS na ordem). Severidades: "bloqueante" | "aviso".
+ * subpath, peers por componente, `ai` só tipo, chat recriado, CSS na ordem,
+ * CSS do Streamdown). Severidades: "bloqueante" | "aviso".
  * Princípio: checks de alta precisão (literais) são bloqueante; heurísticos
  * (verify:true) são aviso — o revisor promove a bloqueante se confirmar.
  */
@@ -233,6 +234,10 @@ const CHAT_COMPOSE_RE =
   /from\s+["'](@blips\/ui\/components\/(message|bubble|message-scroller)|@blips\/ai\/components\/(message|conversation))["']/;
 const aiImports = new Map(); // subpath -> {file, line}
 const aiCssImports = []; // {file, line}
+// Streamdown (MessageResponse/ReasoningContent): o Tailwind do app precisa varrer
+// o dist do streamdown (@source) e o app importa streamdown/styles.css.
+let streamdownSource = false;
+let streamdownStyles = false;
 let aiUndeclaredReported = false;
 
 // deps embutidas na lib que o app só pode importar se declarar como diretas
@@ -867,6 +872,10 @@ for (const abs of files) {
   }
   // --- @blips/ai: checks de arquivo inteiro ---
   if (ext === "css") {
+    if (lines.some((l) => /^\s*@source\b.*(^|[/"'])streamdown\/dist\//.test(l)))
+      streamdownSource = true;
+    if (lines.some((l) => /@import\s+["']streamdown\/styles\.css["']/.test(l)))
+      streamdownStyles = true;
     const aiCss = lines.findIndex((l) =>
       /@import\s+["']@blips\/ai\/styles\.css["']/.test(l)
     );
@@ -886,6 +895,8 @@ for (const abs of files) {
     }
   }
   if (/\.(tsx|ts|jsx|js|mjs)$/.test(file)) {
+    if (/import\s+["']streamdown\/styles\.css["']/.test(text))
+      streamdownStyles = true;
     const importsAiUi = /from\s+["']@blips\/ai\//.test(text);
     for (const m of text.matchAll(
       /import\s+(type\s+)?\{([^}]*)\}\s*from\s*["']ai["']/g
@@ -1013,13 +1024,35 @@ if (hasAi) {
       "blips-ai",
       "bloqueante"
     );
+  const streamdownAt = [...aiImports].find(([sub]) =>
+    aiPeersFor(sub).includes("streamdown")
+  );
+  if (streamdownAt) {
+    const [sub, at] = streamdownAt;
+    if (!streamdownSource)
+      add(
+        at.file,
+        at.line,
+        `@blips/ai/${sub} renderiza markdown com o Streamdown, mas nenhum CSS tem @source do dist do streamdown — o Tailwind não gera as classes do markdown (@source "<até o node_modules>/streamdown/dist/*.js" e dos plugins instalados)`,
+        "blips-ai",
+        "bloqueante"
+      );
+    if (!streamdownStyles)
+      add(
+        at.file,
+        at.line,
+        `@blips/ai/${sub} usa o Streamdown, mas streamdown/styles.css não é importado (CSS ou JS) — animações de streaming e marcadores de lista ficam sem estilo`,
+        "blips-ai",
+        "aviso"
+      );
+  }
   for (const [sub, at] of aiImports) {
     const missing = aiPeersFor(sub).filter((peer) => !deps[peer]);
     if (missing.length)
       add(
         at.file,
         at.line,
-        `@blips/ai/${sub} exige peers não declarados no package.json do app: ${missing.join(", ")}${missing.includes("ai") ? " (ai: só tipos, mas o tsc compila o fonte .tsx do pacote; devDependency basta)" : ""}`,
+        `@blips/ai/${sub} exige peers não declarados no package.json do app: ${missing.join(", ")}${missing.includes("ai") ? " (ai: peer só de tipos, sem runtime; em projeto TypeScript, pnpm add -D ai — o tsc do app compila o fonte .tsx do pacote)" : ""}`,
         "blips-ai",
         "bloqueante"
       );

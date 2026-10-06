@@ -30,13 +30,19 @@ no JSON.
   | `components/conversation`, `confirmation`, `context`, `prompt-input` | `ai` |
   | demais (`shimmer`, `suggestion`, `sources`, `chain-of-thought`, `inline-citation`, `fx/*`) | — |
 
-  `ai` é só tipo, mas o `tsc` do app compila o fonte `.tsx` do pacote e dá TS2307
-  sem ele (verificado). `devDependencies` basta quando o app não usa o runtime
-  do AI SDK. Com `node_modules/@blips/ai` presente, o check recalcula a tabela a
-  partir do fonte instalado.
-- **`@source` do Streamdown é legítimo** (`@source "…/node_modules/streamdown/dist/*.js"`
-  e `@streamdown/code`): é conteúdo fora da auto-detecção, exigido pelo README do
-  pacote. Não reporte como "@source defensivo" (o check já isenta).
+  `ai` é peer opcional **só de tipos** (o pacote não usa runtime dele). Como o
+  pacote publica o fonte `.tsx`, o `tsc` do app compila esses arquivos e dá
+  TS2307 sem `ai` (verificado): em projeto TypeScript, `pnpm add -D ai`. Só vai
+  para `dependencies` se o **código do app** usar runtime do `ai` (ex.:
+  `DefaultChatTransport`); o `@ai-sdk/react` já traz o runtime dele. Com
+  `node_modules/@blips/ai` presente, o check recalcula a tabela a partir do
+  fonte instalado.
+- **CSS do Streamdown é exigido** por quem usa `MessageResponse` (`message`) ou
+  `ReasoningContent` (`reasoning`): `@import "streamdown/styles.css";` (ou
+  `import "streamdown/styles.css"` no JS) e `@source "…/node_modules/streamdown/dist/*.js"`,
+  mais um `@source` por plugin instalado (`@streamdown/code`, `math`, `mermaid`,
+  `cjk`), como no README do pacote. Esses `@source` são legítimos (conteúdo fora
+  da auto-detecção): não reporte como "@source defensivo" (o check já isenta).
 - Textos padrão em inglês ("No messages yet", "Thinking...", "Used N sources",
   rótulos do `Tool`) vêm do upstream. Tela pt-BR que não os sobrescreve é
   **aviso** de conteúdo (julgamento), não erro de API.
@@ -57,6 +63,8 @@ no JSON.
 | 4f | `<Message from=…>` (API do AI Elements) | literal | bloqueante |
 | 5 | **Gate de versão.** @blips/ai exige `@blips/ui` ^3 e React 19 | `package.json` | bloqueante |
 | 6 | **CSS.** `@import "@blips/ai/styles.css"` presente e **depois** de `@import "@blips/ui/globals.css"` | literal | bloqueante |
+| 7 | **CSS do Streamdown** (app importa `message` ou `reasoning`): `@source` do `streamdown/dist` em algum CSS | literal | bloqueante |
+| 7b | idem: `streamdown/styles.css` importado (CSS ou JS) | literal | aviso |
 
 "aviso → bloqueante se confirmado": o check é heurístico; o revisor lê o
 arquivo e, confirmada a recriação (ex.: um `div` com balão próprio no lugar do
@@ -74,6 +82,7 @@ oficial (percorre `message.parts` e renderiza `Message` + `Bubble` +
 | Bolha/lista recriada, `from=`, scroll ou markdown à mão | `building/components/ai-chat.md`: `Conversation` + `Message align={messageAlign(role)}` + `Bubble` (usuário) + `MessageResponse` (assistente) |
 | Cópia do AI Elements | Trocar os imports por `@blips/ai/components/<x>` e remover `components/ai-elements` |
 | CSS fora de ordem/ausente | `@import "@blips/ui/globals.css";` e logo abaixo `@import "@blips/ai/styles.css";` |
+| CSS do Streamdown ausente | `@import "streamdown/styles.css";` + `@source "../node_modules/streamdown/dist/*.js";` (e um por plugin instalado; ajuste os `../` até o `node_modules`) |
 
 ## Prova (fixtures versionadas)
 
@@ -82,5 +91,5 @@ oficial (percorre `message.parts` e renderiza `Message` + `Bubble` +
 
 ```bash
 node scripts/check.mjs scripts/fixtures/ai-pass   # total: 0
-node scripts/check.mjs scripts/fixtures/ai-fail   # 15 achados, todos blips-ai
+node scripts/check.mjs scripts/fixtures/ai-fail   # 17 achados, todos blips-ai
 ```

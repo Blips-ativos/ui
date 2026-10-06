@@ -14,7 +14,13 @@ import type { ComponentProps } from "react";
 
 // No Base UI o Collapsible.Root já renderiza uma <div>; as props são as do Root
 // (open, defaultOpen, onOpenChange, disabled, render) mais as da <div>.
-export type SourcesProps = ComponentProps<typeof Collapsible>;
+// `className` só string nas três partes: o `cn` (clsx) descarta funções do estado.
+export type SourcesProps = Omit<
+  ComponentProps<typeof Collapsible>,
+  "className"
+> & {
+  className?: string;
+};
 
 export const Sources = ({ className, ...props }: SourcesProps) => (
   <Collapsible
@@ -23,7 +29,11 @@ export const Sources = ({ className, ...props }: SourcesProps) => (
   />
 );
 
-export type SourcesTriggerProps = ComponentProps<typeof CollapsibleTrigger> & {
+export type SourcesTriggerProps = Omit<
+  ComponentProps<typeof CollapsibleTrigger>,
+  "className"
+> & {
+  className?: string;
   count: number;
 };
 
@@ -47,7 +57,10 @@ export const SourcesTrigger = ({
   </CollapsibleTrigger>
 );
 
-export type SourcesContentProps = ComponentProps<typeof CollapsibleContent>;
+export type SourcesContentProps = Omit<
+  ComponentProps<typeof CollapsibleContent>,
+  "className"
+> & { className?: string };
 
 export const SourcesContent = ({
   className,

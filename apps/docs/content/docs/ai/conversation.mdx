@@ -11,7 +11,13 @@ description: Contêiner rolável da conversa que acompanha o fim enquanto a resp
 pnpm add @blips/ai
 ```
 
-A rolagem usa o `use-stick-to-bottom`, que já vem como dependência. O pacote `ai` é opcional: só entra como tipo (`UIMessage`) no `ConversationDownload` e no `messagesToMarkdown`.
+A rolagem usa o `use-stick-to-bottom`, que já vem como dependência. Do pacote `ai` o componente importa só um tipo (`UIMessage`, no `ConversationDownload` e no `messagesToMarkdown`), nenhum código de runtime. Como o `@blips/ai` publica o fonte `.tsx`, em projetos TypeScript instale o `ai` como devDependency para o compilador resolver o tipo:
+
+```bash
+pnpm add -D ai
+```
+
+Se as mensagens usam o `MessageResponse`, instale também os peers da [Message](/docs/ai/message) (`streamdown` e os plugins `@streamdown/*`).
 
 ```css
 @import "@blips/ui/globals.css";

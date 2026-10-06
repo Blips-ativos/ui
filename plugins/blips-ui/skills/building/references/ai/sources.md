@@ -30,7 +30,10 @@ import {
 
 ## Peers exigidos
 
-Nenhum. `ai` só se tipar as parts (`SourceUrlUIPart`, `import type`).
+Nenhum. O componente não importa `ai`. O pacote só entra se você tipar as
+parts com `SourceUrlUIPart`/`UIMessage`, como no exemplo: peer opcional e só de
+tipos (sempre `import type`), e como a @blips/ai publica o fonte `.tsx`, num
+projeto TypeScript instale como **devDependency** (`pnpm add -D ai`).
 
 ## API
 

@@ -35,9 +35,32 @@ mesmo que você só use `MessageAction`.
 
 ```bash
 pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk
+pnpm add -D ai
 ```
 
-`ai` é opcional e só aparece como tipo (`UIMessage["role"]` em `messageAlign`).
+`ai` é peer opcional e só de tipos: o arquivo importa `UIMessage` (em
+`messageAlign`), nenhum código de runtime. Como a @blips/ai publica o fonte
+`.tsx`, num projeto TypeScript o compilador do app precisa resolver esse tipo:
+instale como **devDependency** (`pnpm add -D ai`). Sem ele, o build/`tsc`
+acusa `Cannot find module 'ai'` dentro de `@blips/ai/src/components/message.tsx`.
+
+### Estilos do Streamdown
+
+Quem usa o `MessageResponse` precisa importar o CSS do Streamdown e fazer o
+Tailwind do app varrer o `dist` do Streamdown e dos plugins (as classes que
+ele gera não estão no `@blips/ai/styles.css`). Ajuste os `../` conforme a
+posição do seu CSS em relação ao `node_modules`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
+```
 
 ## API
 
@@ -170,6 +193,10 @@ export function RespostaDoAgente({ transmitindo }: { transmitindo: boolean }) {
   `false`): só conta como ramo o que for JSX.
 - `MessageAction` é um `Button` Base UI: troca de elemento com `render`, nunca
   `asChild`.
+- **Markdown sem estilo** (tabelas, blocos de código e controles do
+  Streamdown sem as classes do Tailwind): faltou o
+  `@import "streamdown/styles.css"` ou os `@source` do `dist` do Streamdown e
+  dos plugins (seção "Estilos do Streamdown").
 - O pacote é apresentacional: transforme `UIMessage.parts` em JSX no app (ver
   `../../components/ai-chat.md`); `MessageResponse` recebe a string do part
   `text`, não o `UIMessage`.

@@ -111,8 +111,8 @@ Props do `HoverCardContent` (`side`, `align`, `sideOffset`…). Largura padrão 
 
 ### InlineCitationCarousel
 
-Props do `Carousel` da `@blips/ui` (Embla), exceto `setApi`, que o componente usa internamente para ligar
-o índice e os botões.
+Props do `Carousel` da `@blips/ui` (Embla). Não passe `setApi`: o componente usa o seu para ligar o índice e os
+botões, e o `setApi` recebido por prop substitui o interno, deixando índice e botões sem efeito.
 
 ### InlineCitationCarouselContent, InlineCitationCarouselItem, InlineCitationCarouselHeader
 

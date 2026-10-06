@@ -35,8 +35,21 @@ import {
 
 ## Peers exigidos
 
-Nenhum em runtime. `ai` só para tipos (`ToolUIPart["state"]`); use
-`import type`.
+Nenhum em runtime. `ai` é peer opcional e só de tipos (`ToolUIPart["state"]`),
+nenhum código de runtime. Como a @blips/ai publica o
+fonte `.tsx`, num projeto TypeScript instale como **devDependency** para o
+compilador resolver o tipo; no seu código, `import type`.
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
+
+O exemplo abaixo tipa a part com `ToolPart` de `@blips/ai/components/tool`.
+Mesmo sendo `import type`, o compilador lê `tool.tsx`, que importa o
+`code-block` e os tipos do `shiki`: com esse import, o `shiki` também precisa
+estar instalado (`pnpm add shiki`). Sem o `Tool` na tela, tipe com
+`ToolUIPart` do `ai` e dispense o `shiki`.
 
 ## API
 
