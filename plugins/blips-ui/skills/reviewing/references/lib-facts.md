@@ -24,7 +24,7 @@ aplicável): `background`, `foreground`, `card`, `popover`, `surface`,
 `primary` (`#FCBA28`, o amarelo Blips), `secondary`, `muted`, `accent`,
 `destructive`, **`warning`**, **`success`**, **`info`**, `code`
 (`+ -highlight/-number`), `selection`, `border`, `input`, `ring`,
-`chart-1..5`, tokens de `sidebar-*`, `--radius` (+ `sm/md/lg/xl/2xl`), e fontes
+`chart-1..5` (escala âmbar `yellow-300…800`), tokens de `sidebar-*`, `--radius` (+ `sm/md/lg/xl/2xl/3xl/4xl`), e fontes
 **`--font-sans` (Inter)**, **`--font-display` (Quicksand)**, **`--font-mono`
 (JetBrains Mono)**. ⚠️ **`--font-heading` é um ALIAS de `--font-sans` (Inter),
 NÃO Quicksand** — para "anunciar" use `font-display`. Logo: `text-success`,
