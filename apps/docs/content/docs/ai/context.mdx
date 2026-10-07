@@ -79,15 +79,34 @@ e cache de `usage.inputTokenDetails.cacheReadTokens`.
 
 O custo é estimado pelo catálogo embutido do [tokenlens](https://github.com/xn1cklas/tokenlens), a partir
 de `modelId` no formato `provedor:modelo` (ex.: `openai:gpt-5`). Sem `modelId`, ou com um modelo fora do
-catálogo (como um nome de deployment do LiteLLM), o custo aparece como `$0.00`.
+catálogo (como um nome de deployment do LiteLLM), o custo aparece como `US$ 0,00`.
+
+### Textos e formatação
+
+Os rótulos padrão estão em pt-BR ("Entrada", "Saída", "Raciocínio", "Cache", "Custo total") e números,
+porcentagem e custo saem formatados com `Intl` em `pt-BR` (`75%`, `96 mil`, `US$ 0,01`). O custo é sempre em
+dólar, porque é o que o tokenlens devolve: o `locale` muda só a formatação. Para outro locale, passe `locale`
+no `Context`; para trocar um rótulo, passe `label` na linha ou no rodapé.
+
+```tsx
+<Context locale="en-US" maxTokens={128_000} usedTokens={96_000} usage={usage}>
+  <ContextTrigger iconLabel="Context usage" />
+  <ContextContent>
+    <ContextContentBody>
+      <ContextInputUsage label="Prompt" />
+      <ContextOutputUsage label="Resposta" />
+    </ContextContentBody>
+    <ContextContentFooter label="Custo estimado" />
+  </ContextContent>
+</Context>
+```
 
 ## Exemplos
 
-### Textos em pt-BR
+### Conteúdo personalizado
 
-Os rótulos e a formatação padrão estão em inglês (`en-US`, `USD`, "Total cost", "Input", "Output"...),
-como no original. Para traduzir, passe `children`: cada parte passa a desenhar o seu conteúdo no lugar do
-padrão.
+Passe `children` quando a parte precisar mostrar outra coisa: ela passa a desenhar o seu conteúdo no lugar
+do padrão.
 
 <ComponentPreview name="ai-context-custom" />
 
@@ -103,6 +122,7 @@ Aceita as props do `HoverCard` da `@blips/ui` (`open`, `defaultOpen`, `onOpenCha
 | `maxTokens`  | `number`             | obrigatório |
 | `usage`      | `LanguageModelUsage` | —           |
 | `modelId`    | `string`             | —           |
+| `locale`     | `string`             | `"pt-BR"`   |
 
 ### ContextTrigger
 
@@ -113,7 +133,10 @@ Com `children`, desenha o conteúdo dentro do trigger padrão (`<a>`) e ignora a
 | ------------ | ------------------ | ------ |
 | `delay`      | `number` (ms)      | `0`    |
 | `closeDelay` | `number` (ms)      | `0`    |
+| `iconLabel`  | `string`           | `"Uso do contexto do modelo"` |
 | `children`   | `ReactNode`        | percentual + anel |
+
+`iconLabel` é o `aria-label` do anel (`role="img"`).
 
 ### ContextContent
 
@@ -122,12 +145,20 @@ Props do `HoverCardContent` da `@blips/ui` (`side`, `align`, `sideOffset`...). P
 ### ContextContentHeader, ContextContentBody, ContextContentFooter
 
 Props de `<div>`. Sem `children`, o header mostra percentual, `usados / total` e uma barra de
-[Progress](/docs/components/progress); o footer mostra o custo total. O body só tem padding.
+[Progress](/docs/components/progress); o footer mostra o custo total com o rótulo `label` (padrão
+`"Custo total"`). O body só tem padding.
 
 ### ContextInputUsage, ContextOutputUsage, ContextReasoningUsage, ContextCacheUsage
 
-Props de `<div>`. Sem `children`, mostram tokens e custo da categoria, ou nada quando o valor é zero. Com
-`children`, desenham os `children` no lugar.
+Props de `<div>` mais `label?: ReactNode`. Sem `children`, mostram o rótulo, os tokens e o custo da
+categoria, ou nada quando o valor é zero. Com `children`, desenham os `children` no lugar.
+
+| Linha                   | `label` padrão  |
+| ----------------------- | --------------- |
+| `ContextInputUsage`     | `"Entrada"`     |
+| `ContextOutputUsage`    | `"Saída"`       |
+| `ContextReasoningUsage` | `"Raciocínio"`  |
+| `ContextCacheUsage`     | `"Cache"`       |
 
 ## Origem
 

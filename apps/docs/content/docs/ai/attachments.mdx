@@ -1,0 +1,237 @@
+---
+title: Attachments
+description: Anexos de uma mensagem de IA a partir das parts de arquivo e de documento do AI SDK, com prévia, nome, remoção e cartão no hover.
+---
+
+<ComponentPreview name="ai-attachments-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
+
+O `ai` entra só pelos tipos (`FileUIPart` e `SourceDocumentUIPart`): nada dele roda no navegador. Em projeto TypeScript, instale-o como devDependency (`pnpm add -D ai`): a `@blips/ai` publica o fonte `.tsx`, e o `tsc` do app checa esse fonte e precisa resolver os tipos do `ai`. Nenhum outro peer opcional é exigido. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  AttachmentPart,
+  AttachmentPreview,
+  AttachmentRemove,
+  Attachments,
+} from "@blips/ai/components/attachments"
+```
+
+```tsx
+<Attachments variant="grid">
+  {anexos.map((anexo) => (
+    <AttachmentPart key={anexo.id} data={anexo} onRemove={() => remover(anexo.id)}>
+      <AttachmentPreview />
+      <AttachmentRemove />
+    </AttachmentPart>
+  ))}
+</Attachments>
+```
+
+### Casca da @blips/ui
+
+`Attachment`, `AttachmentMedia`, `AttachmentContent`, `AttachmentTitle`, `AttachmentDescription`, `AttachmentActions`, `AttachmentAction`, `AttachmentGroup` e `AttachmentTrigger` são os do [Attachment da @blips/ui](/docs/components/attachment), reexportados com a mesma identidade: não existe uma segunda família de anexo. A `@blips/ai` acrescenta só o que é de IA: ler as parts do AI SDK, escolher a prévia pelo tipo de mídia e cuidar da remoção.
+
+Por isso o item mudou de nome em relação ao AI Elements. Lá, o item era `<Attachment data onRemove>`. Aqui, `Attachment` é a casca da `@blips/ui` (que não recebe `data`), e o item ligado a uma part é o `AttachmentPart`. Ao portar código do AI Elements, troque `Attachment` por `AttachmentPart`.
+
+### Dados
+
+`data` é uma part do AI SDK com um `id`: um `FileUIPart` (`type: "file"`, com `url`, `mediaType` e `filename`) ou um `SourceDocumentUIPart` (`type: "source-document"`, com `title`, `mediaType` e `filename`). As parts de arquivo de uma `UIMessage` não têm `id`; gere um no app (o índice da part serve).
+
+```tsx
+const anexos = message.parts
+  .filter((part) => part.type === "file")
+  .map((part, i) => ({ ...part, id: `${message.id}-${i}` }))
+```
+
+Com eventos próprios (por exemplo, arquivos de uma execução do AgentOS), monte objetos nesse formato no app.
+
+### Variantes
+
+O `variant` do `Attachments` vale para todos os itens e define orientação e tamanho da casca:
+
+| `variant` | Casca da `@blips/ui`                     | Uso                                        |
+| --------- | ---------------------------------------- | ------------------------------------------ |
+| `grid`    | `orientation="vertical"`                 | Miniaturas na mensagem, alinhadas à direita |
+| `inline`  | `orientation="horizontal"`, `size="xs"`  | Etiquetas compactas, como no prompt input  |
+| `list`    | `orientation="horizontal"`, largura total | Lista com nome e tipo                      |
+
+Na variante `grid`, o `AttachmentInfo` não renderiza nada (só a prévia aparece). O botão de remover aparece com o mouse sobre o item ou com foco do teclado em `grid` e `inline`, e fica sempre visível em `list`.
+
+### Junto da mensagem
+
+Os anexos do usuário ficam na [Message](/docs/components/message) da `@blips/ui`, acima do [Bubble](/docs/components/bubble):
+
+```tsx
+<Message align="end">
+  <MessageContent>
+    <Attachments variant="grid">
+      {anexos.map((anexo) => (
+        <AttachmentPart key={anexo.id} data={anexo}>
+          <AttachmentPreview />
+        </AttachmentPart>
+      ))}
+    </Attachments>
+    <Bubble>
+      <BubbleContent>{texto}</BubbleContent>
+    </Bubble>
+  </MessageContent>
+</Message>
+```
+
+## Exemplos
+
+### Inline e lista
+
+A mesma lista de anexos nas variantes `inline` e `list`. A imagem sem `filename` cai no texto padrão "Imagem", e o documento de fonte mostra o `title`. Na lista, `showMediaType` mostra o tipo de mídia embaixo do nome.
+
+<ComponentPreview name="ai-attachments-variantes" />
+
+### Prévia no hover e estado vazio
+
+O `AttachmentHoverCard` abre um cartão com a imagem maior ao passar o mouse. O `AttachmentHoverCardTrigger` usa `render` para virar o próprio `AttachmentPart`. O `AttachmentEmpty` mostra "Nenhum anexo".
+
+<ComponentPreview name="ai-attachments-hover" />
+
+```tsx
+<AttachmentHoverCard openDelay={200}>
+  <AttachmentHoverCardTrigger
+    render={
+      <AttachmentPart data={foto} tabIndex={0}>
+        <AttachmentPreview />
+        <AttachmentInfo />
+      </AttachmentPart>
+    }
+  />
+  <AttachmentHoverCardContent>
+    <img src={foto.url} alt={foto.filename} />
+  </AttachmentHoverCardContent>
+</AttachmentHoverCard>
+```
+
+### Textos padrão
+
+Os textos para parts sem nome já vêm em pt-BR: "Anexo", "Imagem" e "Fonte". Troque com `labels` no `Attachments` (só os que quiser). O botão de remover usa "Remover" como rótulo acessível (prop `label` do `AttachmentRemove`), e o `AttachmentEmpty`, "Nenhum anexo" (troque com `children`).
+
+```tsx
+<Attachments labels={{ attachment: "Arquivo" }} variant="list">
+  …
+</Attachments>
+```
+
+## Referência da API
+
+### Attachments
+
+Contêiner dos anexos. Aceita as props de `div`.
+
+| Prop      | Tipo                          | Padrão   |
+| --------- | ----------------------------- | -------- |
+| `variant` | `"grid" \| "inline" \| "list"` | `"grid"` |
+| `labels`  | `Partial<AttachmentLabels>`   | `{ attachment: "Anexo", image: "Imagem", source: "Fonte" }` |
+
+### AttachmentPart
+
+Item ligado a uma part. Renderiza o `Attachment` da `@blips/ui` com orientação e tamanho vindos da variante e aceita as outras props dele (como `state`), menos `orientation` e `size`. Os componentes `AttachmentPreview`, `AttachmentInfo` e `AttachmentRemove` precisam estar dentro dele.
+
+| Prop       | Tipo             | Padrão      |
+| ---------- | ---------------- | ----------- |
+| `data`     | `AttachmentData` | obrigatória |
+| `onRemove` | `() => void`     |             |
+
+### AttachmentPreview
+
+`AttachmentMedia` com a prévia: a imagem ou o vídeo (sem som) quando a part é de arquivo e tem `url`, e senão um ícone pela categoria (documento, áudio, vídeo, fonte ou desconhecido). Aceita as props de `div`.
+
+| Prop           | Tipo        | Padrão              |
+| -------------- | ----------- | ------------------- |
+| `fallbackIcon` | `ReactNode` | ícone da categoria  |
+
+### AttachmentInfo
+
+`AttachmentContent` com o nome (`AttachmentTitle`) e, se pedido, o tipo de mídia (`AttachmentDescription`). Não renderiza nada na variante `grid`. Aceita as props de `div`.
+
+| Prop            | Tipo      | Padrão  |
+| --------------- | --------- | ------- |
+| `showMediaType` | `boolean` | `false` |
+
+O nome vem de `filename` (arquivo) ou de `title` e depois `filename` (fonte); na falta deles, dos `labels`.
+
+### AttachmentRemove
+
+`AttachmentAction` com `XIcon` que chama o `onClick` passado e depois o `onRemove` do `AttachmentPart`. Não renderiza nada se o `AttachmentPart` não tiver `onRemove`. Aceita as props do `AttachmentAction`.
+
+| Prop       | Tipo        | Padrão      |
+| ---------- | ----------- | ----------- |
+| `label`    | `string`    | `"Remover"` |
+| `children` | `ReactNode` | `XIcon`     |
+
+### AttachmentHoverCard
+
+[HoverCard](/docs/components/hover-card) da `@blips/ui`. Aceita as props dele.
+
+| Prop         | Tipo     | Padrão |
+| ------------ | -------- | ------ |
+| `openDelay`  | `number` | `0`    |
+| `closeDelay` | `number` | `0`    |
+
+No Base UI os atrasos ficam no gatilho; o `AttachmentHoverCard` os repassa ao `AttachmentHoverCardTrigger`.
+
+### AttachmentHoverCardTrigger
+
+`HoverCardTrigger`. Aceita as props dele; `delay` e `closeDelay` passados aqui têm prioridade sobre os do `AttachmentHoverCard`.
+
+### AttachmentHoverCardContent
+
+`HoverCardContent` com `p-2`, largura automática e `align="start"`. Aceita as props dele.
+
+### AttachmentEmpty
+
+Texto centralizado para quando não há anexos. Aceita as props de `div`; `children` substitui "Nenhum anexo".
+
+### Utilitários e hooks
+
+| Nome                                | O que faz                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------- |
+| `getMediaCategory(data)`            | Devolve `"image"`, `"video"`, `"audio"`, `"document"`, `"source"` ou `"unknown"` pelo `type` e pelo `mediaType` |
+| `getAttachmentLabel(data, labels?)` | Devolve o nome exibido, com os mesmos padrões do `AttachmentInfo`          |
+| `useAttachmentsContext()`           | `{ variant, labels }` do `Attachments` mais próximo (ou os padrões, fora dele) |
+| `useAttachmentContext()`            | `{ data, mediaCategory, onRemove, variant }` do `AttachmentPart`; lança erro fora dele |
+
+### Tipos
+
+```ts
+type AttachmentData =
+  | (FileUIPart & { id: string })
+  | (SourceDocumentUIPart & { id: string })
+
+type AttachmentVariant = "grid" | "inline" | "list"
+
+type AttachmentMediaCategory =
+  "image" | "video" | "audio" | "document" | "source" | "unknown"
+
+interface AttachmentLabels {
+  attachment: string
+  image: string
+  source: string
+}
+```
+
+## Origem
+
+Adaptado do componente [Attachments](https://elements.ai-sdk.dev/components/attachments) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips compôs o item sobre o Attachment da `@blips/ui` (por isso o item virou `AttachmentPart`), trocou o HoverCard Radix pelo da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e traduziu os textos padrão, que ganharam a prop `labels`.

@@ -63,26 +63,24 @@ Para as mensagens, use o [Message](/docs/ai/message). Se você não precisa das 
 
 ### Estado vazio
 
-O `ConversationEmptyState` ocupa o espaço da conversa antes da primeira mensagem. Os textos padrão estão em inglês, como no AI Elements: passe sempre `title` e `description` em pt-BR. Com `children`, você substitui o conteúdo inteiro.
+O `ConversationEmptyState` ocupa o espaço da conversa antes da primeira mensagem. Os textos padrão são "Nenhuma mensagem ainda" e "Comece uma conversa para ver as mensagens aqui"; troque `title` e `description` para falar do contexto da tela. Com `children`, você substitui o conteúdo inteiro.
 
 <ComponentPreview name="ai-conversation-empty" />
 
 ```tsx
 <ConversationEmptyState
   icon={<ChatCircleDotsIcon className="size-8" />}
-  title="Nenhuma mensagem ainda"
   description="Pergunte sobre contratos, garantia ou financeiro."
 />
 ```
 
 ### Download
 
-O `ConversationDownload` (canto superior direito da demo do topo) gera um `.md` com o texto das mensagens. Ele recebe `UIMessage[]`, o formato do AI SDK, e lê só as partes `text`. Se as suas mensagens vêm de outro backend, monte objetos `{ id, role, parts: [{ type: "text", text }] }`.
+O `ConversationDownload` (canto superior direito da demo do topo) gera um `.md` (padrão `conversa.md`) com o texto das mensagens, cada uma com o papel em pt-BR (`**Usuário:**`, `**Assistente:**`, `**Sistema:**`). Ele recebe `UIMessage[]`, o formato do AI SDK, e lê só as partes `text`. Se as suas mensagens vêm de outro backend, monte objetos `{ id, role, parts: [{ type: "text", text }] }`.
 
 ```tsx
 <ConversationDownload
-  aria-label="Baixar conversa"
-  filename="conversa.md"
+  filename="atendimento.md"
   messages={messages}
   formatMessage={(m) => `**${m.role === "user" ? "Cliente" : "Assistente"}:** …`}
 />
@@ -102,8 +100,8 @@ Aceita as props do `StickToBottom.Content`. Coluna com `gap-8` e `p-4`.
 
 | Prop          | Tipo        | Padrão                                        |
 | ------------- | ----------- | --------------------------------------------- |
-| `title`       | `string`    | `"No messages yet"`                           |
-| `description` | `string`    | `"Start a conversation to see messages here"` |
+| `title`       | `string`    | `"Nenhuma mensagem ainda"`                          |
+| `description` | `string`    | `"Comece uma conversa para ver as mensagens aqui"`  |
 | `icon`        | `ReactNode` |                                               |
 | `children`    | `ReactNode` |                                               |
 
@@ -111,17 +109,17 @@ Aceita as props de `div`.
 
 ### ConversationScrollButton
 
-Aceita as props do [Button](/docs/components/button) (`variant="outline"`, `size="icon"`). Só renderiza fora do fim da conversa e precisa estar dentro do `Conversation`. Passe um `aria-label`.
+Aceita as props do [Button](/docs/components/button) (`variant="outline"`, `size="icon"`). Só renderiza fora do fim da conversa e precisa estar dentro do `Conversation`. O `aria-label` padrão é "Rolar até a última mensagem"; passe o seu para trocar.
 
 ### ConversationDownload
 
-Aceita as props do `Button`, menos `onClick`.
+Aceita as props do `Button`, menos `onClick`. O `aria-label` padrão é "Baixar conversa".
 
 | Prop            | Tipo                                             | Padrão                         |
 | --------------- | ------------------------------------------------ | ------------------------------ |
 | `messages`      | `UIMessage[]`                                    |                                |
-| `filename`      | `string`                                         | `"conversation.md"`            |
-| `formatMessage` | `(message: UIMessage, index: number) => string`  | `**Role:** texto`              |
+| `filename`      | `string`                                         | `"conversa.md"`                |
+| `formatMessage` | `(message: UIMessage, index: number) => string`  | `**Usuário:** texto` (papel em pt-BR) |
 | `children`      | `ReactNode`                                      | `DownloadSimpleIcon`           |
 
 ### messagesToMarkdown

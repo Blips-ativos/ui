@@ -1,6 +1,6 @@
 ---
 name: installing
-description: "Use quando um repositório React/Next.js for instalar, configurar ou adotar a @blips/ui (ou a @blips/ai, os componentes de IA sobre ela) pela primeira vez — pedidos como 'instala a lib da blips', 'configura o @blips/ui', 'adota o design system Blips', 'padroniza a UI desse projeto', 'instala o @blips/ai', 'quero os componentes de chat/agente', setup de Tailwind/tema/fontes/ícones/peers para a lib, ou preparação do CLAUDE.md de UI num repo. Use também ao notar sintomas de adoção errada: import do barrel @blips/ui em React 18/19, import de '@blips/ai' sem subpath, peers da @blips/ai faltando (streamdown, shiki, ai), tailwind.config.js sendo criado, tokens de tema copiados à mão, lucide-react instalado junto da lib, ou @source defensivo no CSS."
+description: "Use quando um repositório React/Next.js for instalar, configurar ou adotar a @blips/ui (ou a @blips/ai, os componentes de IA sobre ela) pela primeira vez — pedidos como 'instala a lib da blips', 'configura o @blips/ui', 'adota o design system Blips', 'padroniza a UI desse projeto', 'instala o @blips/ai', 'quero os componentes de chat/agente', setup de Tailwind/tema/fontes/ícones/peers para a lib, ou preparação do CLAUDE.md de UI num repo. Use também ao notar sintomas de adoção errada: import do barrel @blips/ui em React 18/19, import de '@blips/ai' sem subpath, peers da @blips/ai faltando (streamdown, shiki, ai, @xyflow/react, media-chrome, @rive-app/react-webgl2, react-jsx-parser, ansi-to-react), canvas sem o CSS do React Flow, tailwind.config.js sendo criado, tokens de tema copiados à mão, lucide-react instalado junto da lib, ou @source defensivo no CSS."
 ---
 
 # Adotando a @blips/ui em um repositório
@@ -173,9 +173,9 @@ antes de instalar. Resumo do contrato:
 | Item | Regra |
 | --- | --- |
 | Gate | `@blips/ui` **^3** e React **19**. Repo 2.x ou React < 19: pare e alinhe com o usuário (não migre por conta própria) |
-| Instalação | `pnpm add @blips/ai` + os **peers do componente** que o app importar (tabela na reference: `message`/`reasoning` → `streamdown` + `@streamdown/{code,math,mermaid,cjk}`; `code-block`/`tool` → `shiki`; `ai` para os tipos de `conversation`, `message`, `tool`, `confirmation`, `context`, `prompt-input`) |
+| Instalação | `pnpm add @blips/ai` + os **peers do componente** que o app importar (tabela na reference: `message`/`reasoning` → `streamdown` + `@streamdown/{code,math,mermaid,cjk}`; `code-block`/`tool`/`agent`/`sandbox` → `shiki`; canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) → `@xyflow/react`; `audio-player` → `media-chrome`; `persona` → `@rive-app/react-webgl2`; `jsx-preview` → `react-jsx-parser`; `terminal` → `ansi-to-react`; `ai` para os tipos de `conversation`, `message`, `tool`, `confirmation`, `context`, `prompt-input`, `agent`, `sandbox`, `attachments`, `image`, `audio-player`, `transcription`) |
 | `ai` | Peer opcional **só de tipos** (o pacote não usa runtime dele). Como o pacote publica `.tsx`, o `tsc` do app precisa dele (sem `ai`, TS2307 dentro de `node_modules/@blips/ai/src`, verificado): em projeto TypeScript, `pnpm add -D ai`. `dependencies` só se o código do app usar runtime do `ai` |
-| CSS | `@import "@blips/ui/globals.css";` **depois** `@import "@blips/ai/styles.css";` (só `@source` do pacote). Com `message` (`MessageResponse`) ou `reasoning`: `@import "streamdown/styles.css";` e `@source` do `streamdown/dist` e de cada plugin `@streamdown/*` instalado (legítimos: conteúdo fora da auto-detecção) |
+| CSS | `@import "@blips/ui/globals.css";` **depois** `@import "@blips/ai/styles.css";` (só `@source` do pacote). Com `message` (`MessageResponse`) ou `reasoning`: `@import "streamdown/styles.css";` e `@source` do `streamdown/dist` e de cada plugin `@streamdown/*` instalado (legítimos: conteúdo fora da auto-detecção). Com componentes de canvas: `import "@xyflow/react/dist/style.css"` uma vez no app (a @blips/ai não importa CSS de peer) |
 | Next | `transpilePackages: ["@blips/ui", "@blips/ai"]` |
 | Imports | Só subpath: `@blips/ai/components/<x>` e `@blips/ai/fx/<x>`. Não existe barrel `@blips/ai` |
 
@@ -248,4 +248,5 @@ Depois da adoção, a construção de telas/componentes é guiada pela skill
 - `import … from "@blips/ai"` (barrel não existe) ou @blips/ai num repo `@blips/ui` 2.x / React < 19
 - Componente da @blips/ai importado sem os peers dele declarados no `package.json` do app
 - `@blips/ai/styles.css` ausente ou importado antes do globals da @blips/ui; `transpilePackages` sem `"@blips/ai"`
+- Componente de canvas da @blips/ai sem `import "@xyflow/react/dist/style.css"` no app; `Persona` em produção sem `src` próprio (os `.riv` padrão vêm do blob da Vercel)
 - Sucesso reportado sem rodar o build

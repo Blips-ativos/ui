@@ -52,7 +52,8 @@ pnpm add -D ai
 | `multiple` | `boolean` | Seleção múltipla no seletor de arquivos. |
 | `maxFiles` | `number` | Excedentes são descartados com `onError`. |
 | `maxFileSize` | `number` | Em bytes. |
-| `onError` | `(err: { code: "max_files" \| "max_file_size" \| "accept"; message: string }) => void` | `message` vem em inglês: mostre seu texto pt-BR a partir do `code` (ex.: `toast`). |
+| `onError` | `(err: { code: "max_files" \| "max_file_size" \| "accept"; message: string }) => void` | `message` já vem em pt-BR ("Nenhum arquivo corresponde aos tipos aceitos.", "Todos os arquivos excedem o tamanho máximo.", "Arquivos demais. Alguns não foram adicionados."); para texto próprio, use o `code` (ex.: `toast`). |
+| `fileInputLabel` | `string` | `aria-label`/`title` do `<input type="file">` oculto. Padrão "Enviar arquivos". |
 | `globalDrop` | `boolean` | Aceita arquivo solto em qualquer lugar da página. Padrão: só no form. |
 | `syncHiddenInput` | `boolean` | Legado do upstream, sem efeito prático. Não use. |
 
@@ -61,16 +62,16 @@ pnpm add -D ai
 | Export | Props | Notas |
 |---|---|---|
 | `PromptInputBody` | `HTMLAttributes<HTMLDivElement>` | `display: contents`; agrupa o textarea. |
-| `PromptInputTextarea` | Props do `InputGroupTextarea` | `name="message"`, `field-sizing-content max-h-48 min-h-16`. Placeholder padrão **em inglês** ("What would you like to know?"): passe `placeholder`. Enter envia (não envia se o submit estiver `disabled`); Backspace com campo vazio remove o último anexo; colar arquivo anexa. `onKeyDown` seu roda antes; `preventDefault()` cancela o comportamento interno. |
+| `PromptInputTextarea` | Props do `InputGroupTextarea` | `name="message"`, `field-sizing-content max-h-48 min-h-16`. Placeholder padrão "O que você gostaria de saber?": passe `placeholder` com o contexto da tela. Enter envia (não envia se o submit estiver `disabled`); Backspace com campo vazio remove o último anexo; colar arquivo anexa. `onKeyDown` seu roda antes; `preventDefault()` cancela o comportamento interno. |
 | `PromptInputHeader` | Props do `InputGroupAddon` (sem `align`) | Linha acima do textarea (`order-first`), para anexos/fontes. |
 | `PromptInputFooter` | Props do `InputGroupAddon` (sem `align`) | Linha abaixo, `justify-between`: ferramentas à esquerda, envio à direita. |
 | `PromptInputTools` | `HTMLAttributes<HTMLDivElement>` | Agrupa botões/menus do rodapé. |
 | `PromptInputButton` | Props do `InputGroupButton` + `tooltip?: string \| { content: ReactNode; shortcut?: string; side? }` | `variant="ghost"`; `size` automático: `icon-sm` com 1 filho, `sm` com ícone + texto. |
-| `PromptInputSubmit` | Props do `InputGroupButton` + `status?: ChatStatus`, `onStop?: () => void` | `variant="default"`, `size="icon-sm"`. Ícone por status: `ArrowBendDownLeftIcon` (pronto), `Spinner` (`submitted`), `SquareIcon` (`streaming`), `XIcon` (`error`). Com `onStop` e status `submitted`/`streaming`, vira `type="button"` e chama `onStop`. `aria-label` padrão "Submit"/"Stop" (inglês): sobrescreva. |
-| `PromptInputActionMenu` / `…Trigger` / `…Content` / `…Item` | `DropdownMenu` da @blips/ui (Base UI Menu) | Trigger é um `PromptInputButton` (padrão `PlusIcon`). `Content` com `align="start"`. Item usa `onClick` (não `onSelect`). |
-| `PromptInputActionAddAttachments` | Props do `DropdownMenuItem` + `label?: string` | Abre o seletor de arquivos. Label padrão em inglês ("Add photos or files"). |
-| `PromptInputActionAddScreenshot` | Props do `DropdownMenuItem` + `label?: string` | Captura a tela (`getDisplayMedia`) e anexa PNG. Label padrão "Take screenshot". |
-| `PromptInputSelect` / `…Trigger` / `…Content` / `…Item` / `…Value` | `Select` da @blips/ui (Base UI) | Seletor de modelo/agente. Trigger sem borda e `text-muted-foreground`. Passe `items` no `PromptInputSelect` para o valor exibir o rótulo. |
+| `PromptInputSubmit` | Props do `InputGroupButton` + `status?: ChatStatus`, `onStop?: () => void`, `submitLabel?: string` ("Enviar"), `stopLabel?: string` ("Parar") | `variant="default"`, `size="icon-sm"`. Ícone por status: `ArrowBendDownLeftIcon` (pronto), `Spinner` (`submitted`), `SquareIcon` (`streaming`), `XIcon` (`error`). Com `onStop` e status `submitted`/`streaming`, vira `type="button"` e chama `onStop`. `aria-label` = `submitLabel` ou, gerando, `stopLabel`. |
+| `PromptInputActionMenu` / `…Trigger` / `…Content` / `…Item` | `DropdownMenu` da @blips/ui (Base UI Menu) | Trigger é um `PromptInputButton` (padrão `PlusIcon`, `aria-label` "Mais ações"). `Content` com `align="start"`. Item usa `onClick` (não `onSelect`). |
+| `PromptInputActionAddAttachments` | Props do `DropdownMenuItem` + `label?: string` | Abre o seletor de arquivos. Label padrão "Adicionar fotos ou arquivos". |
+| `PromptInputActionAddScreenshot` | Props do `DropdownMenuItem` + `label?: string` | Captura a tela (`getDisplayMedia`) e anexa PNG. Label padrão "Capturar tela". |
+| `PromptInputSelect` / `…Trigger` / `…Content` / `…Item` / `…Value` | `Select` da @blips/ui (Base UI) | Seletor de modelo/agente. Trigger sem borda e `text-muted-foreground`. **Passe `items` no `PromptInputSelect`** (mesma lista dos itens): sem isso, o `PromptInputSelectValue` mostra o `value` cru (`"salvador"`), não o rótulo. Alternativa: `children` função no `…Value` (`{(v) => rotuloDe(v)}`). |
 | `PromptInputHoverCard` / `…Trigger` / `…Content` | `HoverCard` da @blips/ui (Base UI PreviewCard) | `Trigger` com `delay`/`closeDelay` (padrão 0) e `<a>` por padrão; `Content` com `align="start"`. |
 | `PromptInputCommand` / `…Input` / `…List` / `…Empty` / `…Group` / `…Item` / `…Separator` | `Command` da @blips/ui | Paleta (ex.: "/" para comandos, "@" para fontes). |
 | `PromptInputTabsList` / `…Tab` / `…TabLabel` / `…TabBody` / `…TabItem` | `div`/`h3` estilizados | Listas dentro de um hover card. |
@@ -181,7 +182,6 @@ export function CaixaDeEnvio({
   onParar: () => void;
 }) {
   const [agente, setAgente] = useState("salvador");
-  const gerando = status === "submitted" || status === "streaming";
 
   return (
     <PromptInput
@@ -197,11 +197,12 @@ export function CaixaDeEnvio({
       <PromptInputFooter>
         <PromptInputTools>
           <PromptInputActionMenu>
-            <PromptInputActionMenuTrigger aria-label="Mais ações" />
+            <PromptInputActionMenuTrigger />
             <PromptInputActionMenuContent>
-              <PromptInputActionAddAttachments label="Anexar fotos ou arquivos" />
+              <PromptInputActionAddAttachments />
             </PromptInputActionMenuContent>
           </PromptInputActionMenu>
+          {/* `items` faz o Value mostrar "Salvador (suporte)", não "salvador". */}
           <PromptInputSelect
             items={agentes}
             onValueChange={(valor) => {
@@ -224,9 +225,10 @@ export function CaixaDeEnvio({
           </PromptInputSelect>
         </PromptInputTools>
         <PromptInputSubmit
-          aria-label={gerando ? "Parar resposta" : "Enviar mensagem"}
           onStop={onParar}
           status={status}
+          stopLabel="Parar resposta"
+          submitLabel="Enviar mensagem"
         />
       </PromptInputFooter>
     </PromptInput>
@@ -242,9 +244,14 @@ evento de conteúdo, `ready` no fim, `error` na falha). Ver
 
 ## Armadilhas
 
-- Textos padrão em inglês (placeholder, `aria-label` "Submit"/"Stop", labels do
-  menu, `message` do `onError`): passe os seus em pt-BR. O `<input type="file">`
-  escondido tem `aria-label="Upload files"` fixo, sem como trocar.
+- **`PromptInputSelect` sem `items` mostra o value cru.** O Select do Base UI
+  só sabe o rótulo do item escolhido pelo `items` do Root; sem ele, o trigger
+  exibe `"salvador"` em vez de "Salvador (suporte)". Passe `items` ou uma
+  função como `children` do `PromptInputSelectValue`.
+- Textos padrão já em pt-BR (placeholder, `aria-label` "Enviar"/"Parar",
+  "Mais ações", labels do menu, "Enviar arquivos" no input oculto, `message`
+  do `onError`). Para trocar o do submit, use `submitLabel`/`stopLabel`: um
+  `aria-label` direto fica fixo nos dois estados.
 - **Sem `onStop`, o botão continua `type="submit"` durante o streaming**:
   clicar envia de novo. Sempre passe `onStop` junto de `status`.
 - `PromptInputActionMenuTrigger` com `tooltip` quebra (o trigger do menu tenta

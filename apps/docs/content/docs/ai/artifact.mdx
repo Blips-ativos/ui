@@ -1,0 +1,118 @@
+---
+title: Artifact
+description: Painel para um conteúdo gerado pelo agente (código, documento, prévia), com título, ações e botão de fechar.
+---
+
+<ComponentPreview name="ai-artifact-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Artifact,
+  ArtifactAction,
+  ArtifactActions,
+  ArtifactClose,
+  ArtifactContent,
+  ArtifactDescription,
+  ArtifactHeader,
+  ArtifactTitle,
+} from "@blips/ai/components/artifact"
+import { CopyIcon } from "@phosphor-icons/react"
+```
+
+```tsx
+<Artifact>
+  <ArtifactHeader>
+    <div>
+      <ArtifactTitle>calcular_parcela.py</ArtifactTitle>
+      <ArtifactDescription>Gerado há 2 minutos</ArtifactDescription>
+    </div>
+    <ArtifactActions>
+      <ArtifactAction icon={CopyIcon} tooltip="Copiar" onClick={copiar} />
+      <ArtifactClose onClick={fechar} />
+    </ArtifactActions>
+  </ArtifactHeader>
+  <ArtifactContent>{conteudo}</ArtifactContent>
+</Artifact>
+```
+
+O componente é só a moldura: o que vai em `ArtifactContent` (código, markdown, prévia) e o que cada ação faz
+ficam no app. Para código realçado, coloque um [CodeBlock](/docs/ai/code-block) dentro do `ArtifactContent`
+(ele exige o peer `shiki`).
+
+`ArtifactAction` recebe o componente de ícone do Phosphor em `icon` (não o elemento): `icon={CopyIcon}`. Com
+`tooltip`, o botão ganha um [Tooltip](/docs/components/tooltip) da `@blips/ui`. O texto para leitores de tela
+é `label` ou, sem ele, o próprio `tooltip`: um botão só com ícone precisa de um dos dois.
+
+## Exemplos
+
+### Fechar
+
+`ArtifactClose` é um `Button` ghost com `XIcon` e rótulo acessível "Fechar" (troque com `label`). O estado de
+aberto/fechado fica no app.
+
+<ComponentPreview name="ai-artifact-close" />
+
+## Referência da API
+
+### Artifact
+
+`<div>` com borda, cantos arredondados e sombra. Aceita as props de `div`.
+
+### ArtifactHeader
+
+`<div>` com borda inferior e fundo `muted`, que distribui título e ações nas pontas.
+
+### ArtifactTitle, ArtifactDescription
+
+`<p>` para o nome (texto `sm`, `font-medium`) e a descrição (`muted-foreground`).
+
+### ArtifactActions
+
+`<div>` que agrupa as ações em linha.
+
+### ArtifactAction
+
+Props do `Button` da `@blips/ui` (padrão `variant="ghost"`, `size="sm"`).
+
+| Prop       | Tipo                       | Padrão             |
+| ---------- | -------------------------- | ------------------ |
+| `icon`     | `Icon` (do Phosphor)       | —                  |
+| `tooltip`  | `string`                   | —                  |
+| `label`    | `string`                   | `tooltip`          |
+| `children` | `ReactNode` (sem `icon`)   | —                  |
+
+### ArtifactClose
+
+Props do `Button` da `@blips/ui` (padrão `variant="ghost"`, `size="sm"`).
+
+| Prop       | Tipo        | Padrão     |
+| ---------- | ----------- | ---------- |
+| `label`    | `string`    | `"Fechar"` |
+| `children` | `ReactNode` | `XIcon`    |
+
+### ArtifactContent
+
+`<div>` rolável com `p-4`, que ocupa o espaço restante.
+
+## Origem
+
+Adaptado do componente [Artifact](https://elements.ai-sdk.dev/components/artifact) do
+[AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as
+primitivas Radix pelo Button e pelo Tooltip da `@blips/ui` (Base UI) e os ícones Lucide pelos do Phosphor
+(`icon` é do tipo `Icon` do Phosphor). `ArtifactClose` ganhou a prop `label` (padrão "Fechar") e o tooltip
+usa `render` no gatilho para não aninhar um botão dentro de outro.

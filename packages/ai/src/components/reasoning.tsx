@@ -42,7 +42,9 @@ const ReasoningContext = createContext<ReasoningContextValue | null>(null);
 export const useReasoning = () => {
   const context = useContext(ReasoningContext);
   if (!context) {
-    throw new Error("Reasoning components must be used within Reasoning");
+    throw new Error(
+      "Os componentes Reasoning precisam estar dentro de Reasoning"
+    );
   }
   return context;
 };
@@ -170,14 +172,24 @@ export type ReasoningTriggerProps = ComponentProps<
   getThinkingMessage?: (isStreaming: boolean, duration?: number) => ReactNode;
 };
 
+// Textos padrão em pt-BR; para trocar, passe `getThinkingMessage`.
+// <span> em vez do <p> do upstream: <p> não é conteúdo válido de <button>.
 const defaultGetThinkingMessage = (isStreaming: boolean, duration?: number) => {
   if (isStreaming || duration === 0) {
-    return <Shimmer duration={1}>Thinking...</Shimmer>;
+    return (
+      <Shimmer as="span" duration={1}>
+        Pensando...
+      </Shimmer>
+    );
   }
   if (duration === undefined) {
-    return <p>Thought for a few seconds</p>;
+    return <span>Pensou por alguns segundos</span>;
   }
-  return <p>Thought for {duration} seconds</p>;
+  return (
+    <span>
+      Pensou por {duration} {duration === 1 ? "segundo" : "segundos"}
+    </span>
+  );
 };
 
 export const ReasoningTrigger = memo(

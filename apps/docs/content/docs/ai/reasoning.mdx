@@ -72,21 +72,18 @@ Com eventos próprios (por exemplo, os eventos de streaming do AgentOS), o mapea
 - Quando `isStreaming` volta a `false`, o componente calcula a duração em segundos e fecha o bloco 1 segundo depois. Isso acontece uma vez só: se a pessoa abrir de novo, ele fica aberto.
 - Se a mensagem já chega pronta (histórico), passe `duration` para mostrar o tempo sem simular streaming.
 
-### Textos em pt-BR
+### Textos padrão
 
-Os textos padrão do gatilho vêm em inglês, como no upstream ("Thinking...", "Thought for N seconds"). Em telas pt-BR, passe `getThinkingMessage`:
+O gatilho mostra "Pensando..." (com [Shimmer](/docs/ai/shimmer)) durante o streaming e "Pensou por N segundos" depois (ou "Pensou por alguns segundos" sem `duration`). Para outro texto, passe `getThinkingMessage`. O gatilho é um `<button>`: devolva `<span>` (e `<Shimmer as="span">`), não `<p>`.
 
 ```tsx
 import { Shimmer } from "@blips/ai/components/shimmer"
 
 function mensagem(isStreaming: boolean, duration?: number) {
   if (isStreaming || duration === 0) {
-    return <Shimmer duration={1}>Pensando...</Shimmer>
+    return <Shimmer as="span" duration={1}>Analisando o contrato...</Shimmer>
   }
-  if (duration === undefined) {
-    return <p>Pensou por alguns segundos</p>
-  }
-  return <p>Pensou por {duration} segundos</p>
+  return <span>Análise concluída{duration ? ` em ${duration} s` : ""}</span>
 }
 
 <ReasoningTrigger getThinkingMessage={mensagem} />
@@ -129,7 +126,7 @@ Botão que abre e fecha o bloco. Aceita as props do `CollapsibleTrigger`.
 
 | Prop                 | Tipo                                                   | Padrão              |
 | -------------------- | ------------------------------------------------------ | ------------------- |
-| `getThinkingMessage` | `(isStreaming: boolean, duration?: number) => ReactNode` | textos em inglês    |
+| `getThinkingMessage` | `(isStreaming: boolean, duration?: number) => ReactNode` | "Pensando..." / "Pensou por N segundos" |
 | `children`           | `ReactNode`                                            | ícone + texto + seta |
 
 ### ReasoningContent

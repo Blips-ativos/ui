@@ -1,6 +1,6 @@
 ---
 name: building
-description: "Padrões, APIs e convenções da biblioteca Blips UI (@blips/ui) — shadcn/ui sobre Base UI (v3.x) ou Radix (v2.x), com instruções separadas para cada versão — e da @blips/ai (componentes de interface de agente sobre a v3.x). Use sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização —, inclusive mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout). Cobre .tsx com @blips/ui, Tailwind CSS, react-hook-form, TanStack Table, Recharts, primitivas Base UI/Radix, loading/empty states, acessibilidade e design responsivo. Dispara também em UI de IA: chat, agente, streaming, raciocínio, tool call, prompt input, fontes e citações, AI Elements ou @blips/ai."
+description: "Padrões, APIs e convenções da biblioteca Blips UI (@blips/ui) — shadcn/ui sobre Base UI (v3.x) ou Radix (v2.x), com instruções separadas para cada versão — e da @blips/ai (componentes de interface de agente sobre a v3.x). Use sempre que criar, modificar ou revisar QUALQUER código de interface — páginas, componentes, formulários, tabelas, modais, sheets, gráficos, sidebars, layouts ou estilização —, inclusive mudanças pequenas (trocar variante de Button, adicionar Badge, corrigir layout). Cobre .tsx com @blips/ui, Tailwind CSS, react-hook-form, TanStack Table, Recharts, primitivas Base UI/Radix, loading/empty states, acessibilidade e design responsivo. Dispara também em UI de IA: chat, agente, streaming, raciocínio, tool call, prompt input, fontes e citações, fluxo/canvas de agente, voz e transcrição, plano e tarefas do agente, terminal e artefatos de código, AI Elements ou @blips/ai."
 ---
 
 # Construindo Componentes UI
@@ -113,7 +113,10 @@ Pacote à parte, `@blips/ai`, que **compõe** a @blips/ui v3.x (exige `@blips/ui
 (`@blips/ai/components/<nome>` ou `@blips/ai/fx/<nome>`). Os componentes são
 apresentacionais: recebem `parts`/`state`/`status` prontos, e o mapeamento do
 AI SDK ou de eventos próprios (ex.: AgentOS do Agno) fica no app. Alguns exigem
-peers opcionais (Streamdown, Shiki, `ai`): cada reference diz quais. `ai` é peer
+peers opcionais (Streamdown, Shiki, `@xyflow/react`, `media-chrome`,
+`@rive-app/react-webgl2`, `react-jsx-parser`, `ansi-to-react`, `ai`): cada
+reference diz quais. Os componentes de canvas exigem ainda que o app importe
+`@xyflow/react/dist/style.css` uma vez (a @blips/ai não importa CSS de peer). `ai` é peer
 só de tipos (sem runtime); como o pacote publica `.tsx`, em projeto TypeScript
 instale como devDependency (`pnpm add -D ai`). Quem usa `MessageResponse` (ou
 `Reasoning`) importa `streamdown/styles.css` e declara `@source` do dist do
@@ -137,6 +140,47 @@ Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-c
 | InlineCitation | `@blips/ai/components/inline-citation` | [references/ai/inline-citation.md](references/ai/inline-citation.md) | Citação no meio do texto com cartão e carrossel de fontes |
 | BorderBeam | `@blips/ai/fx/border-beam` | [references/ai/border-beam.md](references/ai/border-beam.md) | Feixe animado na borda (ex.: prompt enquanto o agente trabalha) |
 | ThinkingOrbs | `@blips/ai/fx/thinking-orbs` | [references/ai/thinking-orbs.md](references/ai/thinking-orbs.md) | Orbe animado pequeno (escala de texto) de "agente pensando" |
+| **Fluxo e canvas (peer `@xyflow/react` + o app importa `@xyflow/react/dist/style.css`)** | | | |
+| Canvas | `@blips/ai/components/canvas` | [references/ai/canvas.md](references/ai/canvas.md) | Área de fluxo (React Flow) com os padrões da Blips: raiz dos demais componentes de canvas |
+| Node | `@blips/ai/components/node` | [references/ai/node.md](references/ai/node.md) | Nó de fluxo: `Card` da @blips/ui com handles de entrada/saída, para custom nodes |
+| Edge | `@blips/ai/components/edge` | [references/ai/edge.md](references/ai/edge.md) | Tipos de aresta `Edge.Animated` (caminho ativo) e `Edge.Temporary` (tracejada) para `edgeTypes` |
+| Connection | `@blips/ai/components/connection` | [references/ai/connection.md](references/ai/connection.md) | Linha exibida enquanto o usuário arrasta uma conexão nova (`connectionLineComponent`) |
+| Controls | `@blips/ai/components/controls` | [references/ai/controls.md](references/ai/controls.md) | Controles de zoom/enquadrar do canvas no visual da @blips/ui |
+| Panel | `@blips/ai/components/panel` | [references/ai/panel.md](references/ai/panel.md) | Caixa flutuante sobre o canvas (ações, legenda, status do fluxo) |
+| Toolbar | `@blips/ai/components/toolbar` | [references/ai/toolbar.md](references/ai/toolbar.md) | Barra de ações de um nó, visível ao selecioná-lo |
+| **Voz e mídia** | | | |
+| SpeechInput | `@blips/ai/components/speech-input` | [references/ai/speech-input.md](references/ai/speech-input.md) | Botão de ditado (Web Speech ou gravação + transcrição própria) |
+| Transcription | `@blips/ai/components/transcription` | [references/ai/transcription.md](references/ai/transcription.md) | Transcrição com segmentos sincronizados ao tempo do áudio |
+| MicSelector | `@blips/ai/components/mic-selector` | [references/ai/mic-selector.md](references/ai/mic-selector.md) | Seletor de microfone (dispositivos de áudio) com busca |
+| VoiceSelector | `@blips/ai/components/voice-selector` | [references/ai/voice-selector.md](references/ai/voice-selector.md) | Seletor de voz de TTS com busca e prévia |
+| AudioPlayer | `@blips/ai/components/audio-player` | [references/ai/audio-player.md](references/ai/audio-player.md) | Player de áudio (peer `media-chrome`) |
+| Persona | `@blips/ai/components/persona` | [references/ai/persona.md](references/ai/persona.md) | Avatar animado do agente por estado (peer `@rive-app/react-webgl2`; `.riv` hospedados pela Vercel, use `src` com assets próprios em produção) |
+| **Agente e tarefa** | | | |
+| Agent | `@blips/ai/components/agent` | [references/ai/agent.md](references/ai/agent.md) | Cartão de configuração de um agente: instruções, ferramentas, schema de saída |
+| Plan | `@blips/ai/components/plan` | [references/ai/plan.md](references/ai/plan.md) | Plano do agente recolhível, com título em streaming |
+| Queue | `@blips/ai/components/queue` | [references/ai/queue.md](references/ai/queue.md) | Fila de mensagens/tarefas pendentes, com seções e anexos |
+| Task | `@blips/ai/components/task` | [references/ai/task.md](references/ai/task.md) | Tarefa recolhível com itens e arquivos tocados |
+| Checkpoint | `@blips/ai/components/checkpoint` | [references/ai/checkpoint.md](references/ai/checkpoint.md) | Marco na conversa para restaurar um estado anterior |
+| Question | `@blips/ai/components/question` | [references/ai/question.md](references/ai/question.md) | Pergunta do agente ao usuário com opções e campo livre |
+| **Código e dev** | | | |
+| Artifact | `@blips/ai/components/artifact` | [references/ai/artifact.md](references/ai/artifact.md) | Painel de artefato gerado (cabeçalho, ações, conteúdo) |
+| Commit | `@blips/ai/components/commit` | [references/ai/commit.md](references/ai/commit.md) | Commit com hash, autor, data e arquivos alterados |
+| EnvironmentVariables | `@blips/ai/components/environment-variables` | [references/ai/environment-variables.md](references/ai/environment-variables.md) | Lista de variáveis de ambiente com valores ocultáveis e cópia |
+| FileTree | `@blips/ai/components/file-tree` | [references/ai/file-tree.md](references/ai/file-tree.md) | Árvore de arquivos com pastas recolhíveis e seleção |
+| JSXPreview | `@blips/ai/components/jsx-preview` | [references/ai/jsx-preview.md](references/ai/jsx-preview.md) | Prévia de JSX gerado em streaming (peer `react-jsx-parser`) |
+| PackageInfo | `@blips/ai/components/package-info` | [references/ai/package-info.md](references/ai/package-info.md) | Pacote com versão, tipo de mudança e dependências |
+| Sandbox | `@blips/ai/components/sandbox` | [references/ai/sandbox.md](references/ai/sandbox.md) | Execução de código pelo agente: status da tool + abas (código, saída); exige `shiki` |
+| SchemaDisplay | `@blips/ai/components/schema-display` | [references/ai/schema-display.md](references/ai/schema-display.md) | Cartão de endpoint HTTP: método, caminho, parâmetros, corpo e resposta |
+| Snippet | `@blips/ai/components/snippet` | [references/ai/snippet.md](references/ai/snippet.md) | Comando/trecho de uma linha com botão de copiar |
+| StackTrace | `@blips/ai/components/stack-trace` | [references/ai/stack-trace.md](references/ai/stack-trace.md) | Stack trace JS/Node (formato V8) com erro, frames recolhíveis e cópia; traceback Python vai no Terminal |
+| Terminal | `@blips/ai/components/terminal` | [references/ai/terminal.md](references/ai/terminal.md) | Saída de terminal com cores ANSI, status e cópia (peer `ansi-to-react`) |
+| TestResults | `@blips/ai/components/test-results` | [references/ai/test-results.md](references/ai/test-results.md) | Resultado de testes: resumo, progresso, suítes e falhas |
+| WebPreview | `@blips/ai/components/web-preview` | [references/ai/web-preview.md](references/ai/web-preview.md) | Prévia de página em iframe com barra de URL e console |
+| **Conteúdo e modelo** | | | |
+| Attachments | `@blips/ai/components/attachments` | [references/ai/attachments.md](references/ai/attachments.md) | Anexos de IA (`FileUIPart`) sobre o `Attachment` da @blips/ui, com prévia e remoção |
+| Image | `@blips/ai/components/image` | [references/ai/image.md](references/ai/image.md) | Imagem gerada por modelo (`GeneratedFile` do AI SDK, base64) |
+| ModelSelector | `@blips/ai/components/model-selector` | [references/ai/model-selector.md](references/ai/model-selector.md) | Seletor de modelo com busca, logos de provedor e grupos |
+| OpenInChat | `@blips/ai/components/open-in-chat` | [references/ai/open-in-chat.md](references/ai/open-in-chat.md) | Menu "abrir em" outros chats (ChatGPT, Claude, v0…) com o prompt |
 
 ---
 
@@ -154,7 +198,7 @@ Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-c
 
 | Padrão | Arquivo | Quando usar |
 |--------|---------|-------------|
-| Tela de chat | [components/ai-chat.md](components/ai-chat.md) | Conversa com agente: Conversation + Message + MessageResponse + Reasoning + Tool + Sources + PromptInput + Suggestion + Shimmer, com dados do AI SDK (`useChat`) ou de eventos próprios (AgentOS) |
+| Tela de chat | [components/ai-chat.md](components/ai-chat.md) | Conversa com agente: Conversation + Message + MessageResponse + Reasoning + Tool + Sources + PromptInput + Suggestion + Shimmer, com dados do AI SDK (`useChat`) ou de eventos próprios (AgentOS); fluxo de agente com Attachments, Plan/Task/Queue e Confirmation |
 
 ### Formulários (react-hook-form + Zod)
 

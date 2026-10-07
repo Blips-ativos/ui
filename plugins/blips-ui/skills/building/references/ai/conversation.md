@@ -50,10 +50,10 @@ peers do Streamdown (`streamdown` + `@streamdown/{code,math,mermaid,cjk}`), o
 |---|---|---|
 | `Conversation` | Props do `StickToBottom` (`initial`, `resize`, `className`, `contextRef`…) | `relative flex-1 overflow-y-hidden`, `role="log"`, `initial="smooth"`, `resize="smooth"`. **Precisa de altura definida** no pai. |
 | `ConversationContent` | Props do `StickToBottom.Content` | Coluna `flex flex-col gap-8 p-4`. As mensagens vão aqui. |
-| `ConversationEmptyState` | `ComponentProps<"div">` + `title?: string`, `description?: string`, `icon?: ReactNode` | Padrões **em inglês** ("No messages yet"): sempre passe `title` e `description` em pt-BR. Com `children`, ignora título/descrição/ícone. |
-| `ConversationScrollButton` | Props do `Button` | Só aparece quando não está no fim. Posição `absolute bottom-4` centralizado, `variant="outline"`, `size="icon"`, ícone `ArrowDownIcon`. Precisa estar **dentro** do `Conversation` (usa o contexto). |
-| `ConversationDownload` | Props do `Button` (sem `onClick`) + `messages: UIMessage[]`, `filename?: string` (`"conversation.md"`), `formatMessage?: (message, index) => string` | Baixa a conversa em `.md`. `absolute top-4 right-4`. Ícone `DownloadSimpleIcon`. Só usa os parts `text`. |
-| `messagesToMarkdown(messages, formatMessage?)` | `UIMessage[]` → `string` | Função pura usada pelo download. Formato padrão `**User:** texto`. |
+| `ConversationEmptyState` | `ComponentProps<"div">` + `title?: string`, `description?: string`, `icon?: ReactNode` | Padrões pt-BR: "Nenhuma mensagem ainda" / "Comece uma conversa para ver as mensagens aqui"; troque para o contexto da tela. Com `children`, ignora título/descrição/ícone. |
+| `ConversationScrollButton` | Props do `Button` | Só aparece quando não está no fim. Posição `absolute bottom-4` centralizado, `variant="outline"`, `size="icon"`, ícone `ArrowDownIcon`, `aria-label` padrão "Rolar até a última mensagem". Precisa estar **dentro** do `Conversation` (usa o contexto). |
+| `ConversationDownload` | Props do `Button` (sem `onClick`) + `messages: UIMessage[]`, `filename?: string` (`"conversa.md"`), `formatMessage?: (message, index) => string` | Baixa a conversa em `.md`. `aria-label` padrão "Baixar conversa". `absolute top-4 right-4`. Ícone `DownloadSimpleIcon`. Só usa os parts `text`. |
+| `messagesToMarkdown(messages, formatMessage?)` | `UIMessage[]` → `string` | Função pura usada pelo download. Formato padrão `**Usuário:** texto` (`Usuário`/`Assistente`/`Sistema`). |
 
 ## Composição com a @blips/ui
 
@@ -118,7 +118,7 @@ export function ListaDaConversa({ mensagens }: { mensagens: MensagemTexto[] }) {
             ))
           )}
         </ConversationContent>
-        <ConversationScrollButton aria-label="Ir para a última mensagem" />
+        <ConversationScrollButton />
       </Conversation>
     </div>
   );
@@ -131,10 +131,9 @@ export function ListaDaConversa({ mensagens }: { mensagens: MensagemTexto[] }) {
   precisa ser `flex flex-col` com altura (`h-[…]`, `h-dvh`, `flex-1 min-h-0`).
 - `ConversationScrollButton` e `ConversationDownload` fora do `Conversation`
   quebram (`useStickToBottomContext` sem provider).
-- Textos padrão do estado vazio estão em inglês: passe `title`/`description`.
-  O `formatMessage` padrão do download também escreve `**User:**`/`**Assistant:**`:
-  passe um `formatMessage` com rótulos em pt-BR ("Você", nome do agente).
-- O botão de rolagem só tem ícone: dê `aria-label` em pt-BR.
+- Os textos padrão (estado vazio, `aria-label` dos botões, papéis no
+  download) já são pt-BR. Para nomes do produto ("Você", nome do agente) no
+  `.md`, passe `formatMessage`.
 - Não empilhe `ScrollArea` dentro do `Conversation`: quem rola é o próprio
   `StickToBottom`.
 - O `ConversationDownload` gera o arquivo no navegador; dados sensíveis da

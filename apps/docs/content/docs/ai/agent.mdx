@@ -1,0 +1,153 @@
+---
+title: Agent
+description: Cartão que mostra a definição de um agente, com nome, modelo, instruções, ferramentas e schema de saída.
+---
+
+<ComponentPreview name="ai-agent-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai shiki
+pnpm add -D ai
+```
+
+As ferramentas (`AgentTool`) e o schema de saída (`AgentOutput`) aparecem num [CodeBlock](/docs/ai/code-block), que destaca o código com o [Shiki](https://shiki.style). Por isso o `shiki` é obrigatório para este componente, mesmo sendo peer opcional do pacote.
+
+O componente importa do `ai` só o tipo `Tool`: nada dele roda no navegador. Em projeto TypeScript, instale-o como devDependency (`pnpm add -D ai`): a `@blips/ai` publica o fonte `.tsx`, e o `tsc` do app checa esse fonte e precisa resolver os tipos do `ai`. Se o app montar os objetos das ferramentas no próprio cliente com `tool()` e `jsonSchema()`, aí o `ai` roda no app e vira dependência normal (`pnpm add ai`). A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Agent,
+  AgentContent,
+  AgentHeader,
+  AgentInstructions,
+  AgentOutput,
+  AgentTool,
+  AgentTools,
+} from "@blips/ai/components/agent"
+```
+
+```tsx
+<Agent>
+  <AgentHeader name="Agente de suporte" model="anthropic/claude-sonnet-4-5" />
+  <AgentContent>
+    <AgentInstructions>Você atende clientes da Blips pelo WhatsApp.</AgentInstructions>
+    <AgentTools>
+      <AgentTool tool={buscarContratos} value="buscar_contratos" />
+      <AgentTool tool={abrirChamado} value="abrir_chamado" />
+    </AgentTools>
+    <AgentOutput schema={schemaDeSaida} />
+  </AgentContent>
+</Agent>
+```
+
+O componente é apresentacional: ele mostra a configuração de um agente (por exemplo, numa tela de administração ou de depuração) e não executa nada. Cada `AgentTool` recebe um objeto `Tool` do AI SDK, como os criados com `tool()`:
+
+```tsx
+import { jsonSchema, tool } from "ai"
+
+const buscarContratos = tool({
+  description: "Busca os contratos de locação de um cliente pelo CNPJ",
+  inputSchema: jsonSchema({
+    type: "object",
+    properties: { cnpj: { type: "string" } },
+    required: ["cnpj"],
+  }),
+})
+```
+
+Com um agente que não vem do AI SDK (por exemplo, a definição de um agente do AgentOS), monte no app objetos com `description` e `inputSchema` a partir dela.
+
+### Schema exibido
+
+O `AgentTool` mostra, como JSON, a propriedade `jsonSchema` do objeto da ferramenta quando ela existe; senão, o `inputSchema` passado por `JSON.stringify`. Com `jsonSchema()` o resultado sai legível, embrulhado numa chave `jsonSchema`. Um schema do Zod passado direto em `inputSchema` sai com a estrutura interna do Zod, que não ajuda quem lê.
+
+O gatilho do item mostra `tool.description` quando é string. Sem descrição (ou quando o `ai` traz `description` como função), aparece o `emptyDescription`, que por padrão é "Sem descrição". Vale passar uma descrição, já que o nome da ferramenta não é exibido.
+
+### Accordion do Base UI
+
+O `AgentTools` é um [Accordion](/docs/components/accordion) da `@blips/ui`, sobre o Base UI. Use as props dele, e não as do Radix: não existe `type="single"` nem `collapsible`. Para abrir um item de início, passe `defaultValue` como array com o `value` do item; para deixar vários abertos ao mesmo tempo, `multiple`.
+
+```tsx
+<AgentTools defaultValue={["buscar_contratos"]} multiple>
+  <AgentTool tool={buscarContratos} value="buscar_contratos" />
+</AgentTools>
+```
+
+## Exemplos
+
+### Rótulos e ferramenta sem descrição
+
+Os rótulos das seções já vêm em pt-BR ("Instruções", "Ferramentas", "Schema de saída"). Troque com `label`. O exemplo também abre a ferramenta de início com `defaultValue` e mostra o `emptyDescription` de uma ferramenta sem `description`.
+
+<ComponentPreview name="ai-agent-rotulos" />
+
+## Referência da API
+
+### Agent
+
+Contêiner com borda. Aceita as props de `div`.
+
+### AgentHeader
+
+Linha com ícone de robô, nome e, se houver, o modelo num `Badge`. Aceita as props de `div`.
+
+| Prop    | Tipo     | Padrão      |
+| ------- | -------- | ----------- |
+| `name`  | `string` | obrigatória |
+| `model` | `string` |             |
+
+### AgentContent
+
+Área das seções, com espaçamento vertical. Aceita as props de `div`.
+
+### AgentInstructions
+
+Bloco com as instruções (prompt de sistema) do agente. Aceita as props de `div`.
+
+| Prop       | Tipo        | Padrão         |
+| ---------- | ----------- | -------------- |
+| `children` | `string`    | obrigatória    |
+| `label`    | `ReactNode` | `"Instruções"` |
+
+### AgentTools
+
+Seção com o `Accordion` das ferramentas. Aceita as props do `Accordion` da `@blips/ui` (`defaultValue`, `value`, `onValueChange`, `multiple` etc.).
+
+| Prop        | Tipo        | Padrão          |
+| ----------- | ----------- | --------------- |
+| `label`     | `ReactNode` | `"Ferramentas"` |
+| `className` | `string`    | vai no `div` em volta do `Accordion` |
+
+### AgentTool
+
+Item do `Accordion` com a descrição no gatilho e o schema de entrada no conteúdo. Aceita as props do `AccordionItem`.
+
+| Prop               | Tipo                | Padrão            |
+| ------------------ | ------------------- | ----------------- |
+| `tool`             | `Tool` (do `ai`)    | obrigatória       |
+| `value`            | `string`            | identifica o item no `Accordion` |
+| `emptyDescription` | `ReactNode`         | `"Sem descrição"` |
+
+### AgentOutput
+
+Mostra o schema de saída num `CodeBlock` com linguagem `typescript`. Aceita as props de `div`.
+
+| Prop     | Tipo        | Padrão              |
+| -------- | ----------- | ------------------- |
+| `schema` | `string`    | obrigatória         |
+| `label`  | `ReactNode` | `"Schema de saída"` |
+
+## Origem
+
+Adaptado do componente [Agent](https://elements.ai-sdk.dev/components/agent) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Accordion e pelo Badge da `@blips/ui` (Base UI), o ícone Lucide pelo `RobotIcon` do Phosphor, traduziu os rótulos e acrescentou as props `label` e `emptyDescription`.

@@ -106,10 +106,10 @@ export default function AiPromptInputDemo() {
       <PromptInputFooter>
         <PromptInputTools>
           <PromptInputActionMenu>
-            <PromptInputActionMenuTrigger aria-label="Adicionar" />
+            <PromptInputActionMenuTrigger />
             <PromptInputActionMenuContent>
-              <PromptInputActionAddAttachments label="Adicionar fotos ou arquivos" />
-              <PromptInputActionAddScreenshot label="Capturar a tela" />
+              <PromptInputActionAddAttachments />
+              <PromptInputActionAddScreenshot />
             </PromptInputActionMenuContent>
           </PromptInputActionMenu>
           <PromptInputButton
@@ -138,15 +138,7 @@ export default function AiPromptInputDemo() {
             </PromptInputSelectContent>
           </PromptInputSelect>
         </PromptInputTools>
-        <PromptInputSubmit
-          aria-label={
-            status === "submitted" || status === "streaming"
-              ? "Parar"
-              : "Enviar"
-          }
-          onStop={stop}
-          status={status}
-        />
+        <PromptInputSubmit onStop={stop} status={status} />
       </PromptInputFooter>
     </PromptInput>
   );

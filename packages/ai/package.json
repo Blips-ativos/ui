@@ -5,19 +5,55 @@
   "type": "module",
   "sideEffects": false,
   "exports": {
+    "./components/agent": "./src/components/agent.tsx",
+    "./components/artifact": "./src/components/artifact.tsx",
+    "./components/attachments": "./src/components/attachments.tsx",
+    "./components/audio-player": "./src/components/audio-player.tsx",
+    "./components/canvas": "./src/components/canvas.tsx",
     "./components/chain-of-thought": "./src/components/chain-of-thought.tsx",
+    "./components/checkpoint": "./src/components/checkpoint.tsx",
     "./components/code-block": "./src/components/code-block.tsx",
+    "./components/commit": "./src/components/commit.tsx",
     "./components/confirmation": "./src/components/confirmation.tsx",
+    "./components/connection": "./src/components/connection.tsx",
     "./components/context": "./src/components/context.tsx",
+    "./components/controls": "./src/components/controls.tsx",
     "./components/conversation": "./src/components/conversation.tsx",
+    "./components/edge": "./src/components/edge.tsx",
+    "./components/environment-variables": "./src/components/environment-variables.tsx",
+    "./components/file-tree": "./src/components/file-tree.tsx",
+    "./components/image": "./src/components/image.tsx",
     "./components/inline-citation": "./src/components/inline-citation.tsx",
+    "./components/jsx-preview": "./src/components/jsx-preview.tsx",
     "./components/message": "./src/components/message.tsx",
+    "./components/mic-selector": "./src/components/mic-selector.tsx",
+    "./components/model-selector": "./src/components/model-selector.tsx",
+    "./components/node": "./src/components/node.tsx",
+    "./components/open-in-chat": "./src/components/open-in-chat.tsx",
+    "./components/package-info": "./src/components/package-info.tsx",
+    "./components/panel": "./src/components/panel.tsx",
+    "./components/persona": "./src/components/persona.tsx",
+    "./components/plan": "./src/components/plan.tsx",
     "./components/prompt-input": "./src/components/prompt-input.tsx",
+    "./components/question": "./src/components/question.tsx",
+    "./components/queue": "./src/components/queue.tsx",
     "./components/reasoning": "./src/components/reasoning.tsx",
+    "./components/sandbox": "./src/components/sandbox.tsx",
+    "./components/schema-display": "./src/components/schema-display.tsx",
     "./components/shimmer": "./src/components/shimmer.tsx",
+    "./components/snippet": "./src/components/snippet.tsx",
     "./components/sources": "./src/components/sources.tsx",
+    "./components/speech-input": "./src/components/speech-input.tsx",
+    "./components/stack-trace": "./src/components/stack-trace.tsx",
     "./components/suggestion": "./src/components/suggestion.tsx",
+    "./components/task": "./src/components/task.tsx",
+    "./components/terminal": "./src/components/terminal.tsx",
+    "./components/test-results": "./src/components/test-results.tsx",
     "./components/tool": "./src/components/tool.tsx",
+    "./components/toolbar": "./src/components/toolbar.tsx",
+    "./components/transcription": "./src/components/transcription.tsx",
+    "./components/voice-selector": "./src/components/voice-selector.tsx",
+    "./components/web-preview": "./src/components/web-preview.tsx",
     "./fx/border-beam": "./src/fx/border-beam.tsx",
     "./fx/thinking-orbs": "./src/fx/thinking-orbs.tsx",
     "./styles.css": "./styles.css",
@@ -37,24 +73,23 @@
   },
   "peerDependencies": {
     "@blips/ui": "^3.0.0",
+    "@rive-app/react-webgl2": "^4.0.0",
     "@streamdown/cjk": "^1.0.0",
     "@streamdown/code": "^2.0.0",
     "@streamdown/math": "^1.0.0",
     "@streamdown/mermaid": "^1.0.0",
+    "@xyflow/react": "^12.0.0",
     "ai": ">=6.0.0",
+    "ansi-to-react": "^6.0.0",
+    "media-chrome": "^4.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-jsx-parser": "^2.0.0",
     "shiki": "^4.0.0",
     "streamdown": "^2.7.0"
   },
   "peerDependenciesMeta": {
-    "ai": {
-      "optional": true
-    },
-    "shiki": {
-      "optional": true
-    },
-    "streamdown": {
+    "@rive-app/react-webgl2": {
       "optional": true
     },
     "@streamdown/cjk": {
@@ -67,6 +102,27 @@
       "optional": true
     },
     "@streamdown/mermaid": {
+      "optional": true
+    },
+    "@xyflow/react": {
+      "optional": true
+    },
+    "ai": {
+      "optional": true
+    },
+    "ansi-to-react": {
+      "optional": true
+    },
+    "media-chrome": {
+      "optional": true
+    },
+    "react-jsx-parser": {
+      "optional": true
+    },
+    "shiki": {
+      "optional": true
+    },
+    "streamdown": {
       "optional": true
     }
   },
@@ -92,15 +148,20 @@
   "devDependencies": {
     "@base-ui/react": "^1.8.0",
     "@blips/ui": "workspace:^",
+    "@rive-app/react-webgl2": "^4.36.0",
     "@streamdown/cjk": "^1.0.4",
     "@streamdown/code": "^2.0.0",
     "@streamdown/math": "^1.0.3",
     "@streamdown/mermaid": "^1.0.3",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@xyflow/react": "^12.12.0",
     "ai": "^7.0.128",
+    "ansi-to-react": "^6.2.6",
+    "media-chrome": "^4.19.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
+    "react-jsx-parser": "^2.4.1",
     "shiki": "^4.5.0",
     "streamdown": "^2.7.0",
     "tailwindcss": "^4.0.0",

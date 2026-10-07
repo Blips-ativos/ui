@@ -51,7 +51,7 @@ tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
 | `CodeBlockFilename` | `HTMLAttributes<HTMLSpanElement>` | Nome em `font-mono`. |
 | `CodeBlockActions` | `HTMLAttributes<HTMLDivElement>` | Lado direito do header (copiar, linguagem). |
 | `CodeBlockContent` | `code`, `language`, `showLineNumbers?` | Só o corpo realçado (sem moldura). Não lê contexto. |
-| `CodeBlockCopyButton` | Props do `Button` (sem `onCopy`/`onError` nativos) + `onCopy?: () => void`, `onError?: (error: Error) => void`, `timeout?: number` (2000) | `variant="ghost"`, `size="icon"`; troca `CopyIcon` por `CheckIcon` por `timeout` ms. Só funciona **dentro** de `CodeBlock`. Sem rótulo acessível por padrão. |
+| `CodeBlockCopyButton` | Props do `Button` (sem `onCopy`/`onError` nativos) + `onCopy?: () => void`, `onError?: (error: Error) => void`, `timeout?: number` (2000), `copyLabel?: string` ("Copiar código"), `copiedLabel?: string` ("Copiado") | `variant="ghost"`, `size="icon"`; troca `CopyIcon` por `CheckIcon` por `timeout` ms. Só funciona **dentro** de `CodeBlock`. Sem `children`, o `aria-label` é `copyLabel`/`copiedLabel` conforme o estado. |
 | `CodeBlockLanguageSelector` / `…Trigger` / `…Value` / `…Content` / `…Item` | `Select` da @blips/ui (Base UI) | Trigger `h-7` sem borda. `Content` com `align="end"` e `alignItemWithTrigger={false}`. A troca de linguagem é estado seu: passe o valor para o `language` do `CodeBlock`. |
 | `highlightCode(code, language, callback?)` | → `TokenizedCode \| null` | Função de baixo nível: retorna do cache na hora ou chama `callback` quando o Shiki termina. |
 
@@ -132,7 +132,7 @@ export function ConsultaGerada() {
               ))}
             </CodeBlockLanguageSelectorContent>
           </CodeBlockLanguageSelector>
-          <CodeBlockCopyButton aria-label="Copiar código" />
+          <CodeBlockCopyButton />
         </CodeBlockActions>
       </CodeBlockHeader>
     </CodeBlock>
@@ -147,7 +147,9 @@ export function ConsultaGerada() {
 - `CodeBlockCopyButton` fora de `CodeBlock` copia string vazia (o contexto tem
   `code: ""` por padrão). Não use com `CodeBlockContainer` + `CodeBlockContent`
   montados à mão.
-- O botão de copiar só tem ícone: passe `aria-label` em pt-BR.
+- O botão de copiar já tem `aria-label` pt-BR. Para outro texto, use
+  `copyLabel`/`copiedLabel`; um `aria-label` direto fica fixo e não muda para
+  "copiado".
 - `onCopy`/`onError` são do componente (`() => void` e `(error: Error) =>
   void`), não os eventos nativos de clipboard do `<button>`. Sem Clipboard API
   (HTTP sem TLS, iframe sem permissão), cai em `onError`.

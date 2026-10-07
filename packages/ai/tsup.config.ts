@@ -29,5 +29,10 @@ export default defineConfig({
     "class-variance-authority",
     "border-beam",
     "thinking-orbs",
+    /^@xyflow\/.*/,
+    /^@rive-app\/.*/,
+    /^media-chrome(\/.*)?$/,
+    "react-jsx-parser",
+    "ansi-to-react",
   ],
 });

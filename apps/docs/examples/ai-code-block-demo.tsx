@@ -30,7 +30,7 @@ export default function AiCodeBlockDemo() {
           <CodeBlockFilename>agente.py</CodeBlockFilename>
         </CodeBlockTitle>
         <CodeBlockActions>
-          <CodeBlockCopyButton aria-label="Copiar código" />
+          <CodeBlockCopyButton />
         </CodeBlockActions>
       </CodeBlockHeader>
     </CodeBlock>

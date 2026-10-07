@@ -64,6 +64,8 @@ export type InlineCitationCardTriggerProps = ComponentProps<typeof Badge> & {
   delay?: number;
   /** Atraso para fechar o card, em ms. Padrão 0 (como no upstream). */
   closeDelay?: number;
+  /** Texto quando `sources` está vazio. Padrão: "desconhecida". */
+  fallbackLabel?: string;
 };
 
 // Evita que uma URL inválida derrube a renderização (o upstream chamava new URL direto).
@@ -80,14 +82,20 @@ export const InlineCitationCardTrigger = ({
   className,
   delay = 0,
   closeDelay = 0,
+  fallbackLabel = "desconhecida",
   ...props
 }: InlineCitationCardTriggerProps) => (
+  // O Badge renderiza um <button> (o upstream usava <span>, fora da ordem de Tab):
+  // assim o trigger recebe foco pelo teclado e o PreviewCard abre no foco também.
+  // As classes do Badge continuam as mesmas; o preflight do Tailwind zera o
+  // visual nativo do botão.
   <HoverCardTrigger
     closeDelay={closeDelay}
     delay={delay}
     render={
       <Badge
-        className={cn("ml-1 rounded-full", className)}
+        className={cn("ml-1 cursor-default rounded-full", className)}
+        render={<button type="button" />}
         variant="secondary"
         {...props}
       />
@@ -99,7 +107,7 @@ export const InlineCitationCardTrigger = ({
         {sources.length > 1 && `+${sources.length - 1}`}
       </>
     ) : (
-      "unknown"
+      fallbackLabel
     )}
   </HoverCardTrigger>
 );
@@ -238,7 +246,7 @@ export const InlineCitationCarouselPrev = ({
 
   return (
     <button
-      aria-label="Previous"
+      aria-label="Fonte anterior"
       className={cn("shrink-0", className)}
       onClick={handleClick}
       type="button"
@@ -265,7 +273,7 @@ export const InlineCitationCarouselNext = ({
 
   return (
     <button
-      aria-label="Next"
+      aria-label="Próxima fonte"
       className={cn("shrink-0", className)}
       onClick={handleClick}
       type="button"

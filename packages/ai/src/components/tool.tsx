@@ -43,9 +43,13 @@ export const Tool = ({ className, ...props }: ToolProps) => (
 
 export type ToolPart = ToolUIPart | DynamicToolUIPart;
 
+export type ToolStatusLabels = Record<ToolPart["state"], string>;
+
 export type ToolHeaderProps = {
   title?: string;
   className?: string;
+  /** Sobrescreve os rótulos do badge de status (padrão em pt-BR). */
+  statusLabels?: Partial<ToolStatusLabels>;
 } & (
   | { type: ToolUIPart["type"]; state: ToolUIPart["state"]; toolName?: never }
   | {
@@ -55,14 +59,16 @@ export type ToolHeaderProps = {
     }
 );
 
-const statusLabels: Record<ToolPart["state"], string> = {
-  "approval-requested": "Awaiting Approval",
-  "approval-responded": "Responded",
-  "input-available": "Running",
-  "input-streaming": "Pending",
-  "output-available": "Completed",
-  "output-denied": "Denied",
-  "output-error": "Error",
+// Rótulos padrão em pt-BR; troque pela prop `statusLabels` do ToolHeader
+// ou pelo 2º argumento de `getStatusBadge`.
+export const toolStatusLabels: ToolStatusLabels = {
+  "approval-requested": "Aguardando aprovação",
+  "approval-responded": "Respondida",
+  "input-available": "Executando",
+  "input-streaming": "Pendente",
+  "output-available": "Concluída",
+  "output-denied": "Negada",
+  "output-error": "Erro",
 };
 
 const statusIcons: Record<ToolPart["state"], ReactNode> = {
@@ -75,10 +81,13 @@ const statusIcons: Record<ToolPart["state"], ReactNode> = {
   "output-error": <XCircleIcon className="size-4 text-red-600" />,
 };
 
-export const getStatusBadge = (status: ToolPart["state"]) => (
+export const getStatusBadge = (
+  status: ToolPart["state"],
+  labels?: Partial<ToolStatusLabels>
+) => (
   <Badge className="gap-1.5 rounded-full text-xs" variant="secondary">
     {statusIcons[status]}
-    {statusLabels[status]}
+    {labels?.[status] ?? toolStatusLabels[status]}
   </Badge>
 );
 
@@ -88,6 +97,7 @@ export const ToolHeader = ({
   type,
   state,
   toolName,
+  statusLabels,
   ...props
 }: ToolHeaderProps) => {
   const derivedName =
@@ -104,7 +114,7 @@ export const ToolHeader = ({
       <div className="flex items-center gap-2">
         <WrenchIcon className="size-4 text-muted-foreground" />
         <span className="font-medium text-sm">{title ?? derivedName}</span>
-        {getStatusBadge(state)}
+        {getStatusBadge(state, statusLabels)}
       </div>
       <CaretDownIcon className="size-4 text-muted-foreground transition-transform group-data-open:rotate-180" />
     </CollapsibleTrigger>
@@ -127,12 +137,19 @@ export const ToolContent = ({ className, ...props }: ToolContentProps) => (
 
 export type ToolInputProps = ComponentProps<"div"> & {
   input: ToolPart["input"];
+  /** Título da seção. Padrão: "Parâmetros". */
+  label?: ReactNode;
 };
 
-export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
+export const ToolInput = ({
+  className,
+  input,
+  label = "Parâmetros",
+  ...props
+}: ToolInputProps) => (
   <div className={cn("space-y-2 overflow-hidden", className)} {...props}>
     <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-      Parameters
+      {label}
     </h4>
     <div className="rounded-md bg-muted/50">
       <CodeBlock code={JSON.stringify(input, null, 2)} language="json" />
@@ -143,12 +160,18 @@ export const ToolInput = ({ className, input, ...props }: ToolInputProps) => (
 export type ToolOutputProps = ComponentProps<"div"> & {
   output: ToolPart["output"];
   errorText: ToolPart["errorText"];
+  /** Título da seção com resultado. Padrão: "Resultado". */
+  label?: ReactNode;
+  /** Título da seção com erro. Padrão: "Erro". */
+  errorLabel?: ReactNode;
 };
 
 export const ToolOutput = ({
   className,
   output,
   errorText,
+  label = "Resultado",
+  errorLabel = "Erro",
   ...props
 }: ToolOutputProps) => {
   if (!(output || errorText)) {
@@ -168,7 +191,7 @@ export const ToolOutput = ({
   return (
     <div className={cn("space-y-2", className)} {...props}>
       <h4 className="font-medium text-muted-foreground text-xs uppercase tracking-wide">
-        {errorText ? "Error" : "Result"}
+        {errorText ? errorLabel : label}
       </h4>
       <div
         className={cn(

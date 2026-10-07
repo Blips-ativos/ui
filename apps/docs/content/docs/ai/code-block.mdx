@@ -96,11 +96,14 @@ nativos, que mudam de assinatura.
 | `onCopy`   | `() => void`             | —                          |
 | `onError`  | `(error: Error) => void` | —                          |
 | `timeout`  | `number` (ms)            | `2000`                     |
+| `copyLabel`   | `string`              | `"Copiar código"`          |
+| `copiedLabel` | `string`              | `"Copiado"`                |
 | `children` | `ReactNode`              | ícone de copiar/confirmado |
 
-Sem a Clipboard API, `onError` recebe `Error("Clipboard API not available")`. Sem `children`, o botão
-recebe `aria-label` em inglês (`"Copy code"`, e `"Copied"` depois de copiar); passe o seu `aria-label` em
-pt-BR, como nas demos.
+Sem a Clipboard API, `onError` recebe `Error("API de área de transferência indisponível")`. Sem `children`, o
+botão é só ícone e recebe `aria-label` `copyLabel` ("Copiar código"), que vira `copiedLabel` ("Copiado")
+depois de copiar. Para trocar os textos, use essas duas props: um `aria-label` passado direto fica fixo e
+não acompanha a troca de estado.
 
 ### CodeBlockLanguageSelector
 

@@ -18,7 +18,7 @@ export default function AiPromptInputStatus() {
         <div className="flex flex-col items-center gap-2" key={item.status}>
           <InputGroup className="w-auto">
             <InputGroupAddon align="inline-end" className="p-1">
-              <PromptInputSubmit aria-label={item.label} status={item.status} />
+              <PromptInputSubmit status={item.status} />
             </InputGroupAddon>
           </InputGroup>
           <span className="text-muted-foreground text-xs">{item.label}</span>

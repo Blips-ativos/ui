@@ -298,8 +298,10 @@ export const MessageBranchNext = ({
 
 export type MessageBranchPageProps = ComponentProps<typeof ButtonGroupText>;
 
+// `children` substitui o texto padrão "N de M" (o upstream não deixava trocar).
 export const MessageBranchPage = ({
   className,
+  children,
   ...props
 }: MessageBranchPageProps) => {
   const { currentBranch, totalBranches } = useMessageBranch();
@@ -312,7 +314,7 @@ export const MessageBranchPage = ({
       )}
       {...props}
     >
-      {currentBranch + 1} de {totalBranches}
+      {children ?? `${currentBranch + 1} de ${totalBranches}`}
     </ButtonGroupText>
   );
 };

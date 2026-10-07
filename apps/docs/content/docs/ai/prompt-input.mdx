@@ -72,8 +72,42 @@ No `PromptInputTextarea`, Enter envia, Shift+Enter quebra a linha, colar arquivo
 campo vazio remove o último anexo. Enter não envia enquanto o botão de envio estiver `disabled` nem durante
 composição de IME.
 
-Os textos padrão (placeholder, rótulos dos itens do menu, `aria-label` e mensagens de `onError`) estão em
-inglês, como no original. Passe `placeholder`, `label` e `aria-label` (o do `PromptInputSubmit` é `"Submit"`/`"Stop"` por padrão) em pt-BR.
+Os textos padrão saem em pt-BR: placeholder "O que você gostaria de saber?", `aria-label` "Enviar"/"Parar" no
+`PromptInputSubmit`, "Mais ações" no gatilho do menu, "Adicionar fotos ou arquivos" e "Capturar tela" nos itens
+do menu, "Enviar arquivos" no `<input type="file">` oculto e as mensagens de `onError`. Para trocar, use
+`placeholder`, `submitLabel`/`stopLabel`, `aria-label`, `label` e `fileInputLabel`.
+
+### Seletor de modelo ou agente
+
+O `PromptInputSelect` é o [Select](/docs/components/select) da `@blips/ui` (Base UI). Para o
+`PromptInputSelectValue` mostrar o rótulo do item escolhido, e não o `value` cru (por exemplo, `gpt-4o` em vez
+de "GPT-4o"), passe `items` no `PromptInputSelect`, com a mesma lista dos itens. Sem `items`, dê ao
+`PromptInputSelectValue` uma função como `children`, que recebe o valor e devolve o rótulo.
+
+```tsx
+const modelos = [
+  { label: "GPT-4o", value: "gpt-4o" },
+  { label: "Claude Sonnet", value: "claude-sonnet" },
+]
+
+<PromptInputSelect items={modelos} value={modelo} onValueChange={(v) => setModelo(v as string)}>
+  <PromptInputSelectTrigger size="sm">
+    <PromptInputSelectValue />
+  </PromptInputSelectTrigger>
+  <PromptInputSelectContent>
+    {modelos.map((m) => (
+      <PromptInputSelectItem key={m.value} value={m.value}>
+        {m.label}
+      </PromptInputSelectItem>
+    ))}
+  </PromptInputSelectContent>
+</PromptInputSelect>
+
+{/* Alternativa, sem items no Root: */}
+<PromptInputSelectValue>
+  {(valor: string) => modelos.find((m) => m.value === valor)?.label}
+</PromptInputSelectValue>
+```
 
 ## Exemplos
 
@@ -140,6 +174,10 @@ Aceita as props de `<form>`, exceto `onSubmit` e `onError`, que mudam de assinat
 | `maxFileSize`     | `number` (bytes)                                                                         | —       |
 | `onError`         | `(err: { code: "max_files" \| "max_file_size" \| "accept"; message: string }) => void`   | —       |
 | `syncHiddenInput` | `boolean` — só limpa o `<input type="file">` quando não há anexos                        | `false` |
+| `fileInputLabel`  | `string` — `aria-label` e `title` do `<input type="file">` oculto                        | `"Enviar arquivos"` |
+
+As mensagens de `onError` vêm em pt-BR ("Nenhum arquivo corresponde aos tipos aceitos.", "Todos os arquivos
+excedem o tamanho máximo.", "Arquivos demais. Alguns não foram adicionados."); use o `code` para escrever a sua.
 
 `PromptInputMessage` é `{ text: string; files: FileUIPart[] }`.
 
@@ -150,7 +188,7 @@ passa a ser controlado pelo provider.
 
 | Prop          | Tipo     | Padrão                           |
 | ------------- | -------- | -------------------------------- |
-| `placeholder` | `string` | `"What would you like to know?"` |
+| `placeholder` | `string` | `"O que você gostaria de saber?"` |
 
 ### PromptInputSubmit
 
@@ -160,6 +198,8 @@ Props do `InputGroupButton` da `@blips/ui`.
 | ---------- | ----------------------------------------------------- | ----------- |
 | `status`   | `"ready" \| "submitted" \| "streaming" \| "error"`    | —           |
 | `onStop`   | `() => void`                                          | —           |
+| `submitLabel` | `string` — `aria-label` no estado pronto           | `"Enviar"`  |
+| `stopLabel`   | `string` — `aria-label` em `submitted`/`streaming` | `"Parar"`   |
 | `variant`  | variantes do `InputGroupButton`                       | `"default"` |
 | `size`     | `"xs" \| "sm" \| "icon-xs" \| "icon-sm"`              | `"icon-sm"` |
 | `children` | `ReactNode` — substitui o ícone do status             | —           |
@@ -179,7 +219,8 @@ de um (ícone + texto).
 `PromptInputActionMenu`, `PromptInputActionMenuContent` e `PromptInputActionMenuItem` repassam as props do
 [Dropdown Menu](/docs/components/dropdown-menu) (`DropdownMenu`, `DropdownMenuContent` com
 `align="start"` e `DropdownMenuItem`). `PromptInputActionMenuTrigger` aceita as props do
-`PromptInputButton` e mostra um `PlusIcon` sem `children`. Não use `tooltip` no trigger do menu.
+`PromptInputButton` e mostra um `PlusIcon` sem `children`, com `aria-label` padrão "Mais ações". Não use
+`tooltip` no trigger do menu.
 
 ### PromptInputActionAddAttachments / PromptInputActionAddScreenshot
 
@@ -187,7 +228,7 @@ Props do `DropdownMenuItem`.
 
 | Prop      | Tipo                                    | Padrão                                       |
 | --------- | --------------------------------------- | -------------------------------------------- |
-| `label`   | `string`                                | `"Add photos or files"` / `"Take screenshot"` |
+| `label`   | `string`                                | `"Adicionar fotos ou arquivos"` / `"Capturar tela"` |
 | `onClick` | handler do `DropdownMenuItem`           | — (`event.preventDefault()` cancela a ação)  |
 
 ### Demais partes
@@ -197,7 +238,7 @@ Props do `DropdownMenuItem`.
 | `PromptInputBody`                             | `<div>` com `display: contents`                                                        |
 | `PromptInputHeader` / `PromptInputFooter`     | `InputGroupAddon` com `align="block-end"` (o header vai para o topo com `order-first`) |
 | `PromptInputTools`                            | `<div>` em linha para os botões do rodapé                                              |
-| `PromptInputSelect*`                          | [Select](/docs/components/select) da `@blips/ui` (`Trigger`, `Content`, `Item`, `Value`) |
+| `PromptInputSelect*`                          | [Select](/docs/components/select) da `@blips/ui` (`Trigger`, `Content`, `Item`, `Value`). Passe `items` no `PromptInputSelect` (ou `children` função no `Value`) para mostrar o rótulo |
 | `PromptInputHoverCard*`                       | [Hover Card](/docs/components/hover-card); o trigger aceita `delay` e `closeDelay` (padrão `0`) |
 | `PromptInputCommand*`                         | [Command](/docs/components/command) (`Input`, `List`, `Empty`, `Group`, `Item`, `Separator`) |
 | `PromptInputTabsList`, `PromptInputTab`, `PromptInputTabLabel`, `PromptInputTabBody`, `PromptInputTabItem` | `<div>`/`<h3>` estilizados para listas em abas |

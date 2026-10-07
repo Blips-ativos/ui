@@ -10,7 +10,7 @@ import {
 } from "@blips/ui/components/collapsible";
 import { cn } from "@blips/ui/lib/utils";
 import { BookIcon, CaretDownIcon } from "@phosphor-icons/react";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 
 // No Base UI o Collapsible.Root já renderiza uma <div>; as props são as do Root
 // (open, defaultOpen, onOpenChange, disabled, render) mais as da <div>.
@@ -35,11 +35,17 @@ export type SourcesTriggerProps = Omit<
 > & {
   className?: string;
   count: number;
+  /** Texto do gatilho sem `children`. Padrão: "Usou N fonte(s)". */
+  getLabel?: (count: number) => ReactNode;
 };
+
+const defaultGetLabel = (count: number) =>
+  `Usou ${count} ${count === 1 ? "fonte" : "fontes"}`;
 
 export const SourcesTrigger = ({
   className,
   count,
+  getLabel = defaultGetLabel,
   children,
   ...props
 }: SourcesTriggerProps) => (
@@ -50,7 +56,7 @@ export const SourcesTrigger = ({
     {children ?? (
       <>
         {/* <span> em vez do <p> do upstream: <p> não é conteúdo válido de <button>. */}
-        <span className="font-medium">Used {count} sources</span>
+        <span className="font-medium">{getLabel(count)}</span>
         <CaretDownIcon className="h-4 w-4" />
       </>
     )}

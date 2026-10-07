@@ -5,7 +5,6 @@ import {
   ReasoningContent,
   ReasoningTrigger,
 } from "@blips/ai/components/reasoning";
-import { Shimmer } from "@blips/ai/components/shimmer";
 import { Button } from "@blips/ui/components/button";
 import { ArrowClockwiseIcon } from "@phosphor-icons/react";
 import { useCallback, useEffect, useState } from "react";
@@ -19,16 +18,6 @@ const raciocinio = `O cliente quer saber se pode antecipar as parcelas do contra
 Posso responder que sim e oferecer a simulação.`;
 
 const palavras = raciocinio.split(" ");
-
-function mensagem(isStreaming: boolean, duration?: number) {
-  if (isStreaming || duration === 0) {
-    return <Shimmer duration={1}>Pensando...</Shimmer>;
-  }
-  if (duration === undefined) {
-    return <p>Pensou por alguns segundos</p>;
-  }
-  return <p>Pensou por {duration} segundos</p>;
-}
 
 // Simula o streaming: revela uma palavra a cada 60 ms. Nada é buscado da rede.
 function useStreamingSimulado(onFim: () => void) {
@@ -57,7 +46,7 @@ function Simulacao({ onFim }: { onFim: () => void }) {
 
   return (
     <Reasoning isStreaming={isStreaming}>
-      <ReasoningTrigger getThinkingMessage={mensagem} />
+      <ReasoningTrigger />
       <ReasoningContent>{texto}</ReasoningContent>
     </Reasoning>
   );

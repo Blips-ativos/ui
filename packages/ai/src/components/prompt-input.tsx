@@ -128,7 +128,8 @@ const captureScreenshot = async (): Promise<File | null> => {
       // oxlint-disable-next-line eslint-plugin-unicorn(prefer-add-event-listener)
       video.onloadedmetadata = () => resolve();
       // oxlint-disable-next-line eslint-plugin-unicorn(prefer-add-event-listener)
-      video.onerror = () => reject(new Error("Failed to load screen stream"));
+      video.onerror = () =>
+        reject(new Error("Falha ao carregar a captura de tela"));
     });
 
     await video.play();
@@ -218,7 +219,7 @@ export const usePromptInputController = () => {
   const ctx = useContext(PromptInputController);
   if (!ctx) {
     throw new Error(
-      "Wrap your component inside <PromptInputProvider> to use usePromptInputController()."
+      "Envolva o componente em <PromptInputProvider> para usar usePromptInputController()."
     );
   }
   return ctx;
@@ -232,7 +233,7 @@ export const useProviderAttachments = () => {
   const ctx = useContext(ProviderAttachmentsContext);
   if (!ctx) {
     throw new Error(
-      "Wrap your component inside <PromptInputProvider> to use useProviderAttachments()."
+      "Envolva o componente em <PromptInputProvider> para usar useProviderAttachments()."
     );
   }
   return ctx;
@@ -382,7 +383,7 @@ export const usePromptInputAttachments = () => {
   const context = local ?? provider;
   if (!context) {
     throw new Error(
-      "usePromptInputAttachments must be used within a PromptInput or PromptInputProvider"
+      "usePromptInputAttachments precisa estar dentro de PromptInput ou PromptInputProvider"
     );
   }
   return context;
@@ -406,7 +407,7 @@ export const usePromptInputReferencedSources = () => {
   const ctx = useContext(LocalReferencedSourcesContext);
   if (!ctx) {
     throw new Error(
-      "usePromptInputReferencedSources must be used within a LocalReferencedSourcesContext.Provider"
+      "usePromptInputReferencedSources precisa estar dentro de LocalReferencedSourcesContext.Provider"
     );
   }
   return ctx;
@@ -424,7 +425,7 @@ export type PromptInputActionAddAttachmentsProps = ComponentProps<
 };
 
 export const PromptInputActionAddAttachments = ({
-  label = "Add photos or files",
+  label = "Adicionar fotos ou arquivos",
   onClick,
   ...props
 }: PromptInputActionAddAttachmentsProps) => {
@@ -457,7 +458,7 @@ export type PromptInputActionAddScreenshotProps = ComponentProps<
 };
 
 export const PromptInputActionAddScreenshot = ({
-  label = "Take screenshot",
+  label = "Capturar tela",
   onClick,
   ...props
 }: PromptInputActionAddScreenshotProps) => {
@@ -524,6 +525,8 @@ export type PromptInputProps = Omit<
     message: PromptInputMessage,
     event: FormEvent<HTMLFormElement>
   ) => void | Promise<void>;
+  /** `aria-label`/`title` do <input type="file"> oculto. Padrão: "Enviar arquivos". */
+  fileInputLabel?: string;
 };
 
 export const PromptInput = ({
@@ -536,6 +539,7 @@ export const PromptInput = ({
   maxFileSize,
   onError,
   onSubmit,
+  fileInputLabel = "Enviar arquivos",
   children,
   ...props
 }: PromptInputProps) => {
@@ -597,7 +601,7 @@ export const PromptInput = ({
       if (incoming.length && accepted.length === 0) {
         onError?.({
           code: "accept",
-          message: "No files match the accepted types.",
+          message: "Nenhum arquivo corresponde aos tipos aceitos.",
         });
         return;
       }
@@ -607,7 +611,7 @@ export const PromptInput = ({
       if (accepted.length > 0 && sized.length === 0) {
         onError?.({
           code: "max_file_size",
-          message: "All files exceed the maximum size.",
+          message: "Todos os arquivos excedem o tamanho máximo.",
         });
         return;
       }
@@ -622,7 +626,7 @@ export const PromptInput = ({
         if (typeof capacity === "number" && sized.length > capacity) {
           onError?.({
             code: "max_files",
-            message: "Too many files. Some were not added.",
+            message: "Arquivos demais. Alguns não foram adicionados.",
           });
         }
         const next: (FileUIPart & { id: string })[] = [];
@@ -661,7 +665,7 @@ export const PromptInput = ({
       if (incoming.length && accepted.length === 0) {
         onError?.({
           code: "accept",
-          message: "No files match the accepted types.",
+          message: "Nenhum arquivo corresponde aos tipos aceitos.",
         });
         return;
       }
@@ -671,7 +675,7 @@ export const PromptInput = ({
       if (accepted.length > 0 && sized.length === 0) {
         onError?.({
           code: "max_file_size",
-          message: "All files exceed the maximum size.",
+          message: "Todos os arquivos excedem o tamanho máximo.",
         });
         return;
       }
@@ -686,7 +690,7 @@ export const PromptInput = ({
       if (typeof capacity === "number" && sized.length > capacity) {
         onError?.({
           code: "max_files",
-          message: "Too many files. Some were not added.",
+          message: "Arquivos demais. Alguns não foram adicionados.",
         });
       }
 
@@ -922,12 +926,12 @@ export const PromptInput = ({
     <>
       <input
         accept={accept}
-        aria-label="Upload files"
+        aria-label={fileInputLabel}
         className="hidden"
         multiple={multiple}
         onChange={handleChange}
         ref={inputRef}
-        title="Upload files"
+        title={fileInputLabel}
         type="file"
       />
       <form
@@ -972,7 +976,7 @@ export const PromptInputTextarea = ({
   onChange,
   onKeyDown,
   className,
-  placeholder = "What would you like to know?",
+  placeholder = "O que você gostaria de saber?",
   ...props
 }: PromptInputTextareaProps) => {
   const controller = useOptionalPromptInputController();
@@ -1188,13 +1192,22 @@ export const PromptInputActionMenu = (props: PromptInputActionMenuProps) => (
 
 export type PromptInputActionMenuTriggerProps = PromptInputButtonProps;
 
+// Sem `children`, o gatilho é só o ícone "+": recebe `aria-label` pt-BR por
+// padrão (o upstream não tinha); passe o seu para trocar.
 export const PromptInputActionMenuTrigger = ({
   className,
   children,
+  "aria-label": ariaLabel = children ? undefined : "Mais ações",
   ...props
 }: PromptInputActionMenuTriggerProps) => (
   <DropdownMenuTrigger
-    render={<PromptInputButton className={className} {...props} />}
+    render={
+      <PromptInputButton
+        aria-label={ariaLabel}
+        className={className}
+        {...props}
+      />
+    }
   >
     {children ?? <PlusIcon className="size-4" />}
   </DropdownMenuTrigger>
@@ -1226,6 +1239,10 @@ export const PromptInputActionMenuItem = ({
 export type PromptInputSubmitProps = ComponentProps<typeof InputGroupButton> & {
   status?: ChatStatus;
   onStop?: () => void;
+  /** `aria-label` no estado pronto. Padrão: "Enviar". */
+  submitLabel?: string;
+  /** `aria-label` enquanto gera (`submitted`/`streaming`). Padrão: "Parar". */
+  stopLabel?: string;
 };
 
 export const PromptInputSubmit = ({
@@ -1235,6 +1252,8 @@ export const PromptInputSubmit = ({
   status,
   onStop,
   onClick,
+  submitLabel = "Enviar",
+  stopLabel = "Parar",
   children,
   ...props
 }: PromptInputSubmitProps) => {
@@ -1264,7 +1283,7 @@ export const PromptInputSubmit = ({
 
   return (
     <InputGroupButton
-      aria-label={isGenerating ? "Stop" : "Submit"}
+      aria-label={isGenerating ? stopLabel : submitLabel}
       className={cn(className)}
       onClick={handleClick}
       size={size}

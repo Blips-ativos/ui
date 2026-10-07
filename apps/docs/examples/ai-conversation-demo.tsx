@@ -71,14 +71,12 @@ export default function AiConversationDemo() {
           ))}
         </ConversationContent>
         <ConversationDownload
-          aria-label="Baixar conversa"
-          filename="conversa.md"
           formatMessage={(message) =>
             `**${message.role === "user" ? "Cliente" : "Assistente"}:** ${getText(message)}`
           }
           messages={messages}
         />
-        <ConversationScrollButton aria-label="Ir para o fim" />
+        <ConversationScrollButton />
       </Conversation>
     </div>
   );

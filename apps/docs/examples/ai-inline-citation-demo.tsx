@@ -47,8 +47,8 @@ export default function AiInlineCitationDemo() {
           <InlineCitationCardBody>
             <InlineCitationCarousel>
               <InlineCitationCarouselHeader>
-                <InlineCitationCarouselPrev aria-label="Fonte anterior" />
-                <InlineCitationCarouselNext aria-label="Próxima fonte" />
+                <InlineCitationCarouselPrev />
+                <InlineCitationCarouselNext />
                 <InlineCitationCarouselIndex />
               </InlineCitationCarouselHeader>
               <InlineCitationCarouselContent>

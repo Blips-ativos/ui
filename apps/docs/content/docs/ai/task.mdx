@@ -1,0 +1,92 @@
+---
+title: Task
+description: Etapa de trabalho do agente que abre e fecha, com a lista do que foi feito e os arquivos envolvidos.
+---
+
+<ComponentPreview name="ai-task-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Nenhum peer opcional é exigido, e o componente não importa nada do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Task,
+  TaskContent,
+  TaskItem,
+  TaskItemFile,
+  TaskTrigger,
+} from "@blips/ai/components/task"
+```
+
+```tsx
+<Task>
+  <TaskTrigger title="Procurando a cláusula de garantia" />
+  <TaskContent>
+    <TaskItem>Lendo os contratos do cliente</TaskItem>
+    <TaskItem>
+      Encontrei a cláusula 7.2 em <TaskItemFile>contrato-locacao.pdf</TaskItemFile>
+    </TaskItem>
+  </TaskContent>
+</Task>
+```
+
+O `Task` é um [Collapsible](/docs/components/collapsible) da `@blips/ui` e começa aberto. O componente é apresentacional: o app transforma o que o agente está fazendo (parts de dados do AI SDK, chamadas de ferramenta ou eventos do AgentOS) numa lista de `TaskItem`.
+
+Sem `children`, o `TaskTrigger` mostra a lupa, o `title` e uma seta que gira ao abrir. Para trocar o ícone (por exemplo, um spinner enquanto a etapa roda e um check quando termina), passe o conteúdo como `children`. O `title` continua obrigatório. O gatilho é um `<button>`, então use só elementos de linha (`span`) dentro dele.
+
+## Exemplos
+
+### Etapas com status
+
+Várias tarefas em sequência, com ícone próprio no gatilho. As concluídas começam fechadas (`defaultOpen={false}`).
+
+<ComponentPreview name="ai-task-etapas" />
+
+## Referência da API
+
+### Task
+
+Raiz da tarefa. Aceita as props do `Collapsible` da `@blips/ui`.
+
+| Prop          | Tipo      | Padrão |
+| ------------- | --------- | ------ |
+| `defaultOpen` | `boolean` | `true` |
+
+### TaskTrigger
+
+Gatilho que abre e fecha a tarefa. Aceita as props do `CollapsibleTrigger`; `className` aceita string ou função do estado.
+
+| Prop       | Tipo        | Padrão                         |
+| ---------- | ----------- | ------------------------------ |
+| `title`    | `string`    | obrigatória                    |
+| `children` | `ReactNode` | lupa + `title` + seta          |
+
+### TaskContent
+
+Conteúdo com animação de entrada e saída e uma borda à esquerda. Aceita as props do `CollapsibleContent`.
+
+### TaskItem
+
+Linha de texto em `text-muted-foreground`. Aceita as props de `div`.
+
+### TaskItemFile
+
+Etiqueta inline para um arquivo ou registro, com fundo `secondary`. Aceita as props de `div`; ponha o ícone e o nome como `children`.
+
+## Origem
+
+Adaptado do componente [Task](https://elements.ai-sdk.dev/components/task) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible da `@blips/ui` (Base UI) e os ícones Lucide pelos do Phosphor (`MagnifyingGlassIcon` e `CaretDownIcon`).

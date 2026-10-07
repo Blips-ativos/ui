@@ -46,8 +46,8 @@ export type ConversationEmptyStateProps = ComponentProps<"div"> & {
 
 export const ConversationEmptyState = ({
   className,
-  title = "No messages yet",
-  description = "Start a conversation to see messages here",
+  title = "Nenhuma mensagem ainda",
+  description = "Comece uma conversa para ver as mensagens aqui",
   icon,
   children,
   ...props
@@ -121,11 +121,16 @@ export type ConversationDownloadProps = Omit<
   formatMessage?: (message: UIMessage, index: number) => string;
 };
 
-const defaultFormatMessage = (message: UIMessage): string => {
-  const roleLabel =
-    message.role.charAt(0).toUpperCase() + message.role.slice(1);
-  return `**${roleLabel}:** ${getMessageText(message)}`;
+// Rótulos pt-BR dos papéis no Markdown exportado (o upstream capitalizava o
+// `role` em inglês). Para outro formato, passe `formatMessage`.
+const roleLabels: Record<UIMessage["role"], string> = {
+  assistant: "Assistente",
+  system: "Sistema",
+  user: "Usuário",
 };
+
+const defaultFormatMessage = (message: UIMessage): string =>
+  `**${roleLabels[message.role]}:** ${getMessageText(message)}`;
 
 export const messagesToMarkdown = (
   messages: UIMessage[],
@@ -137,7 +142,7 @@ export const messagesToMarkdown = (
 
 export const ConversationDownload = ({
   messages,
-  filename = "conversation.md",
+  filename = "conversa.md",
   formatMessage = defaultFormatMessage,
   className,
   children,

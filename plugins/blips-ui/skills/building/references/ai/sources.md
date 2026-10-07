@@ -40,7 +40,7 @@ projeto TypeScript instale como **devDependency** (`pnpm add -D ai`).
 | Componente | Props reais | Notas |
 |---|---|---|
 | `Sources` | props do `Collapsible` da @blips/ui (`open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `disabled`, `render`) | `not-prose mb-4 text-primary text-xs`. Fechado por padrão. |
-| `SourcesTrigger` | `count: number` (**obrigatório**), mais props do `CollapsibleTrigger` | Sem `children`: "Used {count} sources" + `CaretDownIcon` (inglês). Com `children`, substitui tudo (inclusive o caret). |
+| `SourcesTrigger` | `count: number` (**obrigatório**), `getLabel?: (count) => ReactNode`, mais props do `CollapsibleTrigger` | Sem `children`: `getLabel(count)` + `CaretDownIcon`; padrão pt-BR "Usou N fonte"/"Usou N fontes". Com `children`, substitui tudo (inclusive o caret). |
 | `SourcesContent` | props do `CollapsibleContent` | `mt-3 flex w-fit flex-col gap-2`. |
 | `Source` | props de `<a>` (`href`, `title`, …) | `target="_blank" rel="noreferrer"`. Sem `children`: `BookIcon` + `title`. |
 
@@ -74,11 +74,12 @@ export function FontesDaResposta({ message }: { message: UIMessage }) {
   }
   return (
     <Sources>
-      <SourcesTrigger count={fontes.length}>
-        <span className="font-medium">
-          {fontes.length === 1 ? "1 fonte consultada" : `${fontes.length} fontes consultadas`}
-        </span>
-      </SourcesTrigger>
+      <SourcesTrigger
+        count={fontes.length}
+        getLabel={(count) =>
+          count === 1 ? "1 fonte consultada" : `${count} fontes consultadas`
+        }
+      />
       <SourcesContent>
         {fontes.map((fonte) => (
           <Source href={fonte.url} key={fonte.sourceId} title={fonte.title ?? fonte.url} />
@@ -91,9 +92,9 @@ export function FontesDaResposta({ message }: { message: UIMessage }) {
 
 ## Armadilhas
 
-- **Texto padrão em inglês.** Passe `children` no `SourcesTrigger` com a
-  contagem em pt-BR (e trate singular/plural). Ao passar `children`, o caret
-  some; inclua um `CaretDownIcon` se quiser mantê-lo.
+- **Prefira `getLabel` a `children` para trocar o texto.** O padrão já é
+  pt-BR com singular/plural. `getLabel` troca só o texto e mantém o caret;
+  com `children`, o caret some (inclua um `CaretDownIcon` se quiser mantê-lo).
 - **`count` é obrigatório** mesmo com `children` (tipo exige).
 - **Nada com lista vazia.** O componente não se esconde sozinho; retorne
   `null` quando não houver fontes.

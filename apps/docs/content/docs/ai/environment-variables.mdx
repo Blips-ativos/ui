@@ -1,0 +1,149 @@
+---
+title: Environment Variables
+description: Lista de variáveis de ambiente com valores mascarados, chave para mostrar, selo de obrigatória e botão de copiar.
+---
+
+<ComponentPreview name="ai-environment-variables-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  EnvironmentVariable,
+  EnvironmentVariableCopyButton,
+  EnvironmentVariableGroup,
+  EnvironmentVariableName,
+  EnvironmentVariableRequired,
+  EnvironmentVariables,
+  EnvironmentVariablesContent,
+  EnvironmentVariablesHeader,
+  EnvironmentVariablesTitle,
+  EnvironmentVariablesToggle,
+  EnvironmentVariableValue,
+} from "@blips/ai/components/environment-variables"
+```
+
+```tsx
+<EnvironmentVariables>
+  <EnvironmentVariablesHeader>
+    <EnvironmentVariablesTitle />
+    <EnvironmentVariablesToggle />
+  </EnvironmentVariablesHeader>
+  <EnvironmentVariablesContent>
+    <EnvironmentVariable name="DATABASE_URL" value={databaseUrl}>
+      <EnvironmentVariableGroup>
+        <EnvironmentVariableName />
+        <EnvironmentVariableRequired />
+      </EnvironmentVariableGroup>
+      <EnvironmentVariableGroup>
+        <EnvironmentVariableValue />
+        <EnvironmentVariableCopyButton />
+      </EnvironmentVariableGroup>
+    </EnvironmentVariable>
+    <EnvironmentVariable name="LOG_LEVEL" value="info" />
+  </EnvironmentVariablesContent>
+</EnvironmentVariables>
+```
+
+Os valores começam mascarados: `EnvironmentVariableValue` mostra um `•` por caractere (no máximo 20) e
+desliga a seleção do texto. A chave `EnvironmentVariablesToggle` (um [Switch](/docs/components/switch) da
+`@blips/ui`) mostra e esconde todos os valores do grupo de uma vez.
+
+Sem `children`, `EnvironmentVariable` mostra nome e valor. Com `children`, monte a linha com as partes:
+`EnvironmentVariableName`, `EnvironmentVariableValue` e `EnvironmentVariableCopyButton` leem nome e valor da
+variável mais próxima.
+
+A máscara é só visual: o valor completo está no DOM e no estado do app. Não renderize segredo de produção
+num navegador que não deveria vê-lo.
+
+### Textos padrão
+
+Título "Variáveis de ambiente", selo "Obrigatória", chave com rótulo acessível "Mostrar valores" e botão de
+copiar com "Copiar"/"Copiado". Troque com `children` no título e no selo, `aria-label` na chave e
+`copyLabel`/`copiedLabel` no botão.
+
+## Exemplos
+
+### Controlado e copiar como export
+
+`showValues` e `onShowValuesChange` controlam a visibilidade de fora. Com `copyFormat="export"`, o botão
+copia `export NOME="valor"`.
+
+<ComponentPreview name="ai-environment-variables-export" />
+
+## Referência da API
+
+### EnvironmentVariables
+
+`<div>` com borda que guarda a visibilidade dos valores. Aceita as props de `div`.
+
+| Prop                 | Tipo                      | Padrão  |
+| -------------------- | ------------------------- | ------- |
+| `showValues`         | `boolean`                 | —       |
+| `defaultShowValues`  | `boolean`                 | `false` |
+| `onShowValuesChange` | `(show: boolean) => void` | —       |
+
+### EnvironmentVariablesToggle
+
+`Switch` da `@blips/ui` ligado à visibilidade, com ícone de olho. Aceita as props do `Switch`; `className` vai
+para o wrapper e só a forma string é aplicada.
+
+### EnvironmentVariable
+
+`<div>` de uma linha. Aceita as props de `div`.
+
+| Prop       | Tipo        | Padrão        |
+| ---------- | ----------- | ------------- |
+| `name`     | `string`    | obrigatória   |
+| `value`    | `string`    | obrigatória   |
+| `children` | `ReactNode` | nome e valor  |
+
+### EnvironmentVariableCopyButton
+
+Props do `Button` da `@blips/ui` (padrão `variant="ghost"`, `size="icon"`).
+
+| Prop          | Tipo                              | Padrão      |
+| ------------- | --------------------------------- | ----------- |
+| `copyFormat`  | `"name" \| "value" \| "export"`   | `"value"`   |
+| `onCopy`      | `() => void`                      | —           |
+| `onError`     | `(error: Error) => void`          | —           |
+| `timeout`     | `number` (ms)                     | `2000`      |
+| `copyLabel`   | `string`                          | `"Copiar"`  |
+| `copiedLabel` | `string`                          | `"Copiado"` |
+
+Sem a Clipboard API, `onError` recebe `Error("Área de transferência indisponível")`.
+
+### EnvironmentVariableRequired
+
+`Badge` `variant="secondary"` da `@blips/ui`. `children` padrão `"Obrigatória"`.
+
+### Partes de layout
+
+| Componente                    | Elemento | Descrição                                       |
+| ----------------------------- | -------- | ----------------------------------------------- |
+| `EnvironmentVariablesHeader`  | `div`    | Faixa com título e chave, com borda inferior    |
+| `EnvironmentVariablesTitle`   | `h3`     | `children` padrão `"Variáveis de ambiente"`     |
+| `EnvironmentVariablesContent` | `div`    | Lista com divisórias                            |
+| `EnvironmentVariableGroup`    | `div`    | Agrupa itens em linha                           |
+| `EnvironmentVariableName`     | `span`   | Nome em fonte mono (`children` sobrepõe)        |
+| `EnvironmentVariableValue`    | `span`   | Valor mascarado ou visível (`children` sobrepõe) |
+
+## Origem
+
+Adaptado do componente [Environment Variables](https://elements.ai-sdk.dev/components/environment-variables)
+do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou
+as primitivas Radix pelo Switch, Badge e Button da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor
+e os textos padrão para pt-BR, e acrescentou `copyLabel`/`copiedLabel` ao botão de copiar.

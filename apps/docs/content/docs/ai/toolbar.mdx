@@ -1,0 +1,84 @@
+---
+title: Toolbar
+description: Barra de ações presa a um nó do canvas, que aparece quando o nó está selecionado.
+---
+
+<ComponentPreview name="ai-toolbar-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import { Node } from "@blips/ai/components/node"
+import { Toolbar } from "@blips/ai/components/toolbar"
+```
+
+```tsx
+const EtapaNode = ({ data }: FlowNodeProps<Etapa>) => (
+  <>
+    <Node handles={{ target: true, source: true }}>…</Node>
+    <Toolbar>
+      <Button aria-label="Editar etapa" size="icon-sm" variant="ghost">
+        <PencilSimpleIcon />
+      </Button>
+      <Button aria-label="Remover etapa" size="icon-sm" variant="ghost">
+        <TrashIcon />
+      </Button>
+    </Toolbar>
+  </>
+)
+```
+
+`Toolbar` é o `NodeToolbar` do React Flow com moldura compacta (borda, fundo `background`, itens em linha).
+Coloque-o dentro do componente do nó registrado em `nodeTypes`: ele descobre o nó pelo contexto e acompanha
+a posição e o zoom. Por padrão aparece **abaixo** do nó e só quando o nó é o único selecionado; `isVisible` força a
+exibição (a demonstração acima usa isso).
+
+Botões só com ícone precisam de `aria-label`.
+
+## Referência da API
+
+### Toolbar
+
+Aceita as props do [`NodeToolbar`](https://reactflow.dev/api-reference/components/node-toolbar) do React
+Flow e de `<div>`.
+
+| Prop        | Tipo                                   | Padrão                         |
+| ----------- | -------------------------------------- | ------------------------------ |
+| `position`  | `Position` (`Top`, `Right`, `Bottom`, `Left`) | `Position.Bottom`        |
+| `isVisible` | `boolean`                              | só com o nó selecionado sozinho |
+| `nodeId`    | `string \| string[]`                   | o nó em que está renderizado   |
+| `offset`    | `number` (px)                          | `10`                           |
+| `align`     | `"start" \| "center" \| "end"`         | `"center"`                     |
+| `className` | `string` — mesclado com a moldura      | —                              |
+
+## Origem
+
+Adaptado do componente [Toolbar](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudança da Blips: o tipo `ToolbarProps` passou a ser exportado. Como no original, a posição
+padrão é `Bottom` (o `NodeToolbar` do React Flow usa `Top`).

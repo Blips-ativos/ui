@@ -31,10 +31,7 @@ import {
 
 ```tsx
 <Sources>
-  <SourcesTrigger count={sources.length}>
-    <span className="font-medium">{sources.length} fontes consultadas</span>
-    <CaretDownIcon className="size-4" />
-  </SourcesTrigger>
+  <SourcesTrigger count={sources.length} />
   <SourcesContent>
     {sources.map((source) => (
       <Source href={source.url} key={source.url} title={source.title} />
@@ -43,8 +40,15 @@ import {
 </Sources>
 ```
 
-O texto padrão do `SourcesTrigger` (sem `children`) é `Used {count} sources`, em inglês, como no upstream.
-Em telas pt-BR, passe o rótulo como `children`.
+Sem `children`, o `SourcesTrigger` mostra `Usou {count} fontes` (no singular com uma fonte) e o caret.
+Para trocar só o texto e manter o caret, passe `getLabel`; `children` substitui o conteúdo inteiro, inclusive o caret.
+
+```tsx
+<SourcesTrigger
+  count={sources.length}
+  getLabel={(count) => `${count} ${count === 1 ? "fonte consultada" : "fontes consultadas"}`}
+/>
+```
 
 `Sources` é um `Collapsible` da `@blips/ui` (Base UI): aceita `open`, `defaultOpen` e `onOpenChange`.
 Cada `Source` é um `<a>` que abre em nova aba (`target="_blank"`, `rel="noreferrer"`).
@@ -95,8 +99,9 @@ Props do `CollapsibleTrigger` (um `<button>`) mais:
 
 | Prop       | Tipo        | Padrão                                     |
 | ---------- | ----------- | ------------------------------------------ |
-| `count`    | `number`    | obrigatório                                |
-| `children` | `ReactNode` | `Used {count} sources` + `CaretDownIcon`   |
+| `count`    | `number`                         | obrigatório                                  |
+| `getLabel` | `(count: number) => ReactNode`   | `"Usou {count} fonte(s)"`                    |
+| `children` | `ReactNode`                      | `getLabel(count)` + `CaretDownIcon`          |
 
 ### SourcesContent
 

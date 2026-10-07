@@ -49,7 +49,7 @@ Use o `ChainOfThought` quando o agente expõe etapas nomeadas (buscas, consultas
 
 As etapas são dados do app: monte a lista a partir das parts da mensagem (AI SDK) ou dos eventos do seu backend e marque como `active` a etapa em andamento.
 
-O texto padrão do cabeçalho vem em inglês ("Chain of Thought"), como no upstream. Em telas pt-BR, passe `children` ao `ChainOfThoughtHeader`.
+Sem `children`, o `ChainOfThoughtHeader` mostra "Cadeia de raciocínio". Passe `children` para um título próprio, como no exemplo acima.
 
 ## Exemplos
 
@@ -77,7 +77,7 @@ Gatilho com ícone de cérebro e seta. Aceita as props do `CollapsibleTrigger`.
 
 | Prop       | Tipo        | Padrão               |
 | ---------- | ----------- | -------------------- |
-| `children` | `ReactNode` | `"Chain of Thought"` |
+| `children` | `ReactNode` | `"Cadeia de raciocínio"` |
 
 ### ChainOfThoughtContent
 

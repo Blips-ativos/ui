@@ -1,0 +1,124 @@
+---
+title: Audio Player
+description: Player de áudio montado com o media-chrome e os botões da @blips/ui, para tocar a fala gerada pelo modelo ou qualquer arquivo de áudio.
+---
+
+<ComponentPreview name="ai-audio-player-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai media-chrome
+pnpm add -D ai
+```
+
+O `audio-player` exige o peer opcional `media-chrome` (^4): ele é importado de forma estática, então quem importa o `audio-player` precisa tê-lo instalado. Do pacote `ai` o componente importa só um tipo (`Experimental_SpeechResult`, para a prop `data`), nenhum código de runtime. Como o `@blips/ai` publica o fonte `.tsx`, em projetos TypeScript instale o `ai` como devDependency para o compilador resolver o tipo. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+O media-chrome não precisa de CSS próprio: o `AudioPlayer` liga as variáveis `--media-*` aos tokens da `@blips/ui` (`primary`, `secondary`, `accent`, `foreground`, `radius`).
+
+## Uso
+
+```tsx
+import {
+  AudioPlayer,
+  AudioPlayerControlBar,
+  AudioPlayerDurationDisplay,
+  AudioPlayerElement,
+  AudioPlayerMuteButton,
+  AudioPlayerPlayButton,
+  AudioPlayerSeekBackwardButton,
+  AudioPlayerSeekForwardButton,
+  AudioPlayerTimeDisplay,
+  AudioPlayerTimeRange,
+  AudioPlayerVolumeRange,
+} from "@blips/ai/components/audio-player"
+```
+
+```tsx
+<AudioPlayer>
+  <AudioPlayerElement data={resultado.audio} />
+  <AudioPlayerControlBar>
+    <AudioPlayerPlayButton />
+    <AudioPlayerSeekBackwardButton />
+    <AudioPlayerSeekForwardButton />
+    <AudioPlayerTimeDisplay />
+    <AudioPlayerTimeRange />
+    <AudioPlayerDurationDisplay />
+    <AudioPlayerMuteButton />
+    <AudioPlayerVolumeRange />
+  </AudioPlayerControlBar>
+</AudioPlayer>
+```
+
+O `AudioPlayerElement` aceita o áudio de duas formas:
+
+- `data`: o `audio` do resultado de `experimental_generateSpeech` do AI SDK (`{ base64, mediaType, ... }`). Vira uma data URL no `<audio>`.
+- `src`: uma URL comum (arquivo hospedado, áudio recebido de um canal).
+
+Passe uma das duas; se vierem as duas, `src` vence. O resultado do `generateSpeech` chega pelo servidor, então serialize o `audio` (o `uint8Array` não atravessa JSON) e passe adiante só o que o `<audio>` precisa: `base64` e `mediaType`, ou uma URL.
+
+O demo acima toca um tom gerado no próprio navegador, sem arquivo nem rede.
+
+### Idioma
+
+O `AudioPlayer` registra o dicionário em português do media-chrome e usa `lang="pt-BR"` por padrão, então os `aria-label` e as dicas dos controles saem em português. No media-chrome o idioma vale para a página inteira, não para cada player: dois players com `lang` diferentes na mesma página não convivem.
+
+## Exemplos
+
+### Controles mínimos
+
+Escolha só os controles que fazem sentido. Aqui, tocar, a barra de progresso e o tempo, com `src`.
+
+<ComponentPreview name="ai-audio-player-minimo" />
+
+## Referência da API
+
+### AudioPlayer
+
+`MediaController` do `media-chrome/react` em modo áudio. Aceita as props dele, exceto `audio` (sempre ligado).
+
+| Prop    | Tipo            | Padrão    |
+| ------- | --------------- | --------- |
+| `lang`  | `string`        | `"pt-BR"` |
+| `style` | `CSSProperties` | variáveis `--media-*` ligadas aos tokens; o que você passar é mesclado por cima |
+
+### AudioPlayerElement
+
+`<audio slot="media">`. Aceita as props de `<audio>`, exceto `src`, que entra na união abaixo.
+
+| Prop   | Tipo                           | Padrão |
+| ------ | ------------------------------ | ------ |
+| `data` | `SpeechResult["audio"]`        | —      |
+| `src`  | `string`                       | —      |
+
+Passe `data` ou `src`. Se vierem os dois, `src` vence.
+
+### AudioPlayerControlBar
+
+`MediaControlBar` com um [Button Group](/docs/components/button-group) horizontal da `@blips/ui` dentro. Aceita as props do `MediaControlBar`.
+
+### Botões e faixas
+
+| Componente                      | Base                                              | Observação                          |
+| ------------------------------- | ------------------------------------------------- | ----------------------------------- |
+| `AudioPlayerPlayButton`         | `Button` `outline` `icon-sm` com `MediaPlayButton` | tocar/pausar                      |
+| `AudioPlayerSeekBackwardButton` | `Button` com `MediaSeekBackwardButton`            | `seekOffset` em segundos, padrão `10` |
+| `AudioPlayerSeekForwardButton`  | `Button` com `MediaSeekForwardButton`             | `seekOffset` em segundos, padrão `10` |
+| `AudioPlayerTimeDisplay`        | `ButtonGroupText` com `MediaTimeDisplay`          | tempo atual                         |
+| `AudioPlayerTimeRange`          | `ButtonGroupText` com `MediaTimeRange`            | barra de progresso                  |
+| `AudioPlayerDurationDisplay`    | `ButtonGroupText` com `MediaDurationDisplay`      | duração total                       |
+| `AudioPlayerMuteButton`         | `ButtonGroupText` com `MediaMuteButton`           | silenciar                           |
+| `AudioPlayerVolumeRange`        | `ButtonGroupText` com `MediaVolumeRange`          | volume                              |
+
+Cada um aceita as props do elemento do media-chrome correspondente. Os botões do media-chrome são custom elements, não `<button>`: por isso o `Button` da `@blips/ui` é usado com `render` e `nativeButton={false}`.
+
+## Origem
+
+Adaptado do componente [Audio Player](https://elements.ai-sdk.dev/components/audio-player) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. Mudanças da Blips: `Button` e `ButtonGroup` da `@blips/ui` (Base UI, com `render` e `nativeButton={false}`), dicionário pt do media-chrome com `lang="pt-BR"` por padrão, e `data` consumido antes de espalhar as props no `<audio>` (o original repassava o objeto como atributo).

@@ -38,16 +38,16 @@ pnpm add -D ai
 
 | Export | Props | Notas |
 |---|---|---|
-| `Context` | Props do `HoverCard` da @blips/ui (Base UI `PreviewCard.Root`: `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`) + `usedTokens: number`, `maxTokens: number`, `usage?: LanguageModelUsage`, `modelId?: string` | Provider dos dados. **Não** aceita `openDelay`/`closeDelay`. |
-| `ContextTrigger` | Props do `Button` + `delay?: number` (0), `closeDelay?: number` (0) | Sem `children`: o próprio `Button` (`variant="ghost"`) vira o trigger, com "% usado" + anel. Com `children`: conteúdo dentro do trigger padrão (`<a>`) e as props de `Button` são ignoradas. |
+| `Context` | Props do `HoverCard` da @blips/ui (Base UI `PreviewCard.Root`: `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`) + `usedTokens: number`, `maxTokens: number`, `usage?: LanguageModelUsage`, `modelId?: string`, `locale?: string` ("pt-BR") | Provider dos dados. `locale` vale para todos os números, porcentagens e custos do cartão. **Não** aceita `openDelay`/`closeDelay`. |
+| `ContextTrigger` | Props do `Button` + `delay?: number` (0), `closeDelay?: number` (0), `iconLabel?: string` ("Uso do contexto do modelo", `aria-label` do anel) | Sem `children`: o próprio `Button` (`variant="ghost"`) vira o trigger, com "% usado" + anel. Com `children`: conteúdo dentro do trigger padrão (`<a>`) e as props de `Button` são ignoradas. |
 | `ContextContent` | Props do `HoverCardContent` (`side`, `sideOffset`, `align`, `alignOffset`, `className` string ou função) | `min-w-60 divide-y p-0`. Vai num Portal. |
 | `ContextContentHeader` | `ComponentProps<"div">` | Padrão: porcentagem, `usados / total` compacto e `Progress`. `children` substitui. |
 | `ContextContentBody` | `ComponentProps<"div">` | `p-3`; coloque as linhas de uso aqui. |
-| `ContextContentFooter` | `ComponentProps<"div">` | Padrão: "Total cost" + custo total em USD (`bg-secondary`). `children` substitui. |
-| `ContextInputUsage` | `ComponentProps<"div">` | Linha "Input": `usage.inputTokens` + custo. Some se for 0. |
-| `ContextOutputUsage` | `ComponentProps<"div">` | Linha "Output": `usage.outputTokens`. Some se for 0. |
-| `ContextReasoningUsage` | `ComponentProps<"div">` | Linha "Reasoning": `usage.outputTokenDetails.reasoningTokens`. Some se for 0. |
-| `ContextCacheUsage` | `ComponentProps<"div">` | Linha "Cache": `usage.inputTokenDetails.cacheReadTokens`. Some se for 0. |
+| `ContextContentFooter` | `ComponentProps<"div">` + `label?: ReactNode` ("Custo total") | Padrão: `label` + custo total em dólar formatado no `locale` (`US$ 0,01`), `bg-secondary`. `children` substitui. |
+| `ContextInputUsage` | `ComponentProps<"div">` + `label?: ReactNode` ("Entrada") | `usage.inputTokens` + custo. Some se for 0. |
+| `ContextOutputUsage` | `ComponentProps<"div">` + `label?: ReactNode` ("Saída") | `usage.outputTokens`. Some se for 0. |
+| `ContextReasoningUsage` | `ComponentProps<"div">` + `label?: ReactNode` ("Raciocínio") | `usage.outputTokenDetails.reasoningTokens`. Some se for 0. |
+| `ContextCacheUsage` | `ComponentProps<"div">` + `label?: ReactNode` ("Cache") | `usage.inputTokenDetails.cacheReadTokens`. Some se for 0. |
 
 `usage` segue o `LanguageModelUsage` do AI SDK 6/7 (`inputTokens`,
 `outputTokens`, `outputTokenDetails.reasoningTokens`,
@@ -59,8 +59,8 @@ monte esse objeto no app a partir das métricas do run.
 - Por baixo: `HoverCard` (PreviewCard), `Progress` e `Button` da @blips/ui.
 - Lugar natural: `PromptInputTools` (`prompt-input.md`) ou o cabeçalho da tela
   do chat, ao lado do seletor de modelo.
-- Para o cartão inteiro em pt-BR, passe `children` em `ContextContentFooter` e
-  nas linhas de uso, formatando com `Intl.NumberFormat("pt-BR")`. Atenção: nas
+- Rótulos e formatação já saem em pt-BR. Para trocar só o texto, use `label`
+  (linhas e rodapé); reserve `children` para conteúdo diferente. Atenção: nas
   linhas de uso (`ContextInputUsage` etc.), `children` substitui a linha
   inteira, sem a `<div>` de layout (`className` e demais props são
   ignorados) e sem a regra de sumir com 0: monte a linha completa (ex.:
@@ -126,10 +126,10 @@ export function UsoDeContexto({
 
 ## Armadilhas
 
-- Rótulos e números padrão estão em **inglês e en-US/USD** ("Total cost",
-  "Input", "$0.00", "12.5%"). Em tela pt-BR, sobrescreva com `children`
-  (footer e linhas) ou aceite conscientemente.
-- **Custo `$0.00`** quando não há `modelId` ou quando o id não existe no
+- **O custo é sempre em dólar** (vem do `tokenlens`); `locale` muda só a
+  formatação (`US$ 0,01` em pt-BR). Não troque o símbolo por "R$" no app sem
+  converter o valor.
+- **Custo `US$ 0,00`** quando não há `modelId` ou quando o id não existe no
   catálogo do `tokenlens`, o que é o caso dos nomes de deployment do LiteLLM
   (ex.: `salvador-default`). O formato é `provedor:modelo` com dois-pontos
   (`openai:gpt-4.1`, `anthropic:claude-sonnet-4-20250514`; o `tokenlens` 1.3
@@ -142,8 +142,8 @@ export function UsoDeContexto({
   (o que de fato ocupa a janela) ou entrada + saída.
 - Os campos antigos `usage.reasoningTokens` / `usage.cachedInputTokens` (AI
   SDK 5) não são lidos: use os `*TokenDetails`.
-- Componentes filhos fora de `<Context>` lançam "Context components must be used
-  within Context".
+- Componentes filhos fora de `<Context>` lançam "Os componentes Context
+  precisam estar dentro de Context".
 - Não confunda com o `Context` do React: o nome vem do AI Elements. Num arquivo
   que também usa `createContext`, renomeie no import se ajudar a leitura
   (`import { Context as UsoDeContexto }`).

@@ -80,7 +80,7 @@ Reexports da @blips/ui (props em `../message.md`): `Message` (`align: "start" |
 | `MessageBranchContent` | `HTMLAttributes<HTMLDivElement>` | Cada filho **elemento** é um ramo; mostra só o atual. Dê `key` a cada filho. |
 | `MessageBranchSelector` | Props do `ButtonGroup` | Some (retorna `null`) com 1 ramo só. |
 | `MessageBranchPrevious` / `MessageBranchNext` | Props do `Button` | Ícones `CaretLeftIcon`/`CaretRightIcon`; `aria-label` "Ramo anterior"/"Próximo ramo". Navegação circular. |
-| `MessageBranchPage` | Props do `ButtonGroupText` | Mostra "1 de 3". |
+| `MessageBranchPage` | Props do `ButtonGroupText` | Mostra "1 de 3"; `children` substitui o texto. |
 
 ## Composição com a @blips/ui
 

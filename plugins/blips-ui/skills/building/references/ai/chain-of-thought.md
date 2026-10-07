@@ -48,7 +48,7 @@ tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
 | Componente | Props reais | Notas |
 |---|---|---|
 | `ChainOfThought` | `open?`, `defaultOpen?` (padrão `false`), `onOpenChange?: (open: boolean) => void`, mais props de `<div>` | Provedor de estado; renderiza `div.not-prose w-full space-y-4`. |
-| `ChainOfThoughtHeader` | props do `CollapsibleTrigger` | `children` é o título (padrão "Chain of Thought", em inglês). Sempre desenha `BrainIcon` + título + `CaretDownIcon`. |
+| `ChainOfThoughtHeader` | props do `CollapsibleTrigger` | `children` é o título (padrão "Cadeia de raciocínio"). Sempre desenha `BrainIcon` + título + `CaretDownIcon`. |
 | `ChainOfThoughtContent` | props do `CollapsibleContent` | Abre/fecha conforme o estado do `ChainOfThought`. |
 | `ChainOfThoughtStep` | `label: ReactNode` (obrigatório), `description?: ReactNode`, `icon?: Icon` do Phosphor (padrão `DotIcon`), `status?: "complete" \| "active" \| "pending"` (padrão `"complete"`), mais props de `<div>` | `active` = `text-foreground`; `complete` = `text-muted-foreground`; `pending` = `text-muted-foreground/50`. `children` aparece abaixo do rótulo. |
 | `ChainOfThoughtSearchResults` | props de `<div>` | Linha `flex-wrap` para os badges. |
@@ -120,8 +120,9 @@ export function PassosDoAgente() {
 
 ## Armadilhas
 
-- **Título padrão em inglês.** Sempre passe `children` no
-  `ChainOfThoughtHeader`.
+- **Título genérico.** O padrão "Cadeia de raciocínio" serve; passe
+  `children` no `ChainOfThoughtHeader` quando der para dizer o que o agente
+  fez ("Como o agente chegou à resposta").
 - **Header e Content precisam do mesmo `ChainOfThought` pai.** Cada um cria
   o próprio `Collapsible` interno e lê o estado do contexto; fora do
   `ChainOfThought` lança erro.

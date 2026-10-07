@@ -13,7 +13,7 @@ import {
 import { Progress } from "@blips/ui/components/progress";
 import { cn } from "@blips/ui/lib/utils";
 import type { LanguageModelUsage } from "ai";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
 import { getUsage } from "tokenlens";
 
@@ -30,15 +30,38 @@ interface ContextSchema {
   maxTokens: number;
   usage?: LanguageModelUsage;
   modelId?: ModelId;
+  /**
+   * Locale da formatação de números, porcentagem e custo. Padrão: "pt-BR".
+   * O custo vem do tokenlens sempre em dólar; só a formatação muda (ex.: "US$ 0,01").
+   */
+  locale?: string;
 }
 
-const ContextContext = createContext<ContextSchema | null>(null);
+const DEFAULT_LOCALE = "pt-BR";
+
+const formatPercent = (locale: string, value: number) =>
+  new Intl.NumberFormat(locale, {
+    maximumFractionDigits: 1,
+    style: "percent",
+  }).format(value);
+
+const formatCompact = (locale: string, value: number) =>
+  new Intl.NumberFormat(locale, { notation: "compact" }).format(value);
+
+const formatUSD = (locale: string, value: number) =>
+  new Intl.NumberFormat(locale, { currency: "USD", style: "currency" }).format(
+    value
+  );
+
+const ContextContext = createContext<
+  (ContextSchema & { locale: string }) | null
+>(null);
 
 const useContextValue = () => {
   const context = useContext(ContextContext);
 
   if (!context) {
-    throw new Error("Context components must be used within Context");
+    throw new Error("Os componentes Context precisam estar dentro de Context");
   }
 
   return context;
@@ -51,11 +74,12 @@ export const Context = ({
   maxTokens,
   usage,
   modelId,
+  locale = DEFAULT_LOCALE,
   ...props
 }: ContextProps) => {
   const contextValue = useMemo(
-    () => ({ maxTokens, modelId, usage, usedTokens }),
-    [maxTokens, modelId, usage, usedTokens]
+    () => ({ locale, maxTokens, modelId, usage, usedTokens }),
+    [locale, maxTokens, modelId, usage, usedTokens]
   );
 
   return (
@@ -65,7 +89,7 @@ export const Context = ({
   );
 };
 
-const ContextIcon = () => {
+const ContextIcon = ({ label }: { label: string }) => {
   const { usedTokens, maxTokens } = useContextValue();
   const circumference = 2 * Math.PI * ICON_RADIUS;
   const usedPercent = usedTokens / maxTokens;
@@ -73,7 +97,7 @@ const ContextIcon = () => {
 
   return (
     <svg
-      aria-label="Model context usage"
+      aria-label={label}
       height="20"
       role="img"
       style={{ color: "currentcolor" }}
@@ -109,20 +133,21 @@ const ContextIcon = () => {
 // No Base UI os atrasos de abrir/fechar ficam no trigger (no Radix ficavam na
 // raiz); o padrão 0/0 do upstream foi movido para cá.
 export type ContextTriggerProps = ComponentProps<typeof Button> &
-  Pick<ComponentProps<typeof HoverCardTrigger>, "closeDelay" | "delay">;
+  Pick<ComponentProps<typeof HoverCardTrigger>, "closeDelay" | "delay"> & {
+    /** `aria-label` do ícone de anel. Padrão: "Uso do contexto do modelo". */
+    iconLabel?: string;
+  };
 
 export const ContextTrigger = ({
   children,
   closeDelay = 0,
   delay = 0,
+  iconLabel = "Uso do contexto do modelo",
   ...props
 }: ContextTriggerProps) => {
-  const { usedTokens, maxTokens } = useContextValue();
+  const { usedTokens, maxTokens, locale } = useContextValue();
   const usedPercent = usedTokens / maxTokens;
-  const renderedPercent = new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 1,
-    style: "percent",
-  }).format(usedPercent);
+  const renderedPercent = formatPercent(locale, usedPercent);
 
   if (children) {
     return (
@@ -143,7 +168,7 @@ export const ContextTrigger = ({
       <span className="font-medium text-muted-foreground">
         {renderedPercent}
       </span>
-      <ContextIcon />
+      <ContextIcon label={iconLabel} />
     </HoverCardTrigger>
   );
 };
@@ -172,18 +197,11 @@ export const ContextContentHeader = ({
   className,
   ...props
 }: ContextContentHeaderProps) => {
-  const { usedTokens, maxTokens } = useContextValue();
+  const { usedTokens, maxTokens, locale } = useContextValue();
   const usedPercent = usedTokens / maxTokens;
-  const displayPct = new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 1,
-    style: "percent",
-  }).format(usedPercent);
-  const used = new Intl.NumberFormat("en-US", {
-    notation: "compact",
-  }).format(usedTokens);
-  const total = new Intl.NumberFormat("en-US", {
-    notation: "compact",
-  }).format(maxTokens);
+  const displayPct = formatPercent(locale, usedPercent);
+  const used = formatCompact(locale, usedTokens);
+  const total = formatCompact(locale, maxTokens);
 
   return (
     <div className={cn("w-full space-y-2 p-3", className)} {...props}>
@@ -218,14 +236,18 @@ export const ContextContentBody = ({
   </div>
 );
 
-export type ContextContentFooterProps = ComponentProps<"div">;
+export type ContextContentFooterProps = ComponentProps<"div"> & {
+  /** Rótulo do custo total. Padrão: "Custo total". */
+  label?: ReactNode;
+};
 
 export const ContextContentFooter = ({
   children,
   className,
+  label = "Custo total",
   ...props
 }: ContextContentFooterProps) => {
-  const { modelId, usage } = useContextValue();
+  const { modelId, usage, locale } = useContextValue();
   const costUSD = modelId
     ? getUsage({
         modelId,
@@ -235,10 +257,7 @@ export const ContextContentFooter = ({
         },
       }).costUSD?.totalUSD
     : undefined;
-  const totalCost = new Intl.NumberFormat("en-US", {
-    currency: "USD",
-    style: "currency",
-  }).format(costUSD ?? 0);
+  const totalCost = formatUSD(locale, costUSD ?? 0);
 
   return (
     <div
@@ -250,7 +269,7 @@ export const ContextContentFooter = ({
     >
       {children ?? (
         <>
-          <span className="text-muted-foreground">Total cost</span>
+          <span className="text-muted-foreground">{label}</span>
           <span>{totalCost}</span>
         </>
       )}
@@ -261,30 +280,32 @@ export const ContextContentFooter = ({
 const TokensWithCost = ({
   tokens,
   costText,
+  locale,
 }: {
   tokens?: number;
   costText?: string;
+  locale: string;
 }) => (
   <span>
-    {tokens === undefined
-      ? "—"
-      : new Intl.NumberFormat("en-US", {
-          notation: "compact",
-        }).format(tokens)}
+    {tokens === undefined ? "—" : formatCompact(locale, tokens)}
     {costText ? (
       <span className="ml-2 text-muted-foreground">• {costText}</span>
     ) : null}
   </span>
 );
 
-export type ContextInputUsageProps = ComponentProps<"div">;
+export type ContextInputUsageProps = ComponentProps<"div"> & {
+  /** Rótulo da linha. Padrão: "Entrada". */
+  label?: ReactNode;
+};
 
 export const ContextInputUsage = ({
   className,
   children,
+  label = "Entrada",
   ...props
 }: ContextInputUsageProps) => {
-  const { usage, modelId } = useContextValue();
+  const { usage, modelId, locale } = useContextValue();
   const inputTokens = usage?.inputTokens ?? 0;
 
   if (children) {
@@ -301,30 +322,35 @@ export const ContextInputUsage = ({
         usage: { input: inputTokens, output: 0 },
       }).costUSD?.totalUSD
     : undefined;
-  const inputCostText = new Intl.NumberFormat("en-US", {
-    currency: "USD",
-    style: "currency",
-  }).format(inputCost ?? 0);
+  const inputCostText = formatUSD(locale, inputCost ?? 0);
 
   return (
     <div
       className={cn("flex items-center justify-between text-xs", className)}
       {...props}
     >
-      <span className="text-muted-foreground">Input</span>
-      <TokensWithCost costText={inputCostText} tokens={inputTokens} />
+      <span className="text-muted-foreground">{label}</span>
+      <TokensWithCost
+        locale={locale}
+        costText={inputCostText}
+        tokens={inputTokens}
+      />
     </div>
   );
 };
 
-export type ContextOutputUsageProps = ComponentProps<"div">;
+export type ContextOutputUsageProps = ComponentProps<"div"> & {
+  /** Rótulo da linha. Padrão: "Saída". */
+  label?: ReactNode;
+};
 
 export const ContextOutputUsage = ({
   className,
   children,
+  label = "Saída",
   ...props
 }: ContextOutputUsageProps) => {
-  const { usage, modelId } = useContextValue();
+  const { usage, modelId, locale } = useContextValue();
   const outputTokens = usage?.outputTokens ?? 0;
 
   if (children) {
@@ -341,30 +367,35 @@ export const ContextOutputUsage = ({
         usage: { input: 0, output: outputTokens },
       }).costUSD?.totalUSD
     : undefined;
-  const outputCostText = new Intl.NumberFormat("en-US", {
-    currency: "USD",
-    style: "currency",
-  }).format(outputCost ?? 0);
+  const outputCostText = formatUSD(locale, outputCost ?? 0);
 
   return (
     <div
       className={cn("flex items-center justify-between text-xs", className)}
       {...props}
     >
-      <span className="text-muted-foreground">Output</span>
-      <TokensWithCost costText={outputCostText} tokens={outputTokens} />
+      <span className="text-muted-foreground">{label}</span>
+      <TokensWithCost
+        locale={locale}
+        costText={outputCostText}
+        tokens={outputTokens}
+      />
     </div>
   );
 };
 
-export type ContextReasoningUsageProps = ComponentProps<"div">;
+export type ContextReasoningUsageProps = ComponentProps<"div"> & {
+  /** Rótulo da linha. Padrão: "Raciocínio". */
+  label?: ReactNode;
+};
 
 export const ContextReasoningUsage = ({
   className,
   children,
+  label = "Raciocínio",
   ...props
 }: ContextReasoningUsageProps) => {
-  const { usage, modelId } = useContextValue();
+  const { usage, modelId, locale } = useContextValue();
   // Campo de detalhe: existe no ai 6 e 7 (o `reasoningTokens` de topo saiu no 7).
   const reasoningTokens = usage?.outputTokenDetails?.reasoningTokens ?? 0;
 
@@ -382,30 +413,35 @@ export const ContextReasoningUsage = ({
         usage: { reasoningTokens },
       }).costUSD?.totalUSD
     : undefined;
-  const reasoningCostText = new Intl.NumberFormat("en-US", {
-    currency: "USD",
-    style: "currency",
-  }).format(reasoningCost ?? 0);
+  const reasoningCostText = formatUSD(locale, reasoningCost ?? 0);
 
   return (
     <div
       className={cn("flex items-center justify-between text-xs", className)}
       {...props}
     >
-      <span className="text-muted-foreground">Reasoning</span>
-      <TokensWithCost costText={reasoningCostText} tokens={reasoningTokens} />
+      <span className="text-muted-foreground">{label}</span>
+      <TokensWithCost
+        locale={locale}
+        costText={reasoningCostText}
+        tokens={reasoningTokens}
+      />
     </div>
   );
 };
 
-export type ContextCacheUsageProps = ComponentProps<"div">;
+export type ContextCacheUsageProps = ComponentProps<"div"> & {
+  /** Rótulo da linha. Padrão: "Cache". */
+  label?: ReactNode;
+};
 
 export const ContextCacheUsage = ({
   className,
   children,
+  label = "Cache",
   ...props
 }: ContextCacheUsageProps) => {
-  const { usage, modelId } = useContextValue();
+  const { usage, modelId, locale } = useContextValue();
   // Campo de detalhe: existe no ai 6 e 7 (o `cachedInputTokens` saiu no 7).
   const cacheTokens = usage?.inputTokenDetails?.cacheReadTokens ?? 0;
 
@@ -423,18 +459,19 @@ export const ContextCacheUsage = ({
         usage: { cacheReads: cacheTokens, input: 0, output: 0 },
       }).costUSD?.totalUSD
     : undefined;
-  const cacheCostText = new Intl.NumberFormat("en-US", {
-    currency: "USD",
-    style: "currency",
-  }).format(cacheCost ?? 0);
+  const cacheCostText = formatUSD(locale, cacheCost ?? 0);
 
   return (
     <div
       className={cn("flex items-center justify-between text-xs", className)}
       {...props}
     >
-      <span className="text-muted-foreground">Cache</span>
-      <TokensWithCost costText={cacheCostText} tokens={cacheTokens} />
+      <span className="text-muted-foreground">{label}</span>
+      <TokensWithCost
+        locale={locale}
+        costText={cacheCostText}
+        tokens={cacheTokens}
+      />
     </div>
   );
 };

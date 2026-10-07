@@ -1,0 +1,85 @@
+---
+title: Controls
+description: Botões de zoom, enquadrar e travar edição do canvas, no estilo da Blips.
+---
+
+<ComponentPreview name="ai-controls-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import { Canvas } from "@blips/ai/components/canvas"
+import { Controls } from "@blips/ai/components/controls"
+```
+
+```tsx
+<Canvas
+  ariaLabelConfig={{
+    "controls.zoomIn.ariaLabel": "Aproximar",
+    "controls.zoomOut.ariaLabel": "Afastar",
+    "controls.fitView.ariaLabel": "Ajustar à tela",
+    "controls.interactive.ariaLabel": "Travar ou destravar edição",
+  }}
+  nodes={nodes}
+>
+  <Controls />
+</Canvas>
+```
+
+`Controls` é o `Controls` do React Flow com moldura de cartão, botões sem borda e fundo `secondary` no
+hover. Entra como filho do [Canvas](/docs/ai/canvas).
+
+O painel tem `aria-label` "Controles do canvas" por padrão. Os rótulos dos **botões** não são deste
+componente: vêm do `ariaLabelConfig` do `<ReactFlow>`, em inglês por padrão ("Zoom In", "Fit View"…).
+Para lê-los em pt-BR, passe a tradução ao `Canvas`, como acima.
+
+## Referência da API
+
+### Controls
+
+Aceita as props do [`Controls`](https://reactflow.dev/api-reference/components/controls) do React Flow.
+
+| Prop                  | Tipo                                    | Padrão                  |
+| --------------------- | --------------------------------------- | ----------------------- |
+| `aria-label`          | `string`                                | `"Controles do canvas"` |
+| `position`            | `PanelPosition`                         | `"bottom-left"`         |
+| `orientation`         | `"horizontal" \| "vertical"`            | `"vertical"`            |
+| `showZoom`            | `boolean`                               | `true`                  |
+| `showFitView`         | `boolean`                               | `true`                  |
+| `showInteractive`     | `boolean`                               | `true`                  |
+| `fitViewOptions`      | `FitViewOptions`                        | —                       |
+| `onZoomIn` / `onZoomOut` / `onFitView` | `() => void`           | —                       |
+| `onInteractiveChange` | `(interactiveStatus: boolean) => void`  | —                       |
+| `children`            | `ReactNode` — botões extras (`ControlButton` do `@xyflow/react`) | — |
+
+## Origem
+
+Adaptado do componente [Controls](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudança da Blips: `aria-label` padrão em pt-BR ("Controles do canvas"; o React Flow usa
+"Control Panel"), ainda sobrescrevível.

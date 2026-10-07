@@ -15,7 +15,6 @@ export default function AiConversationEmpty() {
           <ConversationEmptyState
             description="Pergunte sobre contratos, garantia ou financeiro."
             icon={<ChatCircleDotsIcon className="size-8" />}
-            title="Nenhuma mensagem ainda"
           />
         </ConversationContent>
       </Conversation>

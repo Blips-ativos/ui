@@ -47,8 +47,8 @@ import {
     <InlineCitationCardBody>
       <InlineCitationCarousel>
         <InlineCitationCarouselHeader>
-          <InlineCitationCarouselPrev aria-label="Fonte anterior" />
-          <InlineCitationCarouselNext aria-label="Próxima fonte" />
+          <InlineCitationCarouselPrev />
+          <InlineCitationCarouselNext />
           <InlineCitationCarouselIndex />
         </InlineCitationCarouselHeader>
         <InlineCitationCarouselContent>
@@ -71,10 +71,13 @@ import {
 
 O `InlineCitationCardTrigger` é um `Badge` da `@blips/ui` com o hostname da primeira fonte e `+N` para as
 demais. Uma URL inválida não quebra a renderização: o badge mostra a string como veio. Com `sources` vazio,
-mostra `unknown`.
+mostra `fallbackLabel` (padrão "desconhecida").
 
-`InlineCitationCarouselPrev` e `InlineCitationCarouselNext` vêm com `aria-label` em inglês (`Previous`,
-`Next`). Em telas pt-BR, passe o seu.
+O badge é renderizado como `<button type="button">`, com o mesmo visual: entra na ordem de Tab e o card abre
+também quando ele recebe foco pelo teclado (no upstream era um `<span>`, inalcançável sem mouse).
+
+`InlineCitationCarouselPrev` e `InlineCitationCarouselNext` vêm com `aria-label` "Fonte anterior" e "Próxima
+fonte". Passe o seu `aria-label` para trocar.
 
 ## Exemplos
 
@@ -101,9 +104,12 @@ Props do `Badge` mais:
 
 | Prop         | Tipo       | Padrão      |
 | ------------ | ---------- | ----------- |
-| `sources`    | `string[]` | obrigatório |
-| `delay`      | `number`   | `0`         |
-| `closeDelay` | `number`   | `0`         |
+| `sources`       | `string[]` | obrigatório      |
+| `delay`         | `number`   | `0`              |
+| `closeDelay`    | `number`   | `0`              |
+| `fallbackLabel` | `string`   | `"desconhecida"` |
+
+Renderiza um `<button type="button">` com as classes do `Badge` (focável pelo teclado).
 
 ### InlineCitationCardBody
 
@@ -124,7 +130,7 @@ Props da `<div>`. Sem `children`, mostra `{atual}/{total}`.
 
 ### InlineCitationCarouselPrev e InlineCitationCarouselNext
 
-Props do `<button>`.
+Props do `<button>`. `aria-label` padrão: "Fonte anterior" e "Próxima fonte".
 
 ### InlineCitationSource
 
@@ -145,4 +151,5 @@ Props do `<blockquote>`.
 Adaptado do componente [Inline Citation](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
 Apache-2.0). Mudanças da Blips: `HoverCard` e `Carousel` da `@blips/ui`; no Base UI os atrasos ficam no
 trigger, então o `openDelay`/`closeDelay={0}` do upstream virou `delay`/`closeDelay` no
-`InlineCitationCardTrigger`; o hostname da fonte é lido sem lançar erro em URL inválida; ícones Phosphor.
+`InlineCitationCardTrigger`; o hostname da fonte é lido sem lançar erro em URL inválida; o trigger é um `<button>` focável; textos padrão em
+pt-BR; ícones Phosphor.

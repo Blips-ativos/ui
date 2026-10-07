@@ -1,0 +1,88 @@
+---
+title: JSX Preview
+description: Renderiza JSX gerado pelo modelo como interface de verdade, inclusive no meio do streaming, com componentes liberados por lista.
+---
+
+<ComponentPreview name="ai-jsx-preview-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai react-jsx-parser
+```
+
+O `jsx-preview` exige o peer opcional `react-jsx-parser` (^2): ele é importado de forma estática, então quem importa este componente precisa ter o pacote instalado. Quem não usa o `jsx-preview` não precisa dele. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  JSXPreview,
+  JSXPreviewContent,
+  JSXPreviewError,
+} from "@blips/ai/components/jsx-preview"
+```
+
+```tsx
+<JSXPreview jsx={jsx} components={{ Status }} bindings={{ vencimento }}>
+  <JSXPreviewContent />
+  <JSXPreviewError />
+</JSXPreview>
+```
+
+O `JSXPreview` recebe a string de JSX (`jsx`) e a interpreta com o [react-jsx-parser](https://github.com/TroyAlford/react-jsx-parser): nada é avaliado com `eval`. Só as tags HTML e os componentes passados em `components` podem aparecer; os valores usados entre chaves (`{vencimento}`) vêm de `bindings`.
+
+Libere em `components` só o que o modelo pode usar. Embrulhe os componentes da `@blips/ui` num componente seu com props simples (como o `Status` do exemplo, que embrulha o [Badge](/docs/components/badge)): é o contrato que o prompt descreve ao modelo.
+
+Quando o modelo devolve JSX inválido, o `JSXPreviewError` mostra a mensagem do parser e o `onError` do `JSXPreview` é chamado. Sem erro, o `JSXPreviewError` não renderiza nada.
+
+## Exemplos
+
+### Durante o streaming
+
+Com `isStreaming`, o JSX parcial é completado antes de renderizar: a última tag cortada é descartada e as tags abertas são fechadas. Se mesmo assim o trecho não interpretar, o componente mantém a última versão que funcionou e não mostra erro até o streaming acabar.
+
+<ComponentPreview name="ai-jsx-preview-streaming" />
+
+## Referência da API
+
+### JSXPreview
+
+Raiz. Guarda o JSX, o estado de erro e o contexto dos filhos. Aceita as props de `div`.
+
+| Prop          | Tipo                         | Padrão      |
+| ------------- | ---------------------------- | ----------- |
+| `jsx`         | `string`                     | obrigatória |
+| `isStreaming` | `boolean`                    | `false`     |
+| `components`  | `Record<string, ComponentType>` (do `react-jsx-parser`) |             |
+| `bindings`    | `Record<string, unknown>` (do `react-jsx-parser`)       |             |
+| `onError`     | `(error: Error) => void`     |             |
+
+O erro volta a `null` sempre que `jsx` muda.
+
+### JSXPreviewContent
+
+Renderiza o JSX processado. Aceita as props de `div`, exceto `children`.
+
+### JSXPreviewError
+
+Caixa de erro com ícone e `error.message`. Aceita as props de `div`.
+
+| Prop       | Tipo                                         | Padrão                  |
+| ---------- | -------------------------------------------- | ----------------------- |
+| `children` | `ReactNode \| ((error: Error) => ReactNode)` | ícone + `error.message` |
+
+### useJSXPreview
+
+Hook que devolve o contexto (`jsx`, `processedJsx`, `isStreaming`, `error`, `setError`, `components`, `bindings`) para montar partes próprias. Só funciona dentro de um `JSXPreview`.
+
+## Origem
+
+Adaptado do componente [JSX Preview](https://elements.ai-sdk.dev/components/jsx-preview) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou o ícone Lucide pelo do Phosphor e as cores pelos tokens da `@blips/ui`; a API é a mesma do upstream.

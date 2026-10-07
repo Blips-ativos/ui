@@ -17,6 +17,7 @@ chamadas de ferramenta, fontes, campo de prompt e sugestões.
 - [Anatomia](#anatomia)
 - [Regra de ouro: a lib é apresentacional](#regra-de-ouro-a-lib-é-apresentacional)
 - [Renderizando um UIMessage](#renderizando-um-uimessage)
+- [Fluxo de agente: anexos, plano, tarefas, fila e aprovação](#fluxo-de-agente-anexos-plano-tarefas-fila-e-aprovação)
 - [(a) Com o AI SDK (`useChat`)](#a-com-o-ai-sdk-usechat)
 - [(b) Com eventos próprios (AgentOS do Agno)](#b-com-eventos-próprios-agentos-do-agno)
 - [Estados da tela](#estados-da-tela)
@@ -55,6 +56,10 @@ Leia a reference de cada peça antes de escrever código (props reais, armadilha
 | Aprovação de ferramenta (human-in-the-loop) | `@blips/ai/components/confirmation` | `../references/ai/confirmation.md` |
 | Citação no meio do texto | `@blips/ai/components/inline-citation` | `../references/ai/inline-citation.md` |
 | Uso de tokens/contexto | `@blips/ai/components/context` | `../references/ai/context.md` |
+| Anexos (prompt e mensagem) | `@blips/ai/components/attachments` | `../references/ai/attachments.md` |
+| Plano do agente | `@blips/ai/components/plan` | `../references/ai/plan.md` |
+| Etapas/tarefas do agente | `@blips/ai/components/task` | `../references/ai/task.md` |
+| Fila de mensagens/tarefas | `@blips/ai/components/queue` | `../references/ai/queue.md` |
 
 ## Peers e CSS para esta tela
 
@@ -325,7 +330,83 @@ Mapa `part.type` → peça:
 | `tool-<nome>` / `dynamic-tool` | `Tool` + `ToolHeader` + `ToolContent` + `ToolInput` + `ToolOutput` | `type`, `state`, `toolName` (só `dynamic-tool`), `input`, `output`, `errorText` |
 | `tool-*` com `state: "approval-requested"` | `Confirmation` (`../references/ai/confirmation.md`) | `approval`, `state` |
 | `source-url` | `Sources` > `Source` (agrupadas por mensagem) | `url`, `title`, `sourceId` (key) |
-| `step-start`, `file`, `data-*` | decisão do app | — |
+| `file` | `Attachments` > `AttachmentPart` (`../references/ai/attachments.md`; ver [Fluxo de agente](#fluxo-de-agente-anexos-plano-tarefas-fila-e-aprovação)) | `{ ...part, id }` como `data` |
+| `step-start` | separador de etapa → `Task` (idem) | — |
+| `data-*` | decisão do app (ex.: `data-plan` → `Plan`) | `part.data` |
+
+## Fluxo de agente: anexos, plano, tarefas, fila e aprovação
+
+A tela acima cobre pergunta → resposta. Um agente que **trabalha** (planeja,
+executa em etapas, pede permissão, recebe arquivos) acrescenta cinco peças.
+Cada uma tem lugar fixo na tela; todas são apresentacionais, e os dados vêm do
+app (parts do `useChat` no caminho (a), eventos do AgentOS mapeados no
+caminho (b)).
+
+```
+<div className="flex h-dvh flex-col">
+  <Conversation>
+    <ConversationContent>
+      <Message align="end">                          usuário
+        <MessageContent>
+          <Attachments variant="grid">…</Attachments>  ① parts "file" da mensagem enviada
+          <Bubble>…</Bubble>
+        </MessageContent>
+      </Message>
+      <Message align="start">                        assistente
+        <MessageContent>
+          <Plan isStreaming>…</Plan>                   ② plano antes de executar
+          <Task title="Consultar títulos">…</Task>     ③ uma Task por etapa
+          <Tool>                                       tool call da etapa
+            <ToolHeader/>
+            <ToolContent>
+              <Confirmation approval state>…</Confirmation>   ⑤ aprovação humana
+              <ToolInput/> <ToolOutput/>
+            </ToolContent>
+          </Tool>
+          <MessageResponse/>
+        </MessageContent>
+      </Message>
+    </ConversationContent>
+  </Conversation>
+  <Queue>…</Queue>                                   ④ fila, fora da conversa, colada no prompt
+  <PromptInput>
+    <PromptInputHeader>
+      <Attachments variant="inline">…</Attachments>  ① anexos antes do envio
+    </PromptInputHeader>
+    …
+  </PromptInput>
+</div>
+```
+
+| Momento | Peça (reference) | Onde entra | Dados no caminho (a) — AI SDK | Dados no caminho (b) — AgentOS |
+|---|---|---|---|---|
+| ① Usuário anexa arquivos | `Attachments variant="inline"` + `AttachmentPart` + `AttachmentPreview` + `AttachmentRemove` (`../references/ai/attachments.md`) | `PromptInputHeader` | `usePromptInputAttachments().files` (já `FileUIPart & { id }`); `onRemove={() => remove(file.id)}`; no envio, `onSubmit({ text, files })` → `sendMessage({ text, files })` | os mesmos `files` do `PromptInput`; a rota do app os encaminha ao run. O app guarda as parts `file` na mensagem do usuário que ele mesmo monta |
+| ① Mensagem enviada com anexos | `Attachments variant="grid"` (cola à direita) | `MessageContent` do usuário, **acima** do `Bubble` | parts `type: "file"`; dê um `id` estável: `{ ...part, id: \`${message.id}-${i}\` }` | as parts `file` guardadas no envio |
+| ② Plano antes de executar | `Plan` + `PlanHeader`/`PlanTitle`/`PlanDescription` + `PlanContent` + `PlanFooter` (`../references/ai/plan.md`) | `MessageContent` do assistente, **antes** das tools e da resposta | uma data part sua (`data-plan`, tipada no `UIMessage`) ou o `output` de uma tool de planejamento; `isStreaming` enquanto a part chega na última mensagem | o resultado da tool/membro de planejamento do Team; `isStreaming` entre o `ToolCallStarted` e o `ToolCallCompleted` dela. "Executar plano" no `PlanFooter` chama o `sendMessage` do app |
+| ③ Execução em etapas | `Task` + `TaskTrigger title` + `TaskContent` > `TaskItem`/`TaskItemFile` (`../references/ai/task.md`) | `MessageContent` do assistente, uma `Task` por etapa; o `Tool` de cada chamada pode ir dentro do `TaskContent` | agrupe as parts por passo (`step-start` separa os passos do loop de tools) | agrupe por membro do Team (eventos com `parent_run_id`, pelo `run_id` do membro) ou pela etapa do plano; é aqui que a fala interna de membro **pode** aparecer, como item de tarefa, nunca no texto da resposta |
+| ④ Fila | `Queue` + `QueueSection` + `QueueSectionTrigger`/`QueueSectionLabel` + `QueueList` > `QueueItem` (`../references/ai/queue.md`) | **Fora** do `Conversation`, logo acima do `PromptInput`, mesma largura | mensagens que o usuário enviou enquanto `status !== "ready"` (estado do app, enviadas uma a uma quando o run termina) e/ou os todos que uma tool do agente devolve | idem: fila do app enquanto o run não terminou; todos vindos do output da tool de tarefas |
+| ⑤ Aprovação humana | `Confirmation` + `ConfirmationTitle` + `ConfirmationRequest`/`ConfirmationAccepted`/`ConfirmationRejected` + `ConfirmationActions` (`../references/ai/confirmation.md`) | dentro do `ToolContent` da tool que pediu aprovação (abra o `Tool` nesse estado) | part com `state: "approval-requested"` e `part.approval`; botões chamam `addToolApprovalResponse({ id: part.approval.id, approved })` do `useChat` | `TeamRunPaused` → part com `state: "approval-requested"` e um `approval` montado pelo app; a decisão vai na chamada de continuação do run (rota do app), e o estado passa a `approval-responded` |
+
+Regras do fluxo:
+
+- **Ordem dentro da mensagem do assistente** = ordem das parts: plano →
+  etapas/tools → resposta. Não reordene no front para "ficar bonito"; o
+  usuário precisa ver o que veio antes.
+- **`Plan`/`Task`/`Queue` não substituem `Tool`.** `Tool` é o detalhe de uma
+  chamada (parâmetros, resultado); `Task` agrupa chamadas numa etapa legível;
+  `Plan` é a intenção antes de agir; `ChainOfThought` é a alternativa em linha
+  do tempo compacta. Escolha um nível por tela e não duplique a mesma
+  informação em dois.
+- **Aprovação pendente pausa o agente.** Com uma part em
+  `approval-requested`, o run está parado esperando a decisão. Decida no app o
+  que fazer com mensagens novas nesse intervalo (desabilitar o envio ou
+  guardá-las na `Queue`); não as mande ao agente como se nada estivesse
+  pendente.
+- **Anexos: `inline` no prompt, `grid` na mensagem.** As duas variantes
+  compõem o `Attachment` da @blips/ui; não monte miniatura à mão.
+- Peers: nenhuma dessas cinco peças exige peer além de `ai` (tipos) em
+  `attachments` e `confirmation`; o `Plan` usa o `Shimmer` no título em
+  streaming.
 
 ## (a) Com o AI SDK (`useChat`)
 
@@ -749,15 +830,13 @@ versão que o agente roda.
 
 ## Armadilhas
 
-- **Textos padrão em inglês.** Vários componentes trazem o texto do upstream:
-  `ConversationEmptyState` ("No messages yet"), `ReasoningTrigger`
-  ("Thinking..."/"Thought for N seconds"), `SourcesTrigger` ("Used N sources"),
-  `PromptInputTextarea` ("What would you like to know?"), rótulos de status do
-  `ToolHeader` ("Running", "Completed"…) e cabeçalhos de `ToolInput`/`ToolOutput`
-  ("Parameters", "Result", "Error"). Passe `title`/`description`,
-  `getThinkingMessage`, `children` e `placeholder` em pt-BR. Os rótulos do
-  `Tool` não têm prop: aceite-os ou monte o cabeçalho com
-  `CollapsibleTrigger` + `getStatusBadge` traduzido no app.
+- **Textos padrão já são pt-BR.** `ConversationEmptyState` ("Nenhuma mensagem
+  ainda"), `ReasoningTrigger`, `SourcesTrigger` ("Usou N fontes"),
+  `PromptInputTextarea` ("O que você gostaria de saber?"), rótulos de status do
+  `ToolHeader` e cabeçalhos de `ToolInput`/`ToolOutput` já saem em português.
+  Para outro texto, use as props (`title`/`description`, `getThinkingMessage`,
+  `children`, `placeholder`, `statusLabels`, `label`/`errorLabel`); não remonte
+  o componente só para traduzir.
 - **`Conversation` precisa de altura.** Ele é `flex-1 overflow-y-hidden`: o pai
   precisa ser `flex flex-col` com altura definida (`h-dvh`, `h-full` dentro de
   um layout com altura). Sem isso a lista cresce e o "grudar no fim" não age.

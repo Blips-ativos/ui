@@ -456,12 +456,18 @@ export type CodeBlockCopyButtonProps = Omit<
   onCopy?: () => void;
   onError?: (error: Error) => void;
   timeout?: number;
+  /** `aria-label` do botão só com ícone. Padrão: "Copiar código". */
+  copyLabel?: string;
+  /** `aria-label` depois de copiar. Padrão: "Copiado". */
+  copiedLabel?: string;
 };
 
 export const CodeBlockCopyButton = ({
   onCopy,
   onError,
   timeout = 2000,
+  copyLabel = "Copiar código",
+  copiedLabel = "Copiado",
   children,
   className,
   ...props
@@ -472,7 +478,7 @@ export const CodeBlockCopyButton = ({
 
   const copyToClipboard = useCallback(async () => {
     if (typeof window === "undefined" || !navigator?.clipboard?.writeText) {
-      onError?.(new Error("Clipboard API not available"));
+      onError?.(new Error("API de área de transferência indisponível"));
       return;
     }
 
@@ -503,7 +509,7 @@ export const CodeBlockCopyButton = ({
   return (
     <Button
       // Sem `children`, o botão é só ícone e ficaria sem nome acessível.
-      aria-label={children ? undefined : isCopied ? "Copied" : "Copy code"}
+      aria-label={children ? undefined : isCopied ? copiedLabel : copyLabel}
       className={cn("shrink-0", className)}
       onClick={copyToClipboard}
       size="icon"

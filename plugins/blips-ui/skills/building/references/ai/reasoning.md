@@ -3,7 +3,7 @@
 > **Só existe na @blips/ai (v3.x da @blips/ui).** Em repo com `@blips/ui` 2.x
 > não há `@blips/ai`: proponha a migração para a v3 (`../v2-vs-v3.md`).
 
-Bloco recolhível com o raciocínio do modelo ("Pensando…" / "Pensou por 4 s").
+Bloco recolhível com o raciocínio do modelo ("Pensando..." / "Pensou por 4 segundos").
 Abre sozinho quando o streaming começa, mede a duração e fecha sozinho 1 s
 depois que o streaming termina. O conteúdo é markdown renderizado pelo
 Streamdown. Adaptado do `reasoning` do AI Elements (Apache-2.0).
@@ -58,7 +58,7 @@ TypeScript instale como **devDependency** (`pnpm add -D ai`).
 | Componente | Props reais | Notas |
 |---|---|---|
 | `Reasoning` | `isStreaming?: boolean` (padrão `false`), `open?`, `defaultOpen?`, `onOpenChange?: (open: boolean) => void`, `duration?: number` (segundos), mais as props do `Collapsible` da @blips/ui (Base UI) e da `<div>` | `defaultOpen` padrão = `isStreaming`. `defaultOpen={false}` bloqueia a abertura automática. `onOpenChange` recebe só o booleano (o `eventDetails` do Base UI é descartado). `duration` controlada substitui a medição interna. Classe base: `not-prose mb-4`. |
-| `ReasoningTrigger` | `getThinkingMessage?: (isStreaming: boolean, duration?: number) => ReactNode`, mais as props do `CollapsibleTrigger` | Sem `children`, desenha `BrainIcon` + mensagem + `CaretDownIcon` girando. Com `children`, você desenha tudo. |
+| `ReasoningTrigger` | `getThinkingMessage?: (isStreaming: boolean, duration?: number) => ReactNode`, mais as props do `CollapsibleTrigger` | Sem `children`, desenha `BrainIcon` + mensagem + `CaretDownIcon` girando. Mensagem padrão pt-BR: "Pensando..." (Shimmer) / "Pensou por N segundo(s)" / "Pensou por alguns segundos". Com `children`, você desenha tudo. |
 | `ReasoningContent` | `children: string` (obrigatório, markdown), mais as props do `CollapsibleContent` | Renderiza `<Streamdown>` com os plugins `cjk`, `code`, `math`, `mermaid`. Não aceita JSX como filho. |
 | `useReasoning()` | retorna `{ isStreaming, isOpen, setIsOpen, duration }` | Para triggers customizados. Lança erro fora de `Reasoning`. |
 
@@ -87,19 +87,21 @@ import {
 import { Shimmer } from "@blips/ai/components/shimmer";
 import type { ReasoningUIPart } from "ai";
 
+// Opcional: o padrão já é pt-BR. Aqui, texto próprio no lugar de
+// "Pensando..."/"Pensou por N segundos".
 // O ReasoningTrigger é um <button>: use <span> (e Shimmer as="span"), não <p>.
 const mensagemDeRaciocinio = (isStreaming: boolean, duration?: number) => {
   if (isStreaming || duration === 0) {
     return (
       <Shimmer as="span" duration={1}>
-        Pensando…
+        Analisando…
       </Shimmer>
     );
   }
   if (duration === undefined) {
-    return <span>Pensou por alguns segundos</span>;
+    return <span>Análise concluída</span>;
   }
-  return <span>Pensou por {duration} s</span>;
+  return <span>Análise concluída em {duration} s</span>;
 };
 
 export function RaciocinioDoAgente({
@@ -122,9 +124,9 @@ export function RaciocinioDoAgente({
 
 ## Armadilhas
 
-- **Textos padrão em inglês.** Sem `getThinkingMessage`, aparece
-  "Thinking..." / "Thought for N seconds". Em produto pt-BR, passe sempre uma
-  função como `mensagemDeRaciocinio` acima.
+- **Não reescreva o padrão à toa.** Sem `getThinkingMessage`, o gatilho já
+  mostra "Pensando..." / "Pensou por N segundos". Passe a função só para um
+  texto diferente desse.
 - **`isStreaming` em todas as partes.** Passar o `status` do chat cru para
   todos os blocos reabre raciocínios antigos. Restrinja à última parte da
   última mensagem.
@@ -139,9 +141,8 @@ export function RaciocinioDoAgente({
 - **`children` não-string em `ReasoningContent`** não compila. Para conteúdo
   rico, monte com `CollapsibleContent` da @blips/ui dentro do `Reasoning`.
 - **`<p>` dentro do trigger.** O `ReasoningTrigger` renderiza um `<button>`
-  (`CollapsibleTrigger` do Base UI); o `getThinkingMessage` padrão devolve
-  `<p>`, que é HTML inválido ali. Na sua função, devolva `<span>` e
-  `<Shimmer as="span">`.
+  (`CollapsibleTrigger` do Base UI); `<p>` é HTML inválido ali. O padrão já
+  devolve `<span>`; na sua função, devolva `<span>` e `<Shimmer as="span">`.
 - **Peers esquecidos.** `streamdown` e os quatro `@streamdown/*` são
   opcionais no `package.json` da lib, mas obrigatórios para quem importa
   este componente.

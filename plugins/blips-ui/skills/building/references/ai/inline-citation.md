@@ -57,14 +57,14 @@ tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
 | `InlineCitation` | props de `<span>` | Raiz `group inline`. |
 | `InlineCitationText` | props de `<span>` | Trecho citado; `group-hover:bg-accent`. |
 | `InlineCitationCard` | props do `HoverCard` da @blips/ui (`PreviewCard.Root`: `open`, `defaultOpen`, `onOpenChange`) | Os atrasos **não** ficam aqui. |
-| `InlineCitationCardTrigger` | `sources: string[]` (**obrigatório**, URLs), `delay?: number` (ms, padrão `0`), `closeDelay?: number` (ms, padrão `0`), mais props do `Badge` | Mostra o hostname da 1ª URL + `+N`. URL inválida aparece crua; lista vazia mostra "unknown". As props extras vão para o `Badge` (secundário, `rounded-full ml-1`). |
+| `InlineCitationCardTrigger` | `sources: string[]` (**obrigatório**, URLs), `delay?: number` (ms, padrão `0`), `closeDelay?: number` (ms, padrão `0`), `fallbackLabel?: string` (padrão "desconhecida"), mais props do `Badge` | Mostra o hostname da 1ª URL + `+N`. URL inválida aparece crua; lista vazia mostra `fallbackLabel`. Renderiza `<button type="button">` com as classes do `Badge` (secundário, `rounded-full ml-1`): focável pelo teclado, o card abre no foco. As props extras vão para o `Badge`. |
 | `InlineCitationCardBody` | props do `HoverCardContent` (`side`, `sideOffset`, `align`, …) | `relative w-80 p-0`. |
 | `InlineCitationCarousel` | props do `Carousel` da @blips/ui (`opts`, `orientation`, `plugins`) | Guarda a API do Embla num contexto para Index/Prev/Next. |
 | `InlineCitationCarouselContent` | props de `<div>` | `CarouselContent`. |
 | `InlineCitationCarouselItem` | props de `<div>` | `CarouselItem` com `space-y-2 p-4 pl-8`. |
 | `InlineCitationCarouselHeader` | props de `<div>` | Faixa `bg-secondary rounded-t-md p-2`. |
 | `InlineCitationCarouselIndex` | props de `<div>` | Sem `children`: "atual/total". |
-| `InlineCitationCarouselPrev` / `InlineCitationCarouselNext` | props de `<button>` | Botões crus com `ArrowLeftIcon`/`ArrowRightIcon`; `aria-label` padrão "Previous"/"Next". |
+| `InlineCitationCarouselPrev` / `InlineCitationCarouselNext` | props de `<button>` | Botões crus com `ArrowLeftIcon`/`ArrowRightIcon`; `aria-label` padrão "Fonte anterior"/"Próxima fonte" (o seu vence). |
 | `InlineCitationSource` | `title?`, `url?`, `description?` (strings), mais props de `<div>` | Título truncado, URL, descrição em 3 linhas; `children` depois. |
 | `InlineCitationQuote` | props de `<blockquote>` | Itálico com borda à esquerda. |
 
@@ -125,8 +125,8 @@ export function RespostaComCitacao() {
           <InlineCitationCardBody>
             <InlineCitationCarousel>
               <InlineCitationCarouselHeader>
-                <InlineCitationCarouselPrev aria-label="Fonte anterior" />
-                <InlineCitationCarouselNext aria-label="Próxima fonte" />
+                <InlineCitationCarouselPrev />
+                <InlineCitationCarouselNext />
                 <InlineCitationCarouselIndex />
               </InlineCitationCarouselHeader>
               <InlineCitationCarouselContent>
@@ -153,8 +153,10 @@ export function RespostaComCitacao() {
 
 ## Armadilhas
 
-- **`aria-label` em inglês nas setas.** Passe `aria-label` pt-BR em
-  `InlineCitationCarouselPrev`/`Next` (a prop do consumidor vence).
+- **Não envolva o trigger em outro botão ou link.** O
+  `InlineCitationCardTrigger` já é um `<button>`; dentro de `<a>`/`<button>`
+  vira HTML inválido. Pelo mesmo motivo, não o use dentro de um `<button>` de
+  mensagem clicável.
 - **Não passe `setApi` ao `InlineCitationCarousel`**: o seu sobrescreve o
   interno, e Index/Prev/Next param de funcionar.
 - **`openDelay` não existe.** No Base UI o nome é `delay`, e fica no

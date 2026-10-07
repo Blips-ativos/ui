@@ -71,9 +71,19 @@ Com eventos próprios (por exemplo, o início e o fim de uma tool call no AgentO
 
 Sem `title`, o `ToolHeader` deriva o nome do `type`: `tool-buscar_contratos` vira `buscar_contratos`. Para `type="dynamic-tool"`, informe `toolName`, que passa a ser o nome exibido.
 
-### Textos em inglês
+### Textos padrão
 
-Os rótulos de status ("Running", "Completed", "Error"...) e os títulos das seções ("Parameters", "Result", "Error") vêm em inglês, como no upstream, e não têm prop para trocar. Se a tela precisar de tudo em pt-BR, monte o cabeçalho com `CollapsibleTrigger` e `Badge` da `@blips/ui` dentro do `Tool`.
+Os rótulos de status ("Executando", "Concluída", "Erro"...) e os títulos das seções ("Parâmetros", "Resultado", "Erro") já vêm em pt-BR. Para trocar, use `statusLabels` no `ToolHeader` (só os estados que quiser mudar) e `label`/`errorLabel` no `ToolInput` e no `ToolOutput`:
+
+```tsx
+<ToolHeader
+  type="tool-buscar_contratos"
+  state="input-available"
+  statusLabels={{ "input-available": "Consultando..." }}
+/>
+<ToolInput input={input} label="Filtros" />
+<ToolOutput output={output} errorText={errorText} label="Contratos" errorLabel="Falha na consulta" />
+```
 
 ## Exemplos
 
@@ -85,17 +95,19 @@ Cada `state` da tool call tem ícone e rótulo próprios.
 
 | `state`              | Rótulo              |
 | -------------------- | ------------------- |
-| `input-streaming`    | Pending             |
-| `input-available`    | Running             |
-| `approval-requested` | Awaiting Approval   |
-| `approval-responded` | Responded           |
-| `output-available`   | Completed           |
-| `output-error`       | Error               |
-| `output-denied`      | Denied              |
+| `input-streaming`    | Pendente             |
+| `input-available`    | Executando           |
+| `approval-requested` | Aguardando aprovação |
+| `approval-responded` | Respondida           |
+| `output-available`   | Concluída            |
+| `output-error`       | Erro                 |
+| `output-denied`      | Negada               |
+
+Os padrões estão exportados em `toolStatusLabels`.
 
 ### Erro e ferramenta dinâmica
 
-Com `errorText`, o `ToolOutput` muda o título para "Error" e pinta o bloco com a cor `destructive`. O exemplo usa `type="dynamic-tool"` com `toolName`.
+Com `errorText`, o `ToolOutput` muda o título para "Erro" e pinta o bloco com a cor `destructive`. O exemplo usa `type="dynamic-tool"` com `toolName`.
 
 <ComponentPreview name="ai-tool-erro" />
 
@@ -121,6 +133,7 @@ Gatilho com ícone, nome, badge de status e seta.
 | `state`     | `ToolPart["state"]`                      | obrigatória            |
 | `toolName`  | `string`                                 | obrigatória com `dynamic-tool` |
 | `title`     | `string`                                 | nome derivado do `type` |
+| `statusLabels` | `Partial<ToolStatusLabels>`           | `toolStatusLabels` (pt-BR) |
 | `className` | `string`                                 |                        |
 
 ### ToolContent
@@ -131,9 +144,10 @@ Painel que abre e fecha. Aceita as props do `CollapsibleContent`.
 
 Mostra os parâmetros como JSON formatado. Aceita as props de `div`.
 
-| Prop    | Tipo                | Padrão      |
-| ------- | ------------------- | ----------- |
-| `input` | `ToolPart["input"]` | obrigatória |
+| Prop    | Tipo                | Padrão        |
+| ------- | ------------------- | ------------- |
+| `input` | `ToolPart["input"]` | obrigatória   |
+| `label` | `ReactNode`         | `"Parâmetros"` |
 
 ### ToolOutput
 
@@ -141,14 +155,20 @@ Mostra o resultado ou o erro. Não renderiza nada sem `output` e sem `errorText`
 
 | Prop        | Tipo                    | Padrão      |
 | ----------- | ----------------------- | ----------- |
-| `output`    | `ToolPart["output"]`    | obrigatória |
-| `errorText` | `ToolPart["errorText"]` | obrigatória |
+| `output`     | `ToolPart["output"]`    | obrigatória   |
+| `errorText`  | `ToolPart["errorText"]` | obrigatória   |
+| `label`      | `ReactNode`             | `"Resultado"` |
+| `errorLabel` | `ReactNode`             | `"Erro"`      |
 
 Objeto vira JSON formatado, string vai para o `CodeBlock` como JSON e um elemento React é renderizado como está.
 
 ### getStatusBadge
 
-`getStatusBadge(state)` devolve o `Badge` de status usado no cabeçalho, para reaproveitar em cabeçalhos próprios.
+`getStatusBadge(state, labels?)` devolve o `Badge` de status usado no cabeçalho, para reaproveitar em cabeçalhos próprios. `labels` aceita o mesmo objeto parcial de `statusLabels`.
+
+### toolStatusLabels
+
+Objeto `ToolStatusLabels` (`Record<ToolPart["state"], string>`) com os rótulos padrão em pt-BR.
 
 ### ToolPart
 

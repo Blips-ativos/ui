@@ -30,7 +30,9 @@ import {
   ToolInput,
   ToolOutput,
   getStatusBadge,
+  toolStatusLabels,
   type ToolPart,
+  type ToolStatusLabels,
 } from "@blips/ai/components/tool";
 ```
 
@@ -53,16 +55,17 @@ pnpm add -D ai
 | Componente | Props reais | Notas |
 |---|---|---|
 | `Tool` | props do `Collapsible` da @blips/ui (`open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `className` string ou função de estado) | Moldura `rounded-md border mb-4`, classe `group` (o caret gira com `group-data-open:`). |
-| `ToolHeader` | `type` (`` `tool-${nome}` `` ou `"dynamic-tool"`), `state` (`ToolPart["state"]`), `toolName` (obrigatório só com `"dynamic-tool"`, proibido nos outros), `title?: string`, `className?` | Nome exibido = `title` ou o `type` sem o prefixo `tool-` (ou `toolName`). **Não aceita outras props** nem `children`. |
+| `ToolHeader` | `type` (`` `tool-${nome}` `` ou `"dynamic-tool"`), `state` (`ToolPart["state"]`), `toolName` (obrigatório só com `"dynamic-tool"`, proibido nos outros), `title?: string`, `statusLabels?: Partial<ToolStatusLabels>`, `className?` | Nome exibido = `title` ou o `type` sem o prefixo `tool-` (ou `toolName`). **Não aceita outras props** nem `children`. |
 | `ToolContent` | props do `CollapsibleContent` | `space-y-4 p-4`, animação de entrada/saída. |
-| `ToolInput` | `input: ToolPart["input"]`, mais props de `<div>` | Título "Parameters" + `JSON.stringify(input, null, 2)` em JSON. |
-| `ToolOutput` | `output: ToolPart["output"]`, `errorText: ToolPart["errorText"]` (**ambos obrigatórios**, pode ser `undefined`), mais props de `<div>` | Retorna `null` se ambos forem falsy. Objeto → JSON formatado; string → `CodeBlock` com `language="json"`; elemento React → renderizado como está. Título "Result" ou "Error". |
-| `getStatusBadge(state)` | função | `Badge` secundário com ícone + rótulo do estado. |
+| `ToolInput` | `input: ToolPart["input"]`, `label?: ReactNode` (padrão "Parâmetros"), mais props de `<div>` | Título + `JSON.stringify(input, null, 2)` em JSON. |
+| `ToolOutput` | `output: ToolPart["output"]`, `errorText: ToolPart["errorText"]` (**ambos obrigatórios**, pode ser `undefined`), `label?: ReactNode` (padrão "Resultado"), `errorLabel?: ReactNode` (padrão "Erro"), mais props de `<div>` | Retorna `null` se ambos forem falsy. Objeto → JSON formatado; string → `CodeBlock` com `language="json"`; elemento React → renderizado como está. Título `label` ou `errorLabel`. |
+| `getStatusBadge(state, labels?)` | função | `Badge` secundário com ícone + rótulo do estado (`labels` sobrescreve, parcial). |
+| `toolStatusLabels` | `ToolStatusLabels` | Rótulos padrão pt-BR por estado. |
 
-Estados e rótulos (fixos, em inglês): `input-streaming` Pending ·
-`input-available` Running · `approval-requested` Awaiting Approval ·
-`approval-responded` Responded · `output-available` Completed ·
-`output-denied` Denied · `output-error` Error.
+Estados e rótulos padrão (pt-BR, trocáveis por `statusLabels`):
+`input-streaming` Pendente · `input-available` Executando ·
+`approval-requested` Aguardando aprovação · `approval-responded` Respondida ·
+`output-available` Concluída · `output-denied` Negada · `output-error` Erro.
 
 ## Composição com a @blips/ui
 
@@ -127,10 +130,9 @@ export function ToolEstatica() {
 
 ## Armadilhas
 
-- **Rótulos em inglês sem prop para traduzir.** O badge e os títulos
-  "Parameters"/"Result"/"Error" são fixos; só o nome da tool muda com
-  `title`. Se o produto exigir pt-BR nesses rótulos, é limitação conhecida da
-  lib: não reimplemente o cartão no app sem alinhar.
+- **Trocar rótulos sem reimplementar.** Os textos padrão já são pt-BR. Para
+  outro texto, use `statusLabels` (parcial: só os estados que mudam) e
+  `label`/`errorLabel` no `ToolInput`/`ToolOutput`; não remonte o cartão no app.
 - **Union discriminada no `ToolHeader`.** Passar `part.type` genérico não
   compila: separe `dynamic-tool` (com `toolName`) das tools estáticas, como
   no exemplo.

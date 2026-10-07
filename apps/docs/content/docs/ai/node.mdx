@@ -1,0 +1,105 @@
+---
+title: Node
+description: Cartão de etapa para o canvas, com cabeçalho, conteúdo, rodapé e alças de entrada e saída.
+---
+
+<ComponentPreview name="ai-node-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import {
+  Node,
+  NodeAction,
+  NodeContent,
+  NodeDescription,
+  NodeFooter,
+  NodeHeader,
+  NodeTitle,
+} from "@blips/ai/components/node"
+import type { Node as FlowNode, NodeProps as FlowNodeProps } from "@xyflow/react"
+```
+
+```tsx
+type Etapa = FlowNode<{ titulo: string; descricao: string }, "etapa">
+
+const EtapaNode = ({ data }: FlowNodeProps<Etapa>) => (
+  <Node handles={{ target: true, source: true }}>
+    <NodeHeader>
+      <NodeTitle>{data.titulo}</NodeTitle>
+      <NodeDescription>{data.descricao}</NodeDescription>
+    </NodeHeader>
+    <NodeContent>…</NodeContent>
+    <NodeFooter>…</NodeFooter>
+  </Node>
+)
+
+const nodeTypes = { etapa: EtapaNode }
+```
+
+O `Node` é o [Card](/docs/components/card) da `@blips/ui` com as alças (`Handle`) do React Flow: a de
+entrada (`target`) fica à esquerda e a de saída (`source`) à direita. Ele não funciona solto: renderize-o
+dentro do componente registrado em `nodeTypes` de um [Canvas](/docs/ai/canvas), porque o `Handle` lê o
+contexto do nó.
+
+O tipo `NodeProps` desta lib (props do cartão) tem o mesmo nome do `NodeProps` do `@xyflow/react` (props
+que o React Flow passa ao seu componente de nó). Renomeie um deles no import, como acima.
+
+Os nós têm largura fixa (`w-sm`, 24rem). Para um nó mais estreito, passe `className="w-56"`.
+
+## Referência da API
+
+### Node
+
+Aceita as props do `Card` da `@blips/ui`, inclusive `size` (`"default"` | `"sm"`).
+
+| Prop       | Tipo                                     | Padrão      |
+| ---------- | ---------------------------------------- | ----------- |
+| `handles`  | `{ target: boolean; source: boolean }`   | obrigatório |
+| `children` | `ReactNode`                              | —           |
+
+### Partes
+
+| Componente        | Base                | Estilo                                               |
+| ----------------- | ------------------- | ---------------------------------------------------- |
+| `NodeHeader`      | `CardHeader`        | Fundo `secondary`, borda inferior, `p-3`             |
+| `NodeTitle`       | `CardTitle`         | —                                                    |
+| `NodeDescription` | `CardDescription`   | —                                                    |
+| `NodeAction`      | `CardAction`        | Ação no canto do cabeçalho (ex.: botão de menu)      |
+| `NodeContent`     | `CardContent`       | `p-3`                                                |
+| `NodeFooter`      | `CardFooter`        | Fundo `secondary`, borda superior, `p-3`             |
+
+Cada parte aceita as props do componente base. Os tipos `NodeHeaderProps`, `NodeTitleProps` etc. são
+exportados.
+
+## Origem
+
+Adaptado do componente [Node](https://github.com/vercel/ai-elements) do AI Elements (Vercel, Apache-2.0).
+Mudanças da Blips: usa o `Card` da `@blips/ui` (Base UI), que desenha o contorno com `ring` em vez de
+`border`; a API não mudou.

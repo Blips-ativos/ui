@@ -1,0 +1,110 @@
+---
+title: Terminal
+description: Saída de comando com cores ANSI, cursor durante o streaming, rolagem automática e botões de copiar e limpar.
+---
+
+<ComponentPreview name="ai-terminal-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai ansi-to-react
+```
+
+O `terminal` exige o peer opcional `ansi-to-react` (^6), que converte os códigos de cor ANSI da saída em elementos React. Ele é importado de forma estática, então quem importa o `terminal` precisa ter o pacote instalado. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { Terminal } from "@blips/ai/components/terminal"
+```
+
+```tsx
+<Terminal output={saida} isStreaming={rodando} onClear={() => setSaida("")} />
+```
+
+Use o `Terminal` para mostrar a saída de um comando que o agente rodou (testes, build, `terraform plan`). Para um erro com pilha, use o [Stack Trace](/docs/ai/stack-trace); para código-fonte, o [Code Block](/docs/ai/code-block).
+
+Sem `children`, o `Terminal` monta o cabeçalho (título "Terminal", status, copiar e limpar) e o conteúdo. O `output` é a saída inteira até o momento: no streaming, concatene os pedaços no app e passe a string toda a cada atualização. O conteúdo rola para o fim sempre que `output` muda (desligue com `autoScroll={false}`).
+
+O botão de limpar só aparece quando há `onClear`; quem limpa é o app, zerando o `output`.
+
+O terminal é sempre escuro (paleta `zinc` do upstream), nos dois temas.
+
+## Exemplos
+
+### Streaming e composição
+
+Com `isStreaming`, o conteúdo mostra um cursor piscando e o `TerminalStatus` aparece. Monte as partes para trocar o título, pôr um indicador no status ou limitar a altura.
+
+<ComponentPreview name="ai-terminal-streaming" />
+
+## Referência da API
+
+### Terminal
+
+Raiz e provedor do contexto. Aceita as props de `div`.
+
+| Prop          | Tipo         | Padrão      |
+| ------------- | ------------ | ----------- |
+| `output`      | `string`     | obrigatória |
+| `isStreaming` | `boolean`    | `false`     |
+| `autoScroll`  | `boolean`    | `true`      |
+| `onClear`     | `() => void` |             |
+
+### TerminalHeader
+
+Faixa superior com borda. Aceita as props de `div`.
+
+### TerminalTitle
+
+Ícone de terminal e título. Aceita as props de `div`.
+
+| Prop       | Tipo        | Padrão       |
+| ---------- | ----------- | ------------ |
+| `children` | `ReactNode` | `"Terminal"` |
+
+### TerminalStatus
+
+Área de status, visível só com `isStreaming`. Não tem conteúdo padrão: passe `children` (um [Spinner](/docs/components/spinner) e um texto, por exemplo).
+
+### TerminalActions
+
+Grupo dos botões do cabeçalho. Aceita as props de `div`.
+
+### TerminalCopyButton
+
+Copia o `output`. Aceita as props do [Button](/docs/components/button). `children` substitui o ícone (e aí o `aria-label` padrão não é aplicado).
+
+| Prop          | Tipo                     | Padrão           |
+| ------------- | ------------------------ | ---------------- |
+| `onCopy`      | `() => void`             |                  |
+| `onError`     | `(error: Error) => void` |                  |
+| `timeout`     | `number`                 | `2000`           |
+| `copyLabel`   | `string`                 | `"Copiar saída"` |
+| `copiedLabel` | `string`                 | `"Copiado"`      |
+
+Como no [Snippet](/docs/ai/snippet), o `onError` divide o nome com o evento do `<button>`: confira `error instanceof Error` antes de ler `error.message`.
+
+### TerminalClearButton
+
+Chama o `onClear` do `Terminal`; não renderiza sem ele. Aceita as props do `Button`.
+
+| Prop    | Tipo     | Padrão              |
+| ------- | -------- | ------------------- |
+| `label` | `string` | `"Limpar terminal"` |
+
+### TerminalContent
+
+Área rolável (até `max-h-96`) com a saída colorida. `children` substitui a saída renderizada. Aceita as props de `div`.
+
+## Origem
+
+Adaptado do componente [Terminal](https://elements.ai-sdk.dev/components/terminal) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou o Button pelo da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor, traduziu os rótulos acessíveis e acrescentou as props `copyLabel`, `copiedLabel` e `label`. As cores escuras seguem a paleta do upstream. A conversão de ANSI é do [ansi-to-react](https://github.com/nteract/ansi-to-react) (BSD-3-Clause).

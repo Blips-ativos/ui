@@ -53,7 +53,7 @@ export default function AiPromptInputProvider() {
           </PromptInputBody>
           <PromptInputFooter>
             <PromptInputTools />
-            <PromptInputSubmit aria-label="Enviar" />
+            <PromptInputSubmit />
           </PromptInputFooter>
         </PromptInput>
         {enviada ? (

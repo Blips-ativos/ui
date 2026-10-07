@@ -1,7 +1,8 @@
 # Instalando a @blips/ai
 
 Componentes de interface de agente (conversa, resposta em streaming, raciocínio,
-ferramentas, fontes, prompt, efeitos visuais) portados do AI Elements
+ferramentas, fontes, prompt, canvas de fluxo, voz, plano e tarefas, código e
+terminal, efeitos visuais) portados do AI Elements
 (Apache-2.0) e do libraries.dev (MIT) sobre a `@blips/ui` v3.x. Esta reference
 é **aditiva** ao setup da `@blips/ui`: faça primeiro o da stack
 (`nextjs.md` ou `vite.md`) e só depois o abaixo.
@@ -34,20 +35,44 @@ Declare no `package.json` do app os peers de **cada** componente que importar:
 
 | Componente (subpath) | Peers que o app precisa declarar |
 | --- | --- |
+| **Chat** | |
 | `components/message` | `streamdown`, `@streamdown/code`, `@streamdown/math`, `@streamdown/mermaid`, `@streamdown/cjk`, `ai` (tipos) |
 | `components/reasoning` | `streamdown`, `@streamdown/code`, `@streamdown/math`, `@streamdown/mermaid`, `@streamdown/cjk` |
 | `components/code-block` | `shiki` |
 | `components/tool` | `shiki` (usa o `CodeBlock`), `ai` (tipos) |
-| `components/conversation` | `ai` (tipos) |
-| `components/confirmation` | `ai` (tipos) |
-| `components/context` | `ai` (tipos) |
-| `components/prompt-input` | `ai` (tipos) |
+| `components/conversation`, `components/confirmation`, `components/context`, `components/prompt-input` | `ai` (tipos) |
 | `components/shimmer`, `components/suggestion`, `components/sources`, `components/chain-of-thought`, `components/inline-citation` | — |
 | `fx/border-beam`, `fx/thinking-orbs` | — |
+| **Fluxo e canvas** | |
+| `components/canvas`, `components/node`, `components/edge`, `components/connection`, `components/controls`, `components/panel`, `components/toolbar` | `@xyflow/react` **+ o app importa `@xyflow/react/dist/style.css`** (ver seção 3) |
+| **Voz e mídia** | |
+| `components/audio-player` | `media-chrome`, `ai` (tipos) |
+| `components/persona` | `@rive-app/react-webgl2` (os `.riv` vêm do blob da Vercel em runtime; em produção, hospede os seus e passe `src`) |
+| `components/transcription` | `ai` (tipos) |
+| `components/speech-input`, `components/mic-selector`, `components/voice-selector` | — |
+| **Agente e tarefa** | |
+| `components/agent` | `shiki` (usa o `CodeBlock`), `ai` (tipos) |
+| `components/plan`, `components/queue`, `components/task`, `components/checkpoint`, `components/question` | — |
+| **Código e dev** | |
+| `components/sandbox` | `shiki` (o badge de status vem do módulo do `tool`, que importa o `CodeBlock`), `ai` (tipos) |
+| `components/jsx-preview` | `react-jsx-parser` |
+| `components/terminal` | `ansi-to-react` |
+| `components/artifact`, `components/commit`, `components/environment-variables`, `components/file-tree`, `components/package-info`, `components/schema-display`, `components/snippet`, `components/stack-trace`, `components/test-results`, `components/web-preview` | — (o `stack-trace` **não** usa `ansi-to-react`) |
+| **Conteúdo e modelo** | |
+| `components/attachments`, `components/image` | `ai` (tipos) |
+| `components/model-selector`, `components/open-in-chat` | — |
 
 Faixas aceitas (peerDependencies do pacote): `streamdown ^2.7.0`,
 `@streamdown/code ^2`, `@streamdown/math ^1`, `@streamdown/mermaid ^1`,
-`@streamdown/cjk ^1`, `shiki ^4`, `ai >=6`.
+`@streamdown/cjk ^1`, `shiki ^4`, `@xyflow/react ^12`, `media-chrome ^4`,
+`@rive-app/react-webgl2 ^4`, `react-jsx-parser ^2`, `ansi-to-react ^6`
+(BSD-3-Clause), `ai >=6`.
+
+O import do peer é **estático** no arquivo do componente: quem importa o
+componente precisa do peer, mesmo sem usar a parte que depende dele (ex.:
+`sandbox` sem `CodeBlock` na tela ainda exige `shiki`); quem não importa o
+componente não instala nada. A tabela é transitiva (já inclui o que um
+componente herda de outro da @blips/ai).
 
 **`ai` é peer opcional só de tipos; em projeto TypeScript, `pnpm add -D ai`.**
 O pacote só faz `import type` do `ai` (nenhum runtime do AI SDK). Só que os
@@ -107,6 +132,20 @@ dependência direta (pnpm estrito). Esses `@source` **não** são o anti-padrão
 do "@source defensivo": apontam para conteúdo fora da auto-detecção, que é
 exatamente o caso legítimo. O check da reviewing não os acusa.
 
+**React Flow (obrigatório se usar `canvas`, `node`, `edge`, `connection`,
+`controls`, `panel` ou `toolbar`).** A @blips/ai é `sideEffects: false` e o
+`Canvas` não importa a folha do React Flow (o upstream importava). O app
+importa **uma vez**, no layout raiz ou no componente cliente que monta o
+canvas:
+
+```tsx
+import "@xyflow/react/dist/style.css";
+```
+
+Sem ela, handles, arestas, viewport e controles saem quebrados (nós
+empilhados, sem posicionamento). Os tokens continuam vindo da @blips/ui; não
+copie o tema do React Flow.
+
 ## 4. Next.js: `transpilePackages`
 
 Como a @blips/ui, a @blips/ai publica o fonte `.tsx`. Acrescente-a:
@@ -123,9 +162,12 @@ const nextConfig: NextConfig = {
 Sem a entrada `@blips/ai`, o build falha com erro de parse nos `.tsx` de
 `node_modules/@blips/ai`. No Vite nada muda (compila TSX de `node_modules`).
 
-Todos os componentes da @blips/ai têm `"use client"`: em Server Component,
-renderize-os a partir de um componente cliente seu (a tela de chat já é
-cliente por causa do estado).
+Quase todos os componentes da @blips/ai têm `"use client"`. Os de canvas
+(`canvas`, `node`, `edge`, `connection`, `panel`, `toolbar`), `image` e
+`model-selector` não declaram a diretiva (como no upstream). Em Server
+Component, renderize qualquer um deles a partir de um componente cliente seu
+(a tela de chat e o canvas já são cliente por causa do estado e dos
+handlers).
 
 ## 5. Imports
 
@@ -139,7 +181,8 @@ import { BlipsBorderBeam } from "@blips/ai/fx/border-beam";
 ```
 
 Por quê: um barrel importaria todos os componentes e, com eles, todos os peers
-opcionais (Streamdown, Shiki), quebrando quem não os instalou.
+opcionais (Streamdown, Shiki, React Flow, media-chrome, Rive,
+react-jsx-parser, ansi-to-react), quebrando quem não os instalou.
 
 ## 6. Validação
 
@@ -176,5 +219,7 @@ seção de UI um bullet:
   do `streamdown/dist` (markdown sem estilo)
 - `ai` em `dependencies` só por causa dos tipos (o certo é `pnpm add -D ai`)
 - `transpilePackages` sem `"@blips/ai"` (Next)
+- Componente de canvas sem `import "@xyflow/react/dist/style.css"` no app
+- `Persona` em produção carregando os `.riv` da Vercel (sem `src` próprio)
 - Cópia do AI Elements via CLI (`components/ai-elements/*`) convivendo com a
   @blips/ai: duas famílias de chat no mesmo app

@@ -16,7 +16,8 @@ const usados = 96_000;
 const limite = 128_000;
 const numero = new Intl.NumberFormat("pt-BR");
 
-// Os textos padrão do Context vêm em inglês; passe children para traduzir.
+// Os textos padrão já são pt-BR; children troca o conteúdo de cada parte
+// quando a tela precisa de outra informação (aqui, um aviso no rodapé).
 export default function AiContextCustom() {
   return (
     <Context maxTokens={limite} usedTokens={usados}>

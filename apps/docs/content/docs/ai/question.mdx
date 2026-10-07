@@ -1,0 +1,144 @@
+---
+title: Question
+description: Pergunta do agente ao usuário, com opções de escolha única ou múltipla e resposta em texto livre.
+---
+
+<ComponentPreview name="ai-question-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Nenhum peer opcional é exigido, e o componente não importa nada do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Question,
+  QuestionActions,
+  QuestionDescription,
+  QuestionInput,
+  QuestionOption,
+  QuestionOptions,
+  QuestionPrompt,
+  QuestionSubmit,
+} from "@blips/ai/components/question"
+```
+
+```tsx
+<Question onSubmit={(resposta) => responder(resposta)}>
+  <QuestionPrompt>Como o cliente prefere pagar o acordo?</QuestionPrompt>
+  <QuestionDescription>Escolha uma forma ou escreva outra condição.</QuestionDescription>
+  <QuestionOptions>
+    <QuestionOption value="boleto">Boleto</QuestionOption>
+    <QuestionOption value="pix">Pix</QuestionOption>
+  </QuestionOptions>
+  <QuestionInput placeholder="Outra condição (opcional)" />
+  <QuestionActions>
+    <QuestionSubmit />
+  </QuestionActions>
+</Question>
+```
+
+O `Question` é um `<form>`. No envio, ele chama `onSubmit(resposta, evento)` com `{ selectedValues, text }` (o `text` sem espaços nas pontas, e `undefined` quando vazio) e já impede o envio nativo do formulário. Sem nenhuma opção marcada e sem texto, o `onSubmit` não é chamado, e o `QuestionSubmit` fica desabilitado.
+
+O componente é apresentacional: ele coleta a resposta, mas mandar essa resposta ao agente é com o app. Com o AI SDK, a pergunta costuma chegar como uma tool call que roda no cliente, e a resposta volta pelo `addToolOutput` do `useChat`. Com eventos próprios (como os do AgentOS), o app manda a resposta pelo caminho que o backend espera, por exemplo como a próxima mensagem do usuário.
+
+Para travar a pergunta depois de respondida, passe `disabled`: opções, campo de texto e botão ficam desabilitados.
+
+### Escolha única e múltipla
+
+Por padrão, `selectionMode` é `"single"`: clicar numa opção desmarca a anterior, e clicar de novo na mesma desmarca. Com `"multiple"`, cada opção liga e desliga sozinha. As opções têm `role="radio"` ou `role="checkbox"` com `aria-checked`, dentro de um `radiogroup` ou `group`. A opção marcada usa a variante `default` do `Button`, e as outras, `outline`; passe `variant` para fixar uma.
+
+Sem `children`, o `QuestionOption` mostra o próprio `value`.
+
+## Exemplos
+
+### Múltipla escolha controlada
+
+Com `value` e `onValueChange`, o estado fica no app. O valor tem a forma `{ selectedValues, text }`.
+
+<ComponentPreview name="ai-question-multipla" />
+
+## Referência da API
+
+### Question
+
+`<form>` com borda. Aceita as props de `form`, menos `defaultValue`, `value` e `onSubmit`, que têm o formato abaixo. Todos os `Question*` precisam estar dentro dele.
+
+| Prop            | Tipo                                                         | Padrão                           |
+| --------------- | ------------------------------------------------------------ | -------------------------------- |
+| `selectionMode` | `"single" \| "multiple"`                                     | `"single"`                       |
+| `value`         | `QuestionValue`                                              |                                  |
+| `defaultValue`  | `QuestionValue`                                              | `{ selectedValues: [], text: "" }` |
+| `onValueChange` | `(value: QuestionValue) => void`                             |                                  |
+| `onSubmit`      | `(response: QuestionResponse, event: FormEvent) => void \| Promise<void>` |                     |
+| `disabled`      | `boolean`                                                    | `false`                          |
+
+### QuestionPrompt
+
+A pergunta, em `<p>` com peso médio. Aceita as props de `p`.
+
+### QuestionDescription
+
+Texto de apoio em `text-muted-foreground`. Aceita as props de `p`.
+
+### QuestionOptions
+
+Linha de opções com quebra, com `role="radiogroup"` (escolha única) ou `role="group"` (múltipla). Aceita as props de `div`.
+
+### QuestionOption
+
+[Button](/docs/components/button) que marca e desmarca a opção. Aceita as props do `Button`.
+
+| Prop       | Tipo                  | Padrão                                  |
+| ---------- | --------------------- | --------------------------------------- |
+| `value`    | `string`              | obrigatória                             |
+| `variant`  | variantes do `Button` | `"default"` marcada, `"outline"` desmarcada |
+| `children` | `ReactNode`           | o `value`                               |
+
+O `onClick` recebe o evento do `Button` da `@blips/ui` (Base UI) e roda depois da troca de seleção.
+
+### QuestionInput
+
+[Textarea](/docs/components/textarea) de resposta livre, controlado pelo `Question`. Aceita as props do `Textarea`, menos `value` e `defaultValue`.
+
+### QuestionActions
+
+Linha alinhada à direita para os botões. Aceita as props de `div`.
+
+### QuestionSubmit
+
+`Button` com `type="submit"`, desabilitado enquanto não há resposta. Aceita as props do `Button`.
+
+| Prop       | Tipo        | Padrão     |
+| ---------- | ----------- | ---------- |
+| `children` | `ReactNode` | `"Enviar"` |
+
+### Tipos
+
+```ts
+interface QuestionValue {
+  selectedValues: readonly string[]
+  text: string
+}
+
+interface QuestionResponse {
+  selectedValues: readonly string[]
+  text?: string
+}
+```
+
+## Origem
+
+Adaptado do componente Question do [AI Elements](https://github.com/vercel/ai-elements) ([`packages/elements/src/question.tsx`](https://github.com/vercel/ai-elements/blob/main/packages/elements/src/question.tsx)), da Vercel, sob a licença Apache-2.0. A Blips usa o Button e o Textarea da `@blips/ui` (Base UI) e traduziu o texto padrão do botão de envio.

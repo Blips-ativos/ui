@@ -6,7 +6,6 @@ import {
   SourcesContent,
   SourcesTrigger,
 } from "@blips/ai/components/sources";
-import { CaretDownIcon } from "@phosphor-icons/react";
 
 const fontes = [
   {
@@ -26,10 +25,7 @@ const fontes = [
 export default function AiSourcesDemo() {
   return (
     <Sources>
-      <SourcesTrigger count={fontes.length}>
-        <span className="font-medium">{fontes.length} fontes consultadas</span>
-        <CaretDownIcon className="size-4" />
-      </SourcesTrigger>
+      <SourcesTrigger count={fontes.length} />
       <SourcesContent>
         {fontes.map((fonte) => (
           <Source href={fonte.href} key={fonte.href} title={fonte.title} />

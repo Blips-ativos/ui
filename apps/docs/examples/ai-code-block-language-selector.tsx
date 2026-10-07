@@ -83,7 +83,7 @@ export default function AiCodeBlockLanguageSelector() {
           </CodeBlockLanguageSelectorContent>
         </CodeBlockLanguageSelector>
         <CodeBlockActions>
-          <CodeBlockCopyButton aria-label="Copiar código" />
+          <CodeBlockCopyButton />
         </CodeBlockActions>
       </CodeBlockHeader>
     </CodeBlock>
