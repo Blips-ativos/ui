@@ -89,6 +89,14 @@ export const BlipsBotAvatar = forwardRef<
   ref
 ) {
   const toneColor = tone === "neutral" ? undefined : BLIPS_BOT_TONES[tone];
+  // O upstream monta o rótulo em inglês ("Clover bot, idle"); aqui sai em
+  // pt-BR. `aria-label` explícito vence.
+  const stateLabel =
+    props.state === "working"
+      ? "trabalhando"
+      : props.state === "sleeping"
+        ? "dormindo"
+        : "em espera";
   const fromTone = color === undefined && toneColor !== undefined;
   return (
     <BotAvatar
@@ -97,6 +105,7 @@ export const BlipsBotAvatar = forwardRef<
       brightness={brightness ?? (fromTone ? 1 : undefined)}
       color={color ?? toneColor}
       saturation={saturation ?? (fromTone ? 1 : undefined)}
+      aria-label={`Avatar do assistente, ${stateLabel}`}
       {...props}
     />
   );

@@ -10,7 +10,8 @@
  * Dimensões: imports, icones, api-versao, tailwind, formatacao, a11y, anti-slop,
  * tipografia, motion, construcao e blips-ai (só quando o app tem @blips/ai:
  * subpath, peers por componente, `ai` só tipo, chat recriado, CSS na ordem,
- * CSS do Streamdown). Severidades: "bloqueante" | "aviso".
+ * CSS do Streamdown e do KaTeX, CSS do React Flow, override do jsx-preview).
+ * Severidades: "bloqueante" | "aviso".
  * Princípio: checks de alta precisão (literais) são bloqueante; heurísticos
  * (verify:true) são aviso — o revisor promove a bloqueante se confirmar.
  */
@@ -134,9 +135,12 @@ const blipsAi = {
   version: aiPkg?.version ?? (deps["@blips/ai"] || null),
   declared: Boolean(deps["@blips/ai"]),
 };
-// Peers por subpath (fase 1). Com node_modules/@blips/ai presente, o mapa é
-// recalculado a partir do fonte instalado (aiPeersFor), então novos componentes
-// entram sem mexer aqui.
+// Peers por subpath dos 56 exports (fases 1–3), transitivos (o sandbox herda o
+// shiki do tool → code-block). Usado quando node_modules/@blips/ai não existe
+// (review antes do install, fixtures); com o pacote instalado, o mapa é
+// recalculado a partir do fonte (aiPeersFor) e os exports vêm do package.json.
+// Ao acrescentar componente na @blips/ai, acrescente a linha aqui: subpath fora
+// deste mapa é acusado como inexistente quando o pacote não está instalado.
 const STREAMDOWN = [
   "streamdown",
   "@streamdown/code",
@@ -144,23 +148,75 @@ const STREAMDOWN = [
   "@streamdown/mermaid",
   "@streamdown/cjk",
 ];
+const XYFLOW = ["@xyflow/react"];
 const AI_PEERS_STATIC = {
+  "components/agent": ["shiki", "ai"],
+  "components/artifact": [],
+  "components/attachments": ["ai"],
+  "components/audio-player": ["media-chrome", "ai"],
+  "components/canvas": XYFLOW,
   "components/chain-of-thought": [],
+  "components/checkpoint": [],
   "components/code-block": ["shiki"],
+  "components/commit": [],
   "components/confirmation": ["ai"],
+  "components/connection": XYFLOW,
   "components/context": ["ai"],
+  "components/controls": XYFLOW,
   "components/conversation": ["ai"],
+  "components/edge": XYFLOW,
+  "components/environment-variables": [],
+  "components/file-tree": [],
+  "components/image": ["ai"],
   "components/inline-citation": [],
+  "components/jsx-preview": ["react-jsx-parser"],
   "components/message": [...STREAMDOWN, "ai"],
+  "components/mic-selector": [],
+  "components/model-selector": [],
+  "components/node": XYFLOW,
+  "components/open-in-chat": [],
+  "components/package-info": [],
+  "components/panel": XYFLOW,
+  "components/persona": ["@rive-app/react-webgl2"],
+  "components/plan": [],
   "components/prompt-input": ["ai"],
+  "components/question": [],
+  "components/queue": [],
   "components/reasoning": [...STREAMDOWN],
+  "components/sandbox": ["shiki", "ai"],
+  "components/schema-display": [],
   "components/shimmer": [],
+  "components/snippet": [],
   "components/sources": [],
+  "components/speech-input": [],
+  "components/stack-trace": [],
   "components/suggestion": [],
+  "components/task": [],
+  "components/terminal": ["ansi-to-react"],
+  "components/test-results": [],
   "components/tool": ["shiki", "ai"],
+  "components/toolbar": XYFLOW,
+  "components/transcription": ["ai"],
+  "components/voice-selector": [],
+  "components/web-preview": [],
   "fx/border-beam": [],
+  "fx/bot-avatars": [],
+  "fx/img-fx": ["three"],
+  "fx/liquid-gooey": [],
+  "fx/metal-fx": [],
   "fx/thinking-orbs": [],
+  "fx/voice-glow": [],
 };
+// Peers que o subpath exige por meio de uma DEPENDÊNCIA do pacote (não aparecem
+// nos imports do fonte da @blips/ai, então a varredura de aiPeersFor não os
+// vê): o `img-fx` do npm importa `three`, peer dele e da @blips/ai.
+const AI_PEERS_INDIRECT = { "fx/img-fx": ["three"] };
+// Subpaths do React Flow: o app importa @xyflow/react/dist/style.css uma vez.
+const AI_XYFLOW_SUBPATHS = new Set(
+  Object.entries(AI_PEERS_STATIC)
+    .filter(([, peers]) => peers.includes("@xyflow/react"))
+    .map(([sub]) => sub)
+);
 const aiExports = aiPkg?.exports
   ? Object.keys(aiPkg.exports)
       .filter((k) => k.startsWith("./"))
@@ -197,6 +253,7 @@ function aiPeersFor(subpath) {
     }
   };
   if (typeof target === "string") visit(join(base, target));
+  for (const peer of AI_PEERS_INDIRECT[subpath] ?? []) found.add(peer);
   const peers = target ? [...found] : (AI_PEERS_STATIC[subpath] ?? []);
   aiPeerCache.set(subpath, peers);
   return peers;
@@ -238,6 +295,14 @@ const aiCssImports = []; // {file, line}
 // o dist do streamdown (@source) e o app importa streamdown/styles.css.
 let streamdownSource = false;
 let streamdownStyles = false;
+// React Flow (componentes de canvas): a @blips/ai não importa CSS de peer; o app
+// importa @xyflow/react/dist/style.css (ou base.css) uma vez, no CSS ou no JS.
+const XYFLOW_CSS_RE = /["']@xyflow\/react\/dist\/(style|base)\.css["']/;
+let xyflowStyles = false;
+// KaTeX (fórmulas do @streamdown/math, usado por message/reasoning): o plugin
+// não injeta o CSS; o app importa katex/dist/katex(.min).css.
+const KATEX_CSS_RE = /["']katex\/dist\/katex(\.min)?\.css["']/;
+let katexStyles = false;
 let aiUndeclaredReported = false;
 
 // deps embutidas na lib que o app só pode importar se declarar como diretas
@@ -876,6 +941,10 @@ for (const abs of files) {
       streamdownSource = true;
     if (lines.some((l) => /@import\s+["']streamdown\/styles\.css["']/.test(l)))
       streamdownStyles = true;
+    if (lines.some((l) => /@import\b/.test(l) && XYFLOW_CSS_RE.test(l)))
+      xyflowStyles = true;
+    if (lines.some((l) => /@import\b/.test(l) && KATEX_CSS_RE.test(l)))
+      katexStyles = true;
     const aiCss = lines.findIndex((l) =>
       /@import\s+["']@blips\/ai\/styles\.css["']/.test(l)
     );
@@ -897,6 +966,10 @@ for (const abs of files) {
   if (/\.(tsx|ts|jsx|js|mjs)$/.test(file)) {
     if (/import\s+["']streamdown\/styles\.css["']/.test(text))
       streamdownStyles = true;
+    if (new RegExp(`import\\s+${XYFLOW_CSS_RE.source}`).test(text))
+      xyflowStyles = true;
+    if (new RegExp(`import\\s+${KATEX_CSS_RE.source}`).test(text))
+      katexStyles = true;
     const importsAiUi = /from\s+["']@blips\/ai\//.test(text);
     for (const m of text.matchAll(
       /import\s+(type\s+)?\{([^}]*)\}\s*from\s*["']ai["']/g
@@ -1046,6 +1119,38 @@ if (hasAi) {
         "aviso"
       );
   }
+  if (streamdownAt && !katexStyles) {
+    const [sub, at] = streamdownAt;
+    add(
+      at.file,
+      at.line,
+      `@blips/ai/${sub} carrega o @streamdown/math, mas o CSS do KaTeX não é importado (katex/dist/katex.min.css, com katex como dependência direta) — fórmulas saem sem estilo`,
+      "blips-ai",
+      "aviso"
+    );
+  }
+  const xyflowAt = [...aiImports].find(([sub]) => AI_XYFLOW_SUBPATHS.has(sub));
+  if (xyflowAt && !xyflowStyles) {
+    const [sub, at] = xyflowAt;
+    add(
+      at.file,
+      at.line,
+      `@blips/ai/${sub} usa o React Flow, mas @xyflow/react/dist/style.css não é importado (CSS ou JS) — a @blips/ai não importa CSS de peer; sem ele nós, arestas, handles e viewport saem quebrados`,
+      "blips-ai",
+      "bloqueante"
+    );
+  }
+  const jsxPreviewAt = aiImports.get("components/jsx-preview");
+  const overrides = { ...(pkg.pnpm?.overrides ?? {}), ...(pkg.overrides ?? {}) };
+  if (jsxPreviewAt && !overrides["react-jsx-parser>@types/react"])
+    add(
+      jsxPreviewAt.file,
+      jsxPreviewAt.line,
+      'jsx-preview sem o override "react-jsx-parser>@types/react" (e ">@types/react-dom") em ^19.2.0 — o parser traz @types/react 18 e os componentes passados em `components` dão TS2322; em monorepo o override fica no package.json da raiz do workspace (confirme lá)',
+      "blips-ai",
+      "aviso",
+      true
+    );
   for (const [sub, at] of aiImports) {
     const missing = aiPeersFor(sub).filter((peer) => !deps[peer]);
     if (missing.length)

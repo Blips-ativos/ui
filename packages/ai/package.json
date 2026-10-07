@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "description": "Componentes de interface de agente da Blips (AI Elements + libraries.dev) sobre a @blips/ui",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "exports": {
     "./components/agent": "./src/components/agent.tsx",
     "./components/artifact": "./src/components/artifact.tsx",
@@ -138,7 +140,6 @@
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "border-beam": "^1.4.1",
-    "class-variance-authority": "^0.7.1",
     "img-fx": "^0.5.1",
     "liquid-gooey": "^0.2.2",
     "metal-fx": "^2.0.11",

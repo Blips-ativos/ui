@@ -163,6 +163,8 @@ export function ImagemGerada({ url }: { url?: string }) {
 
 ## Armadilhas
 
+- **Sem WebGL e movimento reduzido:** o efeito só monta no cliente e com WebGL disponível, porque o `ImageGeneration` do upstream cria o renderer sem tratar a falta de contexto (o erro derrubaria a árvore inteira). No servidor e sem WebGL, o `BlipsImageGeneration` mostra um contêiner estático com a primeira imagem. Com `prefers-reduced-motion`, ele nasce pausado; `paused` explícito vence. O `ImageGeneration` cru reexportado não tem essa proteção.
+
 - **Esquecer `three`.** É peer opcional da `@blips/ai` (outros componentes
   não precisam), mas este efeito não roda sem ele.
 - **`theme` fixo** (`"dark"`/`"light"`) ignora o toggle de tema do app.

@@ -20,7 +20,9 @@ ANTES de revisar, leia os critérios canônicos (nesta ordem):
 6. Se o app tem `@blips/ai` (campo `blipsAi` do JSON): <caminho-da-skill>/references/blips-ai.md
    — confirme os achados `blips-ai` com `verify` (chat recriado, scroll/markdown à mão)
    e procure o que o grep não pega: tela de chat que não usa `Conversation`, mapeamento
-   de eventos dentro de componente em vez de no app, textos padrão em inglês na tela pt-BR.
+   de eventos dentro de componente em vez de no app, componente da @blips/ai recriado à mão
+   (terminal, código, árvore de arquivos, plano, canvas — regra 4g), textos em inglês que o
+   padrão pt-BR não cobre (aria-label de thinking-orbs/bot-avatars, Controls fora do Canvas).
 
 Escopo da revisão: <escopo, ex.: feature de clientes — app/clientes/**,
 components/cliente-*.tsx> no projeto <dir-do-projeto>. Leia somente o projeto.

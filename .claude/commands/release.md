@@ -11,7 +11,7 @@ Branch atual:
 Commits em staging que não estão em main:
 !`git fetch origin main staging --quiet && git log --oneline origin/main..origin/staging`
 
-Última tag npm / plugin / brand:
+Última tag npm / ai / plugin / brand:
 !`echo "npm:    $(git tag -l 'v*' --sort=-version:refname | grep -vE 'plugin-|brand-|ai-' | head -1)"; echo "ai:     $(git tag -l 'ai-v*' --sort=-version:refname | head -1)"; echo "plugin: $(git tag -l 'plugin-v*' --sort=-version:refname | head -1)"; echo "brand:  $(git tag -l 'brand-v*' --sort=-version:refname | head -1)"`
 
 Versões atuais:
@@ -55,7 +55,7 @@ Ignore arquivos não commitados. Se falhar, informe e pare.
 
 ### 2. Escolher o escopo
 
-Use `AskUserQuestion`: **"O que liberar neste release?"** → `npm + docs`, `plugin`, `brand`, `ai` ou `ambos` (npm+plugin). O track **brand** é independente: pode ir sozinho num `release-brand:` ou combinado com o npm no mesmo PR (o workflow publica `@blips/brand` se a versão dele for nova).
+Use `AskUserQuestion`: **"O que liberar neste release?"** → `npm + docs`, `plugin`, `brand`, `ai` ou `ambos` (npm+plugin). Os tracks **brand** e **ai** são independentes e vão sozinhos, cada um no seu PR (`release-brand:` / `release-ai:`): o workflow só publica o pacote do track do título, então um bump de `@blips/brand` ou `@blips/ai` que vá junto num `release:` **não** é publicado (só o plugin tem o caso "ambos").
 
 ### 3. Recomendar versão(ões) por conventional commits
 
@@ -112,8 +112,8 @@ manualmente** — o workflow faz tudo no merge.
 ```
 ## ✅ PR de release criado
 
-- **Escopo**: <npm+docs | plugin | ambos>
-- **Versões**: @blips/ui vX.Y.Z / plugin vA.B.C (conforme escopo)
+- **Escopo**: <npm+docs | plugin | brand | ai | ambos>
+- **Versões**: @blips/ui vX.Y.Z / plugin vA.B.C / @blips/brand vX.Y.Z / @blips/ai vX.Y.Z (conforme escopo)
 - **PR**: <url>
 - **Ao mergear**: <ações do workflow para o escopo>
 ```

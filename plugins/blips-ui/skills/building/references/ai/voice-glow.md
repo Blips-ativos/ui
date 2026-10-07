@@ -151,6 +151,8 @@ export function PromptComVoz() {
 
 ## Armadilhas
 
+- **SSR e Safari:** o `VoiceBeam` copiado do upstream decide no carregamento do módulo se usa `ctx.filter` do canvas. No servidor o valor sai `true` e no WebKit (Safari/iOS) `false`, então a hidratação diverge e o React avisa. Em app com SSR, monte o efeito só no cliente (por exemplo, `next/dynamic` com `ssr: false`, ou renderizando depois de montar). Evite também `theme="auto"` explícito em SSR: sem `theme`, o wrapper segue o tema da `@blips/ui` sem divergência.
+
 - **`useMicrophone` original em app com SSR** lê `navigator` no primeiro
   render: servidor e cliente divergem na hidratação. Use `useBlipsMicrophone`.
 - **`start()` fora de um clique**: o Safari bloqueia o áudio. Sempre a partir

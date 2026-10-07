@@ -19,6 +19,8 @@ não está publicado no npm). Importe o CSS depois do tema da `@blips/ui`:
 @import "@blips/ai/styles.css";
 ```
 
+> **SSR e Safari:** o `VoiceBeam` copiado do upstream decide no carregamento do módulo se usa `ctx.filter` do canvas. No servidor o valor sai `true` e no WebKit (Safari/iOS) `false`, então a hidratação diverge e o React avisa. Em app com SSR, monte o efeito só no cliente (por exemplo, `next/dynamic` com `ssr: false`, ou renderizando depois de montar). Evite também `theme="auto"` explícito em SSR: sem `theme`, o wrapper segue o tema da `@blips/ui` sem divergência.
+
 ## Uso
 
 ```tsx
@@ -104,15 +106,15 @@ Aceita todas as props do `VoiceBeam` (e as da `<div>`, exceto `children`, que é
 | `hueRange`         | `number` (graus)                                                                        | `12`                         |
 | `glowSize`         | `number`                                                                                | `0.85`                       |
 | `staticColors`     | `boolean`                                                                               | `false`                      |
-| `scale`            | `number`                                                                                | `1` (`0.45` em `pill`)       |
+| `scale`            | `number`                                                                                | `1` (`0.45` em `pill`, `1.25` em `mobile`) |
 | `sensitivity`      | `number`                                                                                | `3.1`                        |
 | `threshold`        | `number` (0–1)                                                                          | `0.015`                      |
 | `attack`           | `number` (segundos)                                                                     | `0.325`                      |
 | `release`          | `number` (segundos)                                                                     | `0.86`                       |
-| `idle`             | `number` (0–1)                                                                          | `0.23`                       |
+| `idle`             | `number` (0–1)                                                                          | `0.18`                       |
 | `bands`            | `boolean`                                                                               | `true`                       |
-| `flow`             | `number` (px/s)                                                                         | `48`                         |
-| `strength`         | `number` (0–1)                                                                          | `1` (escuro) / `0.8` (claro) |
+| `flow`             | `number` (px/s)                                                                         | `48` (`0` em `pill`, `60` em `mobile`) |
+| `strength`         | `number` (0–1)                                                                          | `1` (escuro) / `0.8` (claro; `1` em `mobile`) |
 | `borderRadius`     | `number` (px)                                                                           | lido do filho                |
 | `css`              | `string`                                                                                | —                            |
 | `onLevel`          | `(level: number) => void`                                                               | —                            |

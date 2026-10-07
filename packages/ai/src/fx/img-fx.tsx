@@ -12,6 +12,7 @@ import type {
 } from "img-fx";
 import { ImageGeneration, PRESETS } from "img-fx";
 import { forwardRef } from "react";
+import { usePrefersReducedMotion, useWebGLSupport } from "../lib/use-fx-env";
 import { type FxTheme, useFxTheme } from "../lib/use-fx-theme";
 
 export type {
@@ -135,6 +136,11 @@ export interface BlipsImageGenerationProps extends ImageGenerationProps {
  * classe `.dark` no <html>) e é passado fixo ao original: no servidor e na
  * hidratação vale `light`, e o tema real entra logo depois, sem divergência.
  * `colors` e `cardBg` explícitos vencem `tone` e o `--card`.
+ *
+ * O efeito só monta no cliente e com WebGL disponível: o `ImageGeneration` do
+ * upstream cria o renderer sem tratar a falta de contexto, e o erro derrubaria
+ * a árvore inteira. Sem WebGL (e no servidor), fica um contêiner estático com a
+ * primeira imagem. Com `prefers-reduced-motion`, nasce pausado (`paused` vence).
  */
 export const BlipsImageGeneration = forwardRef<
   ImageGenerationHandle,
@@ -151,14 +157,39 @@ export const BlipsImageGeneration = forwardRef<
   ref
 ) {
   const documentTheme = useFxTheme();
+  const reducedMotion = usePrefersReducedMotion();
+  const webgl = useWebGLSupport();
   const effective: FxTheme =
     theme === "dark" || theme === "light" ? theme : documentTheme;
+  if (webgl !== true) {
+    const first = Array.isArray(props.images) ? props.images[0] : props.images;
+    return (
+      <div
+        className={props.className}
+        data-slot="img-fx-fallback"
+        style={{
+          backgroundColor: cardBg ?? BLIPS_IMG_FX_CARD_BG[effective],
+          overflow: "hidden",
+          ...props.style,
+        }}
+      >
+        {first ? (
+          <img
+            alt=""
+            src={first}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        ) : null}
+      </div>
+    );
+  }
   return (
     <ImageGeneration
       ref={ref}
       pixelScale={BLIPS_IMG_FX_DEFAULTS.pixelScale}
       strength={BLIPS_IMG_FX_DEFAULTS.strength}
       {...props}
+      paused={props.paused ?? reducedMotion}
       preset={preset}
       theme={effective}
       cardBg={cardBg ?? BLIPS_IMG_FX_CARD_BG[effective]}

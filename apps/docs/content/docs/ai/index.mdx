@@ -70,7 +70,8 @@ Os componentes de `components/` são adaptados do [AI Elements](https://github.c
 - `border-beam`, `thinking-orbs`, `liquid-gooey`, `metal-fx` e `img-fx` entram como dependências npm e carregam
   a própria licença.
 - `voice-glow` e `bot-avatars` não estão publicados no npm: vêm copiados sem modificação do commit `9f59769` do
-  libraries.dev em `src/vendor/`, cada um com o `LICENSE` MIT original e um `README.md` de origem. Não há nada a
-  instalar para eles.
+  libraries.dev em `src/vendor/` (exceto um `// @ts-nocheck` na primeira linha de três arquivos do `bot-avatars`,
+  documentado no `README.md` da pasta), cada um com o `LICENSE` MIT original e um `README.md` de origem. Não há
+  nada a instalar para eles.
 - O `metal-fx` embute shaders da [Paper Shaders](https://github.com/paper-design/shaders) (Paper Design, Apache-2.0);
   o `NOTICE` correspondente viaja dentro do próprio pacote npm `metal-fx`.

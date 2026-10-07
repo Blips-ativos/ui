@@ -10,11 +10,14 @@ name: Release
 #   - npm    -> publish @blips/ui (OIDC) + deploy docs (Firebase) + tag vX.Y.Z
 #               (+ tag plugin-vA.B.C se a versão do plugin for nova — caso "ambos")
 #   - plugin -> tag plugin-vA.B.C + release (sem npm/docs)
+#   - brand  -> publish @blips/brand (OIDC) + tag brand-vX.Y.Z (sem docs)
 #   - ai     -> publish @blips/ai (OIDC) + tag ai-vX.Y.Z (sem docs)
 #
 # As versões vêm dos arquivos versionados (bumpados pelo /release):
 #   - npm    -> packages/ui/package.json
 #   - plugin -> plugins/blips-ui/.claude-plugin/plugin.json + .claude-plugin/marketplace.json
+#   - brand  -> packages/brand/package.json
+#   - ai     -> packages/ai/package.json
 on:
   pull_request:
     types: [closed]
@@ -63,13 +66,18 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EVENT: ${{ github.event_name }}
+          # Título do PR e inputs via env, nunca interpolados no script
+          # (o título é texto livre: injeção de shell).
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          INPUT_KIND: ${{ inputs.kind }}
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
           if [ "$EVENT" = "workflow_dispatch" ]; then
-            KIND="${{ inputs.kind }}"
-            VERSION="${{ inputs.version }}"
+            KIND="$INPUT_KIND"
+            VERSION="$INPUT_VERSION"
           else
-            TITLE="${{ github.event.pull_request.title }}"
+            TITLE="$PR_TITLE"
             # Track pelo prefixo; versão = primeiro token vX.Y.Z no título
             # (permite sufixo descritivo, ex.: "release: v2.0.0 — fix X").
             if [[ "$TITLE" == release-plugin:* ]]; then

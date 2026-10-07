@@ -116,7 +116,8 @@ em inglês (`Clover bot, idle`). Com `prefers-reduced-motion`, o avatar fica par
 
 ## Origem
 
-Envolve o pacote [bot-avatars](https://github.com/Jakubantalik/Libraries.dev) do
-[libraries.dev](https://libraries.dev) (MIT). Como não está no npm, o código fica copiado sem modificação em
-`src/vendor/bot-avatars` do `@blips/ai`; a Blips acrescenta a prop `tone` e os padrões de cor, tamanho,
-sombreamento e pulo.
+Envolve o pacote [bot-avatars](https://github.com/Jakubantalik/Libraries.dev/tree/9f59769/packages/bot-avatars)
+do [libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT), versão 0.2.2. Como não está no npm, o
+código fica copiado em `src/vendor/bot-avatars` do `@blips/ai`, sem modificação além de um `// @ts-nocheck` na
+primeira linha de `engine.ts`, `plastic.ts` e `wear.ts` (documentado no `README.md` da pasta); a Blips
+acrescenta a prop `tone` e os padrões de cor, tamanho, sombreamento e pulo.

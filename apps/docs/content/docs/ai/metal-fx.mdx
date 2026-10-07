@@ -48,8 +48,10 @@ import { MetalBadge, MetalFx, MetalText } from "@blips/ai/fx/metal-fx"
 ### A tinta da marca é global
 
 O `metal-fx` usa **um único** contexto WebGL e um único preset para a página inteira. Por isso, com um
-componente Blips montado, todo `MetalFx` da página (inclusive o cru) sai na tinta da marca; quando o
-último componente Blips desmonta, o preset volta ao do upstream. Para usar o preset do original, passe
+componente Blips montado, todo `MetalFx` da página (inclusive o cru) sai na tinta da marca. Quando o
+último componente Blips desmonta, a tinta é solta: os `MetalFx` montados depois já nascem com o próprio
+`preset`, mas um cru que continua montado só volta ao dele quando o `preset` ou o `theme` dele muda (ou ao
+remontar), porque o original não repinta na hora. Para usar o preset do original, passe
 `brandTint={false}` em **todos** os componentes da página.
 
 ## Exemplos

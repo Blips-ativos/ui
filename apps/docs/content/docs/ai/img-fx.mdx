@@ -20,6 +20,8 @@ depois do tema da `@blips/ui`:
 @import "@blips/ai/styles.css";
 ```
 
+> **Sem WebGL e movimento reduzido:** o efeito só monta no cliente e com WebGL disponível, porque o `ImageGeneration` do upstream cria o renderer sem tratar a falta de contexto (o erro derrubaria a árvore inteira). No servidor e sem WebGL, o `BlipsImageGeneration` mostra um contêiner estático com a primeira imagem. Com `prefers-reduced-motion`, ele nasce pausado; `paused` explícito vence. O `ImageGeneration` cru reexportado não tem essa proteção.
+
 ## Uso
 
 ```tsx

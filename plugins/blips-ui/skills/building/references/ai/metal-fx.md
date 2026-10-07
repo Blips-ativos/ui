@@ -177,11 +177,14 @@ export function EnviarPrompt() {
 ```
 
 ## Armadilhas
+- **Movimento reduzido:** com `prefers-reduced-motion`, o `BlipsMetalFx` nasce pausado (`paused` explícito vence). `MetalText` e `MetalBadge` do upstream não expõem `paused`.
 
 - **O preset é global.** O `metal-fx` usa um único contexto WebGL e um único
   preset para a página. Com um `Blips*` montado (com `brandTint`), **todo**
   `MetalFx`/`MetalText`/`MetalBadge` da página sai na tinta da marca; quando o
-  último desmonta, volta o preset do upstream. Não dá para ter um anel `silver`
+  último desmonta, a tinta é solta: os montados depois nascem com o próprio
+  `preset`, mas um cru que continua montado só volta ao dele quando o
+  `preset`/`theme` muda ou ao remontar (o upstream não repinta na hora). Não dá para ter um anel `silver`
   e outro amarelo ao mesmo tempo. Para usar `preset`, passe
   `brandTint={false}` em todos.
 - **`MetalText` e `MetalBadge` crus forçam `chromatic`.** Sem um `Blips*`

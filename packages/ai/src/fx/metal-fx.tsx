@@ -8,6 +8,7 @@
 // de instâncias, e só quando há WebGL2; nada de `window` no render.
 
 import type {
+  MetalFxPreset,
   MetalFxProps,
   MetalFxTheme,
   PresetMode,
@@ -20,9 +21,17 @@ import {
   MetalFx,
   MetalText,
   PRESETS,
+  setSharedPreset,
   setSharedPresetMode,
 } from "metal-fx";
-import { type ComponentProps, forwardRef, useEffect } from "react";
+import {
+  type ComponentProps,
+  forwardRef,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
+import { usePrefersReducedMotion } from "../lib/use-fx-env";
 import { useFxTheme } from "../lib/use-fx-theme";
 
 export type {
@@ -69,18 +78,46 @@ export const BLIPS_METAL_FX_DEFAULTS = {
 } as const satisfies Partial<MetalFxProps>;
 
 // Instâncias com a tinta da marca montadas agora. O preset do metal-fx é um só
-// para a página; a última a desmontar devolve o preset aos componentes crus.
+// para a página; a última a desmontar devolve o controle ao `preset`/`theme`
+// dos componentes crus. O upstream não repinta na hora os crus que seguem
+// montados: eles voltam ao próprio preset quando o `preset`/`theme` deles muda
+// (ou ao remontar); os montados depois já nascem com o preset do upstream.
 let brandTintUsers = 0;
 
 /**
  * Aplica (e mantém atualizado) o preset Blips no renderizador compartilhado.
  * Roda depois dos efeitos do `MetalFx` filho, então vence o `preset` dele.
+ * `fallback` é o `preset` que o `MetalFx` filho passa ao upstream: é o que volta
+ * quando `brandTint` vira `false` com o componente montado.
  */
-function useBrandTint(enabled: boolean, theme: MetalFxTheme) {
+function useBrandTint(
+  enabled: boolean,
+  theme: MetalFxTheme,
+  fallback: MetalFxPreset
+) {
   const documentTheme = useFxTheme();
   const effective: PresetTheme = theme === "auto" ? documentTheme : theme;
+  const restore = useRef({ fallback, effective, unmounting: false });
+  restore.current.fallback = fallback;
+  restore.current.effective = effective;
 
-  useEffect(() => {
+  // Declarado antes do efeito da contagem: na desmontagem as limpezas rodam na
+  // ordem de declaração, então a de baixo já sabe que não é só um toggle.
+  useLayoutEffect(() => {
+    const state = restore.current;
+    state.unmounting = false;
+    return () => {
+      state.unmounting = true;
+    };
+  }, []);
+
+  // Layout effect de propósito: na desmontagem o React roda a limpeza de layout
+  // do pai antes da dos filhos, e é na limpeza de layout do `MetalFx` filho que
+  // o renderizador compartilhado é destruído. Com `useEffect`, a limpeza abaixo
+  // rodaria com o contexto já liberado, o `setSharedPresetMode(null)` seria
+  // pulado e o override da marca ficaria preso no módulo do metal-fx: todo
+  // `MetalFx` montado depois (cru ou com `brandTint={false}`) sairia amarelo.
+  useLayoutEffect(() => {
     if (!enabled) return;
     if (!isMetalFxSupported()) return;
     brandTintUsers += 1;
@@ -90,6 +127,12 @@ function useBrandTint(enabled: boolean, theme: MetalFxTheme) {
       // chamar `setSharedPresetMode` aí criaria outro contexto à toa.
       if (brandTintUsers === 0 && getSharedPreset() !== null) {
         setSharedPresetMode(null);
+        // `setSharedPresetMode(null)` só solta o override; o renderizador segue
+        // desenhando com a tinta até alguém chamar `setSharedPreset`. Num toggle
+        // `brandTint` → `false` o efeito do `MetalFx` filho não roda de novo
+        // (o `preset`/`theme` dele não mudou), então o preset dele volta aqui.
+        const { fallback: name, effective: mode, unmounting } = restore.current;
+        if (!unmounting) setSharedPreset(name, mode);
       }
     };
   }, [enabled]);
@@ -122,13 +165,20 @@ export interface BlipsMetalFxProps extends MetalFxProps, BlipsMetalTintProps {}
  */
 export const BlipsMetalFx = forwardRef<HTMLDivElement, BlipsMetalFxProps>(
   function BlipsMetalFx({ brandTint = true, theme, ...props }, ref) {
-    const documentTheme = useBrandTint(brandTint, theme ?? "auto");
+    const documentTheme = useBrandTint(
+      brandTint,
+      theme ?? "auto",
+      props.preset ?? BLIPS_METAL_FX_DEFAULTS.preset
+    );
+    // Com prefers-reduced-motion o shader nasce pausado; `paused` explícito vence.
+    const reducedMotion = usePrefersReducedMotion();
     return (
       <MetalFx
         ref={ref}
         {...BLIPS_METAL_FX_DEFAULTS}
         theme={theme ?? documentTheme}
         {...props}
+        paused={props.paused ?? reducedMotion}
       />
     );
   }
@@ -168,7 +218,8 @@ export function BlipsMetalText({
   color = BLIPS_METAL_TEXT_DEFAULTS.color,
   ...props
 }: BlipsMetalTextProps) {
-  const documentTheme = useBrandTint(brandTint, theme ?? "auto");
+  // O `MetalText` do upstream fixa `preset: "chromatic"` no `MetalFx` interno.
+  const documentTheme = useBrandTint(brandTint, theme ?? "auto", "chromatic");
   return (
     <MetalText
       color={color}
@@ -193,7 +244,8 @@ export function BlipsMetalBadge({
   children = "Novo",
   ...props
 }: BlipsMetalBadgeProps) {
-  const documentTheme = useBrandTint(brandTint, theme ?? "auto");
+  // O `MetalBadge` do upstream fixa `preset: "chromatic"` no `MetalFx` interno.
+  const documentTheme = useBrandTint(brandTint, theme ?? "auto", "chromatic");
   return (
     <MetalBadge theme={theme ?? documentTheme} {...props}>
       {children}

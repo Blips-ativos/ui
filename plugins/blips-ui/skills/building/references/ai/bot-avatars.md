@@ -152,6 +152,7 @@ export function CabecalhoDoAgente({
 ```
 
 ## Armadilhas
+- **Rótulo de acessibilidade:** o `BlipsBotAvatar` troca o rótulo em inglês do upstream ("Clover bot, idle") por `Avatar do assistente, <estado>` em pt-BR. Passe `aria-label` para trocar, ou `aria-hidden` quando o avatar for só decorativo.
 
 - **Sem `aria-label`** o canvas recebe o rótulo do pacote, em inglês
   (`Clover bot, idle`). Passe o nome do agente.

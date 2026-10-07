@@ -68,7 +68,8 @@ dúvida, no próprio `node_modules/@blips/ui/src/`).
    fantasmas e, conforme `blipsUi.track`, a dimensão `api-versao` — `asChild`/`render`,
    `data-state`, sufixo `Icon`, props removidas, componentes só-v3; com `@blips/ai` no
    app, a dimensão `blips-ai` — subpath, peers por componente, `ai` só tipo, chat
-   recriado, CSS na ordem e do Streamdown, gate v3/React 19). Saída JSON; trate
+   recriado, CSS na ordem, do Streamdown/KaTeX e do React Flow, override do
+   `jsx-preview`, gate v3/React 19). Saída JSON; trate
    cada item como candidato confirmado (os `verify:true` pedem confirmação).
 3. **Despachar o revisor de julgamento** — subagente com o prompt
    `agents/ui-reviewer.md`, apontando o escopo e as references. Cobre o que
@@ -99,7 +100,7 @@ reference da dimensão que está revisando ANTES do código.
 | Movimento | `references/motion.md` | durações, transform/opacity, reduced-motion, loops/WCAG |
 | Formatação | `references/data-formatting.md` | BRL/datas/pt-BR (8 convenções) |
 | Anti-genérico | `references/anti-slop.md` | "AI slop" P0/P1/P2: hexes banidos, emoji-ícone, fórmula 80/20 |
-| IA (@blips/ai) | `references/blips-ai.md` | só com `@blips/ai` no app: subpath (sem barrel), peers por componente, `ai` só tipo, não recriar bolha/mensagem/lista de chat, CSS na ordem e do Streamdown, gate v3.x/React 19 |
+| IA (@blips/ai) | `references/blips-ai.md` | só com `@blips/ai` no app: subpath (sem barrel), peers por componente, `ai` só tipo, não recriar bolha/mensagem/lista de chat (nem terminal, código, plano, canvas…), CSS na ordem, do Streamdown/KaTeX e do React Flow, override do `jsx-preview`, gate v3.x/React 19 |
 
 O `scripts/check.mjs` cobre o subconjunto **auto-verificável** dessas dimensões
 (imports, ícones, api-versao, tailwind, formatação, a11y, anti-slop, tipografia,

@@ -26,7 +26,6 @@ export default defineConfig({
     "use-stick-to-bottom",
     /^tokenlens(\/.*)?$/,
     "nanoid",
-    "class-variance-authority",
     "border-beam",
     "thinking-orbs",
     /^@xyflow\/.*/,

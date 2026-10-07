@@ -225,7 +225,8 @@ react-jsx-parser, ansi-to-react), quebrando quem não os instalou.
    `@import "@blips/ai/styles.css"` ela não aparece).
 4. Rode o check da **blips-ui:reviewing** (`scripts/check.mjs`): a dimensão
    `blips-ai` acusa barrel, subpath inexistente, peer não declarado, CSS fora
-   de ordem, CSS do Streamdown ausente e chat recriado à mão.
+   de ordem, CSS do Streamdown/KaTeX ausente, canvas sem o CSS do React Flow,
+   `jsx-preview` sem o override de `@types/react` e chat recriado à mão.
 
 ## 7. CLAUDE.md do repo
 

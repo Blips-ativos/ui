@@ -49,6 +49,7 @@ pnpm --filter @blips/ui exec node scripts/build-registry.js --sync  # regenerate
 # Per package
 pnpm --filter @blips/ui build      # tsup
 pnpm --filter @blips/ui dev        # tsup --watch
+pnpm --filter @blips/ai build      # tsup (validates compile + dts; exports point to src/)
 
 # Release: run the `/release` Claude command (opens the release PR).
 # Local manual publish (rarely needed): pnpm release
@@ -56,7 +57,8 @@ pnpm --filter @blips/ui dev        # tsup --watch
 
 ## Versioning
 
-Three independent release tracks — bump them separately. **Always release through
+Four independent release tracks (`@blips/ui` + docs, plugin, `@blips/brand`,
+`@blips/ai`) — bump them separately. **Always release through
 the `/release` command, never by hand-merging `staging → main`.**
 
 **Mandatory order inside `/release` (don't reorder):** define version → bump the
@@ -159,7 +161,7 @@ the `verify` job fails at merge).
   (shadcn-style map), **not** fumadocs' `prose`.
 - Biome formatting: double quotes, semicolons, 2-space indent, line width 80,
   `es5` trailing commas.
-- React peer range: `^17 || ^18 || ^19`.
+- React peer range: `^17 || ^18 || ^19` (`@blips/ai`: `^19`, like AI Elements).
 - Comments/code in **pt-BR**; commit messages in **pt-BR** too (Conventional
   Commits, `type(scope): descrição no imperativo`) — org rule since 2026-09;
   older history is in English.

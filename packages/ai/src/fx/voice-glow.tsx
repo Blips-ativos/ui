@@ -14,10 +14,31 @@ import type {
   UseMicrophoneResult,
   VoiceBeamProps,
 } from "../vendor/voice-glow";
-import { useMicrophone, VoiceBeam } from "../vendor/voice-glow";
+import * as upstream from "../vendor/voice-glow";
 
 // Antes de qualquer render: a cópia lê `__VOICE_SURFACE__` (ver o módulo).
 ensureVoiceGlowEnv();
+
+// A API do original sai como constantes deste módulo, não como `export { … } from`: com
+// `sideEffects: false`, o webpack (e o Next) troca um reexport pelo módulo de origem e pula
+// este arquivo, e quem importasse só `VoiceBeam` ou `VOICE_SURFACE_LOOKS` daqui nunca
+// rodaria o `ensureVoiceGlowEnv()` acima (`ReferenceError: __VOICE_SURFACE__`).
+export const getAudioContext = upstream.getAudioContext;
+export const isAudioSupported = upstream.isAudioSupported;
+export const LOBE_SPACING = upstream.LOBE_SPACING;
+export const LOBE_SPAN = upstream.LOBE_SPAN;
+export const parseRgb = upstream.parseRgb;
+export const resolveVoiceDefaults = upstream.resolveVoiceDefaults;
+export const resolveVoiceStyle = upstream.resolveVoiceStyle;
+export const themePresets = upstream.themePresets;
+export const useMicrophone = upstream.useMicrophone;
+export const VOICE_SURFACE_LOOKS = upstream.VOICE_SURFACE_LOOKS;
+export const VoiceBeam = upstream.VoiceBeam;
+export const voiceDefaults = upstream.voiceDefaults;
+export const voiceLobes = upstream.voiceLobes;
+export const voicePalettes = upstream.voicePalettes;
+export const voiceTypePresets = upstream.voiceTypePresets;
+export const voiceTypeStyle = upstream.voiceTypeStyle;
 
 export type {
   MicrophoneState,
@@ -36,24 +57,6 @@ export type {
   VoiceLobe,
   VoiceThemeColors,
   VoiceTypeStyle,
-} from "../vendor/voice-glow";
-export {
-  getAudioContext,
-  isAudioSupported,
-  LOBE_SPACING,
-  LOBE_SPAN,
-  parseRgb,
-  resolveVoiceDefaults,
-  resolveVoiceStyle,
-  themePresets,
-  useMicrophone,
-  VOICE_SURFACE_LOOKS,
-  VoiceBeam,
-  voiceDefaults,
-  voiceLobes,
-  voicePalettes,
-  voiceTypePresets,
-  voiceTypeStyle,
 } from "../vendor/voice-glow";
 
 /**
