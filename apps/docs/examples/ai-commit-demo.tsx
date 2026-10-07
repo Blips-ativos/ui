@@ -27,8 +27,11 @@ import {
 
 const hash = "a3f9c21";
 
-// Data fixa relativa ao carregamento: ontem.
-const ontem = new Date(Date.now() - 1000 * 60 * 60 * 24);
+const dia = 1000 * 60 * 60 * 24;
+
+// Ontem ao meio-dia (UTC). Arredondar ao dia faz servidor e cliente chegarem à
+// mesma data, sem divergir o atributo dateTime na hidratação.
+const ontem = new Date(Math.floor(Date.now() / dia) * dia + dia / 2 - dia);
 
 const arquivos = [
   {

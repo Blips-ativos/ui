@@ -12,7 +12,7 @@ import {
   TerminalWindowIcon,
   TrashIcon,
 } from "@phosphor-icons/react";
-import Ansi from "ansi-to-react";
+import * as AnsiModule from "ansi-to-react";
 import type { ComponentProps, HTMLAttributes } from "react";
 import {
   createContext,
@@ -23,6 +23,19 @@ import {
   useRef,
   useState,
 } from "react";
+
+// O ansi-to-react é CommonJS com `exports.default`. Conforme o bundler, o
+// componente chega em `default`, em `default.default` ou no próprio módulo:
+// descemos pelos `.default` até achar a função.
+const resolveAnsi = (mod: unknown): typeof AnsiModule.default => {
+  let current = mod as { default?: unknown } | undefined;
+  while (current && typeof current !== "function" && current.default) {
+    current = current.default as { default?: unknown };
+  }
+  return current as unknown as typeof AnsiModule.default;
+};
+
+const Ansi = resolveAnsi(AnsiModule);
 
 interface TerminalContextType {
   output: string;

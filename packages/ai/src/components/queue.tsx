@@ -123,13 +123,15 @@ export type QueueItemActionProps = Omit<
   "variant" | "size"
 >;
 
+// Além do hover, a ação aparece quando recebe foco pelo teclado (no upstream
+// ficava invisível com foco, só com `group-hover`).
 export const QueueItemAction = ({
   className,
   ...props
 }: QueueItemActionProps) => (
   <Button
     className={cn(
-      "size-auto rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-muted-foreground/10 hover:text-foreground group-hover:opacity-100",
+      "size-auto rounded p-1 text-muted-foreground opacity-0 transition-opacity hover:bg-muted-foreground/10 hover:text-foreground focus-visible:opacity-100 group-focus-within:opacity-100 group-hover:opacity-100",
       className
     )}
     size="icon"

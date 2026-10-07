@@ -15,7 +15,6 @@ import type {
   Edge as FlowEdge,
   Node as FlowNode,
   NodeProps as FlowNodeProps,
-  ReactFlowProps,
 } from "@xyflow/react";
 
 type EtapaData = {
@@ -37,14 +36,6 @@ const EtapaNode = ({ data }: FlowNodeProps<Etapa>) => (
 
 const nodeTypes = { etapa: EtapaNode };
 const edgeTypes = { animated: Edge.Animated };
-
-// Os rótulos dos botões vêm do <ReactFlow>, não do Controls: traduza aqui.
-const ariaLabelConfig: ReactFlowProps["ariaLabelConfig"] = {
-  "controls.zoomIn.ariaLabel": "Aproximar",
-  "controls.zoomOut.ariaLabel": "Afastar",
-  "controls.fitView.ariaLabel": "Ajustar à tela",
-  "controls.interactive.ariaLabel": "Travar ou destravar edição",
-};
 
 const nodes: Etapa[] = [
   {
@@ -89,7 +80,6 @@ export default function AiControlsDemo() {
     <div className="h-72 w-full overflow-hidden rounded-md border">
       <Canvas
         fitViewOptions={{ maxZoom: 1 }}
-        ariaLabelConfig={ariaLabelConfig}
         edges={edges}
         edgeTypes={edgeTypes}
         nodes={nodes}

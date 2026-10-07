@@ -8,6 +8,7 @@ import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -230,6 +231,14 @@ export type OpenInItemProps = ComponentProps<typeof DropdownMenuItem>;
 
 export const OpenInItem = (props: OpenInItemProps) => (
   <DropdownMenuItem {...props} />
+);
+
+// O rótulo do menu do Base UI precisa estar dentro de um grupo (Menu.Group);
+// use OpenInGroup em volta de OpenInLabel e dos itens.
+export type OpenInGroupProps = ComponentProps<typeof DropdownMenuGroup>;
+
+export const OpenInGroup = (props: OpenInGroupProps) => (
+  <DropdownMenuGroup {...props} />
 );
 
 export type OpenInLabelProps = ComponentProps<typeof DropdownMenuLabel>;

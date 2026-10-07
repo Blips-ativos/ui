@@ -32,13 +32,13 @@ Não existe barrel: importe cada componente pelo subpath (`@blips/ai/components/
 
 | Peer opcional | Exigido por |
 |---|---|
-| `streamdown`, `@streamdown/code`, `@streamdown/math`, `@streamdown/mermaid`, `@streamdown/cjk` | `message` (resposta em markdown) |
-| `shiki` | `code-block`, `tool` |
+| `streamdown`, `@streamdown/code`, `@streamdown/math`, `@streamdown/mermaid`, `@streamdown/cjk` | `message` (resposta em markdown), `reasoning` |
+| `shiki` | `code-block`, `tool`, `agent` |
 | `@xyflow/react` (+ `@xyflow/react/dist/style.css` no CSS do app) | `canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar` |
 | `media-chrome` | `audio-player` |
 | `@rive-app/react-webgl2` | `persona` |
 | `react-jsx-parser` | `jsx-preview` |
-| `ansi-to-react` | `terminal`, `stack-trace` |
+| `ansi-to-react` | `terminal` |
 | `ai` | só tipos (`UIMessage`, `ToolUIPart`…), nenhum código de runtime. Como o pacote publica o fonte `.tsx`, em projetos TypeScript instale como devDependency: `pnpm add -D ai` |
 
 ### Estilos do Streamdown

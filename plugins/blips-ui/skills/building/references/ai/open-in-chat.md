@@ -56,7 +56,9 @@ código usar tipos do AI SDK, `ai` entra só como **devDependency**
 | `OpenInCursor` | idem | `cursor.com/link/prompt?text=…` |
 
 Os seis itens de provedor renderizam `<a href target="_blank" rel="noopener">`
-com ícone, título e `ArrowSquareOutIcon`; `children` troca só o título. Cada
+com ícone, título e `ArrowSquareOutIcon`; `children` troca só o título. Títulos
+padrão em pt-BR: "Abrir no ChatGPT", "Abrir no Claude", "Abrir no T3 Chat",
+"Abrir no Scira", "Abrir no v0" e "Abrir no Cursor". Cada
 um tem seu tipo `*Props` (`OpenInClaudeProps`…). Fora de um `OpenIn`, lançam
 erro.
 

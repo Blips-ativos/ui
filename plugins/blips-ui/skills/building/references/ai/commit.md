@@ -79,7 +79,10 @@ Exports: `Commit`, `CommitHeader`, `CommitInfo`, `CommitMessage`,
 - Vários commits: pilha `flex flex-col gap-2`, um `Commit` por item.
 - Confirmação de cópia: `toast` da @blips/ui em `onCopy`.
 - Num chat: no `MessageContent` do `Message` da @blips/ui, depois do
-  `MessageResponse` que resume a mudança.
+  `MessageResponse` que resume a mudança. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 
 ## Exemplo v3 que compila
 
@@ -183,6 +186,11 @@ export function CommitDoAgente({
   mostra a data depois do efeito; a granularidade é sempre **dias** ("hoje",
   "ontem", "há 40 dias"), nunca horas. Para outro formato, passe `children`.
 - **`date` é `Date`**, não string: converta com `new Date(iso)`.
+- **`date` igual no servidor e no cliente.** O `dateTime` (ISO) sai no SSR:
+  uma data calculada no render com `Date.now()` (ex.: "ontem" =
+  `new Date(Date.now() - dia)`) muda em milissegundos entre servidor e
+  cliente e gera aviso de hidratação. Use a data real do commit (vinda da
+  API) ou arredonde ao dia.
 - `CommitFileAdditions`/`CommitFileDeletions` com `0` não aparecem (sem
   `+0`).
 - As cores de status e de `+`/`-` usam paleta Tailwind fixa (verde, vermelho,

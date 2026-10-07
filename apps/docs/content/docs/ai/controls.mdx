@@ -39,15 +39,7 @@ import { Controls } from "@blips/ai/components/controls"
 ```
 
 ```tsx
-<Canvas
-  ariaLabelConfig={{
-    "controls.zoomIn.ariaLabel": "Aproximar",
-    "controls.zoomOut.ariaLabel": "Afastar",
-    "controls.fitView.ariaLabel": "Ajustar à tela",
-    "controls.interactive.ariaLabel": "Travar ou destravar edição",
-  }}
-  nodes={nodes}
->
+<Canvas nodes={nodes}>
   <Controls />
 </Canvas>
 ```
@@ -55,9 +47,19 @@ import { Controls } from "@blips/ai/components/controls"
 `Controls` é o `Controls` do React Flow com moldura de cartão, botões sem borda e fundo `secondary` no
 hover. Entra como filho do [Canvas](/docs/ai/canvas).
 
-O painel tem `aria-label` "Controles do canvas" por padrão. Os rótulos dos **botões** não são deste
-componente: vêm do `ariaLabelConfig` do `<ReactFlow>`, em inglês por padrão ("Zoom In", "Fit View"…).
-Para lê-los em pt-BR, passe a tradução ao `Canvas`, como acima.
+O rótulo do painel e os rótulos dos **botões** não são deste
+componente: vêm do `ariaLabelConfig` do `<ReactFlow>`, que o [Canvas](/docs/ai/canvas) já preenche em
+pt-BR ("Aproximar", "Afastar", "Ajustar à tela", "Alternar interatividade"). Para trocar algum, passe ao
+`Canvas` só as chaves que quer mudar:
+
+```tsx
+<Canvas
+  ariaLabelConfig={{ "controls.interactive.ariaLabel": "Travar ou destravar edição" }}
+  nodes={nodes}
+>
+  <Controls />
+</Canvas>
+```
 
 ## Referência da API
 
@@ -67,7 +69,7 @@ Aceita as props do [`Controls`](https://reactflow.dev/api-reference/components/c
 
 | Prop                  | Tipo                                    | Padrão                  |
 | --------------------- | --------------------------------------- | ----------------------- |
-| `aria-label`          | `string`                                | `"Controles do canvas"` |
+| `aria-label`          | `string`                                | do `ariaLabelConfig` (`"Controles do canvas"` no Canvas) |
 | `position`            | `PanelPosition`                         | `"bottom-left"`         |
 | `orientation`         | `"horizontal" \| "vertical"`            | `"vertical"`            |
 | `showZoom`            | `boolean`                               | `true`                  |
@@ -81,5 +83,5 @@ Aceita as props do [`Controls`](https://reactflow.dev/api-reference/components/c
 ## Origem
 
 Adaptado do componente [Controls](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
-Apache-2.0). Mudança da Blips: `aria-label` padrão em pt-BR ("Controles do canvas"; o React Flow usa
-"Control Panel"), ainda sobrescrevível.
+Apache-2.0). Mudança da Blips: os rótulos vêm em pt-BR pelo `ariaLabelConfig` que o Canvas preenche (o React Flow
+usa "Control Panel"); a prop `aria-label` ainda sobrescreve.

@@ -54,7 +54,10 @@ só o acima.
 ## Composição com a @blips/ui
 
 - Num chat: dentro de `MessageContent` do `Message` da @blips/ui, depois do
-  `MessageResponse` com o texto do assistente.
+  `MessageResponse` com o texto do assistente. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 - Moldura com proporção fixa: `AspectRatio` da @blips/ui em volta, com
   `className="size-full object-cover"` na `Image`.
 - Ação de baixar/ampliar: `MessageActions`/`MessageAction` da @blips/ai

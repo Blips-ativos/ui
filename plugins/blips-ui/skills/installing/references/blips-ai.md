@@ -55,7 +55,7 @@ Declare no `package.json` do app os peers de **cada** componente que importar:
 | `components/plan`, `components/queue`, `components/task`, `components/checkpoint`, `components/question` | — |
 | **Código e dev** | |
 | `components/sandbox` | `shiki` (o badge de status vem do módulo do `tool`, que importa o `CodeBlock`), `ai` (tipos) |
-| `components/jsx-preview` | `react-jsx-parser` |
+| `components/jsx-preview` | `react-jsx-parser` **+ override de `@types/react` 19 para ele** (ver abaixo) |
 | `components/terminal` | `ansi-to-react` |
 | `components/artifact`, `components/commit`, `components/environment-variables`, `components/file-tree`, `components/package-info`, `components/schema-display`, `components/snippet`, `components/stack-trace`, `components/test-results`, `components/web-preview` | — (o `stack-trace` **não** usa `ansi-to-react`) |
 | **Conteúdo e modelo** | |
@@ -74,6 +74,27 @@ componente precisa do peer, mesmo sem usar a parte que depende dele (ex.:
 componente não instala nada. A tabela é transitiva (já inclui o que um
 componente herda de outro da @blips/ai).
 
+**`jsx-preview`: override de `@types/react`.** O `react-jsx-parser` 2.x
+declara `@types/react` e `@types/react-dom` **18** em `optionalDependencies`, e
+o pnpm os instala junto. Os tipos do parser passam a usar o React 18 enquanto o
+app usa o 19: componentes da @blips/ui passados em `components` dão `TS2322`
+(verificado com `tsc`). No `package.json` da **raiz** do app (no monorepo, o
+da raiz do workspace), force o 19 só para ele e rode `pnpm install`:
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "react-jsx-parser>@types/react": "^19.2.0",
+      "react-jsx-parser>@types/react-dom": "^19.2.0"
+    }
+  }
+}
+```
+
+Confira com `pnpm why @types/react` (não deve sobrar `18.x`). É o mesmo
+override do monorepo da @blips/ui.
+
 **`ai` é peer opcional só de tipos; em projeto TypeScript, `pnpm add -D ai`.**
 O pacote só faz `import type` do `ai` (nenhum runtime do AI SDK). Só que os
 exports apontam para o fonte `.tsx`, então o `tsc` do app compila esses arquivos
@@ -91,7 +112,7 @@ e, sem `ai` instalado, falha com `TS2307: Cannot find module 'ai'` dentro de
 Exemplo, tela de chat completa (`ai-chat.md` da skill building):
 
 ```bash
-pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk shiki
+pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk shiki katex
 pnpm add -D ai
 ```
 
@@ -120,11 +141,16 @@ o pacote; em monorepo, o da raiz):
 
 ```css
 @import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
 @source "../node_modules/streamdown/dist/*.js";
 @source "../node_modules/@streamdown/code/dist/*.js";
-/* repita para @streamdown/math, @streamdown/mermaid e @streamdown/cjk se estiverem instalados */
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
 ```
 
+O `message` e o `reasoning` importam os quatro plugins `@streamdown/*`
+estaticamente, então os quatro estão instalados e entram no `@source`.
 O `streamdown/styles.css` traz as animações de entrada do streaming e os
 marcadores de lista (pode ser `import "streamdown/styles.css"` no JS). Fórmulas (`@streamdown/math`)
 usam o CSS do KaTeX: `import "katex/dist/katex.min.css"`, com `katex` como
@@ -162,9 +188,10 @@ const nextConfig: NextConfig = {
 Sem a entrada `@blips/ai`, o build falha com erro de parse nos `.tsx` de
 `node_modules/@blips/ai`. No Vite nada muda (compila TSX de `node_modules`).
 
-Quase todos os componentes da @blips/ai têm `"use client"`. Os de canvas
-(`canvas`, `node`, `edge`, `connection`, `panel`, `toolbar`), `image` e
-`model-selector` não declaram a diretiva (como no upstream). Em Server
+Quase todos os componentes da @blips/ai têm `"use client"` (o `canvas`
+também, porque passa ao React Flow os rótulos de acessibilidade em pt-BR, que
+incluem uma função). `node`, `edge`, `connection`, `panel`, `toolbar`, `image`
+e `model-selector` não declaram a diretiva (como no upstream). Em Server
 Component, renderize qualquer um deles a partir de um componente cliente seu
 (a tela de chat e o canvas já são cliente por causa do estado e dos
 handlers).
@@ -220,6 +247,8 @@ seção de UI um bullet:
 - `ai` em `dependencies` só por causa dos tipos (o certo é `pnpm add -D ai`)
 - `transpilePackages` sem `"@blips/ai"` (Next)
 - Componente de canvas sem `import "@xyflow/react/dist/style.css"` no app
+- `jsx-preview` sem o override `react-jsx-parser>@types/react` (dois
+  `@types/react` no lockfile, `TS2322` no `components`)
 - `Persona` em produção carregando os `.riv` da Vercel (sem `src` próprio)
 - Cópia do AI Elements via CLI (`components/ai-elements/*`) convivendo com a
   @blips/ai: duas famílias de chat no mesmo app

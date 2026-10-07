@@ -56,7 +56,19 @@ tipar dados com tipos do AI SDK, `ai` é peer opcional e só de tipos (sempre
 
 ## API
 
-Exports: `Canvas` e o tipo `CanvasProps` (`ReactFlowProps & { children?: ReactNode }`).
+Exports: `Canvas`, `canvasAriaLabelConfig` (os textos de acessibilidade do
+React Flow em pt-BR) e o tipo `CanvasProps` (`ReactFlowProps & { children?: ReactNode }`).
+
+`canvasAriaLabelConfig` traz todas as chaves do `ariaLabelConfig` do React
+Flow 12: descrições de nó e aresta para leitor de tela, o anúncio ao mover um
+nó pelo teclado ("Nó selecionado movido para cima…"), "Controles do canvas",
+"Aproximar", "Afastar", "Ajustar à tela", "Alternar interatividade",
+"Minimapa" e "Ponto de conexão" (handle). Importe-o para reaproveitar num
+`<ReactFlow>` sem o `Canvas`:
+
+```tsx
+import { canvasAriaLabelConfig } from "@blips/ai/components/canvas";
+```
 
 Toda prop do `<ReactFlow>` passa direto (`nodes`, `edges`, `nodeTypes`,
 `edgeTypes`, `onNodesChange`, `onEdgesChange`, `onConnect`,
@@ -71,6 +83,7 @@ e qualquer um deles pode ser sobrescrito por prop:
 | `panOnScroll` | `true` | `false` | A roda/trackpad move a tela; zoom fica na pinça ou na roda com a tecla de ativação (`zoomActivationKeyCode`, Cmd no Mac, Ctrl nos demais). |
 | `zoomOnDoubleClick` | `false` | `true` | Duplo clique não dá zoom. |
 | `deleteKeyCode` | `["Backspace", "Delete"]` | `"Backspace"` | Teclas que apagam a seleção (só tem efeito com `onNodesChange`/`onEdgesChange`). |
+| `ariaLabelConfig` | `canvasAriaLabelConfig` (pt-BR) **mesclado** com o que você passar | textos em inglês | Rótulos de leitor de tela dos nós, arestas, handles, `Controls` e `MiniMap`. Passar a prop **não** substitui o objeto inteiro: o Canvas faz `{ ...canvasAriaLabelConfig, ...ariaLabelConfig }`, então você troca só as chaves que informar. |
 | `children` | — | — | Renderizado depois do `<Background>`: `Controls`, `Panel`, `MiniMap`… |
 
 Fundo: `<Background bgColor="var(--sidebar)" />` fixo (padrão de pontos). Não
@@ -199,11 +212,10 @@ const edges: FlowEdge[] = [
   { id: "e3", source: "roteador", target: "contrato", type: "temporaria" },
 ];
 
+// Opcional: os rótulos já saem em pt-BR (canvasAriaLabelConfig). Passe só as
+// chaves que quiser trocar; as demais continuam as do padrão.
 const rotulos = {
-  "controls.zoomIn.ariaLabel": "Aproximar",
-  "controls.zoomOut.ariaLabel": "Afastar",
-  "controls.fitView.ariaLabel": "Enquadrar",
-  "controls.interactive.ariaLabel": "Travar ou destravar o canvas",
+  "controls.fitView.ariaLabel": "Enquadrar o fluxo",
 };
 
 export function FluxoDoAgente() {
@@ -239,10 +251,11 @@ Para editar (arrastar nós, apagar, conectar), controle o estado com
   @blips/ai não importa a folha. Importe uma vez no app.
 - **Pai sem altura = canvas invisível.** O React Flow mede o contêiner; com
   altura 0 nada aparece (e ele avisa no console).
-- **Arquivo cliente.** `Canvas` não tem `"use client"` (o dist do
-  `@xyflow/react` tem). `nodeTypes`, `edgeTypes` e callbacks são funções e não
-  atravessam a fronteira Server → Client: monte o canvas num arquivo com
-  `"use client"`.
+- **Arquivo cliente.** `Canvas` tem `"use client"` (o `canvasAriaLabelConfig`
+  traz uma função, `node.a11yDescription.ariaLiveMessage`), mas `nodeTypes`,
+  `edgeTypes` e callbacks também são funções e não atravessam a fronteira
+  Server → Client: monte o canvas (com seus nós) num arquivo com
+  `"use client"`, como no exemplo.
 - **`nodeTypes`/`edgeTypes` fora do componente** (ou em `useMemo`). Objeto novo
   a cada render faz o React Flow avisar e remontar os nós.
 - **Colisão de nomes:** `Node` e `Edge` da @blips/ai vs. os tipos `Node`,
@@ -251,9 +264,11 @@ Para editar (arrastar nós, apagar, conectar), controle o estado com
 - **Padrões de navegação diferentes do React Flow:** arrastar o fundo seleciona
   em vez de mover. Para o comportamento clássico, passe `panOnDrag` e
   `selectionOnDrag={false}`.
-- **Rótulos dos botões de zoom em inglês** ("Zoom In", "Fit View"…) até você
-  passar `ariaLabelConfig` em pt-BR no `Canvas`, como no exemplo. O `Controls`
-  da @blips/ai só traduz o rótulo do painel.
+- **Rótulos de acessibilidade já em pt-BR.** Não copie um objeto inteiro de
+  `ariaLabelConfig` só para traduzir: o padrão (`canvasAriaLabelConfig`) cobre
+  nós, arestas, handles, `Controls` e `MiniMap`, e a prop mescla por chave.
+  Exceção: se você usar `<ReactFlow>` direto (sem o `Canvas`), passe
+  `ariaLabelConfig={canvasAriaLabelConfig}` para manter o pt-BR.
 - **`Canvas` não é genérico**: `CanvasProps` usa os tipos base do React Flow
   (`Node`, `Edge`). Arrays tipados (`EtapaNode[]`) entram em `nodes`, mas o
   estado editável com `onNodesChange` precisa ser `useNodesState<FlowNode>`;

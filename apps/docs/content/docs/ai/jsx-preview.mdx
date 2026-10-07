@@ -13,6 +13,19 @@ pnpm add @blips/ai react-jsx-parser
 
 O `jsx-preview` exige o peer opcional `react-jsx-parser` (^2): ele é importado de forma estática, então quem importa este componente precisa ter o pacote instalado. Quem não usa o `jsx-preview` não precisa dele. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
 
+O `react-jsx-parser` traz `@types/react` 18 junto, o que quebra os tipos React 19 do app. Com pnpm, force a versão 19 no `package.json` da raiz:
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "react-jsx-parser>@types/react": "^19.2.0",
+      "react-jsx-parser>@types/react-dom": "^19.2.0"
+    }
+  }
+}
+```
+
 Importe o CSS depois do da `@blips/ui`:
 
 ```css
@@ -85,4 +98,4 @@ Hook que devolve o contexto (`jsx`, `processedJsx`, `isStreaming`, `error`, `set
 
 ## Origem
 
-Adaptado do componente [JSX Preview](https://elements.ai-sdk.dev/components/jsx-preview) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou o ícone Lucide pelo do Phosphor e as cores pelos tokens da `@blips/ui`; a API é a mesma do upstream.
+Adaptado do componente [JSX Preview](https://elements.ai-sdk.dev/components/jsx-preview) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou o ícone Lucide pelo do Phosphor; as classes (já nos tokens `destructive` do shadcn) e a API são as do upstream.

@@ -55,6 +55,7 @@ posição do seu CSS em relação ao `node_modules`:
 @import "@blips/ui/globals.css";
 @import "@blips/ai/styles.css";
 @import "streamdown/styles.css";
+@import "katex/dist/katex.min.css"; /* pnpm add katex: o @streamdown/math é sempre carregado e não injeta o CSS do KaTeX */
 @source "../node_modules/streamdown/dist/*.js";
 @source "../node_modules/@streamdown/code/dist/*.js";
 @source "../node_modules/@streamdown/math/dist/*.js";

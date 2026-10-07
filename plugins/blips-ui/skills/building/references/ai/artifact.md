@@ -62,7 +62,10 @@ tipos `*Props` de cada um.
   `ResizablePanelGroup` da @blips/ui, ou num `Sheet` no mobile
   (`components/sheet.md`).
 - Conteúdo: `CodeBlock` (`code-block.md`) para código, `MessageResponse`
-  (`message.md`) para markdown, `Table` da @blips/ui para dados.
+  (`message.md`) para markdown, `Table` da @blips/ui para dados. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 - Feedback de "copiado": `toast` da @blips/ui no `onClick` da ação.
 
 ## Exemplo v3 que compila

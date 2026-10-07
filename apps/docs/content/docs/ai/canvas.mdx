@@ -76,15 +76,14 @@ Monte as peças com os outros componentes de canvas:
 
 ### Rótulos acessíveis em pt-BR
 
-Os rótulos dos botões do [Controls](/docs/ai/controls) e das alças de conexão vêm do `ariaLabelConfig` do
-React Flow, que é inglês por padrão. Passe a tradução ao `Canvas`:
+O React Flow traz os textos de acessibilidade (rótulos dos botões do [Controls](/docs/ai/controls), das
+alças de conexão e do minimapa, descrições de teclado dos nós e arestas) em inglês. O `Canvas` já passa a
+tradução em pt-BR por padrão, exportada como `canvasAriaLabelConfig`. Para trocar um texto, passe
+`ariaLabelConfig` só com as chaves que quer mudar: elas são mescladas sobre o padrão.
 
 ```tsx
 <Canvas
   ariaLabelConfig={{
-    "controls.zoomIn.ariaLabel": "Aproximar",
-    "controls.zoomOut.ariaLabel": "Afastar",
-    "controls.fitView.ariaLabel": "Ajustar à tela",
     "controls.interactive.ariaLabel": "Travar ou destravar edição",
   }}
 />
@@ -105,6 +104,7 @@ mudam:
 | `selectionOnDrag`   | `boolean`            | `true`                    |
 | `zoomOnDoubleClick` | `boolean`            | `false`                   |
 | `deleteKeyCode`     | `KeyCode \| null`    | `["Backspace", "Delete"]` |
+| `ariaLabelConfig`   | `Partial<AriaLabelConfig>` — mesclado sobre o padrão | `canvasAriaLabelConfig` (pt-BR) |
 | `children`          | `ReactNode` — renderizado depois do fundo | —    |
 
 O fundo (`Background` com `bgColor="var(--sidebar)"`) é sempre renderizado. O `Canvas` não envolve um
@@ -116,4 +116,5 @@ O fundo (`Background` com `bgColor="var(--sidebar)"`) é sempre renderizado. O `
 Adaptado do componente [Canvas](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
 Apache-2.0), que envolve o [React Flow](https://reactflow.dev) (MIT). Mudanças da Blips: o
 `import "@xyflow/react/dist/style.css"` saiu do componente (o app importa a folha uma vez) e o tipo
-`CanvasProps` passou a ser exportado.
+`CanvasProps` passou a ser exportado e os textos de acessibilidade do React Flow saem em pt-BR por padrão
+(`canvasAriaLabelConfig`).

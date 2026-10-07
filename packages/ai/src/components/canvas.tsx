@@ -1,3 +1,5 @@
+"use client";
+
 // Adaptado de vercel/ai-elements (packages/elements/src/canvas.tsx @ 6a9d5b1),
 // Copyright 2023 Vercel, Inc., Apache License 2.0.
 // Modificado pela Blips: primitivas Base UI da @blips/ui, ícones Phosphor e tokens da @blips/ui.
@@ -15,6 +17,17 @@ export type CanvasProps = ReactFlowProps & {
 
 const deleteKeyCode = ["Backspace", "Delete"];
 
+// O React Flow passa a direção da seta em inglês ("up", "down", "left", "right").
+const directionLabels: Record<string, string> = {
+  down: "baixo",
+  left: "a esquerda",
+  right: "a direita",
+  up: "cima",
+};
+
+// Canvas é cliente: o `ariaLabelConfig` carrega uma função (`ariaLiveMessage`),
+// que não atravessa a fronteira de um Server Component para o <ReactFlow>.
+
 // Textos de acessibilidade do React Flow em pt-BR (o padrão dele é inglês).
 // Quem passa `ariaLabelConfig` sobrescreve só as chaves que informar.
 export const canvasAriaLabelConfig: NonNullable<
@@ -25,7 +38,7 @@ export const canvasAriaLabelConfig: NonNullable<
   "node.a11yDescription.keyboardDisabled":
     "Pressione Enter ou Espaço para selecionar um nó. Depois, use as setas para movê-lo. Pressione Delete para removê-lo e Esc para cancelar.",
   "node.a11yDescription.ariaLiveMessage": ({ direction, x, y }) =>
-    `Nó selecionado movido para ${direction}. Nova posição: x ${x}, y ${y}`,
+    `Nó selecionado movido para ${directionLabels[direction] ?? direction}. Nova posição: x ${x}, y ${y}`,
   "edge.a11yDescription.default":
     "Pressione Enter ou Espaço para selecionar uma aresta. Depois, pressione Delete para removê-la ou Esc para cancelar.",
   "controls.ariaLabel": "Controles do canvas",

@@ -84,18 +84,18 @@ export const SandboxContent = ({
   />
 );
 
-export type SandboxTabsProps = ComponentProps<typeof Tabs>;
+// Os wrappers de Tabs da @blips/ui mesclam `className` com `cn` (clsx), que descarta
+// funções: um `className` em função do estado sumiria junto com as classes daqui.
+// Por isso, nas partes de abas, `className` é só string.
+export type SandboxTabsProps = Omit<
+  ComponentProps<typeof Tabs>,
+  "className"
+> & {
+  className?: string;
+};
 
 export const SandboxTabs = ({ className, ...props }: SandboxTabsProps) => (
-  <Tabs
-    className={(state) =>
-      cn(
-        "w-full gap-0",
-        typeof className === "function" ? className(state) : className
-      )
-    }
-    {...props}
-  />
+  <Tabs className={cn("w-full gap-0", className)} {...props} />
 );
 
 export type SandboxTabsBarProps = ComponentProps<"div">;
@@ -113,53 +113,47 @@ export const SandboxTabsBar = ({
   />
 );
 
-export type SandboxTabsListProps = ComponentProps<typeof TabsList>;
+export type SandboxTabsListProps = Omit<
+  ComponentProps<typeof TabsList>,
+  "className"
+> & { className?: string };
 
 export const SandboxTabsList = ({
   className,
   ...props
 }: SandboxTabsListProps) => (
   <TabsList
-    className={(state) =>
-      cn(
-        "h-auto rounded-none border-0 bg-transparent p-0",
-        typeof className === "function" ? className(state) : className
-      )
-    }
+    className={cn("h-auto rounded-none border-0 bg-transparent p-0", className)}
     {...props}
   />
 );
 
-export type SandboxTabsTriggerProps = ComponentProps<typeof TabsTrigger>;
+export type SandboxTabsTriggerProps = Omit<
+  ComponentProps<typeof TabsTrigger>,
+  "className"
+> & { className?: string };
 
 export const SandboxTabsTrigger = ({
   className,
   ...props
 }: SandboxTabsTriggerProps) => (
   <TabsTrigger
-    className={(state) =>
-      cn(
-        "rounded-none border-0 border-transparent border-b-2 px-4 py-2 font-medium text-muted-foreground text-sm transition-colors data-active:border-primary data-active:bg-transparent data-active:text-foreground data-active:shadow-none dark:data-active:border-primary dark:data-active:bg-transparent",
-        typeof className === "function" ? className(state) : className
-      )
-    }
+    className={cn(
+      "rounded-none border-0 border-transparent border-b-2 px-4 py-2 font-medium text-muted-foreground text-sm transition-colors data-active:border-primary data-active:bg-transparent data-active:text-foreground data-active:shadow-none dark:data-active:border-primary dark:data-active:bg-transparent",
+      className
+    )}
     {...props}
   />
 );
 
-export type SandboxTabContentProps = ComponentProps<typeof TabsContent>;
+export type SandboxTabContentProps = Omit<
+  ComponentProps<typeof TabsContent>,
+  "className"
+> & { className?: string };
 
 export const SandboxTabContent = ({
   className,
   ...props
 }: SandboxTabContentProps) => (
-  <TabsContent
-    className={(state) =>
-      cn(
-        "mt-0 text-sm",
-        typeof className === "function" ? className(state) : className
-      )
-    }
-    {...props}
-  />
+  <TabsContent className={cn("mt-0 text-sm", className)} {...props} />
 );

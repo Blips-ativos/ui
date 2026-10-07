@@ -48,7 +48,7 @@ Export único: `Edge`, um objeto `{ Animated, Temporary }`. Os dois recebem as
 
 | Membro | Usa das `EdgeProps` | Traço | Notas |
 |---|---|---|---|
-| `Edge.Animated` | `id`, `source`, `target`, `markerEnd`, `style` | `BaseEdge` padrão + `<circle r=4 fill=var(--primary)>` com `animateMotion` 2s | Recalcula as pontas pelos handles reais: **sempre** do handle `Right` (source) da origem ao `Left` (target) do destino, ignorando `sourceX/Y`. Retorna `null` enquanto os nós não foram medidos. |
+| `Edge.Animated` | `id`, `source`, `target`, `markerEnd`, `style` | `BaseEdge` padrão + `<circle r=4 fill=var(--primary)>` com `animateMotion` 2s (escondido com `motion-reduce:hidden`) | Recalcula as pontas pelos handles reais: **sempre** do handle `Right` (source) da origem ao `Left` (target) do destino, ignorando `sourceX/Y`. Retorna `null` enquanto os nós não foram medidos. |
 | `Edge.Temporary` | `id`, coordenadas e posições de origem/destino | `stroke-1 stroke-ring`, `strokeDasharray: "5, 5"` | Usa `getSimpleBezierPath`. Ignora `markerEnd` e `style`. |
 
 Personalize por aresta com os campos do objeto `Edge` do React Flow:
@@ -152,8 +152,8 @@ export function CaminhoDoAgente() {
   alias (`Edge as FlowEdge`).
 - O `animateMotion` roda sempre, para cada aresta animada: em grafos grandes,
   troque para `Temporary` (ou uma aresta padrão) o que não estiver ativo.
-  Respeite `prefers-reduced-motion` escolhendo o `type` por isso, se a tela
-  pedir.
+  Com `prefers-reduced-motion`, a bolinha some (`motion-reduce:hidden`) e
+  sobra a linha sólida; não é preciso trocar o `type` por isso.
 - `Edge.Temporary` não desenha seta mesmo com `markerEnd`.
 - O módulo não tem `"use client"` de propósito (é um objeto, não um
   componente), mas o `edgeTypes` só existe num arquivo cliente junto do canvas.

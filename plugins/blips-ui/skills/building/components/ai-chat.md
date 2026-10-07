@@ -67,7 +67,7 @@ A tela completa abaixo importa `message` e `reasoning` (Streamdown) e `tool`
 (que usa o `CodeBlock`, sobre o Shiki). O app declara:
 
 ```bash
-pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk shiki
+pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk shiki katex
 pnpm add -D ai   # tipos UIMessage/ChatStatus: o tsc do app compila o fonte .tsx do pacote
 ```
 
@@ -86,10 +86,18 @@ Streamdown (ajuste os `../` até o `node_modules`; em monorepo, o da raiz):
 @import "@blips/ui/globals.css";
 @import "@blips/ai/styles.css";
 @import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
 @source "../node_modules/streamdown/dist/*.js";
 @source "../node_modules/@streamdown/code/dist/*.js";
-/* repita para @streamdown/math, @streamdown/mermaid e @streamdown/cjk */
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
 ```
+
+Os quatro plugins `@streamdown/*` são importados estaticamente pelo `message` e
+pelo `reasoning`, então todos entram no `@source`. O `@streamdown/math` usa o
+KaTeX, que não injeta o próprio CSS: sem `katex` (dependência direta) e o
+`katex.min.css`, as fórmulas saem sem estilo.
 
 ## Anatomia
 
@@ -355,7 +363,7 @@ caminho (b)).
       <Message align="start">                        assistente
         <MessageContent>
           <Plan isStreaming>…</Plan>                   ② plano antes de executar
-          <Task title="Consultar títulos">…</Task>     ③ uma Task por etapa
+          <Task><TaskTrigger title="Consultar títulos"/>…</Task>  ③ uma Task por etapa
           <Tool>                                       tool call da etapa
             <ToolHeader/>
             <ToolContent>
@@ -863,10 +871,13 @@ versão que o agente roda.
   erro aparece pelo `status === "error"`.
 - **`ai` é peer só de tipos, mas o `tsc` do app precisa dele.** Os exports
   apontam para o fonte `.tsx`; sem `ai` instalado, `conversation`, `message`,
-  `tool`, `confirmation`, `context` e `prompt-input` dão TS2307 no `tsc` do app.
-  Em projeto TypeScript: `pnpm add -D ai`.
-- **Markdown sem estilo.** Faltou o CSS do Streamdown (`streamdown/styles.css`
-  e o `@source` do `streamdown/dist`, seção [Peers e CSS para esta tela](#peers-e-css-para-esta-tela)).
+  `tool`, `confirmation`, `context`, `prompt-input`, `attachments`, `agent`,
+  `sandbox`, `image`, `audio-player` e `transcription` dão TS2307 no `tsc` do
+  app. Em projeto TypeScript: `pnpm add -D ai` (sem runtime; `dependencies` só
+  se o código do app importar runtime do `ai`).
+- **Markdown sem estilo.** Faltou o CSS do Streamdown (`streamdown/styles.css`,
+  o `@source` do `streamdown/dist` e dos plugins `@streamdown/*`, e o
+  `katex.min.css` para fórmulas; seção [Peers e CSS para esta tela](#peers-e-css-para-esta-tela)).
   O `@blips/ai/styles.css` só cobre as classes do próprio pacote.
 - **Nada de helper runtime do `ai` no caminho (b).** `isToolUIPart`,
   `getToolName` e afins puxam o runtime do AI SDK. Um type guard de uma linha

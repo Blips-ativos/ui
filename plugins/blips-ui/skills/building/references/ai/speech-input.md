@@ -65,7 +65,9 @@ Exports: `SpeechInput` e os tipos `SpeechInputProps` e `SpeechInputLabels`.
 | `lang` | `string` (BCP 47) | `"pt-BR"` | Idioma da Web Speech API. Não afeta o modo MediaRecorder. |
 | `labels` | `SpeechInputLabels` | `{ start: "Iniciar ditado", stop: "Parar ditado", processing: "Transcrevendo áudio" }` | Rótulo acessível (`aria-label`) por estado. Um `aria-label` passado direto tem prioridade sobre os três. |
 
-O botão ganha `aria-pressed` (gravando ou não). O `onClick` do componente
+O botão **não** usa `aria-pressed`: o estado vai no rótulo, que muda entre
+`start`/`stop`/`processing` (com `aria-pressed` e rótulo variável, o leitor de
+tela anunciaria o estado em dobro). O `onClick` do componente
 alterna a gravação: um `onClick` seu **substitui** esse comportamento (as
 props são espalhadas depois).
 

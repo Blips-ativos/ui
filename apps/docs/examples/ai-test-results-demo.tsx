@@ -83,7 +83,7 @@ export default function AiTestResultsDemo() {
           <TestSuite name="contratos/buscar.test.ts" status="passed">
             <div className="flex items-center">
               <TestSuiteName className="flex-1" />
-              <TestSuiteStats className="pr-4" passed={8} skipped={1} />
+              <TestSuiteStats className="pr-4" passed={1} skipped={1} />
             </div>
             <TestSuiteContent>
               <Test duration={6} name="busca por CNPJ" status="passed" />

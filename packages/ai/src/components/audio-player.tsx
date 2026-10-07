@@ -4,7 +4,7 @@
 // Copyright 2023 Vercel, Inc., Apache License 2.0.
 // Modificado pela Blips: primitivas Base UI da @blips/ui, ícones Phosphor e tokens da @blips/ui.
 
-import { Button } from "@blips/ui/components/button";
+import { buttonVariants } from "@blips/ui/components/button";
 import {
   ButtonGroup,
   ButtonGroupText,
@@ -121,8 +121,15 @@ export const AudioPlayerControlBar = ({
   </MediaControlBar>
 );
 
-// Os botões do media-chrome são custom elements, não <button>: por isso
-// `nativeButton={false}` no Button da @blips/ui.
+// Os botões do media-chrome são custom elements que já fazem papel de botão
+// (role="button", tabindex e ativação por Enter/Espaço). Por isso recebem só
+// as classes de `buttonVariants`, sem o Button da @blips/ui: com
+// `nativeButton={false}` o Base UI também dispararia o clique pelo teclado, e
+// Enter/Espaço alternariam duas vezes (play e pause no mesmo toque).
+const mediaButtonClassName = buttonVariants({
+  size: "icon-sm",
+  variant: "outline",
+});
 
 export type AudioPlayerPlayButtonProps = ComponentProps<typeof MediaPlayButton>;
 
@@ -130,17 +137,10 @@ export const AudioPlayerPlayButton = ({
   className,
   ...props
 }: AudioPlayerPlayButtonProps) => (
-  <Button
-    nativeButton={false}
-    render={
-      <MediaPlayButton
-        className={cn("bg-transparent", className)}
-        data-slot="audio-player-play-button"
-        {...props}
-      />
-    }
-    size="icon-sm"
-    variant="outline"
+  <MediaPlayButton
+    className={cn(mediaButtonClassName, "bg-transparent", className)}
+    data-slot="audio-player-play-button"
+    {...props}
   />
 );
 
@@ -149,20 +149,15 @@ export type AudioPlayerSeekBackwardButtonProps = ComponentProps<
 >;
 
 export const AudioPlayerSeekBackwardButton = ({
+  className,
   seekOffset = 10,
   ...props
 }: AudioPlayerSeekBackwardButtonProps) => (
-  <Button
-    nativeButton={false}
-    render={
-      <MediaSeekBackwardButton
-        data-slot="audio-player-seek-backward-button"
-        seekOffset={seekOffset}
-        {...props}
-      />
-    }
-    size="icon-sm"
-    variant="outline"
+  <MediaSeekBackwardButton
+    className={cn(mediaButtonClassName, className)}
+    data-slot="audio-player-seek-backward-button"
+    seekOffset={seekOffset}
+    {...props}
   />
 );
 
@@ -171,20 +166,15 @@ export type AudioPlayerSeekForwardButtonProps = ComponentProps<
 >;
 
 export const AudioPlayerSeekForwardButton = ({
+  className,
   seekOffset = 10,
   ...props
 }: AudioPlayerSeekForwardButtonProps) => (
-  <Button
-    nativeButton={false}
-    render={
-      <MediaSeekForwardButton
-        data-slot="audio-player-seek-forward-button"
-        seekOffset={seekOffset}
-        {...props}
-      />
-    }
-    size="icon-sm"
-    variant="outline"
+  <MediaSeekForwardButton
+    className={cn(mediaButtonClassName, className)}
+    data-slot="audio-player-seek-forward-button"
+    seekOffset={seekOffset}
+    {...props}
   />
 );
 

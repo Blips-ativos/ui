@@ -30,8 +30,10 @@ export default function AiTerminalStreaming() {
     if (!isStreaming) {
       return;
     }
-    const id = window.setTimeout(() => setVisiveis((n) => n + 1), 700);
-    return () => window.clearTimeout(id);
+    // Intervalo (e não timeout): `isStreaming` não muda entre uma linha e outra,
+    // então o efeito roda uma vez por execução e o intervalo entrega todas.
+    const id = window.setInterval(() => setVisiveis((n) => n + 1), 700);
+    return () => window.clearInterval(id);
   }, [isStreaming]);
 
   return (

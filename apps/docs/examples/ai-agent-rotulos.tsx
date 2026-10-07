@@ -33,7 +33,10 @@ export default function AiAgentRotulos() {
             Responda só com dados da base de importação, sempre citando o
             período consultado.
           </AgentInstructions>
-          <AgentTools defaultValue={["consultar_trafego"]} label="Tools">
+          <AgentTools
+            defaultValue={["consultar_trafego"]}
+            label="Ferramentas disponíveis"
+          >
             <AgentTool
               emptyDescription="consultar_trafego (sem descrição)"
               tool={consultarTrafego}

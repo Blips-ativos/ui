@@ -347,8 +347,9 @@ export const SpeechInput = ({
 
       {/* Main record button */}
       <Button
+        // Sem aria-pressed: o rótulo já muda com o estado (iniciar/parar), e
+        // um botão de alternância com rótulo variável seria anunciado em dobro.
         aria-label={ariaLabel}
-        aria-pressed={isListening}
         className={cn(
           "relative z-10 rounded-full transition-all duration-300",
           isListening

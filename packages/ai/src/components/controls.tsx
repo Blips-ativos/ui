@@ -10,15 +10,12 @@ import type { ComponentProps } from "react";
 
 export type ControlsProps = ComponentProps<typeof ControlsPrimitive>;
 
-// O rótulo do painel sai em pt-BR por padrão. Os rótulos dos botões (zoom,
-// ajustar, travar) vêm do `ariaLabelConfig` do <ReactFlow>, não deste componente.
-export const Controls = ({
-  className,
-  "aria-label": ariaLabel = "Controles do canvas",
-  ...props
-}: ControlsProps) => (
+// Os rótulos do painel e dos botões (zoom, ajustar, travar) vêm do
+// `ariaLabelConfig` do <ReactFlow>; o <Canvas> já os entrega em pt-BR. Sem
+// padrão fixo de `aria-label` aqui, senão ele anularia o `controls.ariaLabel`
+// que o consumidor passar ao Canvas. A prop `aria-label` continua sobrescrevendo.
+export const Controls = ({ className, ...props }: ControlsProps) => (
   <ControlsPrimitive
-    aria-label={ariaLabel}
     className={cn(
       "gap-px overflow-hidden rounded-md border bg-card p-1 shadow-none!",
       "[&>button]:rounded-md [&>button]:border-none! [&>button]:bg-transparent! [&>button]:hover:bg-secondary!",

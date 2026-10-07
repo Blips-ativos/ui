@@ -85,7 +85,10 @@ Todos os tipos de props são exportados (`SchemaDisplayProps`,
 - Já usa `Badge` e `Collapsible` (Base UI) da @blips/ui; o estado aberto
   vem de `data-panel-open` (v3), não de `data-[state=open]`.
 - Num chat: dentro de `MessageContent` do `Message` da @blips/ui, abaixo do
-  `MessageResponse` que explica a API.
+  `MessageResponse` que explica a API. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 - Exemplo de payload com realce: `CodeBlock` (`code-block.md`) logo abaixo do
   cartão, em vez de `SchemaDisplayExample`.
 - Vários endpoints: um `SchemaDisplay` por endpoint numa pilha `flex flex-col

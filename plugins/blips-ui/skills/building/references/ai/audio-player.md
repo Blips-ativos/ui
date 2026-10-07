@@ -56,8 +56,8 @@ Exports: os componentes abaixo e um tipo `*Props` para cada um.
 | `AudioPlayer` | Props do `MediaController` (media-chrome) sem `audio` | Raiz (`data-slot="audio-player"`). `lang` padrão `"pt-BR"`: rótulos e dicas dos controles em português. `style` é mesclado **depois** das variáveis `--media-*`, então dá para sobrescrever uma por uma. |
 | `AudioPlayerElement` | `ComponentProps<"audio">` sem `src` + **ou** `data: SpeechResult["audio"]` **ou** `src: string` | O `<audio slot="media">`. Com `data`, monta `data:${mediaType};base64,${base64}`; se vierem os dois, `src` vence. Aceita `ref`, `onTimeUpdate`, `onEnded`, `preload` etc. |
 | `AudioPlayerControlBar` | Props do `MediaControlBar` | Envolve os `children` numa `ButtonGroup orientation="horizontal"` da @blips/ui. |
-| `AudioPlayerPlayButton` | Props do `MediaPlayButton` | `Button` da @blips/ui (`outline`, `icon-sm`) com `render={<MediaPlayButton />}`. |
-| `AudioPlayerSeekBackwardButton` | Props do `MediaSeekBackwardButton` | `seekOffset` padrão `10` (segundos). |
+| `AudioPlayerPlayButton` | Props do `MediaPlayButton` | O próprio `MediaPlayButton` com as classes de `buttonVariants({ variant: "outline", size: "icon-sm" })` da @blips/ui (visual de `Button`, sem o componente `Button`). |
+| `AudioPlayerSeekBackwardButton` | Props do `MediaSeekBackwardButton` | `seekOffset` padrão `10` (segundos). Mesmas classes de `buttonVariants`. |
 | `AudioPlayerSeekForwardButton` | Props do `MediaSeekForwardButton` | `seekOffset` padrão `10`. |
 | `AudioPlayerTimeDisplay` | Props do `MediaTimeDisplay` | Tempo atual, `tabular-nums`, num `ButtonGroupText`. |
 | `AudioPlayerTimeRange` | Props do `MediaTimeRange` | Barra de progresso clicável, num `ButtonGroupText`. |
@@ -71,10 +71,14 @@ Escolha só os controles que fazem sentido: nenhum é obrigatório além do
 ## Composição com a @blips/ui
 
 - Resposta falada do agente: o player vai dentro do `MessageContent`
-  (`message.md`), abaixo do `MessageResponse` com o texto.
+  (`message.md`), abaixo do `MessageResponse` com o texto. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 - Nota de voz do usuário: dentro de um `Bubble` da @blips/ui (`../bubble.md`),
   só com play, barra e duração.
-- Os botões já são `Button`/`ButtonGroup` da @blips/ui: não envolva o player
+- Os botões já têm o visual de `Button` (`buttonVariants`) dentro de um
+  `ButtonGroup` da @blips/ui: não envolva o player
   em outro `ButtonGroup`, e não recrie os controles com `<button>` +
   `audio.play()`.
 
@@ -136,7 +140,9 @@ export function RespostaFalada({ fala }: { fala: FalaDoAgente }) {
 ```
 
 O exemplo também usa `MessageResponse`, que exige os peers do Streamdown
-(`message.md`). Quando o objeto inteiro do `generateSpeech` está no mesmo
+(`streamdown`, `@streamdown/{code,math,mermaid,cjk}`) e o CSS dele no CSS
+global: `@import "streamdown/styles.css";`, `@import "katex/dist/katex.min.css";`
+e `@source` do `dist` do `streamdown` e de cada plugin (`message.md`). Quando o objeto inteiro do `generateSpeech` está no mesmo
 processo (ex.: Server Component que renderiza um Client Component com o
 objeto já montado), `data={resultado.audio}` funciona direto.
 
@@ -156,9 +162,14 @@ objeto já montado), `data={resultado.audio}` funciona direto.
   custom elements; não tente ler o estado do player num Server Component. Para
   reagir ao áudio (tempo, fim), use `onTimeUpdate`/`onEnded` no
   `AudioPlayerElement`.
-- Os botões do media-chrome são custom elements, não `<button>`: por isso o
-  componente usa `Button nativeButton={false} render={…}`. Ao criar um
-  controle próprio com outro `Media*Button`, repita o `nativeButton={false}`.
+- Os botões do media-chrome são custom elements que **já** fazem papel de
+  botão (`role="button"`, `tabindex`, Enter/Espaço). Por isso o componente só
+  aplica `buttonVariants(...)` neles, sem o `Button` da @blips/ui: com
+  `Button nativeButton={false} render={<Media*Button />}` o Base UI também
+  dispararia o clique pelo teclado e Enter/Espaço alternariam duas vezes (play
+  e pause no mesmo toque). Num controle próprio com outro `Media*Button`, faça
+  igual: `className={buttonVariants({ variant: "outline", size: "icon-sm" })}`
+  (`import { buttonVariants } from "@blips/ui/components/button"`).
 - `AudioPlayerMuteButton` e `AudioPlayerVolumeRange` ficam em
   `ButtonGroupText`, não em `Button`: `variant`/`size` não se aplicam a eles.
 - Controle de volume em celular não tem efeito (o iOS ignora `volume`): em

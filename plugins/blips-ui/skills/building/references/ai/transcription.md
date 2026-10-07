@@ -22,7 +22,10 @@ Os segmentos têm o formato de `TranscriptionResult["segments"]` do AI SDK
   junto (atendimento gravado, áudio recebido no WhatsApp, nota de voz),
   normalmente ao lado de um `AudioPlayer` (`audio-player.md`).
 - **Não use** para texto transcrito sem tempo (só a string): isso é
-  `MessageResponse` (`message.md`) ou um parágrafo comum.
+  `MessageResponse` (`message.md`) ou um parágrafo comum. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 - **Não use** para captar a fala do usuário: isso é `SpeechInput`
   (`speech-input.md`).
 - **Não use** para legenda de vídeo: use `<track kind="captions">` no

@@ -41,6 +41,9 @@ import {
 
 Nenhum além da @blips/ai (usa `InputGroup` da @blips/ui e
 `@phosphor-icons/react`). O componente não importa `ai`.
+Se o seu código usar tipos do AI SDK, `ai` é peer opcional só de tipos
+(sempre `import type`, sem runtime): num projeto TypeScript, instale como
+**devDependency** (`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
 
 ```bash
 pnpm add @blips/ai
@@ -67,7 +70,10 @@ Todos os tipos de props são exportados (`SnippetProps`, `SnippetAddonProps`,
   por aba, cada um com seu `code`.
 - Na resposta do agente, vai no `MessageContent` do `Message` da @blips/ui,
   abaixo do `MessageResponse`, quando o comando merece destaque fora do
-  markdown.
+  markdown. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 
 ## Exemplo v3 que compila
 

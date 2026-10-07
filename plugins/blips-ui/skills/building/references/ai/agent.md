@@ -39,6 +39,11 @@ pnpm add @blips/ai shiki
 pnpm add -D ai
 ```
 
+Exceção: se o **código do app** chamar runtime do AI SDK (ex.: `tool()` e
+`jsonSchema()` para montar os objetos `Tool`, como no módulo de dados do
+exemplo abaixo, que vai para o bundle), aí `ai` entra em `dependencies`
+(`pnpm add ai`). O componente em si continua sem runtime do `ai`.
+
 CSS como no resto da @blips/ai: `@import "@blips/ui/globals.css";` e depois
 `@import "@blips/ai/styles.css";`.
 
@@ -155,7 +160,10 @@ export function CartaoAgente({
   ferramentas nem schema: o módulo importa o `CodeBlock` estaticamente.
 - **`AgentInstructions` só aceita string.** JSX como filho não compila; para
   instruções longas com markdown, use `MessageResponse` (`message.md`) fora
-  do componente.
+  do componente. Quem usa o `MessageResponse` instala os peers do Streamdown e, no CSS
+  global, importa `streamdown/styles.css` e `katex/dist/katex.min.css` e
+  declara `@source` do `dist` do `streamdown` e dos plugins `@streamdown/*`
+  (setup em `message.md`).
 - **`tool.description` como função não aparece.** Na versão atual do AI SDK a
   descrição pode ser função (resolvida no run); o componente só exibe string
   e cai em `emptyDescription`. Resolva a descrição antes de passar.

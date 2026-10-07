@@ -100,6 +100,19 @@ Botão só com ícone via `render` e títulos trocados por `children` em cada it
 
 `DropdownMenuItem`, `DropdownMenuLabel` e `DropdownMenuSeparator` da `@blips/ui`, para itens e seções próprias.
 
+O `OpenInLabel` é o `Menu.GroupLabel` do Base UI e precisa estar dentro de um `DropdownMenuGroup` (de
+`@blips/ui/components/dropdown-menu`); fora de um grupo, o Base UI lança erro quando o menu abre.
+
+```tsx
+<OpenInContent>
+  <DropdownMenuGroup>
+    <OpenInLabel>Continuar a conversa em</OpenInLabel>
+    <OpenInClaude />
+    <OpenInChatGPT />
+  </DropdownMenuGroup>
+</OpenInContent>
+```
+
 ## Origem
 
 Adaptado do componente [Open in Chat](https://elements.ai-sdk.dev/components/open-in-chat) do

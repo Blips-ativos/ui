@@ -60,7 +60,7 @@ interface QueueTodo { id: string; title: string; description?: string; status?: 
 | `QueueItemContent` | props de `<span>` + `completed?: boolean` | `line-clamp-1`; concluído fica `line-through`. |
 | `QueueItemDescription` | props de `<div>` + `completed?: boolean` | `ml-6 text-xs`. |
 | `QueueItemActions` | props de `<div>` | `flex gap-1`. |
-| `QueueItemAction` | props do `Button` **sem** `variant`/`size` | Botão ghost de ícone, `opacity-0` até o hover do `QueueItem`. Passe `aria-label`. |
+| `QueueItemAction` | props do `Button` **sem** `variant`/`size` | Botão ghost de ícone, `opacity-0` até o hover ou foco do `QueueItem`. Passe `aria-label`. |
 | `QueueItemAttachment` | props de `<div>` | Linha `flex-wrap gap-2` para os anexos. |
 | `QueueItemImage` | props de `<img>` | 32×32, `object-cover`, `alt=""` por padrão. |
 | `QueueItemFile` | props de `<span>` | Chip com `PaperclipIcon`; `children` (nome) truncado em 100px. |
@@ -158,8 +158,10 @@ export function TarefasDoAgente({
 - **`QueueSectionLabel` escreve `"{count} {label}"`.** Sem `count`, sai só o
   label com um espaço na frente; flexione o texto você mesmo ("1 tarefa" /
   "3 tarefas").
-- **`QueueItemAction` some até o hover** (`opacity-0 group-hover:opacity-100`):
-  em telas de toque, nunca aparece. Se a ação for essencial, sobrescreva com
+- **`QueueItemAction` fica invisível até o hover ou o foco**
+  (`opacity-0`, com `group-hover:opacity-100`, `group-focus-within:opacity-100`
+  e `focus-visible:opacity-100`): pelo teclado ela aparece, mas em telas de
+  toque não há hover. Se a ação for essencial, sobrescreva com
   `className="opacity-100"`.
 - `QueueItemAction` não aceita `variant`/`size` (tipo omite); o visual é fixo.
 - `QueueList` já tem o `<ul>`: os filhos diretos precisam ser `QueueItem`

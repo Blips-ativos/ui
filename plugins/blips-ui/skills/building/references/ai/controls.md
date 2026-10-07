@@ -41,7 +41,7 @@ do React Flow). Todas as props do React Flow passam direto; as mais usadas:
 
 | Prop | Tipo | Padrão | Notas |
 |---|---|---|---|
-| `aria-label` | `string` | `"Controles do canvas"` | **Mudança da Blips**: o React Flow usaria o inglês "Control Panel". |
+| `aria-label` | `string` | — (cai em `controls.ariaLabel` do `ariaLabelConfig`: "Controles do canvas" no `Canvas`) | Sobrescreve o rótulo do painel. Sem ela, vale o `ariaLabelConfig` do `Canvas`. |
 | `position` | `PanelPosition` | `"bottom-left"` | `"top-left"`, `"top-center"`, `"top-right"`, `"bottom-left"`, `"bottom-center"`, `"bottom-right"`, `"center-left"`, `"center-right"`. |
 | `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | |
 | `showZoom` | `boolean` | `true` | Botões de aproximar/afastar. |
@@ -52,8 +52,10 @@ do React Flow). Todas as props do React Flow passam direto; as mais usadas:
 | `className` | `string` | — | Mesclado com `cn` depois das classes da Blips. |
 | `children` | `ReactNode` | — | Botões extras (`ControlButton` do `@xyflow/react`). |
 
-Os **rótulos dos botões** não são props do `Controls`: vêm do `ariaLabelConfig`
-do `<ReactFlow>`, ou seja, do `Canvas`.
+Os **rótulos do painel e dos botões** ("Aproximar", "Afastar", "Ajustar à
+tela", "Alternar interatividade") vêm do `ariaLabelConfig` do `<ReactFlow>`, e
+o `Canvas` já os entrega em pt-BR (`canvasAriaLabelConfig`, ver `canvas.md`).
+Para trocar um, passe só aquela chave no `ariaLabelConfig` do `Canvas`.
 
 ## Composição com a @blips/ui
 
@@ -82,12 +84,8 @@ const nodes: FlowNode[] = [
   { id: "2", position: { x: 0, y: 120 }, data: { label: "Responde cliente" } },
 ];
 
-const rotulos = {
-  "controls.zoomIn.ariaLabel": "Aproximar",
-  "controls.zoomOut.ariaLabel": "Afastar",
-  "controls.fitView.ariaLabel": "Enquadrar",
-  "controls.interactive.ariaLabel": "Travar ou destravar o canvas",
-};
+// Os rótulos já saem em pt-BR; aqui só um é trocado (o resto segue o padrão).
+const rotulos = { "controls.fitView.ariaLabel": "Enquadrar o fluxo" };
 
 export function CanvasComControles({ onExportar }: { onExportar: () => void }) {
   return (
@@ -110,9 +108,11 @@ export function CanvasComControles({ onExportar }: { onExportar: () => void }) {
 
 ## Armadilhas
 
-- **Botões em inglês por padrão** ("Zoom In", "Zoom Out", "Fit View", "Toggle
-  Interactivity"): o `Controls` da @blips/ai só traduz o rótulo do painel.
-  Passe `ariaLabelConfig` em pt-BR no `Canvas`, como no exemplo.
+- **Rótulos em pt-BR vêm do `Canvas`.** Dentro de um `<ReactFlow>` direto
+  (sem o `Canvas`), os botões voltam ao inglês do React Flow ("Zoom In", "Fit
+  View"…): passe `ariaLabelConfig={canvasAriaLabelConfig}` (de
+  `@blips/ai/components/canvas`) nele. Um `aria-label` no `Controls` vence o
+  `controls.ariaLabel` do config.
 - Fora de um `<ReactFlow>`/`Canvas` o componente lança erro (precisa do store).
 - As classes usam `!important` (`shadow-none!`, `bg-transparent!`,
   `border-none!`) para vencer o CSS do React Flow. Para mudar o fundo de um

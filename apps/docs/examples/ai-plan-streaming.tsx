@@ -3,6 +3,7 @@
 import {
   Plan,
   PlanAction,
+  PlanContent,
   PlanDescription,
   PlanHeader,
   PlanTitle,
@@ -24,6 +25,12 @@ export default function AiPlanStreaming() {
             <PlanTrigger />
           </PlanAction>
         </PlanHeader>
+        <PlanContent>
+          <ol className="list-decimal space-y-2 pl-5 text-muted-foreground text-sm">
+            <li>Ler as últimas conversas do cliente</li>
+            <li>Listar os contratos vinculados ao CNPJ</li>
+          </ol>
+        </PlanContent>
       </Plan>
     </div>
   );

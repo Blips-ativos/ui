@@ -43,6 +43,11 @@ const tarefasIniciais: QueueTodo[] = [
   { id: "t4", title: "Enviar proposta pelo WhatsApp", status: "pending" },
 ];
 
+// Miniatura em SVG embutido: o exemplo não busca nada na rede.
+const fotoDaPlaca = `data:image/svg+xml;utf8,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" fill="#cbd5e1"/><rect x="6" y="10" width="20" height="12" rx="2" fill="#475569"/></svg>'
+)}`;
+
 const mensagensIniciais: QueueMessage[] = [
   {
     id: "m1",
@@ -64,7 +69,7 @@ const mensagensIniciais: QueueMessage[] = [
         type: "file",
         filename: "placa.jpg",
         mediaType: "image/jpeg",
-        url: "https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=200&auto=format&fit=crop&q=80",
+        url: fotoDaPlaca,
       },
     ],
   },

@@ -50,13 +50,41 @@ import {
 pnpm add @blips/ai react-jsx-parser
 ```
 
-Faixa aceita pelo pacote: `react-jsx-parser ^2`. O componente não importa `ai`.
+Faixa aceita pelo pacote: `react-jsx-parser ^2`.
+
+**Override de `@types/react` (obrigatório em projeto TypeScript).** O
+`react-jsx-parser` 2.x declara `@types/react` e `@types/react-dom` **18** como
+`optionalDependencies`, e o pnpm os instala junto. Os tipos dele (o
+`components` do `JsxParser`) passam a apontar para o React 18 enquanto o app
+usa o 19, e componentes da @blips/ui passados direto em `components` dão
+`TS2322` (verificado com `tsc`). No `package.json` da **raiz** do app (ou do
+monorepo), force o 19 só para ele e rode `pnpm install` de novo:
+
+```json
+{
+  "pnpm": {
+    "overrides": {
+      "react-jsx-parser>@types/react": "^19.2.0",
+      "react-jsx-parser>@types/react-dom": "^19.2.0"
+    }
+  }
+}
+```
+
+É o que o monorepo da @blips/ui faz. Confira com `pnpm why @types/react`: não
+deve sobrar `18.x`. Detalhes na skill **blips-ui:installing**
+(`references/blips-ai.md`).
+
+O componente não importa `ai` (não precisa instalá-lo por causa dele). Se o
+seu código usar tipos do AI SDK, `ai` é peer opcional só de tipos, sem
+runtime: em projeto TypeScript, `pnpm add -D ai` (a @blips/ai publica o fonte
+`.tsx`).
 
 ## API
 
 | Export | Props reais | Notas |
 |---|---|---|
-| `JSXPreview` | `ComponentProps<"div">` + `jsx: string` (obrigatório), `isStreaming?: boolean` (padrão `false`), `components?: Record<string, ComponentType>` (o `components` do `react-jsx-parser`), `bindings?: Record<string, unknown>`, `onError?: (error: Error) => void` | Raiz e contexto (`div` `relative`). **Não renderiza nada sozinho**: ponha `JSXPreviewContent` (e `JSXPreviewError`) dentro. Trocar `jsx` zera o erro. |
+| `JSXPreview` | `ComponentProps<"div">` + `jsx: string` (obrigatório), `isStreaming?: boolean` (padrão `false`), `components?: Record<string, ComponentType \| Record<string, ComponentType>>` (o `components` do `react-jsx-parser`; o valor aninhado vira namespace, `<Ns.Item>`), `bindings?: Record<string, unknown>`, `onError?: (error: Error) => void` | Raiz e contexto (`div` `relative`). **Não renderiza nada sozinho**: ponha `JSXPreviewContent` (e `JSXPreviewError`) dentro. Trocar `jsx` zera o erro. |
 | `JSXPreviewContent` | `ComponentProps<"div">` sem `children` | `div.jsx-preview-content` com o `JsxParser` (`renderInWrapper={false}`). Em streaming, erro silencioso + volta à última versão boa; fora dele, chama `onError` uma vez por `jsx`. |
 | `JSXPreviewError` | `ComponentProps<"div">` + `children?: ReactNode \| ((error: Error) => ReactNode)` (declarado; **na prática só `ReactNode` compila**, ver Armadilhas) | Só aparece quando há erro (fora do streaming). Padrão: caixa `destructive` com `WarningCircleIcon` + `error.message` (texto do parser, em inglês). Passe `children` para a mensagem em pt-BR; para ler o erro, um filho com `useJSXPreview()`. |
 | `useJSXPreview()` | hook | Lê o contexto (`jsx`, `processedJsx`, `isStreaming`, `error`…); lança erro fora do `JSXPreview`. |
@@ -98,8 +126,8 @@ import {
 } from "@blips/ui/components/card";
 import type { ComponentProps } from "react";
 
-// Os componentes da @blips/ui (Base UI) não casam com o tipo `components` do
-// react-jsx-parser: embrulhe cada um numa função que devolve JSX.
+// Embrulhar cada componente numa função com props opcionais compila com ou
+// sem o override de @types/react do react-jsx-parser (ver Peers exigidos).
 const componentes = {
   Badge: (p: ComponentProps<typeof Badge>) => <Badge {...p} />,
   Card: (p: ComponentProps<typeof Card>) => <Card {...p} />,
@@ -154,11 +182,12 @@ export function PreviaGerada({
 - **`bindings` vira API para o modelo.** Tudo que você passa ali (funções,
   dados) pode ser chamado/lido pelo JSX gerado. Exponha só o necessário,
   nunca tokens, `fetch` ou setters de estado sensíveis.
-- **`components` direto da @blips/ui não tipa.** O tipo do parser é
-  `ComponentType` sem props; os componentes Base UI da @blips/ui (que devolvem
-  `ReactElement<unknown>` via `useRender`) e qualquer componente com prop
-  obrigatória dão `TS2322`. Embrulhe cada um numa arrow que devolve JSX, como
-  no exemplo (verificado com `tsc`).
+- **Tipo do `components`.** O parser tipa cada entrada como `ComponentType`
+  sem props: componente com prop **obrigatória** dá `TS2322` sempre (deixe as
+  props opcionais). Sem o override de `@types/react` (seção Peers), até os
+  componentes da @blips/ui passados direto (`{ Badge }`) dão `TS2322`; com o
+  override, passam. Embrulhar cada um numa arrow com props opcionais, como no
+  exemplo, compila nos dois casos (verificado com `tsc`).
 - **`children` em função no `JSXPreviewError` não compila.** O tipo é a
   interseção de `ComponentProps<"div">` (`children: ReactNode`) com a união
   que aceita função, então uma função dá `TS2322`. Use um filho que chama

@@ -116,11 +116,15 @@ AI SDK ou de eventos próprios (ex.: AgentOS do Agno) fica no app. Alguns exigem
 peers opcionais (Streamdown, Shiki, `@xyflow/react`, `media-chrome`,
 `@rive-app/react-webgl2`, `react-jsx-parser`, `ansi-to-react`, `ai`): cada
 reference diz quais. Os componentes de canvas exigem ainda que o app importe
-`@xyflow/react/dist/style.css` uma vez (a @blips/ai não importa CSS de peer). `ai` é peer
+`@xyflow/react/dist/style.css` uma vez (a @blips/ai não importa CSS de peer), e
+o `jsx-preview` exige o override `pnpm.overrides`
+`"react-jsx-parser>@types/react": "^19.2.0"` (e `>@types/react-dom`), porque o
+parser traz `@types/react` 18. `ai` é peer
 só de tipos (sem runtime); como o pacote publica `.tsx`, em projeto TypeScript
 instale como devDependency (`pnpm add -D ai`). Quem usa `MessageResponse` (ou
 `Reasoning`) importa `streamdown/styles.css` e declara `@source` do dist do
-`streamdown` e dos plugins `@streamdown/*` (setup: skill **blips-ui:installing**).
+`streamdown` e dos quatro plugins `@streamdown/*`, mais o `katex.min.css`
+(setup: skill **blips-ui:installing**).
 Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-chat.md).
 
 | Componente | Import | Reference | Quando usar |
@@ -141,7 +145,7 @@ Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-c
 | BorderBeam | `@blips/ai/fx/border-beam` | [references/ai/border-beam.md](references/ai/border-beam.md) | Feixe animado na borda (ex.: prompt enquanto o agente trabalha) |
 | ThinkingOrbs | `@blips/ai/fx/thinking-orbs` | [references/ai/thinking-orbs.md](references/ai/thinking-orbs.md) | Orbe animado pequeno (escala de texto) de "agente pensando" |
 | **Fluxo e canvas (peer `@xyflow/react` + o app importa `@xyflow/react/dist/style.css`)** | | | |
-| Canvas | `@blips/ai/components/canvas` | [references/ai/canvas.md](references/ai/canvas.md) | Área de fluxo (React Flow) com os padrões da Blips: raiz dos demais componentes de canvas |
+| Canvas | `@blips/ai/components/canvas` | [references/ai/canvas.md](references/ai/canvas.md) | Área de fluxo (React Flow) com os padrões da Blips e rótulos de acessibilidade em pt-BR (`canvasAriaLabelConfig`): raiz dos demais componentes de canvas |
 | Node | `@blips/ai/components/node` | [references/ai/node.md](references/ai/node.md) | Nó de fluxo: `Card` da @blips/ui com handles de entrada/saída, para custom nodes |
 | Edge | `@blips/ai/components/edge` | [references/ai/edge.md](references/ai/edge.md) | Tipos de aresta `Edge.Animated` (caminho ativo) e `Edge.Temporary` (tracejada) para `edgeTypes` |
 | Connection | `@blips/ai/components/connection` | [references/ai/connection.md](references/ai/connection.md) | Linha exibida enquanto o usuário arrasta uma conexão nova (`connectionLineComponent`) |
@@ -167,7 +171,7 @@ Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-c
 | Commit | `@blips/ai/components/commit` | [references/ai/commit.md](references/ai/commit.md) | Commit com hash, autor, data e arquivos alterados |
 | EnvironmentVariables | `@blips/ai/components/environment-variables` | [references/ai/environment-variables.md](references/ai/environment-variables.md) | Lista de variáveis de ambiente com valores ocultáveis e cópia |
 | FileTree | `@blips/ai/components/file-tree` | [references/ai/file-tree.md](references/ai/file-tree.md) | Árvore de arquivos com pastas recolhíveis e seleção |
-| JSXPreview | `@blips/ai/components/jsx-preview` | [references/ai/jsx-preview.md](references/ai/jsx-preview.md) | Prévia de JSX gerado em streaming (peer `react-jsx-parser`) |
+| JSXPreview | `@blips/ai/components/jsx-preview` | [references/ai/jsx-preview.md](references/ai/jsx-preview.md) | Prévia de JSX gerado em streaming (peer `react-jsx-parser`, com override de `@types/react` 19 para ele no `package.json` da raiz) |
 | PackageInfo | `@blips/ai/components/package-info` | [references/ai/package-info.md](references/ai/package-info.md) | Pacote com versão, tipo de mudança e dependências |
 | Sandbox | `@blips/ai/components/sandbox` | [references/ai/sandbox.md](references/ai/sandbox.md) | Execução de código pelo agente: status da tool + abas (código, saída); exige `shiki` |
 | SchemaDisplay | `@blips/ai/components/schema-display` | [references/ai/schema-display.md](references/ai/schema-display.md) | Cartão de endpoint HTTP: método, caminho, parâmetros, corpo e resposta |

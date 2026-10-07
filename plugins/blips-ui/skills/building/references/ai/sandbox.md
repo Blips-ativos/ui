@@ -60,11 +60,17 @@ pnpm add -D ai
 | `Sandbox` | props do `Collapsible` da @blips/ui (`open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `className` string ou função de estado) | **`defaultOpen` já é `true`** (passe `defaultOpen={false}` para começar fechado). Moldura `not-prose group mb-4 rounded-md border overflow-hidden`. |
 | `SandboxHeader` | `state: ToolUIPart["state"]` (obrigatório), `title?: string`, `className?: string` | `CollapsibleTrigger` com `CodeIcon`, título, `getStatusBadge(state)` e caret que gira aberto. **Não aceita outras props nem `children`**, nem rótulos de status próprios (usa os padrão do `Tool`). |
 | `SandboxContent` | props do `CollapsibleContent` | Painel com animação de entrada/saída. |
-| `SandboxTabs` | props do `Tabs` da @blips/ui (`value`, `defaultValue`, `onValueChange`, …, semântica Base UI) | `w-full gap-0`. |
+| `SandboxTabs` | props do `Tabs` da @blips/ui (`value`, `defaultValue`, `onValueChange`, …, semântica Base UI), com `className` **só string** | `w-full gap-0`. |
 | `SandboxTabsBar` | `ComponentProps<"div">` | Faixa com borda em cima e embaixo; ponha a `SandboxTabsList` e, se quiser, ações à direita. |
-| `SandboxTabsList` | props do `TabsList` | Lista sem fundo nem padding. |
-| `SandboxTabsTrigger` | props do `TabsTrigger` (`value` obrigatório) | Aba sublinhada: `data-active:border-primary`. |
-| `SandboxTabContent` | props do `TabsContent` (`value`) | `mt-0 text-sm`, sem padding: o conteúdo traz o próprio. |
+| `SandboxTabsList` | props do `TabsList`, `className` só string | Lista sem fundo nem padding. |
+| `SandboxTabsTrigger` | props do `TabsTrigger` (`value` obrigatório), `className` só string | Aba sublinhada: `data-active:border-primary`. |
+| `SandboxTabContent` | props do `TabsContent` (`value`), `className` só string | `mt-0 text-sm`, sem padding: o conteúdo traz o próprio. |
+
+Nas quatro partes de abas o tipo troca o `className` do Base UI (string ou
+função de estado) por `string`: os wrappers de `Tabs` da @blips/ui mesclam com
+`cn`, que descartaria uma função. Para estilo por estado, use as variantes
+`data-active:`/`data-disabled:` na string. O `Sandbox` (raiz) continua aceitando
+função de estado.
 
 Tipos exportados: `SandboxRootProps` (atenção ao nome), `SandboxHeaderProps`,
 `SandboxContentProps`, `SandboxTabsProps`, `SandboxTabsBarProps`,

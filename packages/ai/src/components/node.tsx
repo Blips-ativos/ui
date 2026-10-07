@@ -25,7 +25,9 @@ export type NodeProps = ComponentProps<typeof Card> & {
 export const Node = ({ handles, className, ...props }: NodeProps) => (
   <Card
     className={cn(
-      "node-container relative size-full h-auto w-sm gap-0 rounded-md p-0",
+      // overflow-visible: o Card da @blips/ui tem overflow-hidden, que cortaria
+      // a metade dos Handles que fica para fora da borda (translate -50%).
+      "node-container relative size-full h-auto w-sm gap-0 overflow-visible rounded-md p-0",
       className
     )}
     {...props}

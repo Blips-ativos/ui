@@ -15,6 +15,10 @@ import {
 
 const dia = 1000 * 60 * 60 * 24;
 
+// Meio-dia (UTC) de hoje. Arredondar ao dia faz servidor e cliente chegarem às
+// mesmas datas, sem divergir o atributo dateTime na hidratação.
+const hoje = Math.floor(Date.now() / dia) * dia + dia / 2;
+
 const commits = [
   {
     autor: "Ana Souza",
@@ -39,10 +43,15 @@ const commits = [
   },
 ];
 
+const comDatas = commits.map((c) => ({
+  ...c,
+  data: new Date(hoje - c.dias * dia),
+}));
+
 export default function AiCommitList() {
   return (
     <div className="flex w-full max-w-xl flex-col gap-2">
-      {commits.map((c) => (
+      {comDatas.map((c) => (
         <Commit key={c.hash}>
           <CommitHeader>
             <CommitAuthor>
@@ -55,7 +64,7 @@ export default function AiCommitList() {
                 <CommitSeparator />
                 <span>{c.autor}</span>
                 <CommitSeparator />
-                <CommitTimestamp date={new Date(Date.now() - c.dias * dia)} />
+                <CommitTimestamp date={c.data} />
               </CommitMetadata>
             </CommitInfo>
           </CommitHeader>

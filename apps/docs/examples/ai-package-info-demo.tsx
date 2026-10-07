@@ -27,8 +27,8 @@ export default function AiPackageInfoDemo() {
         </PackageInfoHeader>
         <PackageInfoVersion />
         <PackageInfoDescription>
-          Componentes migrados do Radix para o Base UI. Troque `asChild` por
-          `render` antes de atualizar.
+          Componentes migrados do Radix para o Base UI. Troque{" "}
+          <code>asChild</code> por <code>render</code> antes de atualizar.
         </PackageInfoDescription>
         <PackageInfoContent>
           <PackageInfoDependencies>

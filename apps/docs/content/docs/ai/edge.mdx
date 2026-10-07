@@ -60,8 +60,8 @@ escolhidos pelo `type` de cada aresta:
 - **`Edge.Temporary`** — curva tracejada fina na cor `--ring`. Use para caminhos possíveis, ainda não
   percorridos, ou ligações provisórias.
 
-O módulo não tem `"use client"` de propósito: `Edge` é um objeto, e um Server Component pode montar o
-`edgeTypes` com `Edge.Animated`. As arestas em si só rodam dentro do canvas.
+Monte o `edgeTypes` (e o `Canvas`) num componente cliente (`"use client"`): ele guarda funções, que não
+atravessam a fronteira de um Server Component para o `<ReactFlow>`. As arestas só rodam dentro do canvas.
 
 ## Referência da API
 

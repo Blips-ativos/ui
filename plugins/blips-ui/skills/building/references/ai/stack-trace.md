@@ -52,6 +52,9 @@ Nenhum além da @blips/ai (usa `Button` e `Collapsible` da @blips/ui e
 spec da fase 2 citá-lo junto do terminal: o arquivo não importa o pacote (nem
 no upstream). Códigos de cor ANSI no trace aparecem crus. O componente não
 importa `ai`.
+Se o seu código usar tipos do AI SDK, `ai` é peer opcional só de tipos
+(sempre `import type`, sem runtime): num projeto TypeScript, instale como
+**devDependency** (`pnpm add -D ai`), porque a @blips/ai publica o fonte `.tsx`.
 
 ```bash
 pnpm add @blips/ai
