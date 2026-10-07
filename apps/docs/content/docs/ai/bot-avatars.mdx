@@ -1,0 +1,122 @@
+---
+title: Bot Avatars
+description: Avatar animado de agente — um corpinho com olhos que pisca, olha para o ponteiro e mostra se o agente está disponível, trabalhando ou inativo.
+---
+
+<ComponentPreview name="ai-bot-avatars-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `bot-avatars` não exige peer opcional: o código do pacote vem copiado dentro do `@blips/ai` (ele não é
+publicado no npm). Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { BlipsBotAvatar } from "@blips/ai/fx/bot-avatars"
+```
+
+```tsx
+<div className="flex items-start gap-3">
+  <BlipsBotAvatar aria-label="Salvador" state={respondendo ? "working" : "default"} />
+  <p>Encontrei o contrato do cliente.</p>
+</div>
+```
+
+O avatar é um `<canvas>`: no servidor sai o canvas vazio, já no tamanho certo, e o desenho e a animação só
+começam no cliente. Os padrões Blips: corpo no amarelo da marca (`--primary`, #FCBA28) na cor exata, tamanho
+`32` (densidade mira), sombreamento `smooth` (vetorial, aparece na hora) e sem os pulos ociosos que o
+original dá a cada ~8 segundos — o estado `working` continua pulando.
+
+Qualquer prop explícita vence o padrão, e `color` vence `tone`. O `BotAvatar` original também é exportado,
+sem padrões:
+
+```tsx
+import { BotAvatar } from "@blips/ai/fx/bot-avatars"
+```
+
+## Exemplos
+
+### Estados
+
+`default` é o agente disponível (pisca e olha em volta), `working` pula e gira enquanto processa, `sleeping`
+cochila. Amarre o estado ao status da conversa.
+
+<ComponentPreview name="ai-bot-avatars-states" />
+
+### Tons e tipos
+
+`tone` escolhe a cor do corpo a partir dos tokens da `@blips/ui`; `neutral` usa a cor própria de cada tipo no
+original. Combine `tone` e `type` para dar a cada agente uma identidade fixa.
+
+<ComponentPreview name="ai-bot-avatars-tones" />
+
+### Acessórios e sombreamento
+
+Chapéu, óculos, fone e gravata-borboleta, mais os sombreamentos `plastic` e `fabric` (pelúcia) do original.
+Os dois últimos preparam o material antes de aparecer: use em tamanhos grandes, não numa lista de mensagens.
+
+<ComponentPreview name="ai-bot-avatars-acessorios" />
+
+## Referência da API
+
+### BlipsBotAvatar
+
+Aceita todas as props do `BotAvatar` (e as do `<canvas>`, exceto `color`) mais `tone`. Encaminha `ref` para
+o `<canvas>`.
+
+| Prop             | Tipo                                                                                      | Padrão Blips                     |
+| ---------------- | ----------------------------------------------------------------------------------------- | -------------------------------- |
+| `tone`           | `"primary" \| "chart-1" \| "chart-2" \| "chart-3" \| "chart-4" \| "chart-5" \| "neutral"`  | `"primary"`                      |
+| `type`           | `BotAvatarType` (18 corpos: `clover`, `star`, `droid`, `cat`, `ghost`…)                    | `"clover"`                       |
+| `state`          | `"default" \| "working" \| "sleeping"`                                                    | `"default"`                      |
+| `face`           | `"eyes" \| "mouth"`                                                                       | a do tipo (`eyes`)               |
+| `size`           | `number \| string` (px ou qualquer medida CSS)                                            | `32`                             |
+| `color`          | `string` (`#rgb`, `#rrggbb` ou `rgb()`)                                                   | do `tone`                        |
+| `ink`            | `string`                                                                                  | escura, ou clara em corpo escuro |
+| `brightness`     | `number` (0,5–1,5)                                                                        | `1` com `tone`                   |
+| `saturation`     | `number` (0,5–2,5)                                                                        | `1` com `tone`                   |
+| `shading`        | `"smooth" \| "crisp" \| "flat" \| "plastic" \| "fabric" \| boolean`                       | `"smooth"`                       |
+| `jumpEvery`      | `number` (segundos; `0` desliga)                                                          | `0`                              |
+| `hat`            | `"none" \| "beret" \| "beanie" \| "party" \| "crown"`                                     | `"none"`                         |
+| `glasses`        | `"none" \| "round" \| "square" \| "shades"`                                               | `"none"`                         |
+| `headphones`     | `boolean`                                                                                 | `false`                          |
+| `bowTie`         | `boolean`                                                                                 | `false`                          |
+| `accessoryColor` | `string`                                                                                  | `"#27272b"`                      |
+| `interactive`    | `boolean` (olhos seguem o ponteiro; clique faz pular)                                     | `true`                           |
+| `speed`          | `number`                                                                                  | `1`                              |
+| `paused`         | `boolean`                                                                                 | `false`                          |
+| `seed`           | `number` (0–1, dessincroniza piscadas)                                                    | derivado do id                   |
+| `theme`          | `"auto" \| "dark" \| "light"`                                                             | `"auto"`                         |
+| `path`           | `string` (SVG path na caixa 100×100)                                                      | contorno do tipo                 |
+| `pose`           | `{ yaw?: number; pitch?: number; roll?: number }` (radianos)                              | —                                |
+
+O original tem ainda ajustes finos de luz (`light`, `rim`, `spread`, `shadow`, `highlight`, `depth`,
+`roundness`), da pelúcia (`furLength`, `furDensity`, `furFuzz`, `furClumps`, `furCurl`, `furGravity`,
+`shine`, `sheen`, `backLight`, `lightFront`, `backSoftness`), do giro (`turn`, `whirl*`) e do pulo
+(`jumpHeight`, `jumpTime`, `jumpSpin`, `jumpSquash*` e afins); todos passam direto.
+
+`color` não aceita `var()` nem `oklch()`; por isso o `tone` resolve os tokens para hex (`BLIPS_BOT_TONES`).
+`BLIPS_BOT_AVATAR_DEFAULTS` exporta os padrões. Também são exportados `botAvatarTypes`, `botAvatarPresets`,
+`botAvatarPalette`, `botAvatarFaces`, `botAvatarStates` e os tipos `BotAvatarProps`, `BotAvatarType`,
+`BotAvatarState`, `BotAvatarFace`, `BotAvatarShading`, `BotAvatarHat`, `BotAvatarGlasses`, `BlipsBotTone` e
+`BlipsBotAvatarProps`.
+
+Passe `aria-label` com o nome do agente: sem ele, o canvas (`role="img"`) recebe o rótulo padrão do pacote,
+em inglês (`Clover bot, idle`). Com `prefers-reduced-motion`, o avatar fica parado na pose do estado.
+
+## Origem
+
+Envolve o pacote [bot-avatars](https://github.com/Jakubantalik/Libraries.dev) do
+[libraries.dev](https://libraries.dev) (MIT). Como não está no npm, o código fica copiado sem modificação em
+`src/vendor/bot-avatars` do `@blips/ai`; a Blips acrescenta a prop `tone` e os padrões de cor, tamanho,
+sombreamento e pulo.

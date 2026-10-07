@@ -39,6 +39,7 @@ Não existe barrel: importe cada componente pelo subpath (`@blips/ai/components/
 | `@rive-app/react-webgl2` | `persona` |
 | `react-jsx-parser` | `jsx-preview` |
 | `ansi-to-react` | `terminal` |
+| `three` | `img-fx` |
 | `ai` | só tipos (`UIMessage`, `ToolUIPart`…), nenhum código de runtime. Como o pacote publica o fonte `.tsx`, em projetos TypeScript instale como devDependency: `pnpm add -D ai` |
 
 ### Estilos do Streamdown
@@ -64,4 +65,12 @@ ou de um backend próprio, como o AgentOS do Agno — fica no seu app.
 
 Os componentes de `components/` são adaptados do [AI Elements](https://github.com/vercel/ai-elements)
 (Apache-2.0, Vercel); os de `fx/` envolvem pacotes do [libraries.dev](https://github.com/Jakubantalik/Libraries.dev)
-(MIT). O pacote publica `LICENSE` e `THIRD_PARTY_NOTICES.md`.
+(MIT, Jakub Antalik). O pacote publica `LICENSE` e `THIRD_PARTY_NOTICES.md`.
+
+- `border-beam`, `thinking-orbs`, `liquid-gooey`, `metal-fx` e `img-fx` entram como dependências npm e carregam
+  a própria licença.
+- `voice-glow` e `bot-avatars` não estão publicados no npm: vêm copiados sem modificação do commit `9f59769` do
+  libraries.dev em `src/vendor/`, cada um com o `LICENSE` MIT original e um `README.md` de origem. Não há nada a
+  instalar para eles.
+- O `metal-fx` embute shaders da [Paper Shaders](https://github.com/paper-design/shaders) (Paper Design, Apache-2.0);
+  o `NOTICE` correspondente viaja dentro do próprio pacote npm `metal-fx`.

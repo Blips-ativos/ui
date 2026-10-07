@@ -34,5 +34,9 @@ export default defineConfig({
     /^media-chrome(\/.*)?$/,
     "react-jsx-parser",
     "ansi-to-react",
+    "liquid-gooey",
+    "metal-fx",
+    "img-fx",
+    /^three(\/.*)?$/,
   ],
 });

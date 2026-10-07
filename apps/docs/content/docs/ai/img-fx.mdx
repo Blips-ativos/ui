@@ -1,0 +1,135 @@
+---
+title: Image FX
+description: Mosaico animado em WebGL que ocupa o lugar de uma imagem enquanto ela é gerada, e a revela quando fica pronta.
+---
+
+<ComponentPreview name="ai-img-fx-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai three
+```
+
+O pacote `img-fx` já vem como dependência do `@blips/ai`, mas ele desenha com WebGL pelo `three`, que é
+**peer exigido** deste efeito (opcional no `@blips/ai`, `>=0.149.0`): instale-o no app. Importe o CSS
+depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { BlipsImageGeneration } from "@blips/ai/fx/img-fx"
+```
+
+```tsx
+<BlipsImageGeneration images={["/geradas/capa.png"]} autoReveal>
+  <div className="size-64 rounded-xl border bg-card" />
+</BlipsImageGeneration>
+```
+
+O `BlipsImageGeneration` envolve um único filho, que define o tamanho e o arredondamento do efeito: o
+mosaico é pintado por cima dele. As imagens de `images` são reveladas por cima do mosaico — em ciclo com
+`autoReveal`, ou sob comando pelo `ref`.
+
+Os padrões Blips re-tingem a paleta cinza dos presets para o amarelo da marca no tema escuro e para âmbar
+(`--chart-4`) no claro, usam o token `--card` da `@blips/ui` como fundo e deixam as células 25% menores
+(`pixelScale` `0.75`), para a densidade mira. O tema segue a classe `.dark` (ou `data-theme`) no `<html>`
+e é resolvido de modo seguro para SSR: no servidor sai só o contêiner, e o WebGL liga no cliente.
+
+Qualquer prop explícita vence o padrão, e `colors` vence `tone`. O `ImageGeneration` original também é
+exportado, sem padrões:
+
+```tsx
+import { ImageGeneration } from "@blips/ai/fx/img-fx"
+```
+
+## Exemplos
+
+### Presets
+
+`pixels-organic` e `pixels-mechanic` são mosaicos de pixels com movimentos diferentes; `sweep-gradient`
+é uma faixa diagonal com cintilação por célula, a leitura mais direta de "gerando".
+
+<ComponentPreview name="ai-img-fx-presets" />
+
+### Tons
+
+`tone="neutral"` mantém a paleta cinza do original, com o fundo da `@blips/ui`.
+
+<ComponentPreview name="ai-img-fx-tones" />
+
+### Revelar sob comando
+
+Passe um `ref` para controlar a revelação a partir do fluxo do app — por exemplo, quando a ferramenta de
+geração de imagem do agente devolve o resultado:
+
+```tsx
+const ref = useRef<ImageGenerationHandle>(null)
+
+// imagem pronta: revela e mantém visível
+ref.current?.triggerReveal({ hold: "manual" })
+
+// pedir outra: a imagem atual se desfaz no mosaico e a próxima entra
+ref.current?.triggerRegenerate({ durationMs: 3000 })
+
+// descartar: volta ao mosaico
+ref.current?.triggerHide()
+```
+
+`triggerReveal` e `triggerRegenerate` não fazem nada sem imagens em `images`. A amostragem de cor do
+`triggerRegenerate` exige imagens da mesma origem (ou com CORS); sem isso, usa a paleta do preset.
+
+## Referência da API
+
+### BlipsImageGeneration
+
+Aceita todas as props do `ImageGeneration` (e as da `<div>`, exceto `children`, que é obrigatório).
+Encaminha o `ref` como `ImageGenerationHandle`.
+
+| Prop                 | Tipo                                                      | Padrão Blips                     |
+| -------------------- | --------------------------------------------------------- | -------------------------------- |
+| `children`           | `ReactNode`                                               | obrigatório                      |
+| `tone`               | `"primary" \| "neutral"`                                  | `"primary"`                      |
+| `preset`             | `"pixels-organic" \| "pixels-mechanic" \| "sweep-gradient"` | `"pixels-organic"`             |
+| `theme`              | `"auto" \| "dark" \| "light"`                             | tema do documento                |
+| `pixelScale`         | `number`                                                  | `0.75`                           |
+| `strength`           | `number` (0–1)                                            | `0.9`                            |
+| `cardBg`             | `string` (cor CSS)                                        | `--card` (`#ffffff` / `#171717`) |
+| `colors`             | `(string \| null \| undefined)[]` (até 7)                 | paleta Blips do preset           |
+| `images`             | `string \| string[]`                                      | `[]`                             |
+| `autoReveal`         | `boolean`                                                 | `false`                          |
+| `revealDelayRange`   | `[number, number]` (segundos)                             | `[2, 4]`                         |
+| `revealInitialDelay` | `number \| [number, number]` (segundos)                   | 0 a 1,5 s aleatório              |
+| `revealHoldMs`       | `number \| [number, number]`                              | `2000`                           |
+| `revealFadeOutMs`    | `number`                                                  | `300`                            |
+| `borderRadius`       | `number` (px)                                             | lido do filho                    |
+| `paused`             | `boolean`                                                 | `false`                          |
+| `onCycle`            | `(event: { phase: CyclePhase; src: string \| null }) => void` | —                                |
+| `excludeSrcs`        | `() => string[] \| Set<string> \| null \| undefined`      | —                                |
+
+### ImageGenerationHandle
+
+| Método              | Descrição                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| `triggerReveal`     | Revela uma imagem. `{ hold: "manual" }` a mantém visível até `triggerHide()`.              |
+| `triggerHide`       | Esconde a imagem revelada e volta ao mosaico.                                              |
+| `triggerRegenerate` | Desfaz a imagem atual no mosaico e revela a próxima. Opções `durationMs`, `tintFromImage`, `autoReveal`. |
+| `isImageActive`     | `true` enquanto há imagem sobre o mosaico.                                                 |
+| `element`           | A `<div>` raiz.                                                                            |
+
+`BLIPS_IMG_FX_DEFAULTS`, `BLIPS_IMG_FX_PALETTES` (paleta por preset e tema, para o `ImageGeneration` cru) e
+`BLIPS_IMG_FX_CARD_BG` exportam os padrões. Também saem os tipos `ImageGenerationProps`,
+`ImageGenerationHandle`, `ImageGenerationPreset`, `ImageGenerationTheme`, `ImageGenerationCycleEvent`,
+`CyclePhase`, `BlipsImgFxTone` e `BlipsImageGenerationProps`, e os ajustes globais `setFrameRate` (padrão
+10 fps) e `setMaxDpr` (padrão `1.25`).
+
+## Origem
+
+Envolve o pacote [img-fx](https://image.jakubantalik.com) do
+[libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT). A Blips acrescenta só os padrões
+(paleta, fundo, tema e tamanho das células); a renderização é a do pacote.

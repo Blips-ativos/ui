@@ -22,8 +22,10 @@ pnpm add @blips/ai
 ```
 
 `@phosphor-icons/react`, `motion`, `use-stick-to-bottom`, `tokenlens`, `nanoid`,
-`class-variance-authority`, `border-beam` e `thinking-orbs` já vêm como
-dependências do pacote. Instale como dependência direta só o que o **código do
+`class-variance-authority`, `border-beam`, `thinking-orbs`, `liquid-gooey`,
+`metal-fx` e `img-fx` já vêm como dependências do pacote (`voice-glow` e
+`bot-avatars` não estão no npm: vêm **copiados** dentro do pacote, em
+`src/vendor/`, então não há nada a instalar para eles). Instale como dependência direta só o que o **código do
 app** importar (ex.: `@phosphor-icons/react` para os ícones das suas telas, que
 a `@blips/ui` já exige do mesmo jeito).
 
@@ -42,7 +44,9 @@ Declare no `package.json` do app os peers de **cada** componente que importar:
 | `components/tool` | `shiki` (usa o `CodeBlock`), `ai` (tipos) |
 | `components/conversation`, `components/confirmation`, `components/context`, `components/prompt-input` | `ai` (tipos) |
 | `components/shimmer`, `components/suggestion`, `components/sources`, `components/chain-of-thought`, `components/inline-citation` | — |
-| `fx/border-beam`, `fx/thinking-orbs` | — |
+| `fx/border-beam`, `fx/thinking-orbs`, `fx/liquid-gooey`, `fx/metal-fx` | — |
+| `fx/img-fx` | `three` (o `img-fx` desenha com Three.js) |
+| `fx/voice-glow`, `fx/bot-avatars` | — (cópias do libraries.dev embutidas no pacote, em `src/vendor/`; nada a instalar) |
 | **Fluxo e canvas** | |
 | `components/canvas`, `components/node`, `components/edge`, `components/connection`, `components/controls`, `components/panel`, `components/toolbar` | `@xyflow/react` **+ o app importa `@xyflow/react/dist/style.css`** (ver seção 3) |
 | **Voz e mídia** | |
@@ -66,7 +70,7 @@ Faixas aceitas (peerDependencies do pacote): `streamdown ^2.7.0`,
 `@streamdown/code ^2`, `@streamdown/math ^1`, `@streamdown/mermaid ^1`,
 `@streamdown/cjk ^1`, `shiki ^4`, `@xyflow/react ^12`, `media-chrome ^4`,
 `@rive-app/react-webgl2 ^4`, `react-jsx-parser ^2`, `ansi-to-react ^6`
-(BSD-3-Clause), `ai >=6`.
+(BSD-3-Clause), `ai >=6`, `three >=0.149.0`.
 
 O import do peer é **estático** no arquivo do componente: quem importa o
 componente precisa do peer, mesmo sem usar a parte que depende dele (ex.:

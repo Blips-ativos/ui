@@ -55,7 +55,12 @@
     "./components/voice-selector": "./src/components/voice-selector.tsx",
     "./components/web-preview": "./src/components/web-preview.tsx",
     "./fx/border-beam": "./src/fx/border-beam.tsx",
+    "./fx/bot-avatars": "./src/fx/bot-avatars.tsx",
+    "./fx/img-fx": "./src/fx/img-fx.tsx",
+    "./fx/liquid-gooey": "./src/fx/liquid-gooey.tsx",
+    "./fx/metal-fx": "./src/fx/metal-fx.tsx",
     "./fx/thinking-orbs": "./src/fx/thinking-orbs.tsx",
+    "./fx/voice-glow": "./src/fx/voice-glow.tsx",
     "./styles.css": "./styles.css",
     "./package.json": "./package.json"
   },
@@ -86,7 +91,8 @@
     "react-dom": "^19.0.0",
     "react-jsx-parser": "^2.0.0",
     "shiki": "^4.0.0",
-    "streamdown": "^2.7.0"
+    "streamdown": "^2.7.0",
+    "three": ">=0.149.0"
   },
   "peerDependenciesMeta": {
     "@rive-app/react-webgl2": {
@@ -124,12 +130,18 @@
     },
     "streamdown": {
       "optional": true
+    },
+    "three": {
+      "optional": true
     }
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
     "border-beam": "^1.4.1",
     "class-variance-authority": "^0.7.1",
+    "img-fx": "^0.5.1",
+    "liquid-gooey": "^0.2.2",
+    "metal-fx": "^2.0.11",
     "motion": "^14.0.0",
     "nanoid": "^6.0.2",
     "thinking-orbs": "^0.3.2",
@@ -155,6 +167,7 @@
     "@streamdown/mermaid": "^1.0.3",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.186.0",
     "@xyflow/react": "^12.12.0",
     "ai": "^7.0.128",
     "ansi-to-react": "^6.2.6",
@@ -165,6 +178,7 @@
     "shiki": "^4.5.0",
     "streamdown": "^2.7.0",
     "tailwindcss": "^4.0.0",
+    "three": "^0.186.1",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2"
   }

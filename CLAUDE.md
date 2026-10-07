@@ -21,6 +21,10 @@ pnpm monorepo. Components mirror shadcn/ui on **Base UI** primitives
   `@blips/ui/globals.css`. Arquivo portado começa com cabeçalho de origem;
   licença `MIT AND Apache-2.0` com `THIRD_PARTY_NOTICES.md`. Specs em
   `docs/superpowers/specs/2026-10-06-blips-ai-fase-*.md`.
+  `packages/ai/src/vendor/` (voice-glow, bot-avatars) é cópia **sem modificação**
+  do libraries.dev (fora do npm), com `LICENSE` e `README.md` de origem, excluída
+  do Biome em `biome.json`: não edite, atualize trocando a pasta inteira; as
+  adaptações Blips ficam nos wrappers em `src/fx/`.
 - `packages/tailwind-config/` — `@blips/tailwind-config`, shared Tailwind v4 config.
 - `apps/docs/` — fumadocs documentation site.
 - `plugins/` — Claude Code plugin marketplace (`blips-ui`); not app code.

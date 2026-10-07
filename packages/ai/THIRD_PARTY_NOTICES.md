@@ -259,3 +259,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+As cópias ficam em `src/vendor/voice-glow/` (versão 0.3.0) e `src/vendor/bot-avatars/` (versão 0.2.2), tiradas do
+commit `9f59769` do upstream sem modificação (exceto a primeira linha `// @ts-nocheck` em três arquivos do
+bot-avatars, documentada no README da pasta). Cada pasta traz o `LICENSE` MIT original e um `README.md` com origem,
+versão e commit; como `src/` é publicado no npm, as licenças viajam junto com o código copiado.
+
+### Paper Shaders (via metal-fx) — Apache License 2.0
+
+O `metal-fx` embute shaders da [Paper Design](https://github.com/paper-design/shaders) (Paper Shaders, Apache-2.0):
+o fragment shader `liquidMetal`, inlined sem modificação no bundle, e o vertex shader de dimensionamento, copiado
+literalmente. Esse código não é copiado para o `@blips/ai`: chega pela dependência npm `metal-fx`, cujo pacote
+publicado inclui o arquivo `NOTICE` exigido pela Apache-2.0 (Copyright (c) Paper Design, Inc.). O texto integral da
+Apache License 2.0 está na seção do AI Elements acima.

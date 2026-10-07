@@ -114,7 +114,7 @@ Pacote à parte, `@blips/ai`, que **compõe** a @blips/ui v3.x (exige `@blips/ui
 apresentacionais: recebem `parts`/`state`/`status` prontos, e o mapeamento do
 AI SDK ou de eventos próprios (ex.: AgentOS do Agno) fica no app. Alguns exigem
 peers opcionais (Streamdown, Shiki, `@xyflow/react`, `media-chrome`,
-`@rive-app/react-webgl2`, `react-jsx-parser`, `ansi-to-react`, `ai`): cada
+`@rive-app/react-webgl2`, `react-jsx-parser`, `ansi-to-react`, `ai`, `three`): cada
 reference diz quais. Os componentes de canvas exigem ainda que o app importe
 `@xyflow/react/dist/style.css` uma vez (a @blips/ai não importa CSS de peer), e
 o `jsx-preview` exige o override `pnpm.overrides`
@@ -144,6 +144,11 @@ Para montar a tela inteira, comece por [`components/ai-chat.md`](components/ai-c
 | InlineCitation | `@blips/ai/components/inline-citation` | [references/ai/inline-citation.md](references/ai/inline-citation.md) | Citação no meio do texto com cartão e carrossel de fontes |
 | BorderBeam | `@blips/ai/fx/border-beam` | [references/ai/border-beam.md](references/ai/border-beam.md) | Feixe animado na borda (ex.: prompt enquanto o agente trabalha) |
 | ThinkingOrbs | `@blips/ai/fx/thinking-orbs` | [references/ai/thinking-orbs.md](references/ai/thinking-orbs.md) | Orbe animado pequeno (escala de texto) de "agente pensando" |
+| LiquidGooey | `@blips/ai/fx/liquid-gooey` | [references/ai/liquid-gooey.md](references/ai/liquid-gooey.md) | Superfícies que se fundem como líquido (menus, grupos de avatares, indicador de aba que escorre) com texto e sombras nítidos |
+| MetalFx | `@blips/ai/fx/metal-fx` | [references/ai/metal-fx.md](references/ai/metal-fx.md) | Anel de "metal líquido" em WebGL2 em volta de botão, chip ou ícone de destaque (ex.: ação de IA); sem WebGL2 renderiza só o filho |
+| ImgFx | `@blips/ai/fx/img-fx` | [references/ai/img-fx.md](references/ai/img-fx.md) | Cartão de "gerando imagem": mosaico WebGL de carregamento que revela imagens (peer `three`) |
+| VoiceGlow | `@blips/ai/fx/voice-glow` | [references/ai/voice-glow.md](references/ai/voice-glow.md) | Brilho que reage à voz (microfone ou nível de áudio do agente) em interface de conversa por voz |
+| BotAvatars | `@blips/ai/fx/bot-avatars` | [references/ai/bot-avatars.md](references/ai/bot-avatars.md) | Avatar de robô animado em canvas, com estados e rostos, para identificar o agente sem asset externo |
 | **Fluxo e canvas (peer `@xyflow/react` + o app importa `@xyflow/react/dist/style.css`)** | | | |
 | Canvas | `@blips/ai/components/canvas` | [references/ai/canvas.md](references/ai/canvas.md) | Área de fluxo (React Flow) com os padrões da Blips e rótulos de acessibilidade em pt-BR (`canvasAriaLabelConfig`): raiz dos demais componentes de canvas |
 | Node | `@blips/ai/components/node` | [references/ai/node.md](references/ai/node.md) | Nó de fluxo: `Card` da @blips/ui com handles de entrada/saída, para custom nodes |
