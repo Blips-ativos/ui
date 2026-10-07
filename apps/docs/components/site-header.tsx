@@ -68,18 +68,18 @@ export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
               key={item.href}
               variant="ghost"
               size="sm"
-              asChild
-              className="px-2.5"
+              nativeButton={false}
+              render={
+                <Link
+                  href={item.href}
+                  data-active={pathname.startsWith(item.match)}
+                />
+              }
+              className={cn(
+                "px-2.5 text-foreground/70 transition-colors hover:text-foreground data-[active=true]:text-foreground data-[active=true]:font-medium"
+              )}
             >
-              <Link
-                href={item.href}
-                data-active={pathname.startsWith(item.match)}
-                className={cn(
-                  "text-foreground/70 transition-colors hover:text-foreground data-[active=true]:text-foreground data-[active=true]:font-medium"
-                )}
-              >
-                {item.label}
-              </Link>
+              {item.label}
             </Button>
           ))}
         </nav>
@@ -97,15 +97,22 @@ export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
               ⌘K
             </kbd>
           </Button>
-          <Button variant="ghost" size="icon" className="size-8" asChild>
-            <a
-              href="https://github.com/Blips-ativos/ui"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-            >
-              <GitHubIcon className="size-4" />
-            </a>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            nativeButton={false}
+            render={
+              // biome-ignore lint/a11y/useAnchorContent: o conteúdo vem do children do Button
+              <a
+                href="https://github.com/Blips-ativos/ui"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+              />
+            }
+          >
+            <GitHubIcon className="size-4" />
           </Button>
           <ThemeToggle />
         </div>

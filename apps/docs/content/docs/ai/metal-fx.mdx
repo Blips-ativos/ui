@@ -1,0 +1,154 @@
+---
+title: Metal FX
+description: Anel de metal líquido animado em WebGL em volta de botões e selos, para destacar a ação de IA principal da tela.
+---
+
+<ComponentPreview name="ai-metal-fx-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `metal-fx` não exige peer opcional: o pacote `metal-fx` já vem como dependência do `@blips/ai`.
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { BlipsMetalFx } from "@blips/ai/fx/metal-fx"
+```
+
+```tsx
+<BlipsMetalFx>
+  <Button className="rounded-full">Ativar o assistente</Button>
+</BlipsMetalFx>
+```
+
+O `BlipsMetalFx` envolve um único filho, mede o tamanho e lê o `border-radius` dele, e pinta o anel por
+cima sem bloquear o clique. Os padrões Blips: preset `gold` com a tinta do shader trocada pelo amarelo da
+marca (`#FCBA28`), intensidade `0.9` e tema seguindo a classe `.dark` da `@blips/ui` no `<html>` — o
+`theme="auto"` do original só olha `prefers-color-scheme`.
+
+O efeito exige WebGL2. No servidor sai um contêiner transparente e o WebGL só liga no cliente, depois da
+hidratação; em navegador sem WebGL2 o filho aparece sem o anel.
+
+Qualquer prop explícita vence o padrão. Os componentes originais também são exportados, sem padrões:
+
+```tsx
+import { MetalBadge, MetalFx, MetalText } from "@blips/ai/fx/metal-fx"
+```
+
+### A tinta da marca é global
+
+O `metal-fx` usa **um único** contexto WebGL e um único preset para a página inteira. Por isso, com um
+componente Blips montado, todo `MetalFx` da página (inclusive o cru) sai na tinta da marca. Quando o
+último componente Blips desmonta, a tinta é solta: os `MetalFx` montados depois já nascem com o próprio
+`preset`, mas um cru que continua montado só volta ao dele quando o `preset` ou o `theme` dele muda (ou ao
+remontar), porque o original não repinta na hora. Para usar o preset do original, passe
+`brandTint={false}` em **todos** os componentes da página.
+
+## Exemplos
+
+### Variantes e reflexo
+
+`button` é o anel fino de pílula; `circle` é o anel mais grosso para botão de ícone, como o enviar do
+prompt. `reflectionTargets` recebe refs de elementos vizinhos, que ganham um reflexo suave do metal (só
+no tema escuro).
+
+<ComponentPreview name="ai-metal-fx-variants" />
+
+### Texto e selo
+
+`BlipsMetalText` põe o metal dentro das letras, com fonte e cor dos tokens da `@blips/ui` por padrão.
+`BlipsMetalBadge` é o selo de novidade, com o rótulo `Novo`.
+
+<ComponentPreview name="ai-metal-fx-text" />
+
+## Referência da API
+
+### BlipsMetalFx
+
+Aceita todas as props do `MetalFx` (e as da `<div>`, exceto `children`, que é obrigatório) mais
+`brandTint`. Encaminha `ref` para a `<div>` raiz.
+
+| Prop                  | Tipo                                        | Padrão Blips                       |
+| --------------------- | ------------------------------------------- | ---------------------------------- |
+| `children`            | `ReactNode`                                 | obrigatório                        |
+| `brandTint`           | `boolean`                                   | `true`                             |
+| `variant`             | `"button" \| "circle"`                      | `"button"`                         |
+| `preset`              | `"chromatic" \| "silver" \| "gold"`         | `"gold"` (vale com `brandTint={false}`) |
+| `theme`               | `"dark" \| "light" \| "auto"`               | tema do documento                  |
+| `strength`            | `number` (0–1)                              | `0.9`                              |
+| `glowGain`            | `number`                                    | `1`                                |
+| `paused`              | `boolean`                                   | `false`                            |
+| `borderRadius`        | `number` (px)                               | lido do filho                      |
+| `normalizeHostStyles` | `boolean`                                   | `true`                             |
+| `reflectionTargets`   | `ReadonlyArray<MetalFxReflectionTarget>`    | —                                  |
+| `disableGlow`         | `boolean`                                   | `false`                            |
+| `innerShadow`         | `boolean \| { offsetY, blur, alpha, color }` | desligado                         |
+| `shaderScale`         | `number`                                    | da variante (`1.6` / `1.3`)        |
+| `ringCssPx`           | `number` (px)                               | da variante (`1` / `2`)            |
+| `scale`               | `number`                                    | `1`                                |
+| `mask`                | `MaskFn`                                    | —                                  |
+| `glowMode`            | `"mask" \| "ring"`                          | `"mask"`                           |
+
+### BlipsMetalText
+
+Aceita todas as props do `MetalText`; `font` e `color`, obrigatórias no original, aqui são opcionais.
+
+| Prop                | Tipo                                     | Padrão Blips                                         |
+| ------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| `children`          | `string`                                 | obrigatório                                          |
+| `font`              | `string` (shorthand CSS `font`)          | `"600 24px/1.2 var(--font-sans, Inter), sans-serif"` |
+| `color`             | `string`                                 | `"var(--foreground)"`                                |
+| `brandTint`         | `boolean`                                | `true`                                               |
+| `theme`             | `"dark" \| "light" \| "auto"`            | tema do documento                                    |
+| `strength`          | `number`                                 | `1`                                                  |
+| `metalOpacity`      | `number` (0–1)                           | `0.62`                                               |
+| `shaderScale`       | `number`                                 | `2.8`                                                |
+| `glow`              | `boolean`                                | `false`                                              |
+| `glowGain`          | `number`                                 | `2.5`                                                |
+| `innerShadow`       | `TextInnerShadow \| null`                | do upstream                                          |
+| `reflectionTargets` | `ReadonlyArray<MetalFxReflectionTarget>` | —                                                    |
+| `className`         | `string`                                 | —                                                    |
+
+### BlipsMetalBadge
+
+Aceita todas as props do `MetalBadge`.
+
+| Prop                | Tipo                                     | Padrão Blips      |
+| ------------------- | ---------------------------------------- | ----------------- |
+| `children`          | `string`                                 | `"Novo"`          |
+| `brandTint`         | `boolean`                                | `true`            |
+| `theme`             | `"dark" \| "light" \| "auto"`            | tema do documento |
+| `scale`             | `number`                                 | `1` (45×25 px)    |
+| `strength`          | `number`                                 | `1`               |
+| `metalOpacity`      | `number` (0–1)                           | `0.8`             |
+| `shaderScale`       | `number`                                 | `1.6`             |
+| `core`              | `MetalBadgeCore`                         | do upstream       |
+| `gradient`          | `number` (0–1)                           | `0`               |
+| `glow`              | `number` (0–1)                           | `0.41`            |
+| `textColor`         | `string`                                 | `"#323232"`       |
+| `reflectionTargets` | `ReadonlyArray<MetalFxReflectionTarget>` | —                 |
+
+`BLIPS_METAL_FX_DEFAULTS`, `BLIPS_METAL_TEXT_DEFAULTS` e `BLIPS_METAL_PRESET` (os modos claro e escuro da
+tinta da marca) exportam os padrões. Também são reexportados do original `PRESETS`,
+`METAL_TEXT_DEFAULTS`, `METAL_BADGE_DEFAULTS`, `isMetalFxSupported`, os hooks `useMetalBend` e
+`useMetalTextReflection` e os tipos `MetalFxProps`, `MetalFxVariant`, `MetalFxPreset`, `MetalFxTheme`,
+`MetalFxReflectionTarget`, `MetalBadgeCore`, `TextInnerShadow`, `PresetMode`, `PresetName` e
+`PresetTheme`.
+
+## Origem
+
+Envolve o pacote [metal-fx](https://metal.jakubantalik.com) do
+[libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT). O `metal-fx` embute o shader
+`liquidMetal` da [Paper Shaders](https://github.com/paper-design/shaders) (Apache-2.0), cujo `NOTICE`
+viaja no próprio pacote. A Blips acrescenta só os padrões (tinta da marca, intensidade e tema); a
+renderização é a do pacote.

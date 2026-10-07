@@ -19,16 +19,48 @@ import { Separator } from "@blips/ui/components/separator"
 
 ```tsx
 <Separator />
+<Separator orientation="vertical" />
 ```
 
 ## Exemplos
 
-### Exemplo
+### Menu vertical
 
-Separadores horizontais e verticais para dividir conteúdo e itens em linha.
+Separadores verticais entre grupos de conteúdo. O separador vertical estica até a altura da linha (`self-stretch`).
 
-<ComponentPreview name="separator-demo" />
+<ComponentPreview name="separator-vertical-menu" />
+
+### Em lista
+
+Separadores horizontais entre itens de uma lista de dados.
+
+<ComponentPreview name="separator-list" />
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI Separator](https://www.radix-ui.com/docs/primitives/components/separator#api-reference).
+### Separator
+
+Aceita todas as props do `Separator` do Base UI.
+
+| Prop          | Tipo                         | Padrão         |
+| ------------- | ---------------------------- | -------------- |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` |
+| `className`   | `string \| (state) => string` | -             |
+| `render`      | `React.ReactElement \| (props, state) => React.ReactElement` | - |
+
+Consulte a documentação do [Base UI Separator](https://base-ui.com/react/components/separator).
+
+## Migrando da v2
+
+- **`decorative` foi removida.** No Base UI o separador é sempre semântico (`role="separator"` + `aria-orientation`). Para um separador puramente visual, passe `role="none"` ou `aria-hidden`.
+- **Atributos de estado**: o Base UI continua emitindo `data-orientation`, então `data-[orientation=vertical]:` segue funcionando. A lib ganhou as variantes `data-horizontal:` / `data-vertical:` como atalho para esses seletores.
+- **Vertical** usa `self-stretch` em vez de `h-full`.
+- **`asChild` não existe**: use `render`.
+
+```tsx
+// v2
+<Separator decorative className="data-[orientation=vertical]:mx-2" />
+
+// v3
+<Separator role="none" className="data-vertical:mx-2" />
+```

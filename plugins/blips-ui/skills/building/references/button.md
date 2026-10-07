@@ -2,320 +2,157 @@
 
 Import: `@blips/ui/components/button`
 
-## Sub-components
+Botão com variantes CVA. Exports: `Button`, `buttonVariants`.
 
-| Component | Description |
-|---|---|
-| `Button` | Primary button component with CVA variants, loading state, and `asChild` support. |
+## Notas comuns
 
-Also exports `buttonVariants` for use with other elements (e.g., `AlertDialogAction`).
+- `variant`: `default` (padrão), `outline`, `secondary`, `ghost`, `destructive`, `link`.
+- `size`: `default` (padrão), `xs`, `sm`, `lg`, `icon`, `icon-xs`, `icon-sm`, `icon-lg`.
+- **Não existe prop `loading`.** Estado de carregamento: `disabled` + `<Spinner />` dentro do botão (ver exemplos).
+- Botão só de ícone (`size="icon*"`) precisa de `aria-label`.
+- Svgs são dimensionados automaticamente por `[&_svg:not([class*='size-'])]:size-*` conforme o `size`.
+- `buttonVariants({ variant, size })` aplica o visual a outro elemento (`<a>`, `Link`).
+- Ícones Phosphor, nunca lucide.
 
-## Props & Variants
+> A API difere entre as versões (`render`/`nativeButton` vs `asChild`; `type` padrão; densidade). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-### Button
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
+Primitiva: `@base-ui/react/button`. Props: `ButtonPrimitive.Props & VariantProps<typeof buttonVariants>`.
+
+| Prop | Tipo | Padrão | Descrição |
 |---|---|---|---|
-| `variant` | `"default" \| "outline" \| "secondary" \| "ghost" \| "destructive" \| "link"` | `"default"` | Visual style variant. |
-| `size` | `"default" \| "xs" \| "sm" \| "lg" \| "icon" \| "icon-xs" \| "icon-sm" \| "icon-lg"` | `"default"` | Size variant. |
-| `asChild` | `boolean` | `false` | When `true`, merges props onto child element via Radix `Slot`. |
-| `loading` | `boolean` | `false` | Shows a `Spinner` and disables the button. |
-| `type` | `string` | `"button"` | HTML button type. Defaults to `"button"` (not `"submit"`). |
-| `disabled` | `boolean` | `false` | Disables the button. Also set when `loading` is `true`. |
+| `variant` | ver acima | `"default"` | Visual. |
+| `size` | ver acima | `"default"` | Tamanho. |
+| `render` | `ReactElement \| (props, state) => ReactElement` | — | Troca o elemento (substitui `asChild`). |
+| `nativeButton` | `boolean` | `true` | Passe `false` quando `render` não for um `<button>` (ex.: `<a>`, `Link`). Sem isso o Base UI aplica semântica de botão nativo e avisa no console. |
+| `focusableWhenDisabled` | `boolean` | `false` | Mantém o foco por teclado quando desabilitado. |
+| `type` | `"button" \| "submit" \| "reset"` | `"button"` | **O Base UI define `type="button"`**. Botão de envio de formulário precisa de `type="submit"` explícito. |
+| `className` / `style` | `string` ou função do estado | — | Aceitam função `(state) => …`. |
 
-#### Variant Styles
+Não emite mais `data-variant`/`data-size` (só `data-slot="button"`).
 
-| Variant | Classes |
+Visual base-mira (compacto):
+
+| size | altura / ícone |
 |---|---|
-| `default` | `bg-primary text-primary-foreground hover:bg-primary/80` |
-| `outline` | `border-border backdrop-blur-sm hover:bg-input/50 hover:text-foreground aria-expanded:bg-muted dark:bg-input/30` |
-| `secondary` | `bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary` |
-| `ghost` | `hover:bg-muted hover:text-foreground aria-expanded:bg-muted dark:hover:bg-muted/50` |
-| `destructive` | `bg-destructive/10 text-destructive hover:bg-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30` |
-| `link` | `text-primary underline-offset-4 hover:underline` |
+| `default` | `h-7`, `text-xs/relaxed`, svg `size-3.5` |
+| `xs` | `h-5`, `text-[0.625rem]`, svg `size-2.5` |
+| `sm` | `h-6`, svg `size-3` |
+| `lg` | `h-8`, svg `size-4` |
+| `icon` / `icon-xs` / `icon-sm` / `icon-lg` | `size-7` / `size-5` / `size-6` / `size-8` |
 
-#### Size Styles
-
-| Size | Height | Description |
-|---|---|---|
-| `default` | `h-8` | Standard button, `px-2`, `text-xs/relaxed` |
-| `xs` | `h-5` | Extra small, `px-2`, `text-[0.625rem]`, `rounded-sm` |
-| `sm` | `h-6` | Small, `px-2`, `text-xs/relaxed` |
-| `lg` | `h-8` | Large, `px-2.5`, `text-xs/relaxed` |
-| `icon` | `size-8` | Square icon button, `32px` |
-| `icon-xs` | `size-5` | Extra small icon, `20px`, `rounded-sm` |
-| `icon-sm` | `size-6` | Small icon, `24px` |
-| `icon-lg` | `size-8` | Large icon, `32px` |
-
-**Base classes:** `group/button inline-flex shrink-0 select-none items-center justify-center whitespace-nowrap rounded-md border border-transparent bg-clip-padding font-medium text-xs/relaxed outline-hidden transition-all focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50`
-
-Data attributes set on the element: `data-slot="button"`, `data-variant`, `data-size`.
-
-## Usage
-
-### Basic variants
+`destructive` é tonal (`bg-destructive/10 text-destructive`); `outline` sem `bg-background`/sombra; gap ícone-texto `gap-1`; `translate-y-px` ao clicar. O padding lateral com ícone depende de marcar o ícone com `data-icon="inline-start"` ou `data-icon="inline-end"`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
+import { Button } from "@blips/ui/components/button";
+import { Spinner } from "@blips/ui/components/spinner";
+import { ArrowRightIcon, ArrowUpIcon, PlusIcon } from "@phosphor-icons/react";
+import Link from "next/link";
 
-export function ButtonVariants() {
+export function Botoes({ salvando }: { salvando: boolean }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button>Default</Button>
-      <Button variant="outline">Outline</Button>
-      <Button variant="secondary">Secondary</Button>
-      <Button variant="ghost">Ghost</Button>
-      <Button variant="destructive">Destructive</Button>
-      <Button variant="link">Link</Button>
+      <Button>Salvar</Button>
+      <Button variant="outline">
+        <PlusIcon data-icon="inline-start" />
+        Novo cliente
+      </Button>
+      <Button variant="secondary">
+        Continuar <ArrowRightIcon data-icon="inline-end" />
+      </Button>
+      <Button variant="destructive">Excluir</Button>
+      <Button variant="outline" size="icon" aria-label="Enviar">
+        <ArrowUpIcon />
+      </Button>
+
+      {/* Carregando */}
+      <Button type="submit" disabled={salvando}>
+        {salvando && <Spinner data-icon="inline-start" />}
+        Salvar
+      </Button>
+
+      {/* Link com visual de botão */}
+      <Button variant="link" nativeButton={false} render={<Link href="/painel" />}>
+        Ir para o painel
+      </Button>
     </div>
-  )
+  );
 }
 ```
 
-### Icon button
+`buttonVariants` direto num link (sem trocar o elemento do Button):
 
 ```tsx
-import { ArrowUp } from "@phosphor-icons/react"
-import { Button } from "@blips/ui/components/button"
+import { buttonVariants } from "@blips/ui/components/button";
 
-<Button variant="outline" size="icon" aria-label="Submit">
-  <ArrowUp />
-</Button>
-```
-
-### Loading state
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-
-<Button loading={isPending}>Submit</Button>
-```
-
-### As child (with Next.js Link)
-
-```tsx
-import Link from "next/link"
-import { Button } from "@blips/ui/components/button"
-
-<Button asChild variant="link">
-  <Link href="/dashboard">Go to Dashboard</Link>
-</Button>
-```
-
-### Size variants
-
-```tsx
-<Button size="xs">Extra Small</Button>
-<Button size="sm">Small</Button>
-<Button size="default">Default</Button>
-<Button size="lg">Large</Button>
-```
-
-### Using buttonVariants
-
-```tsx
-import { buttonVariants } from "@blips/ui/components/button"
-
-<a href="/link" className={buttonVariants({ variant: "outline", size: "sm" })}>
-  Styled Link
+<a href="/relatorio" className={buttonVariants({ variant: "outline", size: "sm" })}>
+  Baixar relatório
 </a>
 ```
 
-## Project Notes
+## v2.x — Radix
 
-- Default `type` is `"button"` (not `"submit"`) to prevent accidental form submissions.
-- The `loading` prop automatically disables the button and prepends a `Spinner` component.
-- Uses `radix-ui` `Slot.Root` for the `asChild` pattern (not `@radix-ui/react-slot` directly).
-- The `destructive` variant uses a subtle background (`bg-destructive/10`) rather than a solid destructive color.
-- SVG icons inside buttons are automatically sized via `[&_svg:not([class*='size-'])]:size-*` selectors based on the `size` variant.
-- `data-[icon=inline-start]` and `data-[icon=inline-end]` selectors adjust padding when icons have these data attributes.
+Props: `React.ComponentProps<"button"> & VariantProps & { asChild?: boolean }`. `asChild` usa `Slot` de `@radix-ui/react-slot`.
 
-## All Example Variants
+| Prop | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `variant` | ver acima | `"default"` | Visual. |
+| `size` | ver acima | `"default"` | Tamanho. |
+| `asChild` | `boolean` | `false` | Aplica o visual ao filho único (ex.: `Link`). |
+| `type` | `"button" \| "submit" \| "reset"` | padrão do HTML | Sem `type`, dentro de `<form>` o botão **envia** o formulário. Use `type="button"` em botões que não são de envio. |
 
-### button-demo
+Emite `data-slot="button"`, `data-variant` e `data-size`.
 
-```tsx
-import { ArrowUp } from "@phosphor-icons/react"
+Visual new-york:
 
-import { Button } from "@/registry/new-york-v4/ui/button"
+| size | altura |
+|---|---|
+| `default` | `h-9 px-4 py-2` (`has-[>svg]:px-3`) |
+| `xs` | `h-6 text-xs`, svg `size-3` |
+| `sm` | `h-8` |
+| `lg` | `h-10` |
+| `icon` / `icon-xs` / `icon-sm` / `icon-lg` | `size-9` / `size-6` / `size-8` / `size-10` |
 
-export default function ButtonDemo() {
-  return (
-    <div className="flex flex-wrap items-center gap-2 md:flex-row">
-      <Button variant="outline">Button</Button>
-      <Button variant="outline" size="icon" aria-label="Submit">
-        <ArrowUp />
-      </Button>
-    </div>
-  )
-}
-```
-
-### button-secondary
-
-```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonSecondary() {
-  return <Button variant="secondary">Secondary</Button>
-}
-```
-
-### button-destructive
-
-```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonDestructive() {
-  return <Button variant="destructive">Destructive</Button>
-}
-```
-
-### button-outline
-
-```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonOutline() {
-  return <Button variant="outline">Outline</Button>
-}
-```
-
-### button-ghost
-
-```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonGhost() {
-  return <Button variant="ghost">Ghost</Button>
-}
-```
-
-### button-link
-
-```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonLink() {
-  return <Button variant="link">Link</Button>
-}
-```
-
-### button-with-icon
-
-```tsx
-import { IconGitBranch } from "@tabler/icons-react"
-
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonWithIcon() {
-  return (
-    <Button variant="outline" size="sm">
-      <IconGitBranch /> New Branch
-    </Button>
-  )
-}
-```
-
-### button-loading
-
-```tsx
-import { Button } from "@/registry/new-york-v4/ui/button"
-import { Spinner } from "@/registry/new-york-v4/ui/spinner"
-
-export default function ButtonLoading() {
-  return (
-    <Button size="sm" variant="outline" disabled>
-      <Spinner />
-      Submit
-    </Button>
-  )
-}
-```
-
-### button-icon
-
-```tsx
-import { ArrowCircleUp } from "@phosphor-icons/react"
-
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonIcon() {
-  return (
-    <Button variant="outline" size="icon">
-      <ArrowCircleUp />
-    </Button>
-  )
-}
-```
-
-### button-as-child
+Base `text-sm gap-2`, svg `size-4`. `destructive` é sólido (`bg-destructive text-white`); `outline` tem `bg-background shadow-xs`. Padding com ícone é automático (`has-[>svg]`).
 
 ```tsx
 import Link from "next/link"
+import { ArrowRight, ArrowUp, Plus } from "@phosphor-icons/react"
+import { Button } from "@blips/ui/components/button"
+import { Spinner } from "@blips/ui/components/spinner"
 
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonAsChild() {
+export function Botoes({ salvando }: { salvando: boolean }) {
   return (
-    <Button asChild>
-      <Link href="/login">Login</Link>
-    </Button>
-  )
-}
-```
-
-### button-rounded
-
-```tsx
-import { ArrowUp } from "@phosphor-icons/react"
-
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonRounded() {
-  return (
-    <div className="flex flex-col gap-8">
-      <Button variant="outline" size="icon" className="rounded-full">
+    <div className="flex flex-wrap items-center gap-2">
+      <Button type="button">Salvar rascunho</Button>
+      <Button variant="outline">
+        <Plus />
+        Novo cliente
+      </Button>
+      <Button variant="secondary">
+        Continuar <ArrowRight />
+      </Button>
+      <Button variant="destructive">Excluir</Button>
+      <Button variant="outline" size="icon" aria-label="Enviar">
         <ArrowUp />
+      </Button>
+
+      {/* Carregando */}
+      <Button type="submit" disabled={salvando}>
+        {salvando && <Spinner />}
+        Salvar
+      </Button>
+
+      {/* Link com visual de botão */}
+      <Button asChild variant="link">
+        <Link href="/painel">Ir para o painel</Link>
       </Button>
     </div>
   )
 }
 ```
 
-### button-size
+## Exemplos na docs
 
-```tsx
-import { ArrowUpRight } from "@phosphor-icons/react"
-
-import { Button } from "@/registry/new-york-v4/ui/button"
-
-export default function ButtonSize() {
-  return (
-    <div className="flex flex-col items-start gap-8 sm:flex-row">
-      <div className="flex items-start gap-2">
-        <Button size="sm" variant="outline">
-          Small
-        </Button>
-        <Button size="icon-sm" aria-label="Submit" variant="outline">
-          <ArrowUpRight />
-        </Button>
-      </div>
-      <div className="flex items-start gap-2">
-        <Button variant="outline">Default</Button>
-        <Button size="icon" aria-label="Submit" variant="outline">
-          <ArrowUpRight />
-        </Button>
-      </div>
-      <div className="flex items-start gap-2">
-        <Button variant="outline" size="lg">
-          Large
-        </Button>
-        <Button size="icon-lg" aria-label="Submit" variant="outline">
-          <ArrowUpRight />
-        </Button>
-      </div>
-    </div>
-  )
-}
-```
+`button-demo`, `button-variants`, `button-size`, `button-with-icon`, `button-icon`, `button-loading`, `button-render`, `button-rounded`, `button-invalid`, `button-default`, `button-secondary`, `button-outline`, `button-ghost`, `button-destructive`, `button-link` (v3).

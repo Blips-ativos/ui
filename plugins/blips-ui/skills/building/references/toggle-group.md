@@ -2,382 +2,150 @@
 
 Import: `@blips/ui/components/toggle-group`
 
-## Sub-components
+Conjunto de toggles relacionados: escolha única (alinhamento, visualização) ou
+múltipla (negrito/itálico/sublinhado). Para navegação entre painéis, use Tabs.
 
-- **`ToggleGroup`** - Container for a set of toggle items, built on `@radix-ui/react-toggle-group`. Supports single or multiple selection. Provides variant/size context to child items.
-- **`ToggleGroupItem`** - Individual toggle item within the group. Inherits variant/size from `ToggleGroup` context or accepts its own overrides. Uses `toggleVariants` from the `toggle` component.
+Exports (iguais nas duas versões): `ToggleGroup`, `ToggleGroupItem`.
 
-## Props & Variants
+## Notas comuns
 
-### ToggleGroup Props
+- `variant` e `size` no `ToggleGroup` valem para todos os itens (vêm de `toggleVariants`, veja `toggle.md`).
+- `spacing` (número, escala do Tailwind) controla o espaço entre itens; com `spacing={0}` os itens ficam grudados, com cantos arredondados só nas pontas.
+- Todo `ToggleGroupItem` precisa de `value`; item só com ícone precisa de `aria-label`.
 
-Extends `React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Root>` plus CVA variant props from `toggleVariants`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `type` | `'single' \| 'multiple'` | **required** | Whether one or multiple items can be active |
-| `value` | `string \| string[]` | `undefined` | Controlled value(s). String for `single`, array for `multiple` |
-| `defaultValue` | `string \| string[]` | `undefined` | Default value(s) |
-| `onValueChange` | `(value: string \| string[]) => void` | `undefined` | Callback when value changes |
-| `variant` | `'default' \| 'outline'` | `'default'` | Visual variant applied to all items |
-| `size` | `'default' \| 'sm' \| 'lg'` | `'default'` | Size applied to all items |
-| `disabled` | `boolean` | `false` | Disables all items in the group |
-| `className` | `string` | `undefined` | Additional CSS classes |
+## v3.x — Base UI
 
-### ToggleGroupItem Props
+Primitivas: `@base-ui/react/toggle-group` (raiz) e `@base-ui/react/toggle` (item).
 
-Extends `React.ComponentPropsWithoutRef<typeof ToggleGroupPrimitive.Item>` plus CVA variant props.
+| Prop (ToggleGroup) | Tipo | Padrão | Notas |
+|---|---|---|---|
+| `multiple` | `boolean` | `false` | Sem ele, seleção única. **Não existe `type`.** |
+| `value` / `defaultValue` | `string[]` | — | **Sempre array**, também no modo único (`["bold"]`). |
+| `onValueChange` | `(value: string[], eventDetails) => void` | — | Array também no modo único; vazio = desmarcou. |
+| `spacing` | `number` | **`2`** | Itens separados por padrão; `spacing={0}` gruda. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Repassada à primitiva (setas ↑/↓ no vertical) e usada pela lib para empilhar os itens (`flex-col`) e acertar os cantos com `spacing={0}`. |
+| `loopFocus` | `boolean` | `true` | Substitui `loop`/`rovingFocus` do Radix. |
+| `variant`, `size`, `disabled` | | | |
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `value` | `string` | **required** | Unique value for this item |
-| `variant` | `'default' \| 'outline'` | Inherited from `ToggleGroup` | Override variant for this item |
-| `size` | `'default' \| 'sm' \| 'lg'` | Inherited from `ToggleGroup` | Override size for this item |
-| `disabled` | `boolean` | `false` | Disables this specific item |
-| `aria-label` | `string` | `undefined` | Accessibility label (recommended) |
-| `className` | `string` | `undefined` | Additional CSS classes |
-
-### Variants (inherited from toggleVariants)
-
-| Variant | Description |
-|---------|-------------|
-| `default` | Transparent background, accent on active |
-| `outline` | Bordered, accent on hover/active |
-
-### Sizes (inherited from toggleVariants)
-
-| Size | Dimensions |
-|------|-----------|
-| `default` | `h-8 min-w-8 px-3` |
-| `sm` | `h-9 min-w-9 px-2.5` |
-| `lg` | `h-11 min-w-11 px-5` |
-
-### Container Styles
-
-The `ToggleGroup` root applies: `flex items-center justify-center gap-1`
-
-## Usage
-
-### Multiple Selection (Default)
+Item ligado: `aria-pressed` / `data-pressed`.
 
 ```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
+import {
+  TextAlignCenterIcon,
+  TextAlignLeftIcon,
+  TextAlignRightIcon,
+  TextBIcon,
+  TextItalicIcon,
+  TextUnderlineIcon,
+} from "@phosphor-icons/react";
+import * as React from "react";
 import {
   ToggleGroup,
   ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
+} from "@blips/ui/components/toggle-group";
 
-export default function ToggleGroupDemo() {
+export function Formatacao() {
+  const [alinhamento, setAlinhamento] = React.useState("left");
+
   return (
-    <ToggleGroup variant="outline" type="multiple">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
+    <div className="flex flex-col gap-4">
+      {/* Múltipla */}
+      <ToggleGroup multiple variant="outline" spacing={0} defaultValue={["bold"]}>
+        <ToggleGroupItem value="bold" aria-label="Negrito">
+          <TextBIcon />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="italic" aria-label="Itálico">
+          <TextItalicIcon />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="underline" aria-label="Sublinhado">
+          <TextUnderlineIcon />
+        </ToggleGroupItem>
+      </ToggleGroup>
 
-### Single Selection
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupSingle() {
-  return (
-    <ToggleGroup type="single">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### Outline Variant
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupOutline() {
-  return (
-    <ToggleGroup type="multiple" variant="outline">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### Disabled
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupDisabled() {
-  return (
-    <ToggleGroup type="multiple" disabled>
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-## All Example Variants
-
-### toggle-group-demo
-
-Multiple selection with outline variant.
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupDemo() {
-  return (
-    <ToggleGroup variant="outline" type="multiple">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### toggle-group-disabled
-
-Disabled state for entire group.
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupDisabled() {
-  return (
-    <ToggleGroup type="multiple" disabled>
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### toggle-group-lg
-
-Large size toggle group.
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupLg() {
-  return (
-    <ToggleGroup type="multiple" size="lg">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### toggle-group-outline
-
-Outline variant.
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupOutline() {
-  return (
-    <ToggleGroup type="multiple" variant="outline">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### toggle-group-sm
-
-Small size toggle group (single selection).
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupSm() {
-  return (
-    <ToggleGroup type="single" size="sm">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### toggle-group-single
-
-Single selection mode.
-
-```tsx
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupSingle() {
-  return (
-    <ToggleGroup type="single">
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
-      </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
-      </ToggleGroupItem>
-    </ToggleGroup>
-  )
-}
-```
-
-### toggle-group-spacing
-
-Custom spacing with text labels and custom active colors.
-
-```tsx
-import { Bookmark, Heart, Star } from "@phosphor-icons/react"
-
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@blips/ui/components/toggle-group"
-
-export default function ToggleGroupSpacing() {
-  return (
-    <ToggleGroup type="multiple" variant="outline" spacing={2} size="sm">
-      <ToggleGroupItem
-        value="star"
-        aria-label="Toggle star"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
+      {/* Única, controlada com estado string */}
+      <ToggleGroup
+        value={[alinhamento]}
+        onValueChange={(v) => {
+          if (v[0]) setAlinhamento(v[0]);
+        }}
       >
-        <Star />
-        Star
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="heart"
-        aria-label="Toggle heart"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-red-500 data-[state=on]:*:[svg]:stroke-red-500"
+        <ToggleGroupItem value="left" aria-label="Alinhar à esquerda">
+          <TextAlignLeftIcon />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="center" aria-label="Centralizar">
+          <TextAlignCenterIcon />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="right" aria-label="Alinhar à direita">
+          <TextAlignRightIcon />
+        </ToggleGroupItem>
+      </ToggleGroup>
+    </div>
+  );
+}
+```
+
+### Armadilhas
+
+- `type="single"`/`type="multiple"` não existe: use (ou omita) `multiple`.
+- `value="bold"` (string) não marca nada: use `["bold"]`.
+- Quem vinha da v2 com itens grudados precisa passar `spacing={0}` (o padrão mudou de 0 para 2).
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-toggle-group`.
+
+| Prop (ToggleGroup) | Tipo | Padrão | Notas |
+|---|---|---|---|
+| `type` | `"single" \| "multiple"` | **obrigatório** | |
+| `value` / `defaultValue` | `string` (single) \| `string[]` (multiple) | — | |
+| `onValueChange` | `(value: string \| string[]) => void` | — | No single, `""` quando desmarca. |
+| `spacing` | `number` | **`0`** | Itens grudados por padrão. |
+| `rovingFocus`, `loop`, `orientation`, `variant`, `size`, `disabled` | | | |
+
+Item ligado: `data-state="on" | "off"`.
+
+```tsx
+import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react"
+import * as React from "react"
+import {
+  ToggleGroup,
+  ToggleGroupItem,
+} from "@blips/ui/components/toggle-group"
+
+export function Formatacao() {
+  const [alinhamento, setAlinhamento] = React.useState("left")
+
+  return (
+    <div className="flex flex-col gap-4">
+      <ToggleGroup type="multiple" variant="outline">
+        <ToggleGroupItem value="bold" aria-label="Negrito">
+          <TextB />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="italic" aria-label="Itálico">
+          <TextItalic />
+        </ToggleGroupItem>
+        <ToggleGroupItem value="underline" aria-label="Sublinhado">
+          <TextUnderline />
+        </ToggleGroupItem>
+      </ToggleGroup>
+
+      <ToggleGroup
+        type="single"
+        value={alinhamento}
+        onValueChange={(v) => v && setAlinhamento(v)}
+        spacing={2}
       >
-        <Heart />
-        Heart
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="bookmark"
-        aria-label="Toggle bookmark"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
-      >
-        <Bookmark />
-        Bookmark
-      </ToggleGroupItem>
-    </ToggleGroup>
+        <ToggleGroupItem value="left">Esquerda</ToggleGroupItem>
+        <ToggleGroupItem value="center">Centro</ToggleGroupItem>
+        <ToggleGroupItem value="right">Direita</ToggleGroupItem>
+      </ToggleGroup>
+    </div>
   )
 }
 ```
+
+## Exemplos na docs
+
+`toggle-group-demo`, `toggle-group-single`, `toggle-group-controlled`, `toggle-group-outline`, `toggle-group-spacing`, `toggle-group-size`, `toggle-group-icons`, `toggle-group-vertical`, `toggle-group-disabled` (em `apps/docs/examples/`, escritos para a v3).

@@ -5,7 +5,7 @@ description: Um componente interativo que expande/recolhe um painel.
 
 <ComponentPreview name="collapsible-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -25,13 +25,21 @@ import {
 <Collapsible>
   <CollapsibleTrigger>Posso usar isso no meu projeto?</CollapsibleTrigger>
   <CollapsibleContent>
-    Sim. Livre para uso em projetos pessoais e comerciais. Nenhuma atribuicao
-    necessaria.
+    Sim. Livre para uso em projetos pessoais e comerciais. Nenhuma atribuição
+    necessária.
   </CollapsibleContent>
 </Collapsible>
 ```
 
-## Estado Controlado
+Para usar outro elemento como gatilho, passe-o em `render`:
+
+```tsx
+<CollapsibleTrigger render={<Button variant="ghost" size="icon" />}>
+  <CaretUpDownIcon />
+</CollapsibleTrigger>
+```
+
+## Estado controlado
 
 Use as props `open` e `onOpenChange` para controlar o estado.
 
@@ -44,7 +52,7 @@ export function Example() {
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       <CollapsibleTrigger>Alternar</CollapsibleTrigger>
-      <CollapsibleContent>Conteudo</CollapsibleContent>
+      <CollapsibleContent>Conteúdo</CollapsibleContent>
     </Collapsible>
   )
 }
@@ -52,12 +60,40 @@ export function Example() {
 
 ## Exemplos
 
-### Exemplo
+### Árvore de arquivos
 
-Exemplo padrao com estado controlado e um gatilho para expandir e recolher o conteudo.
+Collapsibles aninhados. O ícone gira com `group-data-panel-open:rotate-90`, lendo o atributo que o trigger recebe quando o painel está aberto.
 
-<ComponentPreview name="collapsible-demo" />
+<ComponentPreview name="collapsible-file-tree" />
 
-## Referencia da API
+### Configurações
 
-Consulte a documentacao do [Radix UI](https://www.radix-ui.com/docs/primitives/components/collapsible#api-reference) para mais informacoes.
+Um painel que revela campos extras, com o ícone do gatilho trocado conforme o estado.
+
+<ComponentPreview name="collapsible-settings" />
+
+## Migrando da v2
+
+- `asChild` no `CollapsibleTrigger` virou `render`.
+- `CollapsibleContent` agora é um `Collapsible.Panel`: `forceMount` virou `keepMounted`, e entrou `hiddenUntilFound`.
+- Atributos de estado: `data-state="open" | "closed"` virou `data-open` / `data-closed` no painel e `data-panel-open` no trigger. Seletores como `group-data-[state=open]:` precisam virar `group-data-panel-open:` (ou `data-open:` no painel).
+- A variável para animar a altura passou de `--radix-collapsible-content-height` para `--collapsible-panel-height`.
+- `onOpenChange` recebe um segundo argumento, `eventDetails`.
+
+```tsx
+// v2
+<CollapsibleTrigger asChild>
+  <Button variant="ghost" className="group">
+    <CaretRight className="group-data-[state=open]:rotate-90" />
+  </Button>
+</CollapsibleTrigger>
+
+// v3
+<CollapsibleTrigger render={<Button variant="ghost" className="group" />}>
+  <CaretRightIcon className="group-data-panel-open:rotate-90" />
+</CollapsibleTrigger>
+```
+
+## Referência da API
+
+Consulte a documentação do [Base UI](https://base-ui.com/react/components/collapsible) para mais informações.

@@ -6,26 +6,27 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@blips/ui/components/carousel";
-import * as React from "react";
+
+const slides = [1, 2, 3, 4, 5];
 
 export default function CarouselSpacing() {
   return (
-    <Carousel className="w-full max-w-sm">
+    <Carousel className="mx-auto w-full max-w-xs sm:max-w-sm">
       <CarouselContent className="-ml-1">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="pl-1 md:basis-1/2 lg:basis-1/3">
+        {slides.map((slide) => (
+          <CarouselItem key={slide} className="pl-1 md:basis-1/2">
             <div className="p-1">
               <Card>
                 <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-2xl font-semibold">{index + 1}</span>
+                  <span className="text-2xl font-semibold">{slide}</span>
                 </CardContent>
               </Card>
             </div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="hidden sm:inline-flex" />
+      <CarouselNext className="hidden sm:inline-flex" />
     </Carousel>
   );
 }

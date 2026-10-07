@@ -1,44 +1,37 @@
 import { Button } from "@blips/ui/components/button";
 import { ButtonGroup } from "@blips/ui/components/button-group";
-import { Plus } from "@phosphor-icons/react";
+import { PlusIcon } from "@phosphor-icons/react";
 
 export default function ButtonGroupSize() {
   return (
     <div className="flex flex-col items-start gap-8">
       <ButtonGroup>
         <Button variant="outline" size="sm">
-          Small
+          Pequeno
         </Button>
         <Button variant="outline" size="sm">
-          Button
+          Grupo
         </Button>
-        <Button variant="outline" size="sm">
-          Group
-        </Button>
-        <Button variant="outline" size="icon-sm">
-          <Plus />
+        <Button variant="outline" size="icon-sm" aria-label="Adicionar">
+          <PlusIcon />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
-        <Button variant="outline">Default</Button>
-        <Button variant="outline">Button</Button>
-        <Button variant="outline">Group</Button>
-        <Button variant="outline" size="icon">
-          <Plus />
+        <Button variant="outline">Padrão</Button>
+        <Button variant="outline">Grupo</Button>
+        <Button variant="outline" size="icon" aria-label="Adicionar">
+          <PlusIcon />
         </Button>
       </ButtonGroup>
       <ButtonGroup>
         <Button variant="outline" size="lg">
-          Large
+          Grande
         </Button>
         <Button variant="outline" size="lg">
-          Button
+          Grupo
         </Button>
-        <Button variant="outline" size="lg">
-          Group
-        </Button>
-        <Button variant="outline" size="icon-lg">
-          <Plus />
+        <Button variant="outline" size="icon-lg" aria-label="Adicionar">
+          <PlusIcon />
         </Button>
       </ButtonGroup>
     </div>

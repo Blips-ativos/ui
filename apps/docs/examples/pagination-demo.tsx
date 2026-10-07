@@ -1,4 +1,3 @@
-"use client";
 import {
   Pagination,
   PaginationContent,
@@ -8,12 +7,13 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@blips/ui/components/pagination";
+
 export default function PaginationDemo() {
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious href="#" />
+          <PaginationPrevious href="#" text="Anterior" />
         </PaginationItem>
         <PaginationItem>
           <PaginationLink href="#">1</PaginationLink>
@@ -30,7 +30,7 @@ export default function PaginationDemo() {
           <PaginationEllipsis />
         </PaginationItem>
         <PaginationItem>
-          <PaginationNext href="#" />
+          <PaginationNext href="#" text="Próxima" />
         </PaginationItem>
       </PaginationContent>
     </Pagination>

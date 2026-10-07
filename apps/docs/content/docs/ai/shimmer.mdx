@@ -1,0 +1,63 @@
+---
+title: Shimmer
+description: Texto com brilho animado para indicar que o agente está pensando ou carregando.
+---
+
+<ComponentPreview name="ai-shimmer-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional: a animação usa o `motion`, que já vem como dependência do `@blips/ai`.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { Shimmer } from "@blips/ai/components/shimmer"
+```
+
+```tsx
+<Shimmer>Pensando na melhor resposta…</Shimmer>
+```
+
+Use enquanto a primeira parte da resposta não chega, ou para o status de uma ferramenta em execução. As cores vêm dos tokens `--color-muted-foreground` e `--color-background`, então acompanham o tema claro e o escuro.
+
+## Exemplos
+
+### Elemento, duração e largura
+
+`as` troca o elemento renderizado (`p` por padrão). `duration` é o tempo de uma passada, em segundos. `spread` controla a largura do brilho, multiplicada pelo número de caracteres do texto.
+
+<ComponentPreview name="ai-shimmer-options" />
+
+```tsx
+<Shimmer as="span" duration={1} spread={5}>
+  chamando a ferramenta de financeiro
+</Shimmer>
+```
+
+## Referência da API
+
+### Shimmer
+
+| Prop        | Tipo          | Padrão |
+| ----------- | ------------- | ------ |
+| `children`  | `string`      |        |
+| `as`        | `ElementType` | `"p"`  |
+| `className` | `string`      |        |
+| `duration`  | `number`      | `2`    |
+| `spread`    | `number`      | `2`    |
+
+`children` precisa ser uma string: o tamanho do texto entra no cálculo do brilho. O componente não repassa outras props ao elemento.
+
+## Origem
+
+Adaptado do [Shimmer do AI Elements](https://github.com/vercel/ai-elements) (Apache-2.0, Vercel), com os tokens da `@blips/ui`.

@@ -1,0 +1,11 @@
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
+
+/* Streamdown renderiza com classes Tailwind próprias, fora da auto-detecção. */
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";

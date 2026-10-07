@@ -59,6 +59,12 @@ Use a prop `orientation` para definir a orientação do carrossel.
 
 <ComponentPreview name="carousel-orientation" />
 
+### Contador de slides
+
+Use `setApi` para ler o slide atual e o total.
+
+<ComponentPreview name="carousel-api" />
+
 ## Opções
 
 Você pode passar opções para o carrossel usando a prop `opts`. Veja a [documentação do Embla Carousel](https://www.embla-carousel.com/api/options/) para mais informações.
@@ -80,7 +86,7 @@ Você pode passar opções para o carrossel usando a prop `opts`. Veja a [docume
 
 ## API
 
-Use um state e a prop `setApi` para obter uma instância da API do carrossel.
+Use um state e a prop `setApi` para obter uma instância da API do carrossel. Dentro de um filho do `Carousel`, o hook `useCarousel()` dá acesso à mesma API, além de `scrollPrev`, `scrollNext`, `canScrollPrev` e `canScrollNext`.
 
 ```tsx {1,4,22}
 import { type CarouselApi } from "@blips/ui/components/carousel"
@@ -169,6 +175,24 @@ export function Example() {
     </Carousel>
   )
 }
+```
+
+## Migrando da v2
+
+- `CarouselPrevious` e `CarouselNext` herdam a API do `Button` da v3 (Base UI): `asChild` não existe mais; para trocar o elemento, use `render`.
+- O `size` padrão dos botões mudou de `"icon"` para `"icon-sm"` (`size-6`), e a classe fixa `size-8` saiu. Para o tamanho antigo, passe `size="icon-lg"` ou `className="size-8"`.
+- Os ícones passaram de `ArrowLeft`/`ArrowRight` para `CaretLeftIcon`/`CaretRightIcon`.
+- Na orientação horizontal, os botões passaram de `top-1/2 -translate-y-1/2` para `inset-y-0 my-auto`.
+- Novo export: o hook `useCarousel`.
+
+```tsx
+// v2: botões size-8 por padrão
+<CarouselPrevious />
+<CarouselNext />
+
+// v3: para manter o tamanho antigo
+<CarouselPrevious size="icon-lg" />
+<CarouselNext size="icon-lg" />
 ```
 
 ## Referência da API

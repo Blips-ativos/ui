@@ -2,6 +2,9 @@
 
 Padrões para carregar dados dinâmicos na sidebar usando RSC, Suspense, SWR ou React Query.
 
+> Exemplos na **v3.x — Base UI**. A lógica de dados é igual nas duas versões; só o item como
+> link muda — ver [v2.x — Radix](#v2x--radix) no fim (detecção de versão: Passo 0 do `SKILL.md` do building).
+
 ## Table of Contents
 
 - [React Server Components (RSC)](#react-server-components-rsc)
@@ -11,6 +14,8 @@ Padrões para carregar dados dinâmicos na sidebar usando RSC, Suspense, SWR ou 
 - [Padrões Combinados](#padrões-combinados)
 - [Estados de Erro](#estados-de-erro)
 - [Estado Vazio](#estado-vazio)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## React Server Components (RSC)
 
@@ -46,7 +51,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@blips/ui/components/sidebar";
-import { Folder } from "@phosphor-icons/react";
+import { FolderIcon } from "@phosphor-icons/react";
 
 async function fetchProjects() {
   // Fetch do banco de dados ou API
@@ -61,11 +66,9 @@ export async function NavProjects() {
     <SidebarMenu>
       {projects.map((project) => (
         <SidebarMenuItem key={project.id}>
-          <SidebarMenuButton asChild>
-            <a href={`/projects/${project.id}`}>
-              <Folder />
-              <span>{project.name}</span>
-            </a>
+          <SidebarMenuButton render={<a href={`/projects/${project.id}`} />}>
+            <FolderIcon />
+            <span>{project.name}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
@@ -123,7 +126,7 @@ import {
   SidebarMenuButton,
   SidebarMenuSkeleton,
 } from "@blips/ui/components/sidebar";
-import { Folder } from "@phosphor-icons/react";
+import { FolderIcon } from "@phosphor-icons/react";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -158,11 +161,9 @@ export function NavProjects() {
     <SidebarMenu>
       {data.map((project) => (
         <SidebarMenuItem key={project.id}>
-          <SidebarMenuButton asChild>
-            <a href={`/projects/${project.id}`}>
-              <Folder />
-              <span>{project.name}</span>
-            </a>
+          <SidebarMenuButton render={<a href={`/projects/${project.id}`} />}>
+            <FolderIcon />
+            <span>{project.name}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
@@ -186,7 +187,7 @@ import {
   SidebarMenuButton,
   SidebarMenuSkeleton,
 } from "@blips/ui/components/sidebar";
-import { Folder } from "@phosphor-icons/react";
+import { FolderIcon } from "@phosphor-icons/react";
 
 async function fetchProjects() {
   const response = await fetch("/api/projects");
@@ -228,11 +229,9 @@ export function NavProjects() {
     <SidebarMenu>
       {data.map((project) => (
         <SidebarMenuItem key={project.id}>
-          <SidebarMenuButton asChild>
-            <a href={`/projects/${project.id}`}>
-              <Folder />
-              <span>{project.name}</span>
-            </a>
+          <SidebarMenuButton render={<a href={`/projects/${project.id}`} />}>
+            <FolderIcon />
+            <span>{project.name}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
@@ -255,7 +254,7 @@ import {
   SidebarMenuButton,
   SidebarMenuSkeleton,
 } from "@blips/ui/components/sidebar";
-import { Folder } from "@phosphor-icons/react";
+import { FolderIcon } from "@phosphor-icons/react";
 import { api } from "@/lib/api";
 
 export function NavProjects() {
@@ -289,11 +288,9 @@ export function NavProjects() {
     <SidebarMenu>
       {data.map((project) => (
         <SidebarMenuItem key={project.id}>
-          <SidebarMenuButton asChild>
-            <a href={`/projects/${project.id}`}>
-              <Folder />
-              <span>{project.name}</span>
-            </a>
+          <SidebarMenuButton render={<a href={`/projects/${project.id}`} />}>
+            <FolderIcon />
+            <span>{project.name}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ))}
@@ -322,15 +319,15 @@ import {
   SidebarMenuButton,
   SidebarSeparator,
 } from "@blips/ui/components/sidebar";
-import { House, Gear, Folder } from "@phosphor-icons/react";
+import { HouseIcon, GearIcon, FolderIcon } from "@phosphor-icons/react";
 
 import { NavProjects } from "./nav-projects";
 import { NavProjectsSkeleton } from "./nav-projects-skeleton";
 
 // Menu estático
 const staticItems = [
-  { title: "House", href: "/", icon: House },
-  { title: "Gear", href: "/settings", icon: Gear },
+  { title: "Início", href: "/", icon: HouseIcon },
+  { title: "Configurações", href: "/settings", icon: GearIcon },
 ];
 
 export function AppSidebar() {
@@ -344,11 +341,9 @@ export function AppSidebar() {
             <SidebarMenu>
               {staticItems.map((item) => (
                 <SidebarMenuItem key={item.href}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.href}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
+                  <SidebarMenuButton render={<a href={item.href} />}>
+                    <item.icon />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -386,7 +381,7 @@ import {
   SidebarMenuButton,
   SidebarMenuBadge,
 } from "@blips/ui/components/sidebar";
-import { Tray } from "@phosphor-icons/react";
+import { TrayIcon } from "@phosphor-icons/react";
 
 export function NavInbox() {
   const { data: count } = api.inbox.unreadCount.useQuery();
@@ -394,11 +389,9 @@ export function NavInbox() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <SidebarMenuButton asChild>
-          <a href="/inbox">
-            <Tray />
-            <span>Tray</span>
-          </a>
+        <SidebarMenuButton render={<a href="/inbox" />}>
+          <TrayIcon />
+          <span>Tray</span>
         </SidebarMenuButton>
         {count && count > 0 && (
           <SidebarMenuBadge>{count > 99 ? "99+" : count}</SidebarMenuBadge>
@@ -422,7 +415,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@blips/ui/components/sidebar";
-import { WarningCircle, ArrowsClockwise } from "@phosphor-icons/react";
+import { WarningCircleIcon, ArrowsClockwiseIcon } from "@phosphor-icons/react";
 
 interface NavErrorProps {
   message?: string;
@@ -434,12 +427,12 @@ export function NavError({ message = "Erro ao carregar", onRetry }: NavErrorProp
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton disabled className="text-destructive">
-          <WarningCircle className="size-4" />
+          <WarningCircleIcon className="size-4" />
           <span>{message}</span>
         </SidebarMenuButton>
         {onRetry && (
           <SidebarMenuButton onClick={onRetry} className="ml-auto">
-            <ArrowsClockwise className="size-4" />
+            <ArrowsClockwiseIcon className="size-4" />
           </SidebarMenuButton>
         )}
       </SidebarMenuItem>
@@ -469,7 +462,7 @@ import {
   SidebarMenuItem,
   SidebarMenuButton,
 } from "@blips/ui/components/sidebar";
-import { FolderOpen, Plus } from "@phosphor-icons/react";
+import { FolderOpenIcon, PlusIcon } from "@phosphor-icons/react";
 
 interface NavEmptyProps {
   message?: string;
@@ -486,14 +479,14 @@ export function NavEmpty({
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton disabled className="text-muted-foreground">
-          <FolderOpen className="size-4" />
+          <FolderOpenIcon className="size-4" />
           <span>{message}</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
       {actionLabel && onAction && (
         <SidebarMenuItem>
           <SidebarMenuButton onClick={onAction}>
-            <Plus className="size-4" />
+            <PlusIcon className="size-4" />
             <span>{actionLabel}</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -516,3 +509,29 @@ if (!data || data.length === 0) {
   );
 }
 ```
+
+## v3.x — Base UI
+
+Os exemplos acima usam `render` para o item virar link:
+
+```tsx
+<SidebarMenuButton render={<a href={`/projects/${project.id}`} />}>
+  <FolderIcon />
+  <span>{project.name}</span>
+</SidebarMenuButton>
+```
+
+## v2.x — Radix
+
+Troque `render` por `asChild` com o link como filho único; o resto (Suspense, SWR, React
+Query, skeleton, erro, vazio) não muda:
+
+```tsx
+<SidebarMenuButton asChild>
+  <a href={`/projects/${project.id}`}>
+    <Folder />
+    <span>{project.name}</span>
+  </a>
+</SidebarMenuButton>
+```
+

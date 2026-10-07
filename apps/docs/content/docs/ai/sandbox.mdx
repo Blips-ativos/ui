@@ -1,0 +1,115 @@
+---
+title: Sandbox
+description: Cartão recolhível de uma execução de código do agente, com status no cabeçalho e abas para código, saída e arquivos.
+---
+
+<ComponentPreview name="ai-sandbox-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai shiki
+pnpm add -D ai
+```
+
+O cabeçalho reaproveita o badge de status do [Tool](/docs/ai/tool), e o `tool` importa o [CodeBlock](/docs/ai/code-block), que usa o [Shiki](https://shiki.style). Por isso o `shiki` é obrigatório para o `sandbox`, mesmo que você não ponha um `CodeBlock` nas abas. O `ai` entra só pelo tipo `ToolUIPart["state"]`: nada dele roda no navegador. Em projeto TypeScript, instale-o como devDependency (`pnpm add -D ai`): a `@blips/ai` publica o fonte `.tsx`, e o `tsc` do app checa esse fonte e precisa resolver os tipos do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Sandbox,
+  SandboxContent,
+  SandboxHeader,
+  SandboxTabContent,
+  SandboxTabs,
+  SandboxTabsBar,
+  SandboxTabsList,
+  SandboxTabsTrigger,
+} from "@blips/ai/components/sandbox"
+```
+
+```tsx
+<Sandbox>
+  <SandboxHeader title="analise_parcelas.py" state="output-available" />
+  <SandboxContent>
+    <SandboxTabs defaultValue="codigo">
+      <SandboxTabsBar>
+        <SandboxTabsList>
+          <SandboxTabsTrigger value="codigo">Código</SandboxTabsTrigger>
+          <SandboxTabsTrigger value="saida">Saída</SandboxTabsTrigger>
+        </SandboxTabsList>
+      </SandboxTabsBar>
+      <SandboxTabContent value="codigo">
+        <CodeBlock code={codigo} language="python" />
+      </SandboxTabContent>
+      <SandboxTabContent value="saida">{/* saída */}</SandboxTabContent>
+    </SandboxTabs>
+  </SandboxContent>
+</Sandbox>
+```
+
+Use o `Sandbox` quando uma ferramenta do agente executa código: o cabeçalho mostra o nome e o status da execução, e as abas separam o código da saída. Para uma chamada de ferramenta comum (parâmetros e resultado em JSON), use o [Tool](/docs/ai/tool).
+
+O `state` é o mesmo de uma part de ferramenta do AI SDK (`ToolUIPart["state"]`). Se o seu backend não usa o AI SDK, traduza o estado dos seus eventos para um desses valores no app. O conteúdo das abas é livre: [CodeBlock](/docs/ai/code-block) para o código, [Terminal](/docs/ai/terminal) para a saída, [Test Results](/docs/ai/test-results) para a suíte de testes.
+
+O `Sandbox` começa aberto (`defaultOpen`). As abas são as [Tabs](/docs/components/tabs) da `@blips/ui` (Base UI), com o estilo de sublinhado do upstream.
+
+## Exemplos
+
+### Estados
+
+O badge do cabeçalho segue o `state`, com os rótulos do Tool: "Pendente", "Executando", "Concluída", "Erro", "Negada", "Aguardando aprovação" e "Respondida". O `SandboxHeader` não aceita rótulos próprios: se precisar trocá-los, monte o cabeçalho com o `getStatusBadge(state, labels)` do Tool.
+
+<ComponentPreview name="ai-sandbox-estados" />
+
+## Referência da API
+
+### Sandbox
+
+Raiz recolhível. Aceita as props do `Collapsible` da `@blips/ui` (`open`, `defaultOpen`, `onOpenChange`…). O padrão de `defaultOpen` é `true`.
+
+### SandboxHeader
+
+Gatilho com ícone de código, título, badge de status e seta.
+
+| Prop        | Tipo                   | Padrão      |
+| ----------- | ---------------------- | ----------- |
+| `state`     | `ToolUIPart["state"]`  | obrigatória |
+| `title`     | `string`               |             |
+| `className` | `string`               |             |
+
+### SandboxContent
+
+Painel que abre e fecha com o cabeçalho. Aceita as props do `CollapsibleContent`.
+
+### SandboxTabs
+
+Raiz das abas. Aceita as props do `Tabs` da `@blips/ui` (`value`, `defaultValue`, `onValueChange`, com a semântica do Base UI).
+
+### SandboxTabsBar
+
+Faixa com bordas em cima e embaixo que envolve a lista de abas; ponha ações à direita dela se precisar. Aceita as props de `div`.
+
+### SandboxTabsList
+
+Lista de abas sem fundo. Aceita as props do `TabsList`.
+
+### SandboxTabsTrigger
+
+Aba com sublinhado na cor primária quando ativa. Aceita as props do `TabsTrigger` (`value` obrigatória).
+
+### SandboxTabContent
+
+Painel de uma aba. Aceita as props do `TabsContent` (`value` obrigatória).
+
+## Origem
+
+Adaptado do componente [Sandbox](https://elements.ai-sdk.dev/components/sandbox) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible e pelas Tabs da `@blips/ui` (Base UI), e os ícones Lucide pelos do Phosphor; as classes são as do upstream, com os seletores `data-[state=…]` do Radix trocados pelos `data-open`/`data-closed`/`data-active` do Base UI. As props agora são as do Base UI.

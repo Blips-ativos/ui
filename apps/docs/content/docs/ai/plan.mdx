@@ -1,0 +1,116 @@
+---
+title: Plan
+description: Cartão recolhível com o plano que o agente vai seguir, com título e descrição em shimmer durante o streaming.
+---
+
+<ComponentPreview name="ai-plan-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Nenhum peer opcional é exigido, e o componente não importa nada do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Plan,
+  PlanAction,
+  PlanContent,
+  PlanDescription,
+  PlanFooter,
+  PlanHeader,
+  PlanTitle,
+  PlanTrigger,
+} from "@blips/ai/components/plan"
+```
+
+```tsx
+<Plan defaultOpen isStreaming={status === "streaming"}>
+  <PlanHeader>
+    <div>
+      <PlanTitle>Renegociar parcelas em atraso</PlanTitle>
+      <PlanDescription>Quatro passos para propor um acordo ao cliente.</PlanDescription>
+    </div>
+    <PlanAction>
+      <PlanTrigger />
+    </PlanAction>
+  </PlanHeader>
+  <PlanContent>
+    <ol>{passos.map((p) => <li key={p}>{p}</li>)}</ol>
+  </PlanContent>
+  <PlanFooter>
+    <Button size="sm">Executar plano</Button>
+  </PlanFooter>
+</Plan>
+```
+
+O `Plan` é um [Collapsible](/docs/components/collapsible) da `@blips/ui` que renderiza um [Card](/docs/components/card). O cabeçalho e o rodapé ficam sempre visíveis; o `PlanContent` abre e fecha pelo `PlanTrigger`. O componente é apresentacional: o app decide de onde vêm o título, a descrição e os passos (uma part de dados do AI SDK, a saída de uma ferramenta de planejamento ou um evento do AgentOS) e passa como dados.
+
+`PlanTitle` e `PlanDescription` aceitam só texto (`children: string`), porque viram [Shimmer](/docs/ai/shimmer) enquanto `isStreaming` é `true`.
+
+## Exemplos
+
+### Durante o streaming
+
+Com `isStreaming`, título e descrição ganham o efeito de shimmer. O exemplo não tem `defaultOpen`, então o conteúdo começa fechado.
+
+<ComponentPreview name="ai-plan-streaming" />
+
+## Referência da API
+
+### Plan
+
+Raiz do cartão. Aceita as props do `Collapsible` da `@blips/ui` (`open`, `defaultOpen`, `onOpenChange` etc.). `className` aceita string ou função do estado, como no Base UI. Todos os `Plan*` precisam estar dentro dele.
+
+| Prop          | Tipo      | Padrão  |
+| ------------- | --------- | ------- |
+| `isStreaming` | `boolean` | `false` |
+
+### PlanHeader
+
+`CardHeader` com título à esquerda e ação à direita. Aceita as props do `CardHeader`.
+
+### PlanTitle
+
+`CardTitle` que vira `Shimmer` durante o streaming. Aceita as props do `CardTitle`, com `children: string`.
+
+### PlanDescription
+
+`CardDescription` com `text-balance`, que vira `Shimmer` durante o streaming. Aceita as props do `CardDescription`, com `children: string`.
+
+### PlanAction
+
+`CardAction`, o lugar do `PlanTrigger` ou de outras ações no cabeçalho.
+
+### PlanTrigger
+
+Botão de ícone (`ghost`) com `CaretUpDownIcon` que abre e fecha o conteúdo. Aceita as props do `CollapsibleTrigger`.
+
+| Prop    | Tipo     | Padrão             |
+| ------- | -------- | ------------------ |
+| `label` | `string` | `"Alternar plano"` |
+
+O `label` vai num `sr-only` dentro do botão.
+
+### PlanContent
+
+`CollapsibleContent` que renderiza um `CardContent`. Aceita as props do `CardContent`.
+
+### PlanFooter
+
+`CardFooter`, sempre visível. Aceita as props de `div`.
+
+## Origem
+
+Adaptado do componente [Plan](https://elements.ai-sdk.dev/components/plan) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible, pelo Card e pelo Button da `@blips/ui` (Base UI, com `render` no lugar de `asChild`), o ícone Lucide pelo `CaretUpDownIcon` do Phosphor e traduziu o texto do leitor de tela, que ganhou a prop `label`.

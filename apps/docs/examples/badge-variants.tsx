@@ -1,13 +1,14 @@
 import { Badge } from "@blips/ui/components/badge";
 
-export function BadgeVariants() {
+export default function BadgeVariants() {
   return (
     <div className="flex flex-wrap gap-2">
-      <Badge>Default</Badge>
-      <Badge variant="secondary">Secondary</Badge>
-      <Badge variant="destructive">Destructive</Badge>
-      <Badge variant="outline">Outline</Badge>
+      <Badge>Padrão</Badge>
+      <Badge variant="secondary">Secundário</Badge>
+      <Badge variant="destructive">Destrutivo</Badge>
+      <Badge variant="outline">Contorno</Badge>
       <Badge variant="ghost">Ghost</Badge>
+      <Badge variant="link">Link</Badge>
     </div>
   );
 }

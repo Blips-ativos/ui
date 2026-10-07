@@ -2,253 +2,70 @@
 
 Import: `@blips/ui/components/native-select`
 
-## Sub-components
+> **Só existe na v3.x.** Em repo v2 (`@blips/ui` 2.x) este componente não existe:
+> use um `<select>` nativo estilizado à mão, o `Select` da v2 (`select.md`), ou
+> proponha a migração para a v3. Veja `v2-vs-v3.md`.
 
-| Component | Element | Description |
-|-----------|---------|-------------|
-| `NativeSelect` | `<div>` + `<select>` | Styled native HTML select with a custom chevron icon overlay. Wraps a `<select>` inside a positioned `<div>`. |
-| `NativeSelectOption` | `<option>` | Standard HTML option element with `data-slot` attribute. |
-| `NativeSelectOptGroup` | `<optgroup>` | Standard HTML optgroup for grouping options. |
+`<select>` nativo do navegador com o visual da lib e um caret Phosphor por cima.
+Bom para formulários simples, mobile (abre o seletor do sistema), listas
+estáticas e envio por `<form>` sem JavaScript. Para busca, itens ricos ou
+seleção múltipla com resumo, use `Select` ou `Combobox`.
 
-## Props & Variants
+Exports: `NativeSelect`, `NativeSelectOption`, `NativeSelectOptGroup`.
 
-### NativeSelect
+| Componente | Elemento | Descrição |
+|---|---|---|
+| `NativeSelect` | `<div>` + `<select>` | Props: `Omit<React.ComponentProps<"select">, "size">` + `size` (`"default"` `h-7 text-xs/relaxed`, ou `"sm"` `h-6`). |
+| `NativeSelectOption` | `<option>` | `value`, `disabled`, `label`. |
+| `NativeSelectOptGroup` | `<optgroup>` | `label` (cabeçalho do grupo). |
 
-Extends `Omit<React.ComponentProps<'select'>, 'size'>` with custom size prop.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `size` | `"sm" \| "default"` | `"default"` | Controls height and text size |
-| `disabled` | `boolean` | - | Disables the select (native HTML prop) |
-| `aria-invalid` | `"true" \| "false"` | - | Marks as invalid with destructive border/ring styling |
-| `className` | `string` | - | Applied to the wrapper `<div>`, not the `<select>` |
-
-**Size styles:**
-
-| Size | Height | Text Size |
-|------|--------|-----------|
-| `default` | `h-7` | `text-xs/relaxed` |
-| `sm` | `h-6` | `text-[0.625rem]` |
-
-**Default styles:**
-- Wrapper: `relative w-fit has-[select:disabled]:opacity-50`
-- Select: `appearance-none rounded-md border border-input bg-input/20 py-0.5 pr-6 pl-2`
-- Focus: `focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30`
-- Invalid: `aria-invalid:border-destructive aria-invalid:ring-2 aria-invalid:ring-destructive/20`
-- Dark: `dark:bg-input/30 dark:hover:bg-input/50`
-- Chevron icon positioned absolutely at right
-
-### NativeSelectOption
-
-Standard `React.ComponentProps<'option'>` -- no custom props.
-
-### NativeSelectOptGroup
-
-Standard `React.ComponentProps<'optgroup'>` with `className` support.
-
-| Prop | Type | Description |
-|------|------|-------------|
-| `label` | `string` | Group heading text (native HTML prop) |
-
-## Usage
-
-### Basic Select
+- O **`className` vai para o `<div>` de fora** (o wrapper `w-fit`), não para o `<select>`; o `<select>` ocupa `w-full` do wrapper. Para largura total: `className="w-full"`.
+- Todas as outras props (`value`, `onChange`, `name`, `id`, `disabled`, `required`, `aria-invalid`) vão para o `<select>`.
+- Erro: `aria-invalid` (borda e anel `destructive`). Desabilitado: o wrapper fica com `opacity-50`.
+- Placeholder: primeira opção com `value=""` (e `required` no select, se for obrigatório).
+- Em react-hook-form: `{...form.register("estado")}` ou `{...field}` direto no `NativeSelect` (é um `<select>` de verdade).
 
 ```tsx
 import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-<NativeSelect>
-  <NativeSelectOption value="">Select status</NativeSelectOption>
-  <NativeSelectOption value="todo">Todo</NativeSelectOption>
-  <NativeSelectOption value="in-progress">In Progress</NativeSelectOption>
-  <NativeSelectOption value="done">Done</NativeSelectOption>
-  <NativeSelectOption value="cancelled">Cancelled</NativeSelectOption>
-</NativeSelect>
-```
-
-### With Option Groups
-
-```tsx
+  Field,
+  FieldDescription,
+  FieldLabel,
+} from "@blips/ui/components/field";
 import {
   NativeSelect,
   NativeSelectOptGroup,
   NativeSelectOption,
-} from "@blips/ui/components/native-select"
+} from "@blips/ui/components/native-select";
 
-<NativeSelect>
-  <NativeSelectOption value="">Select department</NativeSelectOption>
-  <NativeSelectOptGroup label="Engineering">
-    <NativeSelectOption value="frontend">Frontend</NativeSelectOption>
-    <NativeSelectOption value="backend">Backend</NativeSelectOption>
-    <NativeSelectOption value="devops">DevOps</NativeSelectOption>
-  </NativeSelectOptGroup>
-  <NativeSelectOptGroup label="Sales">
-    <NativeSelectOption value="sales-rep">Sales Rep</NativeSelectOption>
-    <NativeSelectOption value="account-manager">Account Manager</NativeSelectOption>
-    <NativeSelectOption value="sales-director">Sales Director</NativeSelectOption>
-  </NativeSelectOptGroup>
-  <NativeSelectOptGroup label="Operations">
-    <NativeSelectOption value="support">Customer Support</NativeSelectOption>
-    <NativeSelectOption value="product-manager">Product Manager</NativeSelectOption>
-    <NativeSelectOption value="ops-manager">Operations Manager</NativeSelectOption>
-  </NativeSelectOptGroup>
+export function SeletorDeEstado() {
+  return (
+    <Field className="max-w-xs">
+      <FieldLabel htmlFor="estado">Estado</FieldLabel>
+      <NativeSelect id="estado" name="estado" className="w-full" required>
+        <NativeSelectOption value="">Selecione um estado</NativeSelectOption>
+        <NativeSelectOptGroup label="Sudeste">
+          <NativeSelectOption value="sp">São Paulo</NativeSelectOption>
+          <NativeSelectOption value="rj">Rio de Janeiro</NativeSelectOption>
+        </NativeSelectOptGroup>
+        <NativeSelectOptGroup label="Sul">
+          <NativeSelectOption value="pr">Paraná</NativeSelectOption>
+        </NativeSelectOptGroup>
+      </NativeSelect>
+      <FieldDescription>Onde fica a sua empresa.</FieldDescription>
+    </Field>
+  );
+}
+```
+
+Tamanho pequeno e erro:
+
+```tsx
+<NativeSelect size="sm" aria-invalid defaultValue="">
+  <NativeSelectOption value="">Escolha</NativeSelectOption>
+  <NativeSelectOption value="a">Opção A</NativeSelectOption>
 </NativeSelect>
 ```
 
-### Invalid State
+## Exemplos na docs
 
-```tsx
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-<NativeSelect aria-invalid="true">
-  <NativeSelectOption value="">Select role</NativeSelectOption>
-  <NativeSelectOption value="admin">Admin</NativeSelectOption>
-  <NativeSelectOption value="editor">Editor</NativeSelectOption>
-  <NativeSelectOption value="viewer">Viewer</NativeSelectOption>
-</NativeSelect>
-```
-
-### Disabled State
-
-```tsx
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-<NativeSelect disabled>
-  <NativeSelectOption value="">Select priority</NativeSelectOption>
-  <NativeSelectOption value="low">Low</NativeSelectOption>
-  <NativeSelectOption value="medium">Medium</NativeSelectOption>
-  <NativeSelectOption value="high">High</NativeSelectOption>
-  <NativeSelectOption value="critical">Critical</NativeSelectOption>
-</NativeSelect>
-```
-
-## Project Notes
-
-- Uses `@phosphor-icons/react` (`CaretDown`) for the chevron icon.
-- This is a `'use client'` component.
-- For rich select with search/filtering, use the `Select` or `Combobox` components instead.
-
-## All Example Variants
-
-### native-select-demo
-
-Basic select with status options.
-
-```tsx
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-export default function NativeSelectDemo() {
-  return (
-    <NativeSelect>
-      <NativeSelectOption value="">Select status</NativeSelectOption>
-      <NativeSelectOption value="todo">Todo</NativeSelectOption>
-      <NativeSelectOption value="in-progress">In Progress</NativeSelectOption>
-      <NativeSelectOption value="done">Done</NativeSelectOption>
-      <NativeSelectOption value="cancelled">Cancelled</NativeSelectOption>
-    </NativeSelect>
-  )
-}
-```
-
-### native-select-groups
-
-Select with optgroup grouping.
-
-```tsx
-import {
-  NativeSelect,
-  NativeSelectOptGroup,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-export default function NativeSelectGroups() {
-  return (
-    <NativeSelect>
-      <NativeSelectOption value="">Select department</NativeSelectOption>
-      <NativeSelectOptGroup label="Engineering">
-        <NativeSelectOption value="frontend">Frontend</NativeSelectOption>
-        <NativeSelectOption value="backend">Backend</NativeSelectOption>
-        <NativeSelectOption value="devops">DevOps</NativeSelectOption>
-      </NativeSelectOptGroup>
-      <NativeSelectOptGroup label="Sales">
-        <NativeSelectOption value="sales-rep">Sales Rep</NativeSelectOption>
-        <NativeSelectOption value="account-manager">
-          Account Manager
-        </NativeSelectOption>
-        <NativeSelectOption value="sales-director">
-          Sales Director
-        </NativeSelectOption>
-      </NativeSelectOptGroup>
-      <NativeSelectOptGroup label="Operations">
-        <NativeSelectOption value="support">
-          Customer Support
-        </NativeSelectOption>
-        <NativeSelectOption value="product-manager">
-          Product Manager
-        </NativeSelectOption>
-        <NativeSelectOption value="ops-manager">
-          Operations Manager
-        </NativeSelectOption>
-      </NativeSelectOptGroup>
-    </NativeSelect>
-  )
-}
-```
-
-### native-select-disabled
-
-Disabled state.
-
-```tsx
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-export default function NativeSelectDisabled() {
-  return (
-    <NativeSelect disabled>
-      <NativeSelectOption value="">Select priority</NativeSelectOption>
-      <NativeSelectOption value="low">Low</NativeSelectOption>
-      <NativeSelectOption value="medium">Medium</NativeSelectOption>
-      <NativeSelectOption value="high">High</NativeSelectOption>
-      <NativeSelectOption value="critical">Critical</NativeSelectOption>
-    </NativeSelect>
-  )
-}
-```
-
-### native-select-invalid
-
-Invalid/error state.
-
-```tsx
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@blips/ui/components/native-select"
-
-export default function NativeSelectInvalid() {
-  return (
-    <NativeSelect aria-invalid="true">
-      <NativeSelectOption value="">Select role</NativeSelectOption>
-      <NativeSelectOption value="admin">Admin</NativeSelectOption>
-      <NativeSelectOption value="editor">Editor</NativeSelectOption>
-      <NativeSelectOption value="viewer">Viewer</NativeSelectOption>
-      <NativeSelectOption value="guest">Guest</NativeSelectOption>
-    </NativeSelect>
-  )
-}
-```
+`native-select-demo`, `native-select-groups`, `native-select-field`, `native-select-sizes`, `native-select-disabled`, `native-select-invalid` (em `apps/docs/examples/`).

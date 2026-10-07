@@ -1,0 +1,155 @@
+---
+title: Inline Citation
+description: Citação no meio do texto, com um card ao passar o mouse que mostra uma ou mais fontes.
+---
+
+<ComponentPreview name="ai-inline-citation-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `inline-citation` não exige peer opcional. Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  InlineCitation,
+  InlineCitationCard,
+  InlineCitationCardBody,
+  InlineCitationCardTrigger,
+  InlineCitationCarousel,
+  InlineCitationCarouselContent,
+  InlineCitationCarouselHeader,
+  InlineCitationCarouselIndex,
+  InlineCitationCarouselItem,
+  InlineCitationCarouselNext,
+  InlineCitationCarouselPrev,
+  InlineCitationQuote,
+  InlineCitationSource,
+  InlineCitationText,
+} from "@blips/ai/components/inline-citation"
+```
+
+```tsx
+<InlineCitation>
+  <InlineCitationText>O pagamento cai em segundos</InlineCitationText>
+  <InlineCitationCard>
+    <InlineCitationCardTrigger sources={sources.map((s) => s.url)} />
+    <InlineCitationCardBody>
+      <InlineCitationCarousel>
+        <InlineCitationCarouselHeader>
+          <InlineCitationCarouselPrev />
+          <InlineCitationCarouselNext />
+          <InlineCitationCarouselIndex />
+        </InlineCitationCarouselHeader>
+        <InlineCitationCarouselContent>
+          {sources.map((source) => (
+            <InlineCitationCarouselItem key={source.url}>
+              <InlineCitationSource
+                title={source.title}
+                url={source.url}
+                description={source.description}
+              />
+              <InlineCitationQuote>{source.quote}</InlineCitationQuote>
+            </InlineCitationCarouselItem>
+          ))}
+        </InlineCitationCarouselContent>
+      </InlineCitationCarousel>
+    </InlineCitationCardBody>
+  </InlineCitationCard>
+</InlineCitation>
+```
+
+O `InlineCitationCardTrigger` é um `Badge` da `@blips/ui` com o hostname da primeira fonte e `+N` para as
+demais. Uma URL inválida não quebra a renderização: o badge mostra a string como veio. Com `sources` vazio,
+mostra `fallbackLabel` (padrão "desconhecida").
+
+O badge é renderizado como `<button type="button">`, com o mesmo visual: entra na ordem de Tab e o card abre
+também quando ele recebe foco pelo teclado (no upstream era um `<span>`, inalcançável sem mouse).
+
+`InlineCitationCarouselPrev` e `InlineCitationCarouselNext` vêm com `aria-label` "Fonte anterior" e "Próxima
+fonte". Passe o seu `aria-label` para trocar.
+
+## Exemplos
+
+### Uma fonte só
+
+Sem carrossel: coloque o `InlineCitationSource` direto no `InlineCitationCardBody`. `delay` atrasa a abertura
+do card.
+
+<ComponentPreview name="ai-inline-citation-single" />
+
+## Referência da API
+
+### InlineCitation e InlineCitationText
+
+Props do `<span>`. O `InlineCitationText` ganha fundo `accent` quando o mouse passa sobre a citação.
+
+### InlineCitationCard
+
+Props do `HoverCard` da `@blips/ui` (Base UI `PreviewCard.Root`): `open`, `defaultOpen`, `onOpenChange`.
+
+### InlineCitationCardTrigger
+
+Props do `Badge` mais:
+
+| Prop         | Tipo       | Padrão      |
+| ------------ | ---------- | ----------- |
+| `sources`       | `string[]` | obrigatório      |
+| `delay`         | `number`   | `0`              |
+| `closeDelay`    | `number`   | `0`              |
+| `fallbackLabel` | `string`   | `"desconhecida"` |
+
+Renderiza um `<button type="button">` com as classes do `Badge` (focável pelo teclado).
+
+### InlineCitationCardBody
+
+Props do `HoverCardContent` (`side`, `align`, `sideOffset`…). Largura padrão `w-80`, sem padding.
+
+### InlineCitationCarousel
+
+Props do `Carousel` da `@blips/ui` (Embla). Não passe `setApi`: o componente usa o seu para ligar o índice e os
+botões, e o `setApi` recebido por prop substitui o interno, deixando índice e botões sem efeito.
+
+### InlineCitationCarouselContent, InlineCitationCarouselItem, InlineCitationCarouselHeader
+
+Props da `<div>`.
+
+### InlineCitationCarouselIndex
+
+Props da `<div>`. Sem `children`, mostra `{atual}/{total}`.
+
+### InlineCitationCarouselPrev e InlineCitationCarouselNext
+
+Props do `<button>`. `aria-label` padrão: "Fonte anterior" e "Próxima fonte".
+
+### InlineCitationSource
+
+Props da `<div>` mais:
+
+| Prop          | Tipo     | Padrão |
+| ------------- | -------- | ------ |
+| `title`       | `string` | —      |
+| `url`         | `string` | —      |
+| `description` | `string` | —      |
+
+### InlineCitationQuote
+
+Props do `<blockquote>`.
+
+## Origem
+
+Adaptado do componente [Inline Citation](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudanças da Blips: `HoverCard` e `Carousel` da `@blips/ui`; no Base UI os atrasos ficam no
+trigger, então o `openDelay`/`closeDelay={0}` do upstream virou `delay`/`closeDelay` no
+`InlineCitationCardTrigger`; o hostname da fonte é lido sem lançar erro em URL inválida; o trigger é um `<button>` focável; textos padrão em
+pt-BR; ícones Phosphor.

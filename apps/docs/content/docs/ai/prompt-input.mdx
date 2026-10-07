@@ -1,0 +1,263 @@
+---
+title: Prompt Input
+description: Campo de mensagem do chat com anexos, menu de ações, seletor de modelo e botão de envio que acompanha o status da resposta.
+---
+
+<ComponentPreview name="ai-prompt-input-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `prompt-input` não exige peer opcional em runtime. Ele importa do `ai` só tipos (`ChatStatus`,
+`FileUIPart`, `SourceDocumentUIPart`); como o pacote publica o código-fonte, instale o `ai` para o
+TypeScript resolver esses tipos:
+
+```bash
+pnpm add -D ai
+```
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  PromptInput,
+  PromptInputBody,
+  PromptInputFooter,
+  type PromptInputMessage,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@blips/ai/components/prompt-input"
+```
+
+```tsx
+const { sendMessage, status, stop } = useChat()
+
+<PromptInput
+  onSubmit={(message: PromptInputMessage) =>
+    sendMessage({ text: message.text, files: message.files })
+  }
+>
+  <PromptInputBody>
+    <PromptInputTextarea placeholder="Pergunte alguma coisa..." />
+  </PromptInputBody>
+  <PromptInputFooter>
+    <PromptInputTools>{/* botões, menu, seletor de modelo */}</PromptInputTools>
+    <PromptInputSubmit status={status} onStop={stop} />
+  </PromptInputFooter>
+</PromptInput>
+```
+
+O `PromptInput` é um `<form>` com um [Input Group](/docs/components/input-group) da `@blips/ui` dentro.
+No envio, ele chama `onSubmit({ text, files }, event)` com os anexos já convertidos de `blob:` para
+data URL e limpa o campo e os anexos. Se `onSubmit` lançar erro ou devolver uma Promise rejeitada, os anexos
+ficam, para o usuário tentar de novo. O texto só fica dentro de um `PromptInputProvider`: sem ele, o campo é
+limpo (`form.reset()`) logo no envio, antes de chamar `onSubmit`.
+
+O componente é apresentacional: não chama API nenhuma. O `status` vem de onde o app quiser — do `useChat`
+do AI SDK ou do mapeamento dos eventos de streaming do seu backend (por exemplo, AgentOS do Agno) para os
+valores de `ChatStatus`.
+
+No `PromptInputTextarea`, Enter envia, Shift+Enter quebra a linha, colar arquivos os anexa e Backspace com o
+campo vazio remove o último anexo. Enter não envia enquanto o botão de envio estiver `disabled` nem durante
+composição de IME.
+
+Os textos padrão saem em pt-BR: placeholder "O que você gostaria de saber?", `aria-label` "Enviar"/"Parar" no
+`PromptInputSubmit`, "Mais ações" no gatilho do menu, "Adicionar fotos ou arquivos" e "Capturar tela" nos itens
+do menu, "Enviar arquivos" no `<input type="file">` oculto e as mensagens de `onError`. Para trocar, use
+`placeholder`, `submitLabel`/`stopLabel`, `aria-label`, `label` e `fileInputLabel`.
+
+### Seletor de modelo ou agente
+
+O `PromptInputSelect` é o [Select](/docs/components/select) da `@blips/ui` (Base UI). Para o
+`PromptInputSelectValue` mostrar o rótulo do item escolhido, e não o `value` cru (por exemplo, `gpt-4o` em vez
+de "GPT-4o"), passe `items` no `PromptInputSelect`, com a mesma lista dos itens. Sem `items`, dê ao
+`PromptInputSelectValue` uma função como `children`, que recebe o valor e devolve o rótulo.
+
+```tsx
+const modelos = [
+  { label: "GPT-4o", value: "gpt-4o" },
+  { label: "Claude Sonnet", value: "claude-sonnet" },
+]
+
+<PromptInputSelect items={modelos} value={modelo} onValueChange={(v) => setModelo(v as string)}>
+  <PromptInputSelectTrigger size="sm">
+    <PromptInputSelectValue />
+  </PromptInputSelectTrigger>
+  <PromptInputSelectContent>
+    {modelos.map((m) => (
+      <PromptInputSelectItem key={m.value} value={m.value}>
+        {m.label}
+      </PromptInputSelectItem>
+    ))}
+  </PromptInputSelectContent>
+</PromptInputSelect>
+
+{/* Alternativa, sem items no Root: */}
+<PromptInputSelectValue>
+  {(valor: string) => modelos.find((m) => m.value === valor)?.label}
+</PromptInputSelectValue>
+```
+
+## Exemplos
+
+### Status do envio
+
+O `PromptInputSubmit` troca o ícone conforme o `status`: `ready` (enviar), `submitted` (spinner),
+`streaming` (parar) e `error`. Com `onStop` e status `submitted` ou `streaming`, o botão vira
+`type="button"` e chama `onStop` em vez de enviar.
+
+<ComponentPreview name="ai-prompt-input-status" />
+
+### Estado fora do campo
+
+Envolva com `PromptInputProvider` para controlar o texto e os anexos de fora do `PromptInput`, por exemplo
+a partir de sugestões. Dentro do provider, `usePromptInputController()` expõe `textInput` (`value`,
+`setInput`, `clear`) e `attachments`.
+
+<ComponentPreview name="ai-prompt-input-provider" />
+
+### Anexos
+
+O `PromptInput` guarda os anexos, mas não os desenha. Leia-os com `usePromptInputAttachments()` e
+desenhe com o [Attachment](/docs/components/attachment) da `@blips/ui` dentro do `PromptInputHeader`, como
+no exemplo do topo. `PromptInputActionAddAttachments` abre o seletor de arquivos e
+`PromptInputActionAddScreenshot` captura a tela (via `getDisplayMedia`); arrastar arquivos para o
+formulário também anexa.
+
+```tsx
+function Anexos() {
+  const { files, remove } = usePromptInputAttachments()
+  if (files.length === 0) return null
+  return (
+    <PromptInputHeader>
+      {files.map((file) => (
+        <Attachment key={file.id} size="xs">
+          <AttachmentContent>
+            <AttachmentTitle>{file.filename}</AttachmentTitle>
+          </AttachmentContent>
+          <AttachmentActions>
+            <AttachmentAction onClick={() => remove(file.id)}>
+              <XIcon />
+            </AttachmentAction>
+          </AttachmentActions>
+        </Attachment>
+      ))}
+    </PromptInputHeader>
+  )
+}
+```
+
+## Referência da API
+
+### PromptInput
+
+Aceita as props de `<form>`, exceto `onSubmit` e `onError`, que mudam de assinatura.
+
+| Prop              | Tipo                                                                                     | Padrão  |
+| ----------------- | ---------------------------------------------------------------------------------------- | ------- |
+| `onSubmit`        | `(message: PromptInputMessage, event: FormEvent<HTMLFormElement>) => void \| Promise<void>` | obrigatório |
+| `accept`          | `string` (ex.: `"image/*"`)                                                              | qualquer tipo |
+| `multiple`        | `boolean`                                                                                | —       |
+| `globalDrop`      | `boolean` — aceita arquivos soltos em qualquer ponto da página                           | `false` |
+| `maxFiles`        | `number`                                                                                 | —       |
+| `maxFileSize`     | `number` (bytes)                                                                         | —       |
+| `onError`         | `(err: { code: "max_files" \| "max_file_size" \| "accept"; message: string }) => void`   | —       |
+| `syncHiddenInput` | `boolean` — só limpa o `<input type="file">` quando não há anexos                        | `false` |
+| `fileInputLabel`  | `string` — `aria-label` e `title` do `<input type="file">` oculto                        | `"Enviar arquivos"` |
+
+As mensagens de `onError` vêm em pt-BR ("Nenhum arquivo corresponde aos tipos aceitos.", "Todos os arquivos
+excedem o tamanho máximo.", "Arquivos demais. Alguns não foram adicionados."); use o `code` para escrever a sua.
+
+`PromptInputMessage` é `{ text: string; files: FileUIPart[] }`.
+
+### PromptInputTextarea
+
+Props do `InputGroupTextarea` da `@blips/ui`. Usa `name="message"`; dentro de um `PromptInputProvider`,
+passa a ser controlado pelo provider.
+
+| Prop          | Tipo     | Padrão                           |
+| ------------- | -------- | -------------------------------- |
+| `placeholder` | `string` | `"O que você gostaria de saber?"` |
+
+### PromptInputSubmit
+
+Props do `InputGroupButton` da `@blips/ui`.
+
+| Prop       | Tipo                                                  | Padrão      |
+| ---------- | ----------------------------------------------------- | ----------- |
+| `status`   | `"ready" \| "submitted" \| "streaming" \| "error"`    | —           |
+| `onStop`   | `() => void`                                          | —           |
+| `submitLabel` | `string` — `aria-label` no estado pronto           | `"Enviar"`  |
+| `stopLabel`   | `string` — `aria-label` em `submitted`/`streaming` | `"Parar"`   |
+| `variant`  | variantes do `InputGroupButton`                       | `"default"` |
+| `size`     | `"xs" \| "sm" \| "icon-xs" \| "icon-sm"`              | `"icon-sm"` |
+| `children` | `ReactNode` — substitui o ícone do status             | —           |
+
+### PromptInputButton
+
+Props do `InputGroupButton`, com `type="button"`. O `size` padrão é `icon-sm` com um filho e `sm` com mais
+de um (ícone + texto).
+
+| Prop      | Tipo                                                                          | Padrão    |
+| --------- | ----------------------------------------------------------------------------- | --------- |
+| `tooltip` | `string \| { content: ReactNode; shortcut?: string; side?: TooltipSide }`     | —         |
+| `variant` | variantes do `InputGroupButton`                                               | `"ghost"` |
+
+### PromptInputActionMenu
+
+`PromptInputActionMenu`, `PromptInputActionMenuContent` e `PromptInputActionMenuItem` repassam as props do
+[Dropdown Menu](/docs/components/dropdown-menu) (`DropdownMenu`, `DropdownMenuContent` com
+`align="start"` e `DropdownMenuItem`). `PromptInputActionMenuTrigger` aceita as props do
+`PromptInputButton` e mostra um `PlusIcon` sem `children`, com `aria-label` padrão "Mais ações". Não use
+`tooltip` no trigger do menu.
+
+### PromptInputActionAddAttachments / PromptInputActionAddScreenshot
+
+Props do `DropdownMenuItem`.
+
+| Prop      | Tipo                                    | Padrão                                       |
+| --------- | --------------------------------------- | -------------------------------------------- |
+| `label`   | `string`                                | `"Adicionar fotos ou arquivos"` / `"Capturar tela"` |
+| `onClick` | handler do `DropdownMenuItem`           | — (`event.preventDefault()` cancela a ação)  |
+
+### Demais partes
+
+| Componente                                    | Base                                                                                   |
+| --------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `PromptInputBody`                             | `<div>` com `display: contents`                                                        |
+| `PromptInputHeader` / `PromptInputFooter`     | `InputGroupAddon` com `align="block-end"` (o header vai para o topo com `order-first`) |
+| `PromptInputTools`                            | `<div>` em linha para os botões do rodapé                                              |
+| `PromptInputSelect*`                          | [Select](/docs/components/select) da `@blips/ui` (`Trigger`, `Content`, `Item`, `Value`). Passe `items` no `PromptInputSelect` (ou `children` função no `Value`) para mostrar o rótulo |
+| `PromptInputHoverCard*`                       | [Hover Card](/docs/components/hover-card); o trigger aceita `delay` e `closeDelay` (padrão `0`) |
+| `PromptInputCommand*`                         | [Command](/docs/components/command) (`Input`, `List`, `Empty`, `Group`, `Item`, `Separator`) |
+| `PromptInputTabsList`, `PromptInputTab`, `PromptInputTabLabel`, `PromptInputTabBody`, `PromptInputTabItem` | `<div>`/`<h3>` estilizados para listas em abas |
+
+### PromptInputProvider e hooks
+
+| Export                              | Descrição                                                                           |
+| ----------------------------------- | ----------------------------------------------------------------------------------- |
+| `PromptInputProvider`               | Eleva o texto e os anexos para fora do `PromptInput`. Prop `initialInput?: string`. |
+| `usePromptInputController()`        | `{ textInput, attachments }`; lança erro fora do provider.                          |
+| `useProviderAttachments()`          | Anexos do provider; lança erro fora dele.                                           |
+| `usePromptInputAttachments()`       | `{ files, add, remove, clear, openFileDialog, fileInputRef }` dentro do `PromptInput` ou do provider. |
+| `usePromptInputReferencedSources()` | `{ sources, add, remove, clear }` das fontes referenciadas, locais ao `PromptInput`. |
+
+## Origem
+
+Adaptado do componente [Prompt Input](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudanças da Blips: primitivas Base UI da `@blips/ui` (`render` no lugar de `asChild`, seletores
+`data-open`/`data-closed`), ícones Phosphor e `Spinner` da `@blips/ui` no envio. Os itens de menu usam
+`onClick` (o Menu do Base UI não tem `onSelect`) e o menu fecha ao escolher anexar; passe
+`closeOnClick={false}` para mantê-lo aberto. `PromptInputHoverCard` não aceita mais `openDelay`/`closeDelay`:
+os atrasos ficam no trigger, como `delay` e `closeDelay`.

@@ -8,32 +8,27 @@ import {
 const items = [
   {
     value: "item-1",
-    trigger: "How do I reset my password?",
+    trigger: "Como redefino minha senha?",
     content:
-      "Click on 'Forgot Password' on the login page, enter your email address, and we'll send you a link to reset your password. The link will expire in 24 hours.",
+      "Clique em 'Esqueci minha senha' na tela de login, informe seu e-mail e enviaremos um link para redefinir a senha. O link expira em 24 horas.",
   },
   {
     value: "item-2",
-    trigger: "Can I change my subscription plan?",
+    trigger: "Posso trocar de plano?",
     content:
-      "Yes, you can upgrade or downgrade your plan at any time from your account settings. Changes will be reflected in your next billing cycle.",
+      "Sim, você pode subir ou descer de plano a qualquer momento nas configurações da conta. A mudança vale a partir do próximo ciclo de cobrança.",
   },
   {
     value: "item-3",
-    trigger: "What payment methods do you accept?",
+    trigger: "Quais formas de pagamento vocês aceitam?",
     content:
-      "We accept all major credit cards, PayPal, and bank transfers. All payments are processed securely through our payment partners.",
+      "Aceitamos os principais cartões de crédito, Pix e boleto. Todos os pagamentos são processados com segurança pelos nossos parceiros.",
   },
 ];
 
-export function AccordionBasic() {
+export default function AccordionBasic() {
   return (
-    <Accordion
-      type="single"
-      collapsible
-      defaultValue="item-1"
-      className="max-w-lg"
-    >
+    <Accordion defaultValue={["item-1"]} className="mx-auto max-w-lg">
       {items.map((item) => (
         <AccordionItem key={item.value} value={item.value}>
           <AccordionTrigger>{item.trigger}</AccordionTrigger>

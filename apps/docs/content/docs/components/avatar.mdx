@@ -19,7 +19,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@blips/ui/components/avatar
 
 ```tsx
 <Avatar>
-  <AvatarImage src="https://github.com/shadcn.png" />
+  <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
   <AvatarFallback>CN</AvatarFallback>
 </Avatar>
 ```
@@ -28,7 +28,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@blips/ui/components/avatar
 
 ### Básico
 
-Um componente de avatar básico com uma imagem e um fallback.
+Um avatar com imagem e fallback. O fallback (iniciais) aparece enquanto a imagem carrega ou quando ela falha.
 
 <ComponentPreview name="avatar-basic" />
 
@@ -74,11 +74,19 @@ Você pode usar o componente `Avatar` como gatilho para um menu dropdown.
 
 <ComponentPreview name="avatar-dropdown" />
 
+O gatilho recebe o botão pela prop `render` do Base UI, no lugar do antigo `asChild`.
+
+### Em estado vazio
+
+Um `AvatarGroup` funciona bem como mídia de um componente `Empty`.
+
+<ComponentPreview name="avatar-empty" />
+
 ## Referência da API
 
 ### Avatar
 
-O componente `Avatar` é o componente raiz que envolve a imagem do avatar e o fallback.
+O componente `Avatar` é o componente raiz que envolve a imagem do avatar e o fallback. Aceita todas as props do `Avatar.Root` do Base UI.
 
 | Prop        | Tipo                        | Padrão      |
 | ----------- | --------------------------- | ----------- |
@@ -87,7 +95,7 @@ O componente `Avatar` é o componente raiz que envolve a imagem do avatar e o fa
 
 ### AvatarImage
 
-O componente `AvatarImage` exibe a imagem do avatar. Ele aceita todas as props de Radix UI Avatar Image.
+O componente `AvatarImage` exibe a imagem do avatar. Ele aceita todas as props do `Avatar.Image` do Base UI, incluindo `onLoadingStatusChange` (`"idle" | "loading" | "loaded" | "error"`).
 
 | Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
@@ -97,10 +105,11 @@ O componente `AvatarImage` exibe a imagem do avatar. Ele aceita todas as props d
 
 ### AvatarFallback
 
-O componente `AvatarFallback` exibe um fallback quando a imagem falha ao carregar. Ele aceita todas as props de Radix UI Avatar Fallback.
+O componente `AvatarFallback` exibe um fallback quando a imagem falha ao carregar. Ele aceita todas as props do `Avatar.Fallback` do Base UI.
 
 | Prop        | Tipo     | Padrão  |
 | ----------- | -------- | ------- |
+| `delay`     | `number` | -       |
 | `className` | `string` | -       |
 
 ### AvatarBadge
@@ -127,4 +136,19 @@ O componente `AvatarGroupCount` exibe um indicador de contagem em um grupo de av
 | ----------- | -------- | ------- |
 | `className` | `string` | -       |
 
-Para mais informações sobre as props de Radix UI Avatar, consulte a [documentação do Radix UI](https://www.radix-ui.com/primitives/docs/components/avatar#api-reference).
+Para mais informações sobre as props, consulte a [documentação do Base UI](https://base-ui.com/react/components/avatar).
+
+## Migrando da v2
+
+- **Primitivo**: Radix trocado pelo `Avatar` do Base UI. As props de `Avatar`, `AvatarImage` e `AvatarFallback` passam a ser as do Base UI.
+- **`delayMs` virou `delay`** em `AvatarFallback`.
+- **`asChild` não existe**: use `render` para trocar o elemento.
+- **Visual**: o `Avatar` perdeu `overflow-hidden` e ganhou um anel interno via `::after`. `AvatarImage` agora é `rounded-full object-cover`.
+
+```tsx
+// v2
+<AvatarFallback delayMs={600}>CN</AvatarFallback>
+
+// v3
+<AvatarFallback delay={600}>CN</AvatarFallback>
+```

@@ -18,14 +18,20 @@ import { ToggleGroup, ToggleGroupItem } from "@blips/ui/components/toggle-group"
 ```
 
 ```tsx
-<ToggleGroup type="single">
+<ToggleGroup defaultValue={["a"]}>
   <ToggleGroupItem value="a">A</ToggleGroupItem>
   <ToggleGroupItem value="b">B</ToggleGroupItem>
   <ToggleGroupItem value="c">C</ToggleGroupItem>
 </ToggleGroup>
 ```
 
+A seleção é única por padrão. Para permitir vários itens ligados, passe `multiple`. Em ambos os modos `value`, `defaultValue` e `onValueChange` trabalham com **array**.
+
 ## Exemplos
+
+### Seleção única
+
+<ComponentPreview name="toggle-group-single" />
 
 ### Outline
 
@@ -33,11 +39,35 @@ Use `variant="outline"` para um estilo com contorno.
 
 <ComponentPreview name="toggle-group-outline" />
 
+### Tamanhos
+
+Use a prop `size` no grupo; ela é repassada a todos os itens.
+
+<ComponentPreview name="toggle-group-size" />
+
 ### Espaçamento
 
-Use `spacing` para adicionar espaço entre os itens do toggle group.
+Use `spacing` para controlar o espaço entre os itens. O padrão é `2`; com `spacing={0}` os itens ficam grudados, com as bordas internas unificadas.
 
 <ComponentPreview name="toggle-group-spacing" />
+
+### Com ícones
+
+Itens com ícone e texto, estilizados pelo `aria-pressed`.
+
+<ComponentPreview name="toggle-group-icons" />
+
+### Vertical
+
+Use `orientation="vertical"` para empilhar os itens.
+
+<ComponentPreview name="toggle-group-vertical" />
+
+### Controlado
+
+Controle o valor com `value` e `onValueChange`. No modo único o valor também é um array.
+
+<ComponentPreview name="toggle-group-controlled" />
 
 ### Desabilitado
 
@@ -45,4 +75,52 @@ Use `spacing` para adicionar espaço entre os itens do toggle group.
 
 ## Referência da API
 
-Consulte a documentação do [Radix Toggle Group](https://www.radix-ui.com/docs/primitives/components/toggle-group#api-reference).
+### ToggleGroup
+
+Aceita todas as props do `ToggleGroup` do Base UI.
+
+| Prop            | Tipo                                         | Padrão         |
+| --------------- | -------------------------------------------- | -------------- |
+| `multiple`      | `boolean`                                    | `false`        |
+| `value`         | `string[]`                                   | -              |
+| `defaultValue`  | `string[]`                                   | -              |
+| `onValueChange` | `(value: string[], eventDetails) => void`    | -              |
+| `variant`       | `"default" \| "outline"`                     | `"default"`    |
+| `size`          | `"default" \| "sm" \| "lg"`                  | `"default"`    |
+| `spacing`       | `number`                                     | `2`            |
+| `orientation`   | `"horizontal" \| "vertical"`                 | `"horizontal"` |
+| `loopFocus`     | `boolean`                                    | `true`         |
+| `disabled`      | `boolean`                                    | `false`        |
+
+### ToggleGroupItem
+
+Aceita todas as props do `Toggle` do Base UI. A prop `value` é obrigatória para o item participar do grupo.
+
+Consulte a documentação do [Base UI Toggle Group](https://base-ui.com/react/components/toggle-group).
+
+## Migrando da v2
+
+- **`type` foi removida.** Seleção única é o padrão; para várias, use a prop booleana `multiple`.
+- **`value` e `defaultValue` são sempre array**, também no modo único. `onValueChange` recebe `(value: string[], eventDetails)`.
+- **`rovingFocus` e `loop`** viraram `loopFocus`.
+- **`spacing` padrão mudou de `0` para `2`**: os itens saem separados. Para o visual grudado de antes, passe `spacing={0}`.
+- **Estado do item**: `data-pressed` / `aria-pressed` no lugar de `data-state="on"`.
+- **`orientation="vertical"` agora empilha os itens.** Na v2 a prop já existia (vinha do Radix), mas só mudava a navegação por teclado; o layout continuava horizontal.
+
+```tsx
+// v2
+<ToggleGroup type="single" value={align} onValueChange={setAlign}>
+  <ToggleGroupItem value="left">Esquerda</ToggleGroupItem>
+  <ToggleGroupItem value="right">Direita</ToggleGroupItem>
+</ToggleGroup>
+
+// v3
+<ToggleGroup
+  spacing={0}
+  value={[align]}
+  onValueChange={(value) => setAlign(value[0])}
+>
+  <ToggleGroupItem value="left">Esquerda</ToggleGroupItem>
+  <ToggleGroupItem value="right">Direita</ToggleGroupItem>
+</ToggleGroup>
+```

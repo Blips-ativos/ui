@@ -149,7 +149,7 @@ adjacente (ver `accessibility.md`)_
 
 Mudança de estado precisa ser **anunciada** e **focada** corretamente.
 Componentes: `Sonner/Toaster` (toast = `role="status"` polite por default),
-`Alert` (envolva com a live region certa), `AlertDialog` (Radix entrega
+`Alert` (envolva com a live region certa), `AlertDialog` (a primitiva — Radix na v2.x, Base UI na v3.x — entrega
 `role="alertdialog"` + foco). Por quê: sem live region o leitor de tela não
 percebe que dados chegaram, falharam ou foram salvos.
 
@@ -159,7 +159,7 @@ percebe que dados chegaram, falharam ou foram salvos.
 | Loading termina (ação iniciada pelo usuário) | — | mover foco ao conteúdo carregado |
 | Sucesso não-crítico / confirmação | `role="status"` + `aria-live="polite"` | **não** mover foco |
 | Erro inline no submit | `role="alert"` + `aria-live="assertive"` na mensagem | mover foco ao 1º campo com erro |
-| Erro crítico / confirmação destrutiva | `role="alertdialog"` (assertive) | mover foco ao dialog (Radix `AlertDialog`) |
+| Erro crítico / confirmação destrutiva | `role="alertdialog"` (assertive) | mover foco ao dialog (`AlertDialog` da lib) |
 
 **Regra de ouro (bloqueante):** a **live region precisa EXISTIR no DOM ANTES**
 do conteúdo chegar. Adicionar `aria-live` junto com o conteúdo **não** dispara

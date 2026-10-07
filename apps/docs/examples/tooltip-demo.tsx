@@ -12,11 +12,11 @@ export default function TooltipDemo() {
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline">Hover</Button>
+        <TooltipTrigger render={<Button variant="outline" className="w-fit" />}>
+          Passe o mouse
         </TooltipTrigger>
         <TooltipContent>
-          <p>Add to library</p>
+          <p>Adicionar à biblioteca</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

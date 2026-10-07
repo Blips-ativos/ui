@@ -2,40 +2,46 @@
 
 Guide for creating charts using Recharts with shadcn/ui components.
 
+> **Versão da lib:** a v2.x usa **recharts 2** (2.15.x) e a v3.x usa **recharts 3** (3.10.x).
+> A API de `ChartContainer`/`ChartTooltip`/`ChartLegend` é a mesma; mudam os tipos do recharts,
+> alguns defaults e props removidas — ver [v3.x — Base UI](#v3x--base-ui) e
+> [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Sub-References
 
 | Resource | File | When to use |
 |----------|------|-------------|
-| Theming | [theming-reference.md](theming-reference.md) | CSS variables, hex/hsl/oklch colors |
-| Tooltip | [tooltip-reference.md](tooltip-reference.md) | Customize tooltips |
-| Legend | [legend-reference.md](legend-reference.md) | Add legends |
+| Theming | [theming.md](theming.md) | CSS variables, hex/hsl/oklch colors |
+| Tooltip | [tooltip.md](tooltip.md) | Customize tooltips |
+| Legend | [legend.md](legend.md) | Add legends |
 
 ---
 
 ## Instalacao
 
-```bash
-pnpm dlx shadcn@latest add chart
-```
+O `chart` já vem na `@blips/ui` (`@blips/ui/components/chart`) — não rode `shadcn add`. Os
+gráficos importam `Bar`, `XAxis` etc. direto de `recharts`, então o app precisa de `recharts`
+na **mesma major da lib**: `recharts@^3` na v3.x, `recharts@2.15.x` na v2.x.
 
-Adicione as cores no CSS:
+Os tokens `--chart-1` a `--chart-5` já vêm no `globals.css` da lib. Só sobrescreva se precisar
+de outra paleta:
 
 ```css
 @layer base {
   :root {
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
+    --chart-1: oklch(0.905 0.182 98.111);
+    --chart-2: oklch(0.795 0.184 86.047);
+    --chart-3: oklch(0.681 0.162 75.834);
+    --chart-4: oklch(0.554 0.135 66.442);
+    --chart-5: oklch(0.476 0.114 61.907);
   }
 
   .dark {
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
+    --chart-1: oklch(0.905 0.182 98.111);
+    --chart-2: oklch(0.795 0.184 86.047);
+    --chart-3: oklch(0.681 0.162 75.834);
+    --chart-4: oklch(0.554 0.135 66.442);
+    --chart-5: oklch(0.476 0.114 61.907);
   }
 }
 ```
@@ -104,13 +110,13 @@ export function MyChart() {
 O `ChartConfig` define labels, icones e cores para o chart:
 
 ```tsx
-import { Monitor } from "@phosphor-icons/react"
+import { MonitorIcon } from "@phosphor-icons/react"
 import { type ChartConfig } from "@blips/ui/components/chart"
 
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    icon: Monitor,
+    icon: MonitorIcon,
     color: "var(--chart-1)",
     // OU tema com light/dark
     theme: {
@@ -143,14 +149,15 @@ const chartData = [
 ### Com Tailwind
 
 ```tsx
-<LabelList className="fill-[--color-desktop]" />
+<LabelList className="fill-(--color-desktop)" />
 ```
 
 ---
 
 ## Acessibilidade
 
-Adicione `accessibilityLayer` para suporte a teclado e leitores de tela:
+`accessibilityLayer` dá suporte a teclado e leitores de tela. No recharts 3 (v3.x) ele já é
+`true` por padrão; no recharts 2 (v2.x) precisa ser passado:
 
 ```tsx
 <BarChart accessibilityLayer data={chartData}>
@@ -163,7 +170,7 @@ Adicione `accessibilityLayer` para suporte a teclado e leitores de tela:
 ### FACA
 
 - **Defina `min-h-[VALUE]` no ChartContainer** - Obrigatorio para responsividade
-- **Use `accessibilityLayer`** - Melhora acessibilidade
+- **Use `accessibilityLayer`** - Melhora acessibilidade (obrigatório passar na v2.x; default na v3.x)
 - **Use CSS variables para cores** - Suporta dark mode automaticamente
 - **Defina `chartConfig` tipado** - Use `satisfies ChartConfig`
 - **Use componentes shadcn para Tooltip/Legend** - Consistencia visual
@@ -174,6 +181,72 @@ Adicione `accessibilityLayer` para suporte a teclado e leitores de tela:
 - **Nao use cores hardcoded** - Prefira `var(--color-KEY)` ou `var(--chart-N)`
 - **Nao importe Recharts tooltip/legend** - Use `ChartTooltip`/`ChartLegend`
 - **Nao esqueca `vertical={false}` no CartesianGrid** - Padrao visual
+
+---
+
+## v3.x — Base UI
+
+- **recharts 3.10.x.** Siga o guia de migração do recharts 3 em código que usa a API do
+  recharts direto: algumas props/tipos foram removidos ou renomeados, o estado interno passou
+  para hooks (`useActiveTooltipLabel`, `useIsTooltipActive`…) e `Customized` deixou de ser
+  necessário (componentes próprios podem ser filhos diretos do gráfico; ele ainda é exportado).
+- `ChartContainer` ganhou `initialDimension` (`{ width, height }`, default `320x200`),
+  repassado ao `ResponsiveContainer` para a primeira renderização/SSR sem medida.
+- `ChartTooltipContent` é tipado com `DefaultTooltipContentProps` do recharts 3 e
+  `ChartLegendContent` com `DefaultLegendContentProps`. Um `formatter`/`labelFormatter` tipado
+  contra o recharts 2 pode precisar de ajuste de tipo.
+- Conteúdo customizado de tooltip: tipe com `TooltipContentProps` (recharts 3), não
+  `TooltipProps`.
+- O tooltip agora mostra valores `0` (antes o zero sumia) e converte não-números com
+  `String()`; container `min-w-32 text-xs/relaxed`.
+- `accessibilityLayer` já é `true` por padrão.
+
+```tsx
+import type { TooltipContentProps } from "recharts"
+
+function VendasTooltip({ active, payload, label }: TooltipContentProps<number, string>) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-lg bg-popover px-2.5 py-1.5 text-xs ring-1 ring-foreground/10">
+      {label}: {payload[0].value}
+    </div>
+  )
+}
+
+<ChartContainer config={chartConfig} initialDimension={{ width: 600, height: 300 }}>
+  <BarChart data={chartData}>
+    <ChartTooltip content={VendasTooltip} />
+  </BarChart>
+</ChartContainer>
+```
+
+## v2.x — Radix
+
+- **recharts 2.15.x.** `ChartLegendContent` recebe `Pick<LegendProps, "payload" | "verticalAlign">`.
+- Sem `initialDimension` no `ChartContainer`.
+- Conteúdo customizado de tooltip: tipe com `TooltipProps<ValueType, NameType>`.
+- O tooltip esconde valores `0` (`item.value && …`); container `min-w-[8rem] text-xs`.
+- Passe `accessibilityLayer` explicitamente.
+
+```tsx
+import type { TooltipProps } from "recharts"
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent"
+
+function VendasTooltip({ active, payload, label }: TooltipProps<ValueType, NameType>) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-lg border bg-background px-2.5 py-1.5 text-xs shadow-xl">
+      {label}: {payload[0].value}
+    </div>
+  )
+}
+
+<ChartContainer config={chartConfig} className="min-h-[300px] w-full">
+  <BarChart accessibilityLayer data={chartData}>
+    <ChartTooltip content={<VendasTooltip />} />
+  </BarChart>
+</ChartContainer>
+```
 
 ---
 

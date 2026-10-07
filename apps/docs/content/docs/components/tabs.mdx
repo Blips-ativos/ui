@@ -28,6 +28,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@blips/ui/components/t
 </Tabs>
 ```
 
+Sem `defaultValue`, a primeira aba (índice `0`) começa ativa. Por padrão a aba só é ativada com clique ou Enter/Espaço; passe `activateOnFocus` no `TabsList` para ativar ao navegar com as setas.
+
 ## Exemplos
 
 ### Linha
@@ -44,12 +46,54 @@ Use `orientation="vertical"` para abas verticais.
 
 ### Desabilitado
 
+Use a prop `disabled` no `TabsTrigger`.
+
 <ComponentPreview name="tabs-disabled" />
 
 ### Ícones
 
+Marque o ícone com `data-icon="inline-start"` (ou `inline-end`) para o trigger ajustar o espaçamento.
+
 <ComponentPreview name="tabs-icons" />
+
+### Só ícone
+
+Quando o trigger tem só ícone, dê um `aria-label` a ele.
+
+<ComponentPreview name="tabs-icon-only" />
+
+### Com menu
+
+<ComponentPreview name="tabs-dropdown" />
+
+## Migrando da v2
+
+- `TabsTrigger` agora é `Tabs.Tab` e `TabsContent` é `Tabs.Panel`. Os nomes exportados não mudaram.
+- `onValueChange` recebe `(value, eventDetails)`, e o valor pode ser de qualquer tipo.
+- `activationMode` saiu da raiz. No lugar entra `activateOnFocus` no `TabsList`, com padrão `false` (ativação manual). No Radix o padrão era automático.
+- `forceMount` no `TabsContent` virou `keepMounted`.
+- Atributos de estado: `data-state="active"` virou `data-active` na aba. Seletores como `data-[state=active]:` precisam virar `data-active:`.
+- `asChild` no trigger virou `render`.
+- Visual: `TabsList` passou de `h-9` para `h-8`, e o trigger e o conteúdo usam `text-xs`.
+
+```tsx
+// v2
+<Tabs defaultValue="a" activationMode="automatic">
+  <TabsList>
+    <TabsTrigger value="a" className="data-[state=active]:font-bold">A</TabsTrigger>
+  </TabsList>
+  <TabsContent value="a" forceMount>…</TabsContent>
+</Tabs>
+
+// v3
+<Tabs defaultValue="a">
+  <TabsList activateOnFocus>
+    <TabsTrigger value="a" className="data-active:font-bold">A</TabsTrigger>
+  </TabsList>
+  <TabsContent value="a" keepMounted>…</TabsContent>
+</Tabs>
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix Tabs](https://www.radix-ui.com/docs/primitives/components/tabs#api-reference).
+Consulte a documentação do [Base UI Tabs](https://base-ui.com/react/components/tabs).

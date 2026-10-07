@@ -7,14 +7,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@blips/ui/components/empty";
-import { ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
+import { ArrowClockwiseIcon, WarningCircleIcon } from "@phosphor-icons/react";
 
 export default function EmptyError() {
   return (
     <Empty className="border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <WarningCircle />
+          <WarningCircleIcon />
         </EmptyMedia>
         <EmptyTitle>Não foi possível carregar</EmptyTitle>
         <EmptyDescription>
@@ -24,7 +24,7 @@ export default function EmptyError() {
       </EmptyHeader>
       <EmptyContent>
         <Button size="sm" variant="outline">
-          <ArrowClockwise />
+          <ArrowClockwiseIcon data-icon="inline-start" />
           Tentar novamente
         </Button>
       </EmptyContent>

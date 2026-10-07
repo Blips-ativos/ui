@@ -7,9 +7,14 @@ própria lib). Pressupõe App Router; para Pages Router o CSS entra em
 ## 1. Instalar
 
 ```bash
-pnpm add @blips/ui @phosphor-icons/react
+# instalação nova → v3.x (Base UI)
+pnpm add @blips/ui@^3 @phosphor-icons/react
 pnpm add -D tailwindcss @tailwindcss/postcss postcss
 ```
+
+Repo que **já está na v2.x** (Radix): mantenha a major — `pnpm add @blips/ui@^2`. Subir de
+2.x para 3.x é migração de API, não parte da instalação. Detecção de trilha no `SKILL.md`.
+`transpilePackages`, PostCSS, CSS de entrada e regra de imports são iguais nas duas.
 
 `@phosphor-icons/react` entra como dep direta porque o código do app importa
 ícones. Se o app for ter formulários, adicione também:
@@ -17,6 +22,10 @@ pnpm add -D tailwindcss @tailwindcss/postcss postcss
 ```bash
 pnpm add react-hook-form zod @hookform/resolvers
 ```
+
+Gráficos importam `recharts` direto: adicione-o **na mesma major da lib** —
+`pnpm add recharts@^3` na v3.x, `pnpm add recharts@2.15.4` na v2.x. Nada muda no peer do
+React (`^17 || ^18 || ^19` nas duas).
 
 ## 2. PostCSS
 
@@ -93,7 +102,7 @@ Página Server Component (padrão do App Router):
 
 ```tsx
 import { Button } from "@blips/ui/components/button";
-import { ChatCircleText } from "@phosphor-icons/react/dist/ssr";
+import { ChatCircleTextIcon } from "@phosphor-icons/react/dist/ssr";
 
 export default function Page() {
   return (
@@ -102,13 +111,17 @@ export default function Page() {
         Central de Ajuda
       </h1>
       <Button>
-        <ChatCircleText />
+        <ChatCircleTextIcon data-icon="inline-start" />
         Abrir chamado
       </Button>
     </main>
   );
 }
 ```
+
+`data-icon="inline-start"` ajusta o padding do ícone no Button da **v3.x**; na **v2.x** o
+atributo é ignorado (o Button ajusta sozinho) — o exemplo funciona nas duas. Ícones com
+sufixo `Icon` existem no Phosphor 2.1.10 das duas trilhas.
 
 Gotchas RSC (verificados):
 

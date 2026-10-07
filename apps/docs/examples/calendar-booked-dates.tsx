@@ -3,9 +3,9 @@
 import { Calendar } from "@blips/ui/components/calendar";
 import { Card, CardContent } from "@blips/ui/components/card";
 import * as React from "react";
-import { es } from "react-day-picker/locale";
+import { ptBR } from "react-day-picker/locale";
 
-export function CalendarBookedDates() {
+export default function CalendarBookedDates() {
   const [date, setDate] = React.useState<Date | undefined>(
     new Date(new Date().getFullYear(), 1, 3)
   );
@@ -22,6 +22,7 @@ export function CalendarBookedDates() {
           defaultMonth={date}
           selected={date}
           onSelect={setDate}
+          locale={ptBR}
           disabled={bookedDates}
           modifiers={{
             booked: bookedDates,

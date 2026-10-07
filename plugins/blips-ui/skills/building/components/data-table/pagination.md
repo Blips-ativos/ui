@@ -2,6 +2,10 @@
 
 Implementação de paginação em data tables.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Decision Tree: Qual Estratégia Usar?](#decision-tree-qual-estratégia-usar)
@@ -14,6 +18,8 @@ Implementação de paginação em data tables.
 - [Reset de Página ao Filtrar](#reset-de-página-ao-filtrar)
 - [Paginação com URL Params](#paginação-com-url-params)
 - [Paginação com Cursor (Datasets Grandes)](#paginação-com-cursor-datasets-grandes)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Decision Tree: Qual Estratégia Usar?
 
@@ -95,10 +101,10 @@ type PaginationState = {
 
 import { Table } from "@tanstack/react-table";
 import {
-  CaretLeft,
-  ChevronRight,
-  CaretDoubleLeft,
-  CaretDoubleRight,
+  CaretLeftIcon,
+  CaretRightIcon,
+  CaretDoubleLeftIcon,
+  CaretDoubleRightIcon,
 } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
@@ -169,7 +175,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Primeira página</span>
-            <CaretDoubleLeft className="h-4 w-4" />
+            <CaretDoubleLeftIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -178,7 +184,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Página anterior</span>
-            <CaretLeft className="h-4 w-4" />
+            <CaretLeftIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -187,7 +193,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Próxima página</span>
-            <ChevronRight className="h-4 w-4" />
+            <CaretRightIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="outline"
@@ -196,7 +202,7 @@ export function DataTablePagination<TData>({
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Última página</span>
-            <CaretDoubleRight className="h-4 w-4" />
+            <CaretDoubleRightIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -591,3 +597,16 @@ export function CursorPaginatedTable() {
 - Quando usuário precisa "pular" para página específica
 - Quando deep linking para página específica é necessário
 - Datasets pequenos (< 1000 registros)
+
+## v3.x — Base UI
+
+- `Select` de tamanho de página: rótulo = `value`, então funciona sem `items`.
+  `onValueChange(value, eventDetails)`: `(value) => table.setPageSize(Number(value))` continua válido.
+- `SelectContent` sobrepõe o trigger alinhando o item (`alignItemWithTrigger`, default `true`).
+- Botões `size="icon"` são `size-7` (densidade base-mira).
+
+## v2.x — Radix
+
+- Mesmo código de paginação; `Select` com `value` sempre `string` (`` `${pageSize}` ``).
+- `SelectContent position="popper"` para o popup abaixo do trigger.
+- Botões `size="icon"` são `size-9`.

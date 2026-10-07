@@ -1,13 +1,12 @@
 import { Checkbox } from "@blips/ui/components/checkbox";
+import { Field } from "@blips/ui/components/field";
 import { Label } from "@blips/ui/components/label";
 
 export default function LabelDemo() {
   return (
-    <div>
-      <div className="flex items-center space-x-2">
-        <Checkbox id="terms" />
-        <Label htmlFor="terms">Accept terms and conditions</Label>
-      </div>
-    </div>
+    <Field orientation="horizontal" className="w-fit">
+      <Checkbox id="label-demo-terms" />
+      <Label htmlFor="label-demo-terms">Aceito os termos e condições</Label>
+    </Field>
   );
 }

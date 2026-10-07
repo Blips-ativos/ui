@@ -2,6 +2,8 @@
 
 Campos dinâmicos usando controle manual com `field.value` e `field.onChange`.
 
+API igual na v2.x e na v3.x (ícones no padrão `*Icon`, que existe nas duas).
+
 **NÃO use `useFieldArray`** - prefira o controle manual para maior flexibilidade.
 
 ## Table of Contents
@@ -30,7 +32,7 @@ type FormValues = z.infer<typeof schema>
 ## Componente Completo
 
 ```typescript
-import { Plus, Trash } from '@phosphor-icons/react'
+import { PlusIcon, TrashIcon } from '@phosphor-icons/react'
 import { maskPhone } from '@/lib/masks'
 
 function ContactsForm({ formRef, onSubmit }: FormProps) {
@@ -62,7 +64,7 @@ function ContactsForm({ formRef, onSubmit }: FormProps) {
                     ])
                   }}
                 >
-                  <Plus className="h-4 w-4 mr-1" />
+                  <PlusIcon className="h-4 w-4 mr-1" />
                   Adicionar
                 </Button>
               </div>
@@ -104,11 +106,12 @@ function ContactsForm({ formRef, onSubmit }: FormProps) {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label="Remover item"
                         onClick={() => {
                           field.onChange(field.value.filter((_, i) => i !== index))
                         }}
                       >
-                        <Trash className="h-4 w-4 text-destructive" />
+                        <TrashIcon className="h-4 w-4 text-destructive" />
                       </Button>
                     )}
                   </div>
@@ -185,7 +188,7 @@ function duplicateItem<T>(field: { value: T[]; onChange: (v: T[]) => void }, ind
           size="sm"
           onClick={() => addItem(field, { name: '', quantity: 1 })}
         >
-          <Plus className="h-4 w-4 mr-1" />
+          <PlusIcon className="h-4 w-4 mr-1" />
           Adicionar
         </Button>
       </div>
@@ -206,18 +209,20 @@ function duplicateItem<T>(field: { value: T[]; onChange: (v: T[]) => void }, ind
               type="button"
               variant="ghost"
               size="icon"
+              aria-label="Duplicar item"
               onClick={() => duplicateItem(field, index)}
             >
-              <Copy className="h-4 w-4" />
+              <CopyIcon className="h-4 w-4" />
             </Button>
             {field.value.length > 1 && (
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
+                aria-label="Remover item"
                 onClick={() => removeItem(field, index)}
               >
-                <Trash className="h-4 w-4 text-destructive" />
+                <TrashIcon className="h-4 w-4 text-destructive" />
               </Button>
             )}
           </div>

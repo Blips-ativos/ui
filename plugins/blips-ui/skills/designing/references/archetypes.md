@@ -22,8 +22,9 @@ densidade/profundidade/layout do zero a cada tela.
   espaçamento, estratégia de sombra, escala de peso). Traduza cada valor para
   as classes/tokens reais (`bg-card`, `border-border`, `rounded-lg`,
   `font-mono`, `tabular-nums`, `shadow-sm`…).
-- Mapeie sempre ao stack real: shadcn/Radix via `@blips/ui`, Tailwind v4
-  CSS-first, ícones `@phosphor-icons/react`, Recharts para gráficos.
+- Mapeie sempre ao stack real: shadcn via `@blips/ui` (Base UI na v3.x, Radix na
+  v2.x — detecção de versão no Passo 0 do `SKILL.md` do building), Tailwind v4 CSS-first, ícones
+  `@phosphor-icons/react` (nomes `*Icon`), Recharts para gráficos (3 na v3.x, 2 na v2.x).
 - **Fronteira com `creative-presets.md`.** Arquétipo é vocabulário de direção; o
   COMO binário (bans/técnica/checklist) mora em `creative-presets.md` e na
   reviewing; em conflito, a reference canônica vence.
@@ -96,7 +97,7 @@ botões pill (9999px); sombra mínima (ring `0px 0px 0px 1px`).
 `primary` é o protagonista alegre** — exatamente o papel do lime `#9fe870` na
 Wise. Também headers de produto que querem energia sem perder confiança.
 **Tomar emprestado.** Acento como herói (grandes blocos de `bg-primary` com
-`text-primary-foreground` `#000`); títulos display agressivos (Quicksand 700,
+`text-primary-foreground` em `yellow-900`); títulos display agressivos (Quicksand 700,
 `tracking-tight`); radius generoso (`rounded-2xl`); **hover de escala discreto**
 (`scale(1.05)`) — note: só fora de produto; em app vale a regra 150–250ms sem
 spring.

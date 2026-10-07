@@ -1,0 +1,143 @@
+---
+title: Stack Trace
+description: Stack trace de JavaScript interpretado, com tipo e mensagem do erro, frames recolhíveis, arquivos clicáveis e botão de copiar.
+---
+
+<ComponentPreview name="ai-stack-trace-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Este componente não exige nenhum peer opcional: ele interpreta a stack trace por conta própria e não usa o `ansi-to-react` (quem usa é o [Terminal](/docs/ai/terminal)). A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  StackTrace,
+  StackTraceActions,
+  StackTraceContent,
+  StackTraceCopyButton,
+  StackTraceError,
+  StackTraceErrorMessage,
+  StackTraceErrorType,
+  StackTraceExpandButton,
+  StackTraceFrames,
+  StackTraceHeader,
+} from "@blips/ai/components/stack-trace"
+```
+
+```tsx
+<StackTrace trace={erro.stack}>
+  <StackTraceHeader>
+    <StackTraceError>
+      <StackTraceErrorType />
+      <StackTraceErrorMessage />
+    </StackTraceError>
+    <StackTraceActions>
+      <StackTraceCopyButton />
+      <StackTraceExpandButton />
+    </StackTraceActions>
+  </StackTraceHeader>
+  <StackTraceContent>
+    <StackTraceFrames />
+  </StackTraceContent>
+</StackTrace>
+```
+
+Use o `StackTrace` quando uma ferramenta do agente devolve um erro com pilha (falha de teste, exceção num script). Para a saída completa de um comando, use o [Terminal](/docs/ai/terminal).
+
+O `trace` é a string crua, no formato do V8 (`Error.prototype.stack` do Node e do Chrome). A primeira linha vira tipo e mensagem quando segue `TipoError: mensagem`; as linhas que começam com `at` viram frames. Frames de `node_modules`, `node:` e `internal/` são marcados como internos e aparecem esmaecidos. Stack traces de outras linguagens (Python, por exemplo) não são interpretadas: só a primeira linha aparece como mensagem.
+
+Clicar no cabeçalho abre e fecha os frames; os botões dentro de `StackTraceActions` não disparam esse clique.
+
+## Exemplos
+
+### Arquivos clicáveis e sem frames internos
+
+Com `onFilePathClick`, cada caminho de arquivo vira um botão que entrega caminho, linha e coluna ao app (para abrir no editor, por exemplo). `showInternalFrames={false}` esconde os frames de dependências e do Node.
+
+<ComponentPreview name="ai-stack-trace-arquivos" />
+
+## Referência da API
+
+### StackTrace
+
+Raiz. Interpreta o `trace` e guarda o estado aberto ou fechado. Aceita as props de `div`.
+
+| Prop              | Tipo                                                       | Padrão      |
+| ----------------- | ---------------------------------------------------------- | ----------- |
+| `trace`           | `string`                                                   | obrigatória |
+| `open`            | `boolean`                                                  |             |
+| `defaultOpen`     | `boolean`                                                  | `false`     |
+| `onOpenChange`    | `(open: boolean) => void`                                  |             |
+| `onFilePathClick` | `(filePath: string, line?: number, column?: number) => void` |             |
+
+### StackTraceHeader
+
+Gatilho que abre e fecha os frames. Renderiza um `div` com papel de botão, para poder conter os botões de ação. Aceita as props do `CollapsibleTrigger`.
+
+### StackTraceError
+
+Linha com ícone de alerta que envolve o tipo e a mensagem. Aceita as props de `div`.
+
+### StackTraceErrorType
+
+Tipo do erro (`TypeError`, `RangeError`…), em destaque. `children` substitui o valor interpretado.
+
+### StackTraceErrorMessage
+
+Mensagem do erro, truncada em uma linha. `children` substitui o valor interpretado.
+
+### StackTraceActions
+
+Grupo de ações do cabeçalho; impede que cliques e Enter/Espaço nele abram ou fechem o painel. Aceita as props de `div`.
+
+### StackTraceCopyButton
+
+Copia o `trace` cru. Aceita as props do [Button](/docs/components/button). `children` substitui o ícone (e aí o `aria-label` padrão não é aplicado).
+
+| Prop          | Tipo                     | Padrão                 |
+| ------------- | ------------------------ | ---------------------- |
+| `onCopy`      | `() => void`             |                        |
+| `onError`     | `(error: Error) => void` |                        |
+| `timeout`     | `number`                 | `2000`                 |
+| `copyLabel`   | `string`                 | `"Copiar stack trace"` |
+| `copiedLabel` | `string`                 | `"Copiado"`            |
+
+Como no [Snippet](/docs/ai/snippet), o `onError` divide o nome com o evento do `<button>`: confira `error instanceof Error` antes de ler `error.message`.
+
+### StackTraceExpandButton
+
+Seta que gira conforme o estado. É só um indicador visual (`div`): quem abre e fecha é o cabeçalho.
+
+### StackTraceContent
+
+Painel rolável com os frames. Aceita as props do `CollapsibleContent`.
+
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `maxHeight` | `number` | `400`  |
+
+### StackTraceFrames
+
+Lista de frames. Aceita as props de `div`.
+
+| Prop                 | Tipo        | Padrão                    |
+| -------------------- | ----------- | ------------------------- |
+| `showInternalFrames` | `boolean`   | `true`                    |
+| `emptyMessage`       | `ReactNode` | `"Nenhum frame na pilha"` |
+
+## Origem
+
+Adaptado do componente [Stack Trace](https://elements.ai-sdk.dev/components/stack-trace) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible e pelo Button da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor, traduziu os textos padrão e acrescentou as props `copyLabel`, `copiedLabel` e `emptyMessage`.

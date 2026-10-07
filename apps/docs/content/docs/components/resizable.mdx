@@ -1,15 +1,15 @@
 ---
 title: Resizable
-description: Grupos de paineis e layouts redimensionaveis e acessiveis, com suporte a teclado.
+description: Grupos de painéis e layouts redimensionáveis e acessíveis, com suporte a teclado.
 ---
 
 <ComponentPreview name="resizable-demo" />
 
 ## Sobre
 
-O componente `Resizable` e construido sobre o [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) de [bvaughn](https://github.com/bvaughn).
+O componente `Resizable` é construído sobre o [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels) v4, de [bvaughn](https://github.com/bvaughn).
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -27,11 +27,13 @@ import {
 
 ```tsx
 <ResizablePanelGroup orientation="horizontal">
-  <ResizablePanel>Um</ResizablePanel>
+  <ResizablePanel defaultSize="50%">Um</ResizablePanel>
   <ResizableHandle />
-  <ResizablePanel>Dois</ResizablePanel>
+  <ResizablePanel defaultSize="50%">Dois</ResizablePanel>
 </ResizablePanelGroup>
 ```
+
+> **Atenção:** no v4, `defaultSize`, `minSize` e `maxSize` numéricos são lidos em **pixels**. Para porcentagem, passe uma string: `defaultSize="50%"`.
 
 ## Exemplos
 
@@ -41,34 +43,42 @@ Use `orientation="vertical"` para redimensionamento vertical.
 
 <ComponentPreview name="resizable-vertical" />
 
-### Alca de arraste
+### Alça de arraste
 
-Use a prop `withHandle` no `ResizableHandle` para exibir uma alca de arraste visivel.
+Use a prop `withHandle` no `ResizableHandle` para exibir uma alça de arraste visível.
 
 <ComponentPreview name="resizable-handle" />
 
-## Referencia da API
+### Controlado
 
-Consulte a documentacao do [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels/tree/main/packages/react-resizable-panels).
+Use `onLayoutChange` no grupo para ler o tamanho de cada painel, identificado pelo `id`.
 
-## Changelog
+<ComponentPreview name="resizable-controlled" />
 
-### 2025-02-02 `react-resizable-panels` v4
+## Migrando da v2
 
-Atualizado para o `react-resizable-panels` v4. Consulte as [notas da versao v4.0.0](https://github.com/bvaughn/react-resizable-panels/releases/tag/4.0.0) para os detalhes completos.
+A API não mudou: continua o `react-resizable-panels` v4. A mudança é visual:
 
-Se voce usa os primitives do `react-resizable-panels` diretamente, observe as seguintes mudancas:
+- Com `withHandle`, a alça deixa de ser uma caixinha com o ícone `DotsSixVertical` e vira uma barra fina (`h-6 w-1 rounded-lg bg-border`).
+- Saiu `focus-visible:ring-offset-1` e entrou `ring-offset-background`.
+
+## Referência da API
+
+Consulte a documentação do [react-resizable-panels](https://github.com/bvaughn/react-resizable-panels/tree/main/packages/react-resizable-panels).
+
+### `react-resizable-panels` v4
+
+Se você usa os primitives do `react-resizable-panels` diretamente, observe as mudanças do v3 para o v4 ([notas da versão 4.0.0](https://github.com/bvaughn/react-resizable-panels/releases/tag/4.0.0)):
 
 | v3                           | v4                      |
 | ---------------------------- | ----------------------- |
 | `PanelGroup`                 | `Group`                 |
 | `PanelResizeHandle`          | `Separator`             |
-| `direction` prop             | `orientation` prop      |
+| prop `direction`             | prop `orientation`      |
 | `defaultSize={50}`           | `defaultSize="50%"`     |
 | `onLayout`                   | `onLayoutChange`        |
 | `ImperativePanelHandle`      | `PanelImperativeHandle` |
-| `ref` prop on Panel          | `panelRef` prop         |
+| prop `ref` no Panel          | prop `panelRef`         |
 | `data-panel-group-direction` | `aria-orientation`      |
 
-> **Nota:** Os componentes wrapper do shadcn/ui (`ResizablePanelGroup`, `ResizablePanel`,
-> `ResizableHandle`) permanecem inalterados.
+Os wrappers da lib (`ResizablePanelGroup`, `ResizablePanel`, `ResizableHandle`) mantêm os mesmos nomes.

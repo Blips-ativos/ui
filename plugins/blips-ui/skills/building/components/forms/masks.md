@@ -2,6 +2,8 @@
 
 As funções de máscara são utilitários do seu app (não fazem parte de `@blips/ui`). Os exemplos importam de `@/lib/masks` — ajuste o caminho para onde sua aplicação as define.
 
+API igual na v2.x e na v3.x (ícones no padrão `*Icon`, que existe nas duas).
+
 ## Funções Disponíveis
 
 ```typescript

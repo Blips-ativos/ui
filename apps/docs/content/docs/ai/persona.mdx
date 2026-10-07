@@ -1,0 +1,97 @@
+---
+title: Persona
+description: Avatar animado em Rive que reage ao estado do agente de voz — parado, ouvindo, pensando, falando ou dormindo.
+---
+
+<ComponentPreview name="ai-persona-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @rive-app/react-webgl2
+```
+
+O `persona` exige o peer opcional `@rive-app/react-webgl2` (^4): ele é importado de forma estática, então quem importa o `persona` precisa tê-lo instalado. O pacote `ai` não é usado. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+### Arquivos `.riv`: hospede os seus
+
+As animações são arquivos `.riv` que **não vêm no pacote**. Cada variante aponta para o arquivo que o AI Elements carrega em tempo de execução do blob storage da Vercel (`*.public.blob.vercel-storage.com`), que não declara licença para eles. Servem para desenvolvimento e para esta documentação; em produção, hospede os próprios `.riv` e aponte-os pela prop `src`:
+
+```tsx
+<Persona src="/persona/atendente.riv" state={estado} />
+```
+
+O arquivo precisa ter a state machine `default` com as entradas booleanas `listening`, `thinking`, `speaking` e `asleep`. Para a cor acompanhar o tema, ele precisa também de um view model com a propriedade de cor `color`. Libere o domínio dos arquivos no `connect-src` da sua Content Security Policy.
+
+## Uso
+
+```tsx
+import { Persona } from "@blips/ai/components/persona"
+```
+
+```tsx
+<Persona className="size-24" state="listening" variant="obsidian" />
+```
+
+O componente é apresentacional: o estado vem do app. Num agente de voz, um mapeamento típico é:
+
+| Momento                                    | `state`      |
+| ------------------------------------------ | ------------ |
+| Esperando a pessoa                         | `idle`       |
+| Microfone aberto (ver [Speech Input](/docs/ai/speech-input)) | `listening` |
+| Esperando o modelo (`status === "submitted"`) | `thinking` |
+| Tocando a resposta (ver [Audio Player](/docs/ai/audio-player)) | `speaking` |
+| Sessão inativa                             | `asleep`     |
+
+O Rive só inicializa um frame depois da montagem, para o ciclo de montagem dupla do Strict Mode não criar (e vazar) um contexto WebGL2. Cada `Persona` usa um contexto WebGL2 e o navegador limita quantos existem ao mesmo tempo: evite dezenas na mesma página.
+
+### Tema
+
+Nas variantes com cor dinâmica, a animação fica preta no tema claro e branca no escuro. O tema é lido do `<html>` da `@blips/ui` (atributo `data-theme` ou classe `.dark`, com `prefers-color-scheme` como último recurso) e acompanha a troca. No render inicial o componente assume o tema claro e só lê o real depois de montar, então funciona em SSR sem divergência de hidratação.
+
+## Exemplos
+
+### Variantes
+
+<ComponentPreview name="ai-persona-variantes" />
+
+| Variante   | Cor segue o tema |
+| ---------- | ---------------- |
+| `obsidian` | sim              |
+| `command`  | sim              |
+| `glint`    | sim              |
+| `halo`     | sim              |
+| `mana`     | não              |
+| `opal`     | não              |
+
+## Referência da API
+
+### Persona
+
+| Prop          | Tipo                                                         | Padrão       |
+| ------------- | ------------------------------------------------------------ | ------------ |
+| `state`       | `"idle" \| "listening" \| "thinking" \| "speaking" \| "asleep"` | obrigatório |
+| `variant`     | `"obsidian" \| "command" \| "glint" \| "halo" \| "mana" \| "opal"` | `"obsidian"` |
+| `src`         | `string` — URL de um `.riv` que substitui o da variante      | —            |
+| `className`   | `string` — no canvas, que tem `size-16` por padrão           | —            |
+| `onLoad`      | `RiveParameters["onLoad"]`                                   | —            |
+| `onLoadError` | `RiveParameters["onLoadError"]`                              | —            |
+| `onReady`     | `() => void`                                                 | —            |
+| `onPlay`      | `RiveParameters["onPlay"]`                                   | —            |
+| `onPause`     | `RiveParameters["onPause"]`                                  | —            |
+| `onStop`      | `RiveParameters["onStop"]`                                   | —            |
+
+Com `src`, a variante ainda decide se o componente procura o view model e se a cor segue o tema. Os callbacks podem mudar a cada render sem reinicializar o Rive. Uma `variant` desconhecida lança erro.
+
+O canvas não tem nome acessível: se o estado for informação relevante, mostre-o também em texto (por exemplo, "Ouvindo…" ao lado).
+
+## Origem
+
+Adaptado do componente [Persona](https://elements.ai-sdk.dev/components/persona) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. Mudanças da Blips: prop `src` para usar `.riv` próprios (o pacote não redistribui os da Vercel), `PersonaProps` exportado, leitura do tema segura para SSR e compatível com o `data-theme` da `@blips/ui`, e mensagem de erro em pt-BR. As variantes e URLs dos `.riv` são as do original.

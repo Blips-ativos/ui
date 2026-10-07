@@ -1,0 +1,165 @@
+---
+title: Test Results
+description: Resultado de uma suíte de testes com resumo por status, barra de progresso, suítes recolhíveis e detalhe das falhas.
+---
+
+<ComponentPreview name="ai-test-results-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Este componente não exige nenhum peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Test,
+  TestError,
+  TestErrorMessage,
+  TestErrorStack,
+  TestResults,
+  TestResultsContent,
+  TestResultsDuration,
+  TestResultsHeader,
+  TestResultsProgress,
+  TestResultsSummary,
+  TestSuite,
+  TestSuiteContent,
+  TestSuiteName,
+  TestSuiteStats,
+} from "@blips/ai/components/test-results"
+```
+
+```tsx
+<TestResults summary={{ passed: 11, failed: 1, skipped: 1, total: 13, duration: 2384 }}>
+  <TestResultsHeader>
+    <TestResultsSummary />
+    <TestResultsDuration />
+  </TestResultsHeader>
+  <TestResultsContent>
+    <TestResultsProgress />
+    <TestSuite name="financeiro/parcelas.test.ts" status="failed" defaultOpen>
+      <TestSuiteName />
+      <TestSuiteContent>
+        <Test name="soma as parcelas pagas" status="passed" duration={12} />
+        <Test name="antecipa as parcelas restantes" status="failed" duration={1120} />
+      </TestSuiteContent>
+    </TestSuite>
+  </TestResultsContent>
+</TestResults>
+```
+
+Use o `TestResults` quando o agente roda a suíte de testes e precisa mostrar o resultado de forma navegável. Para a saída crua do comando, use o [Terminal](/docs/ai/terminal); para um erro isolado com pilha, o [Stack Trace](/docs/ai/stack-trace).
+
+Os números são dados do app: monte o `summary` e as suítes a partir do relatório do seu runner (o JSON do Vitest, do Jest ou do pytest, por exemplo). Durações são em milissegundos e saem formatadas em pt-BR ("850 ms", "2,38 s").
+
+`TestSuiteName` é o gatilho da suíte e renderiza um `<button>`. Para pôr `TestSuiteStats` na mesma linha, coloque os dois lado a lado num `div` com `flex`, como no exemplo do topo, em vez de aninhar as contagens dentro do botão.
+
+## Exemplos
+
+### Só o resumo
+
+Sem `children`, o `TestResults` monta o cabeçalho com o resumo e a duração. `formatLabel` troca o texto da barra de progresso.
+
+<ComponentPreview name="ai-test-results-resumo" />
+
+## Referência da API
+
+### TestResults
+
+Raiz e provedor do `summary`. Aceita as props de `div`.
+
+| Prop      | Tipo                                                                          | Padrão |
+| --------- | ----------------------------------------------------------------------------- | ------ |
+| `summary` | `{ passed: number; failed: number; skipped: number; total: number; duration?: number }` |        |
+
+### TestResultsHeader
+
+Faixa superior com borda. Aceita as props de `div`.
+
+### TestResultsSummary
+
+Badges com as contagens; os de falha e ignorados só aparecem quando maiores que zero. Não renderiza sem `summary`.
+
+| Prop     | Tipo                         | Padrão                                       |
+| -------- | ---------------------------- | -------------------------------------------- |
+| `labels` | `Partial<TestResultsLabels>` | `"aprovados"`, `"com falha"`, `"ignorados"` |
+
+### TestResultsDuration
+
+Duração total formatada. Não renderiza sem `summary.duration`.
+
+### TestResultsProgress
+
+Barra com a fração aprovada (verde) e com falha (vermelho), texto e porcentagem. Não renderiza sem `summary`.
+
+| Prop          | Tipo                                         | Padrão                                |
+| ------------- | -------------------------------------------- | ------------------------------------- |
+| `formatLabel` | `(passed: number, total: number) => ReactNode` | `` `${passed}/${total} testes aprovados` `` |
+
+### TestResultsContent
+
+Área com espaçamento para a barra e as suítes. Aceita as props de `div`.
+
+### TestSuite
+
+Suíte recolhível. Aceita as props do `Collapsible` da `@blips/ui` (`open`, `defaultOpen`, `onOpenChange`…).
+
+| Prop     | Tipo                                              | Padrão      |
+| -------- | ------------------------------------------------- | ----------- |
+| `name`   | `string`                                          | obrigatória |
+| `status` | `"passed" \| "failed" \| "skipped" \| "running"` | obrigatória |
+
+### TestSuiteName
+
+Gatilho com seta, ícone de status e nome. `children` substitui o nome. Aceita as props do `CollapsibleTrigger`.
+
+### TestSuiteStats
+
+Contagens da suíte em texto colorido; cada uma só aparece quando maior que zero. `children` substitui o conteúdo.
+
+| Prop      | Tipo                         | Padrão                                       |
+| --------- | ---------------------------- | -------------------------------------------- |
+| `passed`  | `number`                     | `0`                                          |
+| `failed`  | `number`                     | `0`                                          |
+| `skipped` | `number`                     | `0`                                          |
+| `labels`  | `Partial<TestResultsLabels>` | `"aprovados"`, `"com falha"`, `"ignorados"` |
+
+### TestSuiteContent
+
+Painel com os testes, separados por linhas. Aceita as props do `CollapsibleContent`.
+
+### Test
+
+Um teste. Sem `children`, mostra status, nome e duração. Aceita as props de `div`.
+
+| Prop       | Tipo                                              | Padrão      |
+| ---------- | ------------------------------------------------- | ----------- |
+| `name`     | `string`                                          | obrigatória |
+| `status`   | `"passed" \| "failed" \| "skipped" \| "running"` | obrigatória |
+| `duration` | `number` (ms)                                     |             |
+
+`TestStatus`, `TestName` e `TestDuration` são as partes do `Test`, para montar uma linha própria; cada uma lê o `Test` mais próximo e aceita `children` para substituir o conteúdo.
+
+### TestError, TestErrorMessage, TestErrorStack
+
+Caixa vermelha com a mensagem da falha (`p`) e a pilha (`pre`). Ponha logo abaixo do `Test` que falhou.
+
+### TestResultsLabels
+
+Tipo `{ passed: string; failed: string; skipped: string }` usado pela prop `labels`.
+
+## Origem
+
+Adaptado do componente [Test Results](https://elements.ai-sdk.dev/components/test-results) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible e pelo Badge da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor, traduziu os textos e a formatação de duração e acrescentou as props `labels` e `formatLabel`. As cores de status seguem a paleta do upstream.

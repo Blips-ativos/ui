@@ -1,6 +1,8 @@
 "use client";
+
 import { Button } from "@blips/ui/components/button";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -8,73 +10,34 @@ import {
   CommandItem,
   CommandList,
 } from "@blips/ui/components/command";
-import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Gear,
-  Smiley,
-  User,
-} from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import * as React from "react";
+
 export default function CommandDialogDemo() {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <>
-      <p className="text-sm text-muted-foreground">
-        Press{" "}
-        <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">⌘</span>J
-        </kbd>{" "}
-        or{" "}
-        <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-          Open Command
-        </Button>
-      </p>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
-              <Calendar className="mr-2 h-4 w-4" />
-              <span>Calendar</span>
-            </CommandItem>
-            <CommandItem>
-              <Smiley className="mr-2 h-4 w-4" />
-              <span>MagnifyingGlass Emoji</span>
-            </CommandItem>
-            <CommandItem>
-              <Calculator className="mr-2 h-4 w-4" />
-              <span>Calculator</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandGroup heading="Gear">
-            <CommandItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Billing</span>
-            </CommandItem>
-            <CommandItem>
-              <Gear className="mr-2 h-4 w-4" />
-              <span>Gear</span>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+    <div className="flex flex-col gap-4">
+      <Button onClick={() => setOpen(true)} variant="outline" className="w-fit">
+        Abrir menu
+      </Button>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Paleta de comandos"
+        description="Pesquise um comando para executar."
+      >
+        <Command>
+          <CommandInput placeholder="Digite um comando ou pesquise..." />
+          <CommandList>
+            <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+            <CommandGroup heading="Sugestões">
+              <CommandItem>Calendário</CommandItem>
+              <CommandItem>Buscar emoji</CommandItem>
+              <CommandItem>Calculadora</CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </CommandDialog>
-    </>
+    </div>
   );
 }

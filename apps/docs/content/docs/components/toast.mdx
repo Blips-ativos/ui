@@ -1,0 +1,114 @@
+---
+title: Toast
+description: Notificações temporárias empilhadas, montadas sobre o Base UI Toast.
+---
+
+<ComponentPreview name="toast-demo" />
+
+## Sobre
+
+O Toast é construído sobre o [Base UI Toast](https://base-ui.com/react/components/toast) e não depende de biblioteca extra. É novo na v3 e convive com o [Sonner](/docs/components/sonner): escolha um dos dois por app.
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+Envolva o app com o `Toaster` uma vez, na raiz. Ele cria o provider e renderiza a pilha de toasts:
+
+```tsx title="app/layout.tsx"
+import { Toaster } from "@blips/ui/components/toast"
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR">
+      <body>
+        <Toaster>{children}</Toaster>
+      </body>
+    </html>
+  )
+}
+```
+
+Importe sempre pelo subpath `@blips/ui/components/toast`. O `Toaster` daqui tem o mesmo nome do `Toaster` do Sonner, e o `toast` tem o mesmo nome da função do pacote `sonner`: não use os dois no mesmo arquivo sem um alias.
+
+## Uso
+
+```tsx
+import { toast } from "@blips/ui/components/toast"
+```
+
+```tsx
+toast.add({
+  title: "Evento criado",
+  description: "Domingo, 3 de dezembro às 9h",
+})
+```
+
+O `toast` é um gerenciador global criado com `createToastManager()` e funciona fora de componentes React. Dentro de componentes, `useToastManager()` devolve o gerenciador do `Toaster` mais próximo.
+
+## Exemplos
+
+### Tipos
+
+Passe `type` (`"success"`, `"info"`, `"warning"`, `"error"` ou `"loading"`) para exibir o ícone correspondente.
+
+<ComponentPreview name="toast-types" />
+
+### Com ação
+
+Use `actionProps` para renderizar um botão de ação dentro do toast. `toast.add` devolve o `id`, que serve para fechar o toast com `toast.close(id)`.
+
+<ComponentPreview name="toast-action" />
+
+### Promise
+
+`toast.promise` mostra um toast de carregamento e o atualiza quando a promise resolve ou rejeita.
+
+<ComponentPreview name="toast-promise" />
+
+## Gerenciador próprio
+
+Para isolar uma área do app (ou ter mais de uma pilha de toasts), crie um gerenciador e passe-o ao `Toaster`:
+
+```tsx
+import { createToastManager, Toaster } from "@blips/ui/components/toast"
+
+const avisos = createToastManager()
+
+<Toaster toastManager={avisos}>{children}</Toaster>
+
+avisos.add({ title: "Configurações salvas" })
+```
+
+## Referência da API
+
+### toast
+
+| Método                            | Descrição                                              |
+| --------------------------------- | ------------------------------------------------------ |
+| `add(options)`                    | Cria um toast e devolve o `id`.                        |
+| `update(id, options)`             | Atualiza um toast existente.                           |
+| `close(id)`                       | Fecha um toast.                                        |
+| `promise(promise, { loading, success, error })` | Acompanha uma promise com um toast. |
+
+### Opções do toast
+
+| Opção         | Tipo                                                        | Padrão |
+| ------------- | ----------------------------------------------------------- | ------ |
+| `title`       | `ReactNode`                                                 | -      |
+| `description` | `ReactNode`                                                 | -      |
+| `type`        | `"success" \| "info" \| "warning" \| "error" \| "loading"` | -      |
+| `timeout`     | `number`                                                    | `5000` |
+| `actionProps` | `ButtonProps`                                               | -      |
+
+### Toaster
+
+| Prop           | Tipo           | Padrão                  |
+| -------------- | -------------- | ----------------------- |
+| `toastManager` | `ToastManager` | o `toast` global da lib |
+| `limit`        | `number`       | `3`                     |
+| `timeout`      | `number`       | `5000`                  |
+
+Para compor um layout próprio, a lib também exporta as partes: `ToastProvider`, `ToastPortal`, `ToastViewport`, `Toast`, `ToastContent`, `ToastTitle`, `ToastDescription`, `ToastAction` e `ToastClose`. Consulte a documentação do [Base UI Toast](https://base-ui.com/react/components/toast).

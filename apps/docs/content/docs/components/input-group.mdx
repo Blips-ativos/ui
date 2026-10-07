@@ -28,7 +28,7 @@ import {
 <InputGroup>
   <InputGroupInput placeholder="Buscar..." />
   <InputGroupAddon>
-    <SearchIcon />
+    <MagnifyingGlassIcon />
   </InputGroupAddon>
 </InputGroup>
 ```
@@ -55,15 +55,33 @@ Use `InputGroupText` para exibir prefixos, sufixos ou textos auxiliares ao lado 
 
 <ComponentPreview name="input-group-text" />
 
+### Botão
+
+Use `InputGroupButton` para ações dentro do input, como copiar ou aplicar um cupom.
+
+<ComponentPreview name="input-group-button" />
+
+### Kbd
+
+O `Kbd` dentro de um addon recebe um estilo compacto automaticamente.
+
+<ComponentPreview name="input-group-kbd" />
+
+### Tooltip e Popover
+
+Passe o `InputGroupButton` (ou o próprio `InputGroupAddon`) pela prop `render` do gatilho.
+
+<ComponentPreview name="input-group-tooltip" />
+
 ### Dropdown
 
-Combine `InputGroupButton` com um `DropdownMenu` para oferecer ações dentro do input.
+Combine `InputGroupButton` com um `DropdownMenu`, passando o botão pela prop `render` do `DropdownMenuTrigger`.
 
 <ComponentPreview name="input-group-dropdown" />
 
 ### Spinner
 
-Exiba um `Spinner` no input para indicar estados de carregamento.
+Exiba um `Spinner` no input para indicar estados de carregamento. Use `data-disabled="true"` no `InputGroup` para esmaecer os addons.
 
 <ComponentPreview name="input-group-spinner" />
 
@@ -78,6 +96,33 @@ Use `InputGroupTextarea` com addons em `block-start` e `block-end` para criar ed
 Adicione o atributo `data-slot="input-group-control"` ao seu input customizado para o tratamento automático do estado de foco.
 
 <ComponentPreview name="input-group-custom" />
+
+## Migrando da v2
+
+A composição não mudou. O que muda:
+
+- **`asChild` não existe mais.** O `InputGroupButton` repassa ao `Button` (Base UI); para usá-lo como gatilho de outro componente, passe-o pela prop `render` do gatilho.
+- A prop `type` do `InputGroupButton` aceita `"button" | "submit" | "reset"` (padrão `"button"`).
+- Densidade menor: o grupo passa de `h-9` para `h-7`, o texto do addon de `text-sm` para `text-xs/relaxed`, ícones de `size-4` para `size-3.5`. O foco vira `border-ring` + `ring-2 ring-ring/30`.
+- Tamanhos do `InputGroupButton`: `xs` passa a `h-5`, `icon-sm` a `size-7`, e `sm` herda a altura do `Button`.
+- `InputGroupInput` e `InputGroupTextarea` não desenham mais anel de erro: quem mostra o estado `aria-invalid` é o `InputGroup`.
+- Ícones Phosphor agora usam o sufixo `Icon` (`MagnifyingGlassIcon`, `CaretDownIcon`).
+
+```tsx
+// v2
+<DropdownMenuTrigger asChild>
+  <InputGroupButton size="icon-xs" aria-label="Mais">
+    <DotsThree />
+  </InputGroupButton>
+</DropdownMenuTrigger>
+
+// v3
+<DropdownMenuTrigger
+  render={<InputGroupButton size="icon-xs" aria-label="Mais" />}
+>
+  <DotsThreeIcon />
+</DropdownMenuTrigger>
+```
 
 ## Referência da API
 
@@ -110,7 +155,7 @@ Exibe ícones, texto, botões ou outro conteúdo ao lado dos inputs.
 
 ```tsx
 <InputGroupAddon align="inline-end">
-  <SearchIcon />
+  <MagnifyingGlassIcon />
 </InputGroupAddon>
 ```
 
@@ -120,8 +165,8 @@ O componente `InputGroupAddon` pode ter múltiplos componentes `InputGroupButton
 
 ```tsx
 <InputGroupAddon>
-  <InputGroupButton>Button</InputGroupButton>
-  <InputGroupButton>Button</InputGroupButton>
+  <InputGroupButton>Copiar</InputGroupButton>
+  <InputGroupButton>Limpar</InputGroupButton>
 </InputGroupAddon>
 ```
 
@@ -132,11 +177,13 @@ Exibe botões dentro dos input groups.
 | Prop        | Tipo                                                                          | Padrão    |
 | ----------- | ----------------------------------------------------------------------------- | --------- |
 | `size`      | `"xs" \| "icon-xs" \| "sm" \| "icon-sm"`                                      | `"xs"`    |
+| `type`      | `"button" \| "submit" \| "reset"`                                            | `"button"` |
+| `render`    | `React.ReactElement \| ((props, state) => React.ReactElement)`                |           |
 | `variant`   | `"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link"` | `"ghost"` |
 | `className` | `string`                                                                      |           |
 
 ```tsx
-<InputGroupButton>Button</InputGroupButton>
+<InputGroupButton>Copiar</InputGroupButton>
 <InputGroupButton size="icon-xs" aria-label="Copiar">
   <CopyIcon />
 </InputGroupButton>
@@ -156,7 +203,7 @@ Todas as outras props são repassadas para o componente `<Input />` subjacente.
 <InputGroup>
   <InputGroupInput placeholder="Digite o texto..." />
   <InputGroupAddon>
-    <SearchIcon />
+    <MagnifyingGlassIcon />
   </InputGroupAddon>
 </InputGroup>
 ```
@@ -180,4 +227,3 @@ Todas as outras props são repassadas para o componente `<Textarea />` subjacent
 </InputGroup>
 ```
 
-## Histórico de alterações

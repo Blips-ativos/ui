@@ -24,7 +24,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 const ITEM_CLASS =
-  "relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md data-[active=true]:border-accent data-[active=true]:bg-accent";
+  "relative h-[30px] w-fit overflow-visible border border-transparent text-[0.8rem] font-medium after:absolute after:inset-x-0 after:-inset-y-1 after:z-0 after:rounded-md data-active:border-accent data-active:bg-accent";
 
 const LABEL_CLASS = "text-muted-foreground font-medium";
 
@@ -40,14 +40,12 @@ function NavItem({
   return (
     <SidebarMenuItem>
       <SidebarMenuButton
-        asChild
+        render={<Link href={url} />}
         isActive={url === pathname}
         className={ITEM_CLASS}
       >
-        <Link href={url}>
-          <span className="absolute inset-0 flex w-(--sidebar-menu-width) bg-transparent" />
-          {name}
-        </Link>
+        <span className="absolute inset-0 flex w-(--sidebar-menu-width) bg-transparent" />
+        {name}
       </SidebarMenuButton>
     </SidebarMenuItem>
   );
