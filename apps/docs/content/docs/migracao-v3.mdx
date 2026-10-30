@@ -16,6 +16,7 @@ A v3 troca os primitivos do [Radix UI](https://www.radix-ui.com/) pelos do [Base
 - **recharts 3** no lugar do recharts 2.
 - **Densidade mira:** controles mais baixos (`h-9` → `h-7`) e texto `text-xs`.
 - **Tema novo**, com o amarelo da marca `#FCBA28` mantido como `primary`.
+- **Uma fonte só (Inter)** e **shadcn/typeset** para texto rico, no lugar de `prose`.
 - **Componentes novos:** Attachment, Bubble, Combobox, Direction, Item, Marker, Message, Message Scroller, Native Select, Questionnaire e Toast.
 - **Toast:** no barrel, o `Toaster` do Toast sai como `ToastToaster`.
 
@@ -162,6 +163,34 @@ O `globals.css` adota a paleta do preset shadcn (base neutra), com uma exceção
 | Raios | `sm` … `2xl` (soma/subtração sobre `--radius`) | mesmos valores com o `--radius` padrão (a escala agora multiplica `--radius`), mais `--radius-3xl` e `--radius-4xl` |
 
 Se você sobrescrevia tokens no CSS do app, confira se os nomes ainda batem. Nenhum token foi renomeado.
+
+## Tipografia: Inter e typeset
+
+A v3 usa uma única família, **Inter**. Quicksand e JetBrains Mono saem: `font-display`, `font-heading` e `font-mono` continuam existindo, mas agora resolvem para Inter. A hierarquia vem de tamanho, peso e cor, e números alinhados usam `tabular-nums`.
+
+| Token | v2 | v3 |
+| --- | --- | --- |
+| `--font-sans` | `"Inter"` | `var(--font-inter, "Inter")` |
+| `--font-display` | Quicksand | igual a `--font-sans` |
+| `--font-mono` | JetBrains Mono | igual a `--font-sans` |
+
+Em apps Next, carregue a fonte com `next/font` e exponha a variável no `<html>`:
+
+```tsx
+import { Inter } from "next/font/google";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+// <html className={inter.variable}>
+```
+
+O `globals.css` da lib passa a trazer o [shadcn/typeset](https://ui.shadcn.com/docs/typeset) e o preset `.typeset-docs`. Para markdown, MDX ou texto rico, envolva o conteúdo e não ponha classes nos elementos:
+
+```tsx
+<div className="typeset typeset-docs max-w-[37em]">{content}</div>
+```
+
+Se o app usava `prose` (`@tailwindcss/typography`) ou um mapa de componentes markdown com classes em cada elemento, troque pelo container. Componentes da `@blips/ui` dentro do conteúdo ficam fora do typeset sozinhos (têm `data-slot`). Para excluir outro elemento, use a classe `not-typeset` ou o atributo `data-not-typeset`. Tabelas largas vão dentro de `<div className="typeset-scroll">`.
 
 ## Componentes novos
 

@@ -19,15 +19,13 @@ export default async function Page(props: {
         <div className="text-muted-foreground mb-3 text-sm font-medium">
           Documentação
         </div>
-        <h1 className="font-display scroll-m-20 text-3xl font-bold tracking-tight">
-          {page.data.title}
-        </h1>
-        {page.data.description ? (
-          <p className="text-muted-foreground mt-2 text-lg text-balance">
-            {page.data.description}
-          </p>
-        ) : null}
-        <div data-slot="docs" className="mt-8">
+        {/* shadcn/typeset: título, descrição e o MDX são estilizados pelo
+            container, sem classes no conteúdo. */}
+        <div className="typeset typeset-docs max-w-[37em]">
+          <h1>{page.data.title}</h1>
+          {page.data.description ? (
+            <p className="text-muted-foreground">{page.data.description}</p>
+          ) : null}
           <MDX components={mdxComponents} />
         </div>
         <div className="mt-10">
