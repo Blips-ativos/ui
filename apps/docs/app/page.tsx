@@ -14,40 +14,46 @@ const FOOTER_LINKS = [
 
 export default function HomePage() {
   return (
-    <div
-      data-hero-theme
-      className="relative flex h-[100dvh] flex-col overflow-hidden bg-background text-foreground"
-    >
-      {/* Cena do "b" com LEDs atrás da página inteira (header, hero e footer
-          transparentes compartilham o mesmo fundo). */}
-      <HomeBackground />
-      {/* scanlines analógicas — camada fixa sobre os tokens, decorativa */}
-      <div
-        className="landing-scanlines pointer-events-none fixed inset-0 z-0"
-        aria-hidden
-      />
+    <div className="bg-background text-foreground">
+      {/* Transparente sobre a hero; ganha fundo ao rolar para o conteúdo. */}
       <SiteHeader hasSidebar={false} transparent />
-      <main className="relative z-10 flex min-h-0 flex-1 flex-col">
-        <Hero />
-      </main>
 
-      <footer className="relative z-10 mx-auto flex w-full max-w-6xl shrink-0 flex-col items-start justify-between gap-6 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
-        <Logo variant="full" title="Blips UI" className="h-5" />
-        <nav>
-          <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
-            {FOOTER_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  className="text-xs text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <span className="text-xs text-muted-foreground/70">© Blips</span>
+      {/* Primeira tela: a cena do "b" (vidro líquido + canelado) fica só aqui,
+          atrás do header transparente e da hero. */}
+      <div
+        data-hero-theme
+        className="relative -mt-(--header-height) flex min-h-[100dvh] flex-col overflow-hidden pt-(--header-height)"
+      >
+        <HomeBackground />
+        {/* scanlines analógicas — decorativas, só sobre a cena */}
+        <div
+          className="landing-scanlines pointer-events-none absolute inset-0 z-0"
+          aria-hidden
+        />
+        <main className="relative z-10 flex min-h-0 flex-1 flex-col">
+          <Hero />
+        </main>
+      </div>
+
+      <footer className="border-t">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
+          <Logo variant="full" title="Blips UI" className="h-5" />
+          <nav>
+            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              {FOOTER_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <span className="text-xs text-muted-foreground/70">© Blips</span>
+        </div>
       </footer>
     </div>
   );

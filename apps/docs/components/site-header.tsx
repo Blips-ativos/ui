@@ -3,11 +3,12 @@
 import { Button } from "@blips/ui/components/button";
 import { SidebarTrigger } from "@blips/ui/components/sidebar";
 import { cn } from "@blips/ui/lib/utils";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_ITEMS = [
@@ -20,22 +21,50 @@ const NAV_ITEMS = [
   { label: "Marca", href: "/docs/brand", match: "/docs/brand" },
 ];
 
+/** Se o header ainda está sobre a primeira tela (a hero de altura da tela). */
+function useOverFirstScreen(enabled: boolean) {
+  const [over, setOver] = useState(true);
+  useEffect(() => {
+    if (!enabled) return;
+    const update = () => {
+      const header = Number.parseFloat(
+        getComputedStyle(document.documentElement).fontSize
+      );
+      // --header-height = 3.5rem
+      setOver(window.scrollY < window.innerHeight - header * 3.5);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [enabled]);
+  return over;
+}
+
 export function SiteHeader({
   hasSidebar = true,
   transparent = false,
 }: {
   hasSidebar?: boolean;
-  /** Sem fundo, blur nem borda: a home deixa a cena do "b" aparecer atrás. */
+  /**
+   * Sem fundo, blur nem borda enquanto está sobre a primeira tela: a home
+   * deixa a cena do "b" aparecer atrás. Ao rolar para o conteúdo, volta ao
+   * fundo normal.
+   */
   transparent?: boolean;
 }) {
   const { setOpenSearch } = useSearchContext();
   const pathname = usePathname();
+  const overHero = useOverFirstScreen(transparent);
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 h-(--header-height)",
-        transparent
+        "sticky top-0 z-40 h-(--header-height) transition-colors duration-200",
+        transparent && overHero
           ? "bg-transparent"
           : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
       )}
@@ -105,7 +134,7 @@ export function SiteHeader({
             onClick={() => setOpenSearch(true)}
             className="text-muted-foreground w-full justify-start gap-2 sm:w-56"
           >
-            <MagnifyingGlass className="size-4" />
+            <MagnifyingGlassIcon className="size-4" />
             <span className="flex-1 text-left">Buscar...</span>
             <kbd className="bg-muted pointer-events-none hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] sm:flex">
               ⌘K

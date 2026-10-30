@@ -4,6 +4,14 @@ import { Logo } from "@blips/brand";
 import { Button } from "@blips/ui/components/button";
 import Link from "next/link";
 
+const INSTALL_SNIPPET = `pnpm add @blips/ui
+
+import { Button } from "@blips/ui/components/button";
+
+export function Contrato() {
+  return <Button>Assinar contrato</Button>;
+}`;
+
 export function Hero() {
   return (
     <section className="relative flex flex-1 flex-col justify-center overflow-hidden">
@@ -18,13 +26,15 @@ export function Hero() {
             aria-hidden
           />
           <p className="landing-reveal" style={{ animationDelay: "40ms" }}>
-            Design System
+            Blips UI · Design System
           </p>
           <h1 className="landing-stamp" style={{ animationDelay: "80ms" }}>
-            Blips UI
+            Do componente à tela, no padrão Blips
           </h1>
-          <p className="landing-reveal" style={{ animationDelay: "260ms" }}>
-            Base UI · Tailwind v4 · Acessível
+          <p className="landing-reveal" style={{ animationDelay: "200ms" }}>
+            Componentes acessíveis sobre Base UI e Tailwind v4, com o tema, a
+            densidade e as skills que o time já usa. Instale e monte a próxima
+            tela hoje.
           </p>
           {/* Botões são da lib (data-slot) e ficam fora do typeset; a linha
               só herda o ritmo vertical do container (--typeset-flow). */}
@@ -48,6 +58,10 @@ export function Hero() {
               Ver skills
             </Button>
           </div>
+          {/* Como na Radix: o primeiro passo em código, logo abaixo das ações. */}
+          <pre className="landing-reveal" style={{ animationDelay: "440ms" }}>
+            <code>{INSTALL_SNIPPET}</code>
+          </pre>
         </div>
       </div>
 
