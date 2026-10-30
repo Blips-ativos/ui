@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { HomeBlocks } from "@/components/landing/blocks";
 import { Hero } from "@/components/landing/hero";
+import { HeroCode } from "@/components/landing/hero-code";
 import { HomeBackground } from "@/components/landing/home-background";
 import { SiteHeader } from "@/components/site-header";
 
@@ -34,7 +35,7 @@ export default function HomePage() {
             aria-hidden
           />
           <div className="relative z-10 flex min-h-[calc(80dvh-var(--header-height))] flex-col">
-            <Hero />
+            <Hero code={<HeroCode />} />
           </div>
           {/* Faixa da cena por baixo do começo da seção de componentes. */}
           <div aria-hidden className="h-[20dvh] shrink-0" />

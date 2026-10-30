@@ -3,16 +3,10 @@
 import { Logo } from "@blips/brand";
 import { Button } from "@blips/ui/components/button";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-const INSTALL_SNIPPET = `pnpm add @blips/ui
-
-import { Button } from "@blips/ui/components/button";
-
-export function Contrato() {
-  return <Button>Assinar contrato</Button>;
-}`;
-
-export function Hero() {
+/** `code`: o bloco de código (componente de servidor, ver `./hero-code`). */
+export function Hero({ code }: { code: ReactNode }) {
   return (
     <section className="relative flex flex-1 flex-col justify-center overflow-hidden">
       <div className="pointer-events-none relative z-10 grid w-full grid-cols-1 px-6 py-12 sm:px-10 md:grid-cols-2">
@@ -37,9 +31,9 @@ export function Hero() {
             tela hoje.
           </p>
           {/* Como na Radix: o primeiro passo em código antes das ações. */}
-          <pre className="landing-reveal" style={{ animationDelay: "280ms" }}>
-            <code>{INSTALL_SNIPPET}</code>
-          </pre>
+          <div className="landing-reveal" style={{ animationDelay: "280ms" }}>
+            {code}
+          </div>
           {/* Botões são da lib (data-slot) e ficam fora do typeset; a linha
               só herda o ritmo vertical do container (--typeset-flow). */}
           <div
