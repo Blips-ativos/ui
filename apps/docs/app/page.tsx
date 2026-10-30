@@ -20,8 +20,9 @@ export default function HomePage() {
       <SiteHeader hasSidebar={false} transparent />
 
       <main>
-        {/* Primeira tela: a cena do "b" (vidro líquido + canelado) fica só aqui,
-          atrás do header transparente e da hero. */}
+        {/* Primeira tela: a cena do "b" (vidro líquido + canelado) cobre a tela
+          inteira, atrás do header transparente. A hero ocupa os primeiros 80%;
+          nos 20% de baixo a seção de componentes já sobe por cima da cena. */}
         <div
           data-hero-theme
           className="relative -mt-(--header-height) flex min-h-[100dvh] flex-col overflow-hidden pt-(--header-height)"
@@ -32,17 +33,19 @@ export default function HomePage() {
             className="landing-scanlines pointer-events-none absolute inset-0 z-0"
             aria-hidden
           />
-          <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+          <div className="relative z-10 flex min-h-[calc(80dvh-var(--header-height))] flex-col">
             <Hero />
           </div>
+          {/* Faixa da cena por baixo do começo da seção de componentes. */}
+          <div aria-hidden className="h-[20dvh] shrink-0" />
         </div>
 
-        {/* Fora da cena: fundo sólido da página. */}
+        {/* Sobe 20dvh por cima da cena: fade para o fundo sólido. */}
         <HomeBlocks />
       </main>
 
       <footer className="border-t">
-        <div className="mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-6 px-4 py-6 sm:flex-row sm:items-center sm:px-6">
+        <div className="flex w-full flex-col items-start justify-between gap-6 px-6 py-6 sm:flex-row sm:items-center sm:px-10">
           <Logo variant="full" title="Blips UI" className="h-5" />
           <nav>
             <ul className="flex flex-wrap items-center gap-x-6 gap-y-2">

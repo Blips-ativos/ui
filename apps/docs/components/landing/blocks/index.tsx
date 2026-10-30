@@ -11,39 +11,77 @@ import { BlockOnboarding } from "./onboarding";
 import { BlockReceita } from "./receita";
 
 /**
- * Ordem pensada para o masonry de 3 colunas (CSS columns preenche de cima para
- * baixo): cards altos alternam com cards baixos para as colunas fecharem com
- * alturas parecidas.
+ * Vitrine no formato da home da Radix: três colunas de largura fixa (larga,
+ * estreita, larga), cada uma uma pilha de telas, numa faixa mais larga que a
+ * tela que rola na horizontal e começa na mesma margem da hero. Os papéis
+ * seguem os da Radix — coluna larga: listas, preferências e gráfico; estreita:
+ * formulário e documentos; larga: indicadores, conversa e lista de itens.
  */
-const BLOCKS: { id: string; conteudo: ReactNode }[] = [
-  { id: "receita", conteudo: <BlockReceita /> },
-  { id: "contratos", conteudo: <BlockContratos /> },
-  { id: "notificacoes", conteudo: <BlockNotificacoes /> },
-  { id: "atendimento", conteudo: <BlockAtendimento /> },
-  { id: "indicadores", conteudo: <BlockIndicadores /> },
-  { id: "fatura", conteudo: <BlockFatura /> },
-  { id: "frota", conteudo: <BlockFrota /> },
-  { id: "garantia", conteudo: <BlockGarantia /> },
-  { id: "onboarding", conteudo: <BlockOnboarding /> },
-];
+const COLUMNS: { id: string; width: string; blocks: [string, ReactNode][] }[] =
+  [
+    {
+      id: "operacao",
+      width: "w-[640px]",
+      blocks: [
+        ["contratos", <BlockContratos key="contratos" />],
+        ["notificacoes", <BlockNotificacoes key="notificacoes" />],
+        ["receita", <BlockReceita key="receita" />],
+      ],
+    },
+    {
+      id: "documentos",
+      width: "w-[416px]",
+      blocks: [
+        ["garantia", <BlockGarantia key="garantia" />],
+        ["fatura", <BlockFatura key="fatura" />],
+        ["onboarding", <BlockOnboarding key="onboarding" />],
+      ],
+    },
+    {
+      id: "acompanhamento",
+      width: "w-[640px]",
+      blocks: [
+        ["indicadores", <BlockIndicadores key="indicadores" />],
+        ["atendimento", <BlockAtendimento key="atendimento" />],
+        ["frota", <BlockFrota key="frota" />],
+      ],
+    },
+  ];
 
-/** Seção da home: telas do dia a dia da Blips montadas só com a @blips/ui. */
+/** Telas do dia a dia da Blips montadas só com a @blips/ui, sob a hero. */
 export function HomeBlocks() {
   return (
-    <section aria-labelledby="home-blocks-titulo" className="border-t">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 sm:px-6 sm:py-24">
-        <div className="typeset typeset-docs max-w-[37em]">
-          <h2 id="home-blocks-titulo">Feito com Blips UI</h2>
-          <p>
-            Telas do dia a dia da Blips (locação, cobrança, garantia, IoT e
-            atendimento com agentes de IA) montadas só com os componentes da
-            biblioteca. Tudo aqui é interativo e usa dados fictícios.
-          </p>
-        </div>
-        <div className="columns-1 gap-4 md:columns-2 lg:columns-3">
-          {BLOCKS.map((block) => (
-            <div key={block.id} className="mb-4 break-inside-avoid">
-              {block.conteudo}
+    <section className="relative z-10 -mt-[20dvh]">
+      {/* Camada por baixo da vitrine: nos primeiros 20dvh vai de transparente
+          ao fundo da página, por cima da cena animada da hero (fade); daí para
+          baixo, fundo sólido. Os cards ficam acima dela. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 flex flex-col"
+      >
+        <div className="h-[20dvh] shrink-0 bg-linear-to-b from-transparent to-background" />
+        <div className="flex-1 bg-background" />
+      </div>
+      {/* Faixa rolável na horizontal (focável para quem navega por teclado).
+          `relative` a torna o bloco de contenção dos elementos absolutos dos
+          cards (ex.: textos sr-only): sem isso eles escapam do overflow e
+          esticam a página inteira na horizontal. */}
+      <div
+        role="region"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: região rolável precisa de foco para o teclado
+        tabIndex={0}
+        aria-label="Exemplos de telas, role na horizontal"
+        className="relative overflow-x-auto outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <div className="flex w-max items-start gap-8 px-6 pt-12 pb-16 sm:px-10 sm:pb-24">
+          {COLUMNS.map((column) => (
+            <div
+              key={column.id}
+              className={`flex shrink-0 flex-col gap-8 ${column.width}`}
+            >
+              {column.blocks.map(([id, block]) => (
+                <div key={id}>{block}</div>
+              ))}
             </div>
           ))}
         </div>

@@ -15,7 +15,7 @@ export function Contrato() {
 export function Hero() {
   return (
     <section className="relative flex flex-1 flex-col justify-center overflow-hidden">
-      <div className="pointer-events-none relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 px-4 py-12 sm:px-6 md:grid-cols-2">
+      <div className="pointer-events-none relative z-10 grid w-full grid-cols-1 px-6 py-12 sm:px-10 md:grid-cols-2">
         {/* shadcn/typeset: o texto da hero é estilizado pelo container, sem
             classes de tipografia; nos elementos só ficam as animações. */}
         <div className="typeset typeset-docs pointer-events-auto max-w-[37em]">
@@ -36,6 +36,10 @@ export function Hero() {
             densidade e as skills que o time já usa. Instale e monte a próxima
             tela hoje.
           </p>
+          {/* Como na Radix: o primeiro passo em código antes das ações. */}
+          <pre className="landing-reveal" style={{ animationDelay: "280ms" }}>
+            <code>{INSTALL_SNIPPET}</code>
+          </pre>
           {/* Botões são da lib (data-slot) e ficam fora do typeset; a linha
               só herda o ritmo vertical do container (--typeset-flow). */}
           <div
@@ -58,10 +62,6 @@ export function Hero() {
               Ver skills
             </Button>
           </div>
-          {/* Como na Radix: o primeiro passo em código, logo abaixo das ações. */}
-          <pre className="landing-reveal" style={{ animationDelay: "440ms" }}>
-            <code>{INSTALL_SNIPPET}</code>
-          </pre>
         </div>
       </div>
 

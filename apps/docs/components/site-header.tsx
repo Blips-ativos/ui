@@ -21,7 +21,7 @@ const NAV_ITEMS = [
   { label: "Marca", href: "/docs/brand", match: "/docs/brand" },
 ];
 
-/** Se o header ainda está sobre a primeira tela (a hero de altura da tela). */
+/** Se o header ainda está sobre a cena da hero (os primeiros 80% da tela). */
 function useOverFirstScreen(enabled: boolean) {
   const [over, setOver] = useState(true);
   useEffect(() => {
@@ -30,8 +30,9 @@ function useOverFirstScreen(enabled: boolean) {
       const header = Number.parseFloat(
         getComputedStyle(document.documentElement).fontSize
       );
-      // --header-height = 3.5rem
-      setOver(window.scrollY < window.innerHeight - header * 3.5);
+      // A seção de componentes começa a 80% da altura da tela;
+      // --header-height = 3.5rem.
+      setOver(window.scrollY < window.innerHeight * 0.8 - header * 3.5);
     };
     update();
     window.addEventListener("scroll", update, { passive: true });
