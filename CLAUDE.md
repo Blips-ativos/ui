@@ -119,6 +119,15 @@ the `verify` job fails at merge).
   suffix** (`CaretDownIcon`, `XIcon`, `MagnifyingGlassIcon`, `CheckIcon`,
   `CircleIcon`, `DotsThreeIcon`…) — the unsuffixed names (`CaretDown`, `X`…)
   are **deprecated** in Phosphor 2.1.x. Never use Lucide names.
+- **Typography: one family (Inter) + shadcn/typeset.** `packages/ui/src/typeset.css`
+  is a verbatim copy of https://ui.shadcn.com/typeset.css (replace the file to
+  update), imported by the lib `globals.css` together with the `.typeset-docs`
+  preset. `--font-heading`/`--font-display`/`--font-mono` are kept as tokens but
+  all resolve to Inter (`var(--font-inter, "Inter")`; Next apps set
+  `--font-inter` via `next/font`). Rich text/markdown goes in
+  `<div className="typeset typeset-docs max-w-[37em]">` with no classes on the
+  content — no `prose`, no hand-styled markdown component maps. Never add another
+  font (Google Fonts, `next/font`, `@font-face`, fontsource).
 - **Charts: recharts 3** (pinned `3.10.1`). recharts 2 APIs/types don't apply
   (e.g. tooltip/legend payload types changed) — follow `chart.tsx`.
 - Internal imports use **`@blips/*`** (this repo), not `@workspace/*`.

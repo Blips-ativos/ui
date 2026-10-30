@@ -1,6 +1,24 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+/* Inter é a única família do sistema. Apps Next carregam a fonte com
+   next/font (`variable: "--font-inter"` no <html>); este import é o fallback
+   para quem não usa next/font (ex.: Vite). */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 @import "tw-animate-css";
+/* shadcn/typeset (https://ui.shadcn.com/docs/typeset): estiliza markdown e
+   texto rico dentro de um container `.typeset`; fora dele nada muda. Cópia de
+   https://ui.shadcn.com/typeset.css — ao atualizar, substitua o arquivo. */
+@import "./typeset.css";
+
+/* Preset da documentação e de qualquer superfície de texto rico:
+   <div className="typeset typeset-docs max-w-[37em]">{content}</div> */
+.typeset-docs {
+  --typeset-font-body: var(--font-inter);
+  --typeset-font-heading: var(--font-inter);
+  --typeset-font-mono: var(--font-inter);
+  --typeset-size: 15px;
+  --typeset-leading: 1.6;
+  --typeset-flow: 1em;
+}
 
 /* Content source — escaneia apenas os componentes DESTE pacote. Como o Tailwind
    v4 ignora node_modules por padrão, é este @source que faz as classes da lib
@@ -834,12 +852,14 @@
   --selection: oklch(0% 0 0);
   --selection-foreground: oklch(1 0 0);
 
+  /* Uma família só (Inter), como o typeset. heading/display/mono seguem como
+     tokens por compatibilidade, mas não são outras faces. */
   --font-sans:
-    "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    sans-serif;
+    var(--font-inter, "Inter"), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, sans-serif;
   --font-heading: var(--font-sans);
-  --font-display: "Quicksand", var(--font-sans);
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-sans);
+  --font-mono: var(--font-sans);
 }
 
 /* ----- Tema escuro — preset b6GMQNVCs + amarelo Blips ----- */
