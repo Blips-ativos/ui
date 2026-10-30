@@ -50,6 +50,10 @@ import {
 import { shaderSources } from "./shaders";
 
 const FIELD_SIZE = 1024;
+/** Largura de cada faixa do vidro canelado, em px de CSS (igual em qualquer tela). */
+const FLUTE_PX = 80;
+/** Raio do desfoque leve atrás do vidro canelado, em px de CSS. */
+const FROST_PX = 6;
 /** Abaixo disto a caixa é ignorada (escondida no mobile). */
 const FRAMING_MIN_PX = 40;
 const MAX_FRAME_DELTA = 0.1;
@@ -195,7 +199,17 @@ function paramsFor(
     theme,
     calmEdge: framing.calmEdge,
     calmAmount: framing.calmAmount,
+    // `size` vem em px físicos; a superfície usa dpr entre 1 e 2.
+    fluteWidth: (FLUTE_PX * surfaceDpr()) / Math.max(1, output.size[0]),
+    // Espaço `p`: a altura do canvas vale 2.
+    frost: (FROST_PX * surfaceDpr() * 2) / Math.max(1, output.size[1]),
   };
+}
+
+/** dpr efetivo da superfície (`surface(…, { dpr: [1, 2] })`). */
+function surfaceDpr(): number {
+  const dpr = typeof window === "undefined" ? 1 : window.devicePixelRatio || 1;
+  return Math.min(2, Math.max(1, dpr));
 }
 
 /** Sem caixa de enquadramento: "b" no centro, sem calmaria. */

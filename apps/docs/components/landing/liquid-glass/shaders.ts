@@ -18,6 +18,11 @@
  * - vidro lapidado: a luz só desvia no chanfro junto à borda (`BEVEL_WIDTH`) e o
  *   miolo do traço é face plana — sem o vinco na linha do meio do traço que o
  *   exemplo tinha (a normal normalizada vira de lado ali);
+ * - vidro canelado na frente da cena inteira: faixas verticais de largura fixa
+ *   em px de CSS (`fluteWidth`), cada uma uma lente que comprime o que está
+ *   atrás, com salto e filete claro/sombra nas emendas (`FLUTE_STRENGTH`); o
+ *   que está atrás fica levemente desfocado (`frost`: feixes mais largos e
+ *   bordas do "b" amaciadas, sem passada extra), e as emendas seguem nítidas;
  * - tema claro (uniforme `theme`): fundo neutro quente (#f4f2ee) tingido pela
  *   luz dos feixes, "b" levemente mais escuro com aro dourado e brilho especular.
  *
@@ -28,7 +33,7 @@
 
 import { prepareShader } from "@vgpu/wgsl/prepare";
 import { d, std, tgpu } from "typegpu";
-import { FIELD_EXTENT } from "./mark-sdf";
+import { DISTANCE_GAIN, FIELD_EXTENT } from "./mark-sdf";
 
 const FIELD_SIZE = 1024;
 const FIELD_TEXEL = 1 / FIELD_SIZE;
@@ -38,6 +43,12 @@ const FIELD_TEXEL = 1 / FIELD_SIZE;
  * ~35% da haste (o resto é face plana) e quase todo o anel.
  */
 const BEVEL_WIDTH = 0.032;
+/**
+ * Vidro canelado: quanto cada faixa comprime o que está atrás (0 = vidro liso;
+ * 0.3 deixa o "b" legível com o salto visível nas emendas). A largura da faixa
+ * vem do renderer (`FLUTE_PX`, em px de CSS).
+ */
+const FLUTE_STRENGTH = 0.15;
 
 const Params = d.struct({
   time: d.f32,
@@ -52,6 +63,10 @@ const Params = d.struct({
   calmEdge: d.f32,
   /** 0 = sem calmaria (mobile, "b" centralizado), 1 = esquerda contida. */
   calmAmount: d.f32,
+  /** Largura de cada faixa do vidro canelado, em `uv.x`. */
+  fluteWidth: d.f32,
+  /** Raio do desfoque atrás do vidro canelado, no espaço `p` (meia altura = 1). */
+  frost: d.f32,
 });
 
 const layout = tgpu.bindGroupLayout({
@@ -146,9 +161,9 @@ const horizontalBlurFragment = createBlurFragment(d.vec2f(1, 0));
 const verticalBlurFragment = createBlurFragment(d.vec2f(0, 1));
 
 const lightStreams = tgpu.fn(
-  [d.vec2f, d.f32],
+  [d.vec2f, d.f32, d.f32],
   d.vec3f
-)((point, seconds) => {
+)((point, seconds, soften) => {
   "use gpu";
   const direction = std.normalize(
     // biome-ignore lint/suspicious/noApproximativeNumericConstant: literal do exemplo, dentro de "use gpu"
@@ -171,7 +186,8 @@ const lightStreams = tgpu.fn(
   const primaryCenter = 0.01 * std.sin(along * 9 + seconds * 1.3);
   const paleCenter =
     split * (1 - convergence) + 0.01 * std.sin(along * 7 + seconds * 1.9);
-  const width = std.mix(0.045, 0.075, convergence);
+  // Blips: `soften` alarga os feixes — o desfoque do vidro canelado.
+  const width = std.mix(0.045, 0.075, convergence) + soften;
   const deep = std.exp(-std.pow(std.abs(across - deepCenter) / width, 1.65));
   const primary = std.exp(
     -std.pow(std.abs(across - primaryCenter) / width, 1.65)
@@ -185,7 +201,7 @@ const lightStreams = tgpu.fn(
 
   color = color.add(deepc.add(primaryc).add(palec).mul(pulse).mul(shimmer));
 
-  const mergedWidth = 0.06 + 0.035 * convergence;
+  const mergedWidth = 0.06 + 0.035 * convergence + soften;
   const merged =
     std.exp(-std.pow(std.abs(across) / mergedWidth, 1.45)) * convergence;
   color = color.add(
@@ -204,7 +220,24 @@ const fragmentFn = tgpu.fragmentFn({
 })((input) => {
   "use gpu";
   const seconds = layout.$.params.time;
-  const p = input.uv.sub(0.5).mul(2).mul(d.vec2f(layout.$.params.aspect, 1));
+  // Blips: vidro canelado na frente da cena inteira (feixes e "b"). Cada faixa
+  // vertical é uma lente estreita: comprime o que está atrás (mais nas bordas,
+  // pelo termo cúbico) e a imagem salta na emenda entre faixas. Grão e vinheta
+  // são da "câmera" e ficam fora da distorção.
+  const fluteWidth = layout.$.params.fluteWidth;
+  const fluteS = std.fract(input.uv.x / fluteWidth);
+  const fluteC = fluteS - 0.5;
+  const fluteShift =
+    -(
+      FLUTE_STRENGTH * fluteC +
+      0.6 * FLUTE_STRENGTH * fluteC * fluteC * fluteC
+    ) * fluteWidth;
+  const uv = d.vec2f(input.uv.x + fluteShift, input.uv.y);
+  const screen = input.uv
+    .sub(0.5)
+    .mul(2)
+    .mul(d.vec2f(layout.$.params.aspect, 1));
+  const p = uv.sub(0.5).mul(2).mul(d.vec2f(layout.$.params.aspect, 1));
   // Blips: espaço do vidro centrado no "b" (o exemplo usava `p` direto).
   const g = p.sub(layout.$.params.center).div(layout.$.params.glassScale);
   const fieldUv = g.div(FIELD_EXTENT).mul(0.5).add(0.5);
@@ -221,7 +254,12 @@ const fragmentFn = tgpu.fragmentFn({
     0
   );
   const pixelWidth = std.fwidth(distance);
-  const logoMask = std.smoothstep(pixelWidth, -pixelWidth, distance);
+  // Blips: desfoque leve atrás do vidro canelado — o raio (`frost`, espaço `p`)
+  // vira unidades do vidro (feixes) e do campo (bordas do "b"), que amaciam.
+  const frostGlass = layout.$.params.frost / layout.$.params.glassScale;
+  const frostField = frostGlass * DISTANCE_GAIN;
+  const edgeSoftness = std.max(pixelWidth, frostField);
+  const logoMask = std.smoothstep(edgeSoftness, -edgeSoftness, distance);
 
   const decodedGradient = smoothedDerivative.rg.mul(2).sub(1);
   const glassNormal = decodedGradient.div(
@@ -231,13 +269,18 @@ const fragmentFn = tgpu.fragmentFn({
   // normal (normalizada) vira de lado na linha do meio do traço, sobrava um
   // vinco nítido ali — a "rachadura". Aqui só o chanfro junto à borda desvia; o
   // miolo é face plana e a luz passa reta. A aresta entre os dois fica nítida.
-  const facetEdge = pixelWidth * 1.5;
+  const facetEdge = std.max(pixelWidth * 1.5, frostField);
   const bevel = std.smoothstep(
     -BEVEL_WIDTH - facetEdge,
     -BEVEL_WIDTH + facetEdge,
     distance
   );
-  const facet = std.exp(-std.abs(distance + BEVEL_WIDTH) * 140) * logoMask;
+  // Linhas finas desfocadas: mais largas e mais fracas, com a mesma energia.
+  const facetWidth = 1 / 140 + frostField;
+  const facet =
+    std.exp(-std.abs(distance + BEVEL_WIDTH) / facetWidth) *
+    (1 / 140 / facetWidth) *
+    logoMask;
   const ripple =
     std.sin(g.y * 16 - seconds * 2.5) * std.sin(g.x * 11 + seconds * 1.8);
   const warpedPoint = g.add(
@@ -255,18 +298,19 @@ const fragmentFn = tgpu.fragmentFn({
         std.smoothstep(
           layout.$.params.calmEdge - 0.06,
           layout.$.params.calmEdge + 0.2,
-          input.uv.x
+          uv.x
         ),
     layout.$.params.calmAmount
   );
-  const streams = lightStreams(g, seconds).mul(calm);
+  const streams = lightStreams(g, seconds, frostGlass).mul(calm);
   const refracted = lightStreams(
     warpedPoint.mul(1.06).sub(d.vec2f(0.025, -0.015)),
-    seconds + 0.18
+    seconds + 0.18,
+    frostGlass
   );
   const grain =
     hash(std.floor(input.uv.mul(520)).add(std.floor(seconds * 3))) - 0.5;
-  const vignette = 1 - 0.38 * std.smoothstep(0.35, 1.45, std.length(p));
+  const vignette = 1 - 0.38 * std.smoothstep(0.35, 1.45, std.length(screen));
 
   // Luz pura (sem o fundo): base dos dois temas.
   let emission = streams.mul(0.2);
@@ -277,7 +321,8 @@ const fragmentFn = tgpu.fragmentFn({
   );
 
   const innerGlow = std.exp(-std.abs(distance) * 24) * logoMask;
-  const rim = std.exp(-std.abs(distance) * 95);
+  const rimWidth = 1 / 95 + frostField;
+  const rim = std.exp(-std.abs(distance) / rimWidth) * (1 / 95 / rimWidth);
   const specular =
     std.pow(std.max(std.dot(glassNormal, d.vec2f(-0.62, -0.78)), 0), 9) * rim;
   const shadow = std.smoothstep(0.09, 0, distance) * (1 - logoMask);
@@ -316,7 +361,15 @@ const fragmentFn = tgpu.fragmentFn({
   paper = paper.add(grain * 0.012);
   paper = paper.mul(std.mix(1, vignette, 0.3));
 
-  return d.vec4f(std.saturate(std.mix(color, paper, layout.$.params.theme)), 1);
+  // Emendas do vidro canelado: filete claro na borda esquerda de cada faixa e
+  // sombra na direita, nos dois temas.
+  const fluteLight = std.exp(-fluteS * 38) * 0.05;
+  const fluteShade = 1 - std.exp(-(1 - fluteS) * 22) * 0.12;
+  const result = std
+    .mix(color, paper, layout.$.params.theme)
+    .mul(fluteShade)
+    .add(fluteLight);
+  return d.vec4f(std.saturate(result), 1);
 });
 
 let cachedShaderSources: ReturnType<typeof prepareShaderSources> | undefined;
