@@ -40,7 +40,7 @@ quebrar acessibilidade.
 
 ## Invariante de tema (vale para os QUATRO presets — leia uma vez)
 
-> **Cor** = amarelo Blips `#fcba28` (`bg-primary`/`text-primary`, fg `#000000`)
+> **Cor** = amarelo Blips `#fcba28` (`bg-primary`/`text-primary`, fg `yellow-900`)
 > + neutros do tema (`background`, `foreground`, `muted`, `border`, `card`,
 > `surface`) + semânticas só por significado (`success`/`warning`/`destructive`/
 > `info`). **Zero hex novo, zero paleta nova — nem em modo criativo.**

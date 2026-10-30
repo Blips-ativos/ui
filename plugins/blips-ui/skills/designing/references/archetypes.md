@@ -96,7 +96,7 @@ botões pill (9999px); sombra mínima (ring `0px 0px 0px 1px`).
 `primary` é o protagonista alegre** — exatamente o papel do lime `#9fe870` na
 Wise. Também headers de produto que querem energia sem perder confiança.
 **Tomar emprestado.** Acento como herói (grandes blocos de `bg-primary` com
-`text-primary-foreground` `#000`); títulos display agressivos (Quicksand 700,
+`text-primary-foreground` em `yellow-900`); títulos display agressivos (Quicksand 700,
 `tracking-tight`); radius generoso (`rounded-2xl`); **hover de escala discreto**
 (`scale(1.05)`) — note: só fora de produto; em app vale a regra 150–250ms sem
 spring.
