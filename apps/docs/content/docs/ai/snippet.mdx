@@ -1,0 +1,97 @@
+---
+title: Snippet
+description: Linha de comando ou trecho curto de código, somente leitura, com prefixo opcional e botão de copiar.
+---
+
+<ComponentPreview name="ai-snippet-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Este componente não exige nenhum peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Snippet,
+  SnippetAddon,
+  SnippetCopyButton,
+  SnippetInput,
+  SnippetText,
+} from "@blips/ai/components/snippet"
+```
+
+```tsx
+<Snippet code="pnpm add @blips/ai">
+  <SnippetAddon>
+    <SnippetText>$</SnippetText>
+  </SnippetAddon>
+  <SnippetInput />
+  <SnippetAddon align="inline-end">
+    <SnippetCopyButton />
+  </SnippetAddon>
+</Snippet>
+```
+
+Use o `Snippet` para um comando de uma linha que o agente sugere rodar (instalar um pacote, aplicar uma migração). Para código com várias linhas e realce de sintaxe, use o [Code Block](/docs/ai/code-block).
+
+O `Snippet` é o [Input Group](/docs/components/input-group) da `@blips/ui` em fonte mono. O `SnippetInput` mostra o `code` do `Snippet` em modo somente leitura, e o `SnippetCopyButton` copia esse mesmo `code` e troca o ícone por um de confirmação durante `timeout` ms.
+
+## Exemplos
+
+### Vários gerenciadores
+
+`onCopy` e `onError` avisam o app quando a cópia dá certo ou falha (por exemplo, sem a Clipboard API em página sem HTTPS).
+
+<ComponentPreview name="ai-snippet-gerenciadores" />
+
+## Referência da API
+
+### Snippet
+
+Raiz e provedor do `code`. Aceita as props do `InputGroup`.
+
+| Prop   | Tipo     | Padrão      |
+| ------ | -------- | ----------- |
+| `code` | `string` | obrigatória |
+
+### SnippetAddon
+
+Área antes ou depois do campo. Aceita as props do `InputGroupAddon`, entre elas `align` (`"inline-start"`, padrão, ou `"inline-end"`).
+
+### SnippetText
+
+Texto do prefixo (`$`, `pnpm`…), atenuado. Aceita as props do `InputGroupText`.
+
+### SnippetInput
+
+Campo somente leitura com o `code`. Aceita as props do `InputGroupInput`, exceto `readOnly` e `value`.
+
+### SnippetCopyButton
+
+Botão de copiar. Aceita as props do `InputGroupButton` (Base UI). `children` substitui o ícone.
+
+| Prop         | Tipo                     | Padrão     |
+| ------------ | ------------------------ | ---------- |
+| `onCopy`     | `() => void`             |            |
+| `onError`    | `(error: Error) => void` |            |
+| `timeout`    | `number`                 | `2000`     |
+| `aria-label` | `string`                 | `"Copiar"` |
+| `title`      | `string`                 | `"Copiar"` |
+
+O `onError` divide o nome com o evento `onError` do `<button>`; por isso o TypeScript tipa o argumento do callback como `Error | evento`. Confira com `error instanceof Error` antes de ler `error.message`, como no exemplo acima.
+
+## Origem
+
+Adaptado do componente [Snippet](https://elements.ai-sdk.dev/components/snippet) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou o Input Group pelo da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e traduziu o rótulo do botão de copiar.

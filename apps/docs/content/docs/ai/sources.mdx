@@ -1,0 +1,124 @@
+---
+title: Sources
+description: Lista recolhível das fontes que o agente consultou para montar a resposta.
+---
+
+<ComponentPreview name="ai-sources-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `sources` não exige peer opcional. Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Source,
+  Sources,
+  SourcesContent,
+  SourcesTrigger,
+} from "@blips/ai/components/sources"
+```
+
+```tsx
+<Sources>
+  <SourcesTrigger count={sources.length} />
+  <SourcesContent>
+    {sources.map((source) => (
+      <Source href={source.url} key={source.url} title={source.title} />
+    ))}
+  </SourcesContent>
+</Sources>
+```
+
+Sem `children`, o `SourcesTrigger` mostra `Usou {count} fontes` (no singular com uma fonte) e o caret.
+Para trocar só o texto e manter o caret, passe `getLabel`; `children` substitui o conteúdo inteiro, inclusive o caret.
+
+```tsx
+<SourcesTrigger
+  count={sources.length}
+  getLabel={(count) => `${count} ${count === 1 ? "fonte consultada" : "fontes consultadas"}`}
+/>
+```
+
+`Sources` é um `Collapsible` da `@blips/ui` (Base UI): aceita `open`, `defaultOpen` e `onOpenChange`.
+Cada `Source` é um `<a>` que abre em nova aba (`target="_blank"`, `rel="noreferrer"`).
+
+### Com o AI SDK
+
+No AI SDK, as fontes chegam como parts `source-url` em `message.parts`. Filtre e passe para o componente:
+
+```tsx
+const sources = message.parts.filter((part) => part.type === "source-url")
+
+{sources.length > 0 && (
+  <Sources>
+    <SourcesTrigger count={sources.length} />
+    <SourcesContent>
+      {sources.map((part) => (
+        <Source href={part.url} key={part.sourceId} title={part.title ?? part.url} />
+      ))}
+    </SourcesContent>
+  </Sources>
+)}
+```
+
+## Exemplos
+
+### Conteúdo personalizado
+
+Passe `children` ao `Source` para trocar o ícone e o layout do item. `defaultOpen` deixa a lista aberta.
+
+<ComponentPreview name="ai-sources-custom" />
+
+## Referência da API
+
+### Sources
+
+Props do `Collapsible` da `@blips/ui` (Base UI `Collapsible.Root`) mais as da `<div>`.
+
+| Prop           | Tipo                                     | Padrão  |
+| -------------- | ---------------------------------------- | ------- |
+| `open`         | `boolean`                                | —       |
+| `defaultOpen`  | `boolean`                                | `false` |
+| `onOpenChange` | `(open: boolean, eventDetails) => void`  | —       |
+| `disabled`     | `boolean`                                | `false` |
+
+### SourcesTrigger
+
+Props do `CollapsibleTrigger` (um `<button>`) mais:
+
+| Prop       | Tipo        | Padrão                                     |
+| ---------- | ----------- | ------------------------------------------ |
+| `count`    | `number`                         | obrigatório                                  |
+| `getLabel` | `(count: number) => ReactNode`   | `"Usou {count} fonte(s)"`                    |
+| `children` | `ReactNode`                      | `getLabel(count)` + `CaretDownIcon`          |
+
+### SourcesContent
+
+Props do `CollapsibleContent` (Base UI `Collapsible.Panel`), como `keepMounted` e `hiddenUntilFound`.
+
+### Source
+
+Props do `<a>`. `title` vira o rótulo padrão (com `BookIcon`) quando não há `children`.
+
+| Prop       | Tipo        | Padrão                     |
+| ---------- | ----------- | -------------------------- |
+| `href`     | `string`    | —                          |
+| `title`    | `string`    | —                          |
+| `children` | `ReactNode` | `BookIcon` + `title`       |
+
+## Origem
+
+Adaptado do componente [Sources](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudanças da Blips: primitivas Base UI da `@blips/ui` (seletores `data-open`/`data-closed`,
+`render` no lugar de `asChild`), ícones Phosphor e `<span>` no lugar do `<p>` dentro do botão do trigger.

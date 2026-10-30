@@ -1,0 +1,135 @@
+---
+title: Liquid Gooey
+description: Superfície líquida que funde, estica e escorre entre peças de interface — menus que se dividem em gotas, chips que se juntam e indicadores com rastro.
+---
+
+<ComponentPreview name="ai-liquid-gooey-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `liquid-gooey` não exige peer opcional: o pacote `liquid-gooey` já vem como dependência do `@blips/ai`.
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { BlipsLiquid } from "@blips/ai/fx/liquid-gooey"
+```
+
+```tsx
+<BlipsLiquid className="relative h-28 w-44">
+  <BlipsLiquid.Item x={aberto ? -52 : 0} y={aberto ? -28 : 0} transition="bouncy">
+    <button className="size-10 rounded-full">…</button>
+  </BlipsLiquid.Item>
+  <BlipsLiquid.Item>
+    <button className="size-10 rounded-full">…</button>
+  </BlipsLiquid.Item>
+</BlipsLiquid>
+```
+
+O efeito tem duas camadas: uma silhueta SVG por baixo, que leva o goo e a sombra, e o seu DOM por cima,
+sempre nítido e interativo. Por isso o conteúdo de cada `BlipsLiquid.Item` deve ter **fundo
+transparente** — a superfície é o líquido.
+
+Os padrões Blips: o líquido é pintado com o token `--primary` (o amarelo da marca) e o texto do grupo
+recebe `--primary-foreground`; `tone` troca para `card`, `muted` ou `secondary`. Como a cor vai por
+`var()`, o tema segue a classe `.dark` da `@blips/ui` sem JavaScript. O goo é um pouco mais curto e
+nítido que o do original (`blur` 5 e `contrast` 20, contra 6 e 18), ajustado aos itens compactos da
+densidade mira, e a sombra é discreta, no nível do `shadow-xs`.
+
+Qualquer prop explícita vence o padrão, e `fill` vence `tone`. O `Liquid` original também é exportado,
+sem padrões:
+
+```tsx
+import { Liquid } from "@blips/ai/fx/liquid-gooey"
+```
+
+No servidor sai o contêiner com o conteúdo; a medição das peças e a animação só começam no cliente.
+
+## Exemplos
+
+### Tons
+
+Peças vizinhas se fundem quando o `blur` é maior ou igual à distância entre elas. `tone` escolhe o token
+que pinta o líquido.
+
+<ComponentPreview name="ai-liquid-gooey-tons" />
+
+### Move
+
+Com `effect="move"`, você move o elemento (CSS, eventos de ponteiro, Motion) e o líquido vai atrás dele,
+como borracha, com uma gota de rastro. Serve para indicador de abas e alças de slider.
+
+<ComponentPreview name="ai-liquid-gooey-move" />
+
+## Referência da API
+
+### BlipsLiquid
+
+Aceita todas as props do `Liquid` (e as da `<div>`) mais `tone`. Renderiza uma `<div>` com
+`position: relative`; dimensione o grupo para caber todo o percurso das peças.
+
+| Prop            | Tipo                                            | Padrão Blips                      |
+| --------------- | ----------------------------------------------- | --------------------------------- |
+| `tone`          | `"primary" \| "card" \| "muted" \| "secondary"` | `"primary"`                       |
+| `fill`          | `string` (qualquer cor CSS, `var()` incluso)    | do `tone`                         |
+| `blur`          | `number` (px)                                   | `5`                               |
+| `contrast`      | `number`                                        | `20`                              |
+| `shadow`        | `string` (sintaxe de `box-shadow`)              | `"0 1px 2px rgba(0, 0, 0, 0.08)"` |
+| `filterPadding` | `number` (px)                                   | `24`                              |
+| `waviness`      | `number` (px)                                   | `0`                               |
+| `wavinessFreq`  | `number`                                        | `0.018`                           |
+| `filter`        | `string` (primitivas SVG que substituem o goo)  | —                                 |
+
+Sem `fill`, o grupo recebe `color` do `-foreground` do tom (o `style` passado vence). Com `fill` próprio, a
+cor do texto fica com você.
+
+### BlipsLiquid.Item
+
+É o `Liquid.Item` do original.
+
+| Prop                             | Tipo                                                                        | Padrão          |
+| -------------------------------- | --------------------------------------------------------------------------- | --------------- |
+| `effect`                         | `"morph" \| "move" \| "melt" \| "bend"`                                     | `"morph"`       |
+| `morph`                          | `MorphTuning` (`shape`, `speed`, `bounce`, `contentBlur`, `advanced`)       | —               |
+| `move`                           | `MoveTuning` (`springiness`, `wobble`, `stretch`, `trail`, `advanced`)      | —               |
+| `melt`                           | `ImageMeltOptions & { src?: string }`                                       | —               |
+| `bend`                           | `BendTuning` (`vertical`, `horizontal`, `advanced`)                         | —               |
+| `dissolve`                       | `boolean \| number \| DissolveOptions`                                      | —               |
+| `x`, `y`, `scale`                | `number`                                                                    | —               |
+| `transition`                     | `"snappy" \| "smooth" \| "bouncy" \| SpringConfig \| { duration, ease? }`   | `"smooth"`      |
+| `delay`                          | `number` (ms)                                                               | —               |
+| `observe`                        | `boolean`                                                                   | —               |
+| `radius`                         | `number \| [number, number, number, number]`                                | medido do filho |
+| `className`, `style`, `children` |                                                                             |                 |
+
+Em peça com `x`/`y`, `className` e `style` vão para um wrapper `inline-block`, que dá para posicionar. Em peça
+observada (`effect="move"`, `bend`, `morph.shape`, `dissolve` ou `observe`), vão para um `<span>` com
+`display: contents`, sem caixa: posicione o filho, como no exemplo Move.
+
+`BLIPS_LIQUID_DEFAULTS` e `BLIPS_LIQUID_TONES` exportam os padrões acima. Também são reexportados
+`EVOLVE_DEFAULTS`, `MOVE_DEFAULTS`, `IMAGE_MELT_DEFAULTS`, `presets`, `easingFunction` e os tipos
+`LiquidProps`, `LiquidItemProps`, `LiquidEffect`, `MorphTuning`, `MoveTuning`, `BendTuning`,
+`ImageMeltOptions`, `DissolveOptions`, `EvolveOptions`, `MoveOptions`, `Transition`, `TransitionPreset`,
+`SpringConfig`, `CornerRadii`, além de `BlipsLiquidProps` e `BlipsLiquidTone`.
+
+## Acessibilidade
+
+A camada de conteúdo é DOM de verdade: foco, área de clique e ARIA nunca passam pelo filtro. As SVGs do
+efeito saem com `aria-hidden`. Com `prefers-reduced-motion`, as transições guiadas por `x`/`y` viram
+saltos instantâneos.
+
+## Origem
+
+Envolve o pacote [liquid-gooey](https://libraries.dev/gooey) do
+[libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT). A Blips acrescenta a prop `tone` e
+os padrões de cor, goo e sombra; a renderização é a do pacote.

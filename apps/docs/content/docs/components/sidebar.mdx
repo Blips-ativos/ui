@@ -61,6 +61,57 @@ export function AppSidebar() {
 }
 ```
 
+## Links e componentes próprios
+
+Para renderizar um item como link (ou como o `Link` do Next.js), passe o elemento pela prop `render`. O mesmo vale para `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarMenuAction` e `SidebarMenuSubButton`.
+
+```tsx
+<SidebarMenuButton isActive render={<Link href="/inicio" />}>
+  <HouseIcon />
+  <span>Início</span>
+</SidebarMenuButton>
+```
+
+Para abrir um menu a partir de uma ação do item, renderize a `SidebarMenuAction` como gatilho do Dropdown Menu:
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger render={<SidebarMenuAction showOnHover />}>
+    <DotsThreeIcon />
+  </DropdownMenuTrigger>
+  <DropdownMenuContent side="right" align="start">
+    <DropdownMenuItem>Renomear</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+## Tooltips no modo ícone
+
+Com `collapsible="icon"`, a prop `tooltip` do `SidebarMenuButton` mostra o rótulo quando a sidebar está recolhida. O `SidebarProvider` não envolve mais os filhos num `TooltipProvider`, então os tooltips usam o atraso padrão do Base UI (cerca de 600ms). Para abrir na hora, envolva o app em `<TooltipProvider>` (da lib, com `delay={0}`).
+
+## Migrando da v2
+
+Os tooltips e as partes polimórficas passaram para o Base UI.
+
+- `asChild` saiu de `SidebarGroupLabel`, `SidebarGroupAction`, `SidebarMenuButton`, `SidebarMenuAction` e `SidebarMenuSubButton`. Use `render`.
+- O `SidebarProvider` não cria mais um `TooltipProvider delayDuration={0}`. Para o comportamento antigo, use `<TooltipProvider delay={0}>` na raiz.
+- `SidebarMenuAction` com `showOnHover` agora fica visível por `aria-expanded`, não por `data-[state=open]`.
+- O `SidebarTrigger` usa `size="icon-sm"` (`size-6`, 4px menor que o `size-7` da v2) e o ícone `Sidebar` do Phosphor.
+- A `Sidebar` aceita `dir`, repassado ao sheet no mobile.
+- Visual mais compacto: textos do menu em `text-xs`, `SidebarGroup` com `px-2 py-1` e `SidebarMenu` com `gap-px`.
+
+```tsx
+// v2
+<SidebarMenuButton asChild isActive>
+  <a href="/inicio">Início</a>
+</SidebarMenuButton>
+
+// v3
+<SidebarMenuButton isActive render={<a href="/inicio" />}>
+  Início
+</SidebarMenuButton>
+```
+
 ## Referência da API
 
 ### SidebarProvider
@@ -82,12 +133,13 @@ O contêiner principal da sidebar.
 | `side` | `"left" \| "right"` | `"left"` | O lado em que a sidebar aparece |
 | `variant` | `"sidebar" \| "floating" \| "inset"` | `"sidebar"` | A variante visual |
 | `collapsible` | `"offcanvas" \| "icon" \| "none"` | `"offcanvas"` | O comportamento de colapso |
+| `dir` | `"ltr" \| "rtl"` | - | Direção repassada ao sheet no mobile |
 
 ### SidebarMenuButton
 
 | Prop | Tipo | Padrão | Descrição |
 |------|------|---------|-------------|
-| `asChild` | `boolean` | `false` | Renderiza como um elemento filho |
+| `render` | `ReactElement \| function` | - | Elemento a renderizar no lugar do `<button>` |
 | `isActive` | `boolean` | `false` | Se o item está ativo |
 | `tooltip` | `string \| TooltipContentProps` | - | Conteúdo do tooltip para o estado colapsado |
 | `variant` | `"default" \| "outline"` | `"default"` | A variante visual |

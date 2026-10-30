@@ -2,81 +2,52 @@
 
 Import: `@blips/ui/components/menubar`
 
-## Sub-components
+Barra horizontal de menus no estilo de aplicativo desktop (Arquivo, Editar,
+Exibir). Use em editores e ferramentas densas. Para um único menu de ações, use
+Dropdown Menu (`dropdown-menu.md`); para navegação do site, Navigation Menu.
 
-| Component | Element | Description |
-|-----------|---------|-------------|
-| `Menubar` | `MenubarPrimitive.Root` | Root container. Horizontal bar with border and background. |
-| `MenubarMenu` | `MenubarPrimitive.Menu` | Wraps a single menu (trigger + content). |
-| `MenubarTrigger` | `MenubarPrimitive.Trigger` | Button that opens a menu dropdown. |
-| `MenubarContent` | `MenubarPrimitive.Content` | Dropdown panel containing menu items. Rendered in a Portal. |
-| `MenubarItem` | `MenubarPrimitive.Item` | Standard clickable menu item. |
-| `MenubarCheckboxItem` | `MenubarPrimitive.CheckboxItem` | Menu item with checkbox toggle. |
-| `MenubarRadioGroup` | `MenubarPrimitive.RadioGroup` | Groups radio items for single selection. |
-| `MenubarRadioItem` | `MenubarPrimitive.RadioItem` | Radio-selectable menu item. |
-| `MenubarSub` | `MenubarPrimitive.Sub` | Wrapper for a submenu. |
-| `MenubarSubTrigger` | `MenubarPrimitive.SubTrigger` | Trigger that opens a submenu. Shows chevron icon. |
-| `MenubarSubContent` | `MenubarPrimitive.SubContent` | Submenu dropdown panel. |
-| `MenubarSeparator` | `MenubarPrimitive.Separator` | Horizontal line divider between items. |
-| `MenubarLabel` | `MenubarPrimitive.Label` | Non-interactive label/header within a menu. |
-| `MenubarGroup` | `MenubarPrimitive.Group` | Groups related menu items. |
-| `MenubarPortal` | `MenubarPrimitive.Portal` | Portal wrapper (used internally by MenubarContent). |
-| `MenubarShortcut` | `<span>` | Right-aligned keyboard shortcut text. |
+Exports (iguais nas duas versões, 16 nomes): `Menubar`, `MenubarMenu`,
+`MenubarTrigger`, `MenubarContent`, `MenubarPortal`, `MenubarGroup`,
+`MenubarLabel`, `MenubarItem`, `MenubarShortcut`, `MenubarSeparator`,
+`MenubarCheckboxItem`, `MenubarRadioGroup`, `MenubarRadioItem`, `MenubarSub`,
+`MenubarSubTrigger`, `MenubarSubContent`.
 
-## Props & Variants
+## Notas comuns
 
-### Menubar (Root)
+- Estrutura: `Menubar` > `MenubarMenu` (um por menu) > `MenubarTrigger` + `MenubarContent` > itens.
+- `MenubarContent` padrão: `align="start"`, `alignOffset={-4}`, `sideOffset={8}`.
+- `MenubarItem`: `inset` (alinha com itens que têm indicador), `variant` (`"default"` ou `"destructive"`), `disabled`.
+- `MenubarShortcut` é só texto à direita (`⌘T`): não registra o atalho.
+- `MenubarCheckboxItem`: `checked` + `onCheckedChange`. `MenubarRadioGroup`: `value` + `onValueChange`; `MenubarRadioItem`: `value`.
+- O comportamento de item (clique, manter aberto, label em grupo) segue o Dropdown Menu da mesma versão: veja `dropdown-menu.md`.
 
-Standard `MenubarPrimitive.Root` props. Uses `forwardRef`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-**Default styles:**
-- `flex h-10 items-center space-x-1 rounded-md border bg-background p-1`
+## v3.x — Base UI
 
-### MenubarContent
+Primitivas: `Menubar` de `@base-ui/react/menubar` na raiz; cada menu é um `Menu`
+do Base UI. Os `Menubar*` são wrappers finos sobre os `DropdownMenu*` da lib.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `align` | `"start" \| "center" \| "end"` | `"start"` | Alignment relative to trigger |
-| `alignOffset` | `number` | `-4` | Offset from alignment edge |
-| `sideOffset` | `number` | `8` | Offset from the trigger |
+| Componente | Notas |
+|---|---|
+| `Menubar` | `orientation`, `loopFocus`, `modal`, `disabled`. **Não existem** `value`/`onValueChange`/`defaultValue` (qual menu está aberto). |
+| `MenubarMenu` | É o `DropdownMenu` (`Menu.Root`): controle cada menu com `open` / `onOpenChange(open, eventDetails)`. Sem `value`. |
+| `MenubarTrigger` | Troque o elemento com `render`. Aberto: `aria-expanded` / `data-popup-open`. |
+| `MenubarItem` | `onClick` (não `onSelect`); `closeOnClick={false}` mantém o menu aberto. |
+| `MenubarLabel` | É `Menu.GroupLabel`: **precisa ficar dentro de `MenubarGroup`**. |
+| `MenubarCheckboxItem` / `MenubarRadioItem` | Indicador `CheckIcon` à **esquerda** (`pl-7.5`). `onCheckedChange(checked, eventDetails)`. |
 
-**Default styles:**
-- `z-50 min-w-[12rem] rounded-md border bg-popover p-1 text-popover-foreground shadow-md`
-- Animated: fade-in, zoom-in, slide-in based on side
-
-### MenubarItem
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `inset` | `boolean` | `false` | Adds left padding (`pl-8`) to align with items that have indicators |
-| `disabled` | `boolean` | - | Disables the item |
-
-### MenubarSubTrigger
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `inset` | `boolean` | `false` | Adds left padding (`pl-8`) |
-
-### MenubarLabel
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `inset` | `boolean` | `false` | Adds left padding (`pl-8`) |
-
-### MenubarShortcut
-
-No custom props. Renders a `<span>` with `ml-auto text-muted-foreground text-xs tracking-widest`.
-
-## Usage
-
-### Full Menubar
+Visual: raiz `h-9 rounded-lg border p-1`, itens `min-h-7 text-xs/relaxed`, popup `rounded-lg ring-1 ring-foreground/10`.
 
 ```tsx
+import * as React from "react";
 import {
   Menubar,
   MenubarCheckboxItem,
   MenubarContent,
+  MenubarGroup,
   MenubarItem,
+  MenubarLabel,
   MenubarMenu,
   MenubarRadioGroup,
   MenubarRadioItem,
@@ -86,102 +57,127 @@ import {
   MenubarSubContent,
   MenubarSubTrigger,
   MenubarTrigger,
-} from "@blips/ui/components/menubar"
+} from "@blips/ui/components/menubar";
 
-<Menubar>
-  <MenubarMenu>
-    <MenubarTrigger>File</MenubarTrigger>
-    <MenubarContent>
-      <MenubarItem>
-        New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-      </MenubarItem>
-      <MenubarItem>
-        New Window <MenubarShortcut>⌘N</MenubarShortcut>
-      </MenubarItem>
-      <MenubarItem disabled>New Incognito Window</MenubarItem>
-      <MenubarSeparator />
-      <MenubarSub>
-        <MenubarSubTrigger>Share</MenubarSubTrigger>
-        <MenubarSubContent>
-          <MenubarItem>Email link</MenubarItem>
-          <MenubarItem>Messages</MenubarItem>
-          <MenubarItem>Notes</MenubarItem>
-        </MenubarSubContent>
-      </MenubarSub>
-      <MenubarSeparator />
-      <MenubarItem>
-        Print... <MenubarShortcut>⌘P</MenubarShortcut>
-      </MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-  <MenubarMenu>
-    <MenubarTrigger>Edit</MenubarTrigger>
-    <MenubarContent>
-      <MenubarItem>
-        Undo <MenubarShortcut>⌘Z</MenubarShortcut>
-      </MenubarItem>
-      <MenubarItem>
-        Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-      </MenubarItem>
-      <MenubarSeparator />
-      <MenubarSub>
-        <MenubarSubTrigger>Find</MenubarSubTrigger>
-        <MenubarSubContent>
-          <MenubarItem>MagnifyingGlass the web</MenubarItem>
+export function MenuDoEditor({ criarAba }: { criarAba: () => void }) {
+  const [regua, setRegua] = React.useState(true);
+  const [tema, setTema] = React.useState("system");
+
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>Arquivo</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem onClick={criarAba}>
+            Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSub>
+            <MenubarSubTrigger>Compartilhar</MenubarSubTrigger>
+            <MenubarSubContent>
+              <MenubarItem>Copiar link</MenubarItem>
+              <MenubarItem>E-mail</MenubarItem>
+            </MenubarSubContent>
+          </MenubarSub>
           <MenubarSeparator />
-          <MenubarItem>Find...</MenubarItem>
-          <MenubarItem>Find Next</MenubarItem>
-          <MenubarItem>Find Previous</MenubarItem>
-        </MenubarSubContent>
-      </MenubarSub>
-      <MenubarSeparator />
-      <MenubarItem>Cut</MenubarItem>
-      <MenubarItem>Copy</MenubarItem>
-      <MenubarItem>Paste</MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-  <MenubarMenu>
-    <MenubarTrigger>View</MenubarTrigger>
-    <MenubarContent>
-      <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
-      <MenubarCheckboxItem checked>
-        Always Show Full URLs
-      </MenubarCheckboxItem>
-      <MenubarSeparator />
-      <MenubarItem inset>
-        Reload <MenubarShortcut>⌘R</MenubarShortcut>
-      </MenubarItem>
-      <MenubarItem disabled inset>
-        Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
-      </MenubarItem>
-      <MenubarSeparator />
-      <MenubarItem inset>Toggle Fullscreen</MenubarItem>
-      <MenubarSeparator />
-      <MenubarItem inset>Hide Sidebar</MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-  <MenubarMenu>
-    <MenubarTrigger>Profiles</MenubarTrigger>
-    <MenubarContent>
-      <MenubarRadioGroup value="benoit">
-        <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
-        <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
-        <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
-      </MenubarRadioGroup>
-      <MenubarSeparator />
-      <MenubarItem inset>Edit...</MenubarItem>
-      <MenubarSeparator />
-      <MenubarItem inset>Add Profile...</MenubarItem>
-    </MenubarContent>
-  </MenubarMenu>
-</Menubar>
+          <MenubarItem variant="destructive">Excluir</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Exibir</MenubarTrigger>
+        <MenubarContent>
+          <MenubarCheckboxItem checked={regua} onCheckedChange={setRegua}>
+            Mostrar régua
+          </MenubarCheckboxItem>
+          <MenubarSeparator />
+          <MenubarGroup>
+            <MenubarLabel>Tema</MenubarLabel>
+            <MenubarRadioGroup value={tema} onValueChange={setTema}>
+              <MenubarRadioItem value="light">Claro</MenubarRadioItem>
+              <MenubarRadioItem value="dark">Escuro</MenubarRadioItem>
+              <MenubarRadioItem value="system">Sistema</MenubarRadioItem>
+            </MenubarRadioGroup>
+          </MenubarGroup>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  );
+}
 ```
 
-## Project Notes
+### Armadilhas
 
-- This project uses `@phosphor-icons/react` for icons (Check, CaretRight, Circle).
-- The component uses `forwardRef` pattern (not the newer function component pattern from latest shadcn).
+- `MenubarItem onSelect` não dispara: use `onClick`. `event.preventDefault()` não mantém aberto: use `closeOnClick={false}`.
+- `MenubarLabel` solto quebra: envolva em `MenubarGroup`.
+- `data-[state=open]:` no trigger não casa: use `aria-expanded:` ou `data-popup-open:`.
 
-## All Examples
+## v2.x — Radix
 
-- `menubar-demo` - Full menubar with File, Edit, View, and Profiles menus demonstrating all sub-component types
+Primitiva: `@radix-ui/react-menubar`.
+
+| Componente | Notas |
+|---|---|
+| `Menubar` | `value` / `onValueChange` / `defaultValue` (qual menu está aberto), `loop`, `dir`. |
+| `MenubarMenu` | `value`. |
+| `MenubarTrigger` | `asChild`. Aberto: `data-state="open"`. |
+| `MenubarItem` | `onSelect`; `event.preventDefault()` no `onSelect` mantém aberto. |
+| `MenubarLabel` | Pode ficar solto. |
+| `MenubarCheckboxItem` | Indicador `Check` à esquerda. `onCheckedChange(checked)`. |
+| `MenubarRadioItem` | Indicador `Circle` preenchido (bolinha) à esquerda. |
+| `MenubarSubTrigger` | `CaretRight` à direita. |
+
+Visual: raiz `h-9 rounded-md border shadow-xs`, itens `text-sm py-1.5`.
+
+```tsx
+import * as React from "react"
+import {
+  Menubar,
+  MenubarCheckboxItem,
+  MenubarContent,
+  MenubarItem,
+  MenubarLabel,
+  MenubarMenu,
+  MenubarRadioGroup,
+  MenubarRadioItem,
+  MenubarSeparator,
+  MenubarShortcut,
+  MenubarTrigger,
+} from "@blips/ui/components/menubar"
+
+export function MenuDoEditor({ criarAba }: { criarAba: () => void }) {
+  const [regua, setRegua] = React.useState(true)
+  const [tema, setTema] = React.useState("system")
+
+  return (
+    <Menubar>
+      <MenubarMenu>
+        <MenubarTrigger>Arquivo</MenubarTrigger>
+        <MenubarContent>
+          <MenubarItem onSelect={criarAba}>
+            Nova aba <MenubarShortcut>⌘T</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
+          <MenubarItem variant="destructive">Excluir</MenubarItem>
+        </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger>Exibir</MenubarTrigger>
+        <MenubarContent>
+          <MenubarCheckboxItem checked={regua} onCheckedChange={setRegua}>
+            Mostrar régua
+          </MenubarCheckboxItem>
+          <MenubarSeparator />
+          <MenubarLabel>Tema</MenubarLabel>
+          <MenubarRadioGroup value={tema} onValueChange={setTema}>
+            <MenubarRadioItem value="light">Claro</MenubarRadioItem>
+            <MenubarRadioItem value="dark">Escuro</MenubarRadioItem>
+          </MenubarRadioGroup>
+        </MenubarContent>
+      </MenubarMenu>
+    </Menubar>
+  )
+}
+```
+
+## Exemplos na docs
+
+`menubar-demo`, `menubar-icons`, `menubar-radio` (em `apps/docs/examples/`, escritos para a v3).

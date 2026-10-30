@@ -4,30 +4,45 @@ import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
+import {
+  ArrowDownIcon,
+  ArrowRightIcon,
+  ArrowUpIcon,
+} from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function DropdownMenuRadioGroupDemo() {
-  const [position, setPosition] = React.useState("bottom");
+  const [position, setPosition] = React.useState<string>("bottom");
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline">Open</Button>
+      <DropdownMenuTrigger render={<Button variant="outline" />}>
+        Posição do painel
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Panel Position</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
-          <DropdownMenuRadioItem value="top">Top</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="bottom">Bottom</DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value="right">Right</DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
+      <DropdownMenuContent>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>Posição do painel</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value={position} onValueChange={setPosition}>
+            <DropdownMenuRadioItem value="top">
+              <ArrowUpIcon />
+              Em cima
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="bottom">
+              <ArrowDownIcon />
+              Embaixo
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="right" disabled>
+              <ArrowRightIcon />
+              Direita
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

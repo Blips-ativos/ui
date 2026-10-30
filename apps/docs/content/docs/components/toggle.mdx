@@ -18,7 +18,9 @@ import { Toggle } from "@blips/ui/components/toggle"
 ```
 
 ```tsx
-<Toggle>Toggle</Toggle>
+<Toggle aria-label="Alternar negrito">
+  <TextBIcon />
+</Toggle>
 ```
 
 ## Exemplos
@@ -29,10 +31,59 @@ Use `variant="outline"` para um estilo com contorno.
 
 <ComponentPreview name="toggle-outline" />
 
+### Com texto
+
+<ComponentPreview name="toggle-with-text" />
+
+### Tamanhos
+
+Use a prop `size` para alterar o tamanho do toggle.
+
+<ComponentPreview name="toggle-size" />
+
+### Ícone que reage ao estado
+
+O toggle expõe `aria-pressed` quando está ligado. Combine com o grupo `group/toggle` para estilizar o ícone, por exemplo preenchendo-o.
+
+<ComponentPreview name="toggle-icon" />
+
 ### Desabilitado
 
 <ComponentPreview name="toggle-disabled" />
 
 ## Referência da API
 
-Consulte a documentação do [Radix Toggle](https://www.radix-ui.com/docs/primitives/components/toggle#api-reference).
+### Toggle
+
+Aceita todas as props do `Toggle` do Base UI.
+
+| Prop              | Tipo                                           | Padrão      |
+| ----------------- | ---------------------------------------------- | ----------- |
+| `variant`         | `"default" \| "outline"`                       | `"default"` |
+| `size`            | `"default" \| "sm" \| "lg"`                    | `"default"` |
+| `pressed`         | `boolean`                                      | -           |
+| `defaultPressed`  | `boolean`                                      | `false`     |
+| `onPressedChange` | `(pressed: boolean, eventDetails) => void`     | -           |
+| `disabled`        | `boolean`                                      | `false`     |
+| `render`          | `React.ReactElement \| (props, state) => React.ReactElement` | - |
+
+Consulte a documentação do [Base UI Toggle](https://base-ui.com/react/components/toggle).
+
+## Migrando da v2
+
+- **Primitivo**: Radix trocado pelo `Toggle` do Base UI. `pressed`, `defaultPressed` e `onPressedChange` continuam, mas o callback ganhou um 2º argumento (`eventDetails`).
+- **Estado no DOM**: o estado ligado agora é `data-pressed` / `aria-pressed`, não mais `data-state="on"`. Atualize CSS e testes que usavam `data-[state=on]`.
+- **`asChild` não existe**: use `render`.
+- **Visual**: alturas menores (`default` `h-7`, `sm` `h-6`, `lg` `h-8`) e o estado ligado usa `bg-muted`.
+
+```tsx
+// v2
+<Toggle className="data-[state=on]:text-primary">
+  <TextB />
+</Toggle>
+
+// v3
+<Toggle className="aria-pressed:text-primary">
+  <TextBIcon />
+</Toggle>
+```

@@ -4,12 +4,17 @@
 
 The shadcn/ui sidebar system provides 16 block variants demonstrating different sidebar patterns. All use the core `Sidebar`, `SidebarProvider`, `SidebarInset`, `SidebarContent`, `SidebarHeader`, `SidebarFooter` primitives with varying compositions.
 
+> **Versão da lib:** os blocos estão na **v3.x — Base UI** (`render`, `data-popup-open`,
+> `group-data-open`, ícones `*Icon`, imports `@blips/ui/components/*`). Para repo **v2.x — Radix**,
+> veja só as diferenças em [v2.x — Radix](#v2x--radix) no fim. Detecção de versão: Passo 0 do `SKILL.md`
+> do building.
+
 ## Layout Variants
 
 | Block | Description | Key Feature | Variant Prop |
 |-------|-------------|-------------|-------------|
 | sidebar-01 | Simple sidebar with grouped sections | SidebarGroupLabel per section | default |
-| sidebar-02 | Collapsible sections | Collapsible + ChevronRight rotation | default |
+| sidebar-02 | Collapsible sections | Collapsible + CaretRight rotation | default |
 | sidebar-03 | Submenus | SidebarMenuSub + SidebarMenuSubButton | default |
 | sidebar-04 | Floating sidebar with submenus | `variant="floating"` | floating |
 | sidebar-05 | Collapsible submenus | Collapsible + Plus/Minus icons | default |
@@ -33,15 +38,15 @@ The shadcn/ui sidebar system provides 16 block variants demonstrating different 
 "use client"
 
 import {
-  SealCheck,
-  Bell,
-  CaretUpDown,
-  CreditCard,
-  SignOut,
-  Sparkle,
+  SealCheckIcon,
+  BellIcon,
+  CaretUpDownIcon,
+  CreditCardIcon,
+  SignOutIcon,
+  SparkleIcon,
 } from "@phosphor-icons/react"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@blips/ui/components/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,13 +55,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/ui/dropdown-menu"
+} from "@blips/ui/components/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function NavUser({
   user,
@@ -73,65 +78,69 @@ export function NavUser({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
-              </div>
-              <CaretUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarImage src={user.avatar} alt={user.name} />
+              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+            </Avatar>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{user.name}</span>
+              <span className="truncate text-xs">{user.email}</span>
+            </div>
+            <CaretUpDownIcon className="ml-auto size-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--anchor-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="p-0 font-normal">
+                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarImage src={user.avatar} alt={user.name} />
+                    <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate text-xs">{user.email}</span>
+                  </div>
                 </div>
-              </div>
-            </DropdownMenuLabel>
+              </DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkle />
+                <SparkleIcon />
                 Upgrade to Pro
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <SealCheck />
+                <SealCheckIcon />
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <CreditCard />
+                <CreditCardIcon />
                 Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell />
+                <BellIcon />
                 Notifications
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <SignOut />
+              <SignOutIcon />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -148,23 +157,24 @@ export function NavUser({
 "use client"
 
 import * as React from "react"
-import { CaretUpDown, Plus } from "@phosphor-icons/react"
+import { CaretUpDownIcon, PlusIcon } from "@phosphor-icons/react"
 
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "@/ui/dropdown-menu"
+} from "@blips/ui/components/dropdown-menu"
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function TeamSwitcher({
   teams,
@@ -186,47 +196,51 @@ export function TeamSwitcher({
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <activeTeam.logo className="size-4" />
-              </div>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeTeam.name}</span>
-                <span className="truncate text-xs">{activeTeam.plan}</span>
-              </div>
-              <CaretUpDown className="ml-auto" />
-            </SidebarMenuButton>
+          <DropdownMenuTrigger
+            render={
+              <SidebarMenuButton
+                size="lg"
+                className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+              />
+            }
+          >
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <activeTeam.logo className="size-4" />
+            </div>
+            <div className="grid flex-1 text-left text-sm leading-tight">
+              <span className="truncate font-medium">{activeTeam.name}</span>
+              <span className="truncate text-xs">{activeTeam.plan}</span>
+            </div>
+            <CaretUpDownIcon className="ml-auto" />
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+            className="w-(--anchor-width) min-w-56 rounded-lg"
             align="start"
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-xs text-muted-foreground">
-              Teams
-            </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>{`\u2318${index + 1}`}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
+            <DropdownMenuGroup>
+              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                Teams
+              </DropdownMenuLabel>
+              {teams.map((team, index) => (
+                <DropdownMenuItem
+                  key={team.name}
+                  onClick={() => setActiveTeam(team)}
+                  className="gap-2 p-2"
+                >
+                  <div className="flex size-6 items-center justify-center rounded-md border">
+                    <team.logo className="size-3.5 shrink-0" />
+                  </div>
+                  {team.name}
+                  <DropdownMenuShortcut>{`\u2318${index + 1}`}</DropdownMenuShortcut>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
               <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                <Plus className="size-4" />
+                <PlusIcon className="size-4" />
               </div>
               <div className="font-medium text-muted-foreground">Add team</div>
             </DropdownMenuItem>
@@ -250,7 +264,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/ui/sidebar"
+} from "@blips/ui/components/sidebar"
 
 export function NavSecondary({
   items,
@@ -268,11 +282,9 @@ export function NavSecondary({
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild size="sm">
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
+              <SidebarMenuButton size="sm" render={<a href={item.url} />}>
+                <item.icon />
+                <span>{item.title}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -304,9 +316,9 @@ import { AppSidebar } from "./components/app-sidebar"
 import {
   Breadcrumb, BreadcrumbItem, BreadcrumbLink,
   BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
-} from "@/ui/breadcrumb"
-import { Separator } from "@/ui/separator"
-import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/ui/sidebar"
+} from "@blips/ui/components/breadcrumb"
+import { Separator } from "@blips/ui/components/separator"
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@blips/ui/components/sidebar"
 
 export default function Page() {
   return (
@@ -353,9 +365,7 @@ export default function Page() {
         <SidebarMenu>
           {item.items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild isActive={item.isActive}>
-                <a href={item.url}>{item.title}</a>
-              </SidebarMenuButton>
+              <SidebarMenuButton isActive={item.isActive} render={<a href={item.url} />}>{item.title}</SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
@@ -369,7 +379,7 @@ export default function Page() {
 
 ## sidebar-02: Collapsible Sections
 
-### Key Pattern: Collapsible group labels with ChevronRight
+### Key Pattern: Collapsible group labels with CaretRight
 
 ```tsx
 <SidebarContent className="gap-0">
@@ -377,22 +387,18 @@ export default function Page() {
     <Collapsible key={item.title} title={item.title} defaultOpen className="group/collapsible">
       <SidebarGroup>
         <SidebarGroupLabel
-          asChild
           className="group/label text-sm text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          render={<CollapsibleTrigger />}
         >
-          <CollapsibleTrigger>
-            {item.title}
-            <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-          </CollapsibleTrigger>
+          {item.title}
+          <CaretRightIcon className="ml-auto transition-transform group-data-open/collapsible:rotate-90" />
         </SidebarGroupLabel>
         <CollapsibleContent>
           <SidebarGroupContent>
             <SidebarMenu>
               {item.items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild isActive={item.isActive}>
-                    <a href={item.url}>{item.title}</a>
-                  </SidebarMenuButton>
+                  <SidebarMenuButton isActive={item.isActive} render={<a href={item.url} />}>{item.title}</SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
@@ -414,16 +420,12 @@ export default function Page() {
 <SidebarMenu>
   {data.navMain.map((item) => (
     <SidebarMenuItem key={item.title}>
-      <SidebarMenuButton asChild>
-        <a href={item.url} className="font-medium">{item.title}</a>
-      </SidebarMenuButton>
+      <SidebarMenuButton render={<a href={item.url} className="font-medium" />}>{item.title}</SidebarMenuButton>
       {item.items?.length ? (
         <SidebarMenuSub>
           {item.items.map((item) => (
             <SidebarMenuSubItem key={item.title}>
-              <SidebarMenuSubButton asChild isActive={item.isActive}>
-                <a href={item.url}>{item.title}</a>
-              </SidebarMenuSubButton>
+              <SidebarMenuSubButton isActive={item.isActive} render={<a href={item.url} />}>{item.title}</SidebarMenuSubButton>
             </SidebarMenuSubItem>
           ))}
         </SidebarMenuSub>
@@ -456,21 +458,17 @@ export default function Page() {
 ```tsx
 <Collapsible key={item.title} defaultOpen={index === 1} className="group/collapsible">
   <SidebarMenuItem>
-    <CollapsibleTrigger asChild>
-      <SidebarMenuButton>
-        {item.title}
-        <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
-        <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
-      </SidebarMenuButton>
+    <CollapsibleTrigger render={<SidebarMenuButton />}>
+      {item.title}
+      <PlusIcon className="ml-auto group-data-open/collapsible:hidden" />
+      <MinusIcon className="ml-auto group-data-closed/collapsible:hidden" />
     </CollapsibleTrigger>
     {item.items?.length ? (
       <CollapsibleContent>
         <SidebarMenuSub>
           {item.items.map((item) => (
             <SidebarMenuSubItem key={item.title}>
-              <SidebarMenuSubButton asChild isActive={item.isActive}>
-                <a href={item.url}>{item.title}</a>
-              </SidebarMenuSubButton>
+              <SidebarMenuSubButton isActive={item.isActive} render={<a href={item.url} />}>{item.title}</SidebarMenuSubButton>
             </SidebarMenuSubItem>
           ))}
         </SidebarMenuSub>
@@ -491,10 +489,14 @@ export default function Page() {
   {items.map((item) => (
     <DropdownMenu key={item.title}>
       <SidebarMenuItem>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
-            {item.title} <DotsThree className="ml-auto" />
-          </SidebarMenuButton>
+        <DropdownMenuTrigger
+          render={
+            <SidebarMenuButton
+              className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+            />
+          }
+        >
+          {item.title} <DotsThreeIcon className="ml-auto" />
         </DropdownMenuTrigger>
         {item.items?.length ? (
           <DropdownMenuContent
@@ -503,9 +505,7 @@ export default function Page() {
             className="min-w-56 rounded-lg"
           >
             {item.items.map((item) => (
-              <DropdownMenuItem asChild key={item.title}>
-                <a href={item.url}>{item.title}</a>
-              </DropdownMenuItem>
+              <DropdownMenuItem key={item.title} render={<a href={item.url} />}>{item.title}</DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         ) : null}
@@ -549,7 +549,7 @@ NavMain with tooltip and collapsible sub-items:
 <SidebarMenuButton tooltip={item.title}>
   {item.icon && <item.icon />}
   <span>{item.title}</span>
-  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+  <CaretRightIcon className="ml-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
 </SidebarMenuButton>
 ```
 
@@ -582,19 +582,15 @@ NavProjects hidden when collapsed:
 
 NavMain uses SidebarMenuAction for collapse trigger (separate from main button):
 ```tsx
-<SidebarMenuButton asChild tooltip={item.title}>
-  <a href={item.url}>
-    <item.icon />
-    <span>{item.title}</span>
-  </a>
+<SidebarMenuButton tooltip={item.title} render={<a href={item.url} />}>
+  <item.icon />
+  <span>{item.title}</span>
 </SidebarMenuButton>
 {item.items?.length ? (
   <>
-    <CollapsibleTrigger asChild>
-      <SidebarMenuAction className="data-[state=open]:rotate-90">
-        <ChevronRight />
-        <span className="sr-only">Toggle</span>
-      </SidebarMenuAction>
+    <CollapsibleTrigger render={<SidebarMenuAction className="data-panel-open:rotate-90" />}>
+      <CaretRightIcon />
+      <span className="sr-only">Toggle</span>
     </CollapsibleTrigger>
     <CollapsibleContent>
       <SidebarMenuSub>{/* sub items */}</SidebarMenuSub>
@@ -665,10 +661,17 @@ NavMain uses SidebarMenuAction for collapse trigger (separate from main button):
 
 ```tsx
 <Popover open={isOpen} onOpenChange={setIsOpen}>
-  <PopoverTrigger asChild>
-    <Button variant="ghost" size="icon" className="h-7 w-7 data-[state=open]:bg-accent">
-      <DotsThree />
-    </Button>
+  <PopoverTrigger
+    render={
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="Mais opções"
+        className="h-7 w-7 data-popup-open:bg-accent"
+      />
+    }
+  >
+    <DotsThreeIcon />
   </PopoverTrigger>
   <PopoverContent className="w-56 overflow-hidden rounded-lg p-0" align="end">
     <Sidebar collapsible="none" className="bg-transparent">
@@ -711,7 +714,7 @@ function Tree({ item }: { item: TreeItem }) {
   if (!items.length) {
     return (
       <SidebarMenuButton isActive={name === "button.tsx"} className="data-[active=true]:bg-transparent">
-        <File />
+        <FileIcon />
         {name}
       </SidebarMenuButton>
     )
@@ -720,15 +723,13 @@ function Tree({ item }: { item: TreeItem }) {
   return (
     <SidebarMenuItem>
       <Collapsible
-        className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+        className="group/collapsible [&[data-open]>button>svg:first-child]:rotate-90"
         defaultOpen={name === "components" || name === "ui"}
       >
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton>
-            <ChevronRight className="transition-transform" />
-            <Folder />
-            {name}
-          </SidebarMenuButton>
+        <CollapsibleTrigger render={<SidebarMenuButton />}>
+          <CaretRightIcon className="transition-transform" />
+          <FolderIcon />
+          {name}
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
@@ -765,7 +766,7 @@ Also includes Changes group with SidebarMenuBadge for file states (M, U).
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton>
-          <Plus />
+          <PlusIcon />
           <span>New Calendar</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -798,11 +799,12 @@ DatePicker uses Calendar with custom styling:
             <SidebarMenu>
               {data.nav.map((item) => (
                 <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild isActive={item.name === "Messages & media"}>
-                    <a href="#">
-                      <item.icon />
-                      <span>{item.name}</span>
-                    </a>
+                  <SidebarMenuButton
+                    isActive={item.name === "Messages & media"}
+                    render={<a href="#" />}
+                  >
+                    <item.icon />
+                    <span>{item.name}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -890,9 +892,9 @@ Sidebar offset for header:
 SiteHeader uses useSidebar hook:
 ```tsx
 "use client"
-import { SidebarSimple } from "@phosphor-icons/react"
-import { Button } from "@/ui/button"
-import { useSidebar } from "@/ui/sidebar"
+import { SidebarSimpleIcon } from "@phosphor-icons/react"
+import { Button } from "@blips/ui/components/button"
+import { useSidebar } from "@blips/ui/components/sidebar"
 
 export function SiteHeader() {
   const { toggleSidebar } = useSidebar()
@@ -900,8 +902,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 flex w-full items-center border-b bg-background">
       <div className="flex h-(--header-height) w-full items-center gap-2 px-4">
-        <Button className="h-8 w-8" variant="ghost" size="icon" onClick={toggleSidebar}>
-          <SidebarSimple />
+        <Button className="h-8 w-8" variant="ghost" size="icon" aria-label="Alternar sidebar" onClick={toggleSidebar}>
+          <SidebarSimpleIcon />
         </Button>
         <Separator orientation="vertical" className="mr-2 h-4" />
         <Breadcrumb>{/* ... */}</Breadcrumb>
@@ -911,3 +913,53 @@ export function SiteHeader() {
   )
 }
 ```
+
+---
+
+## v2.x — Radix
+
+Os 16 blocos valem para a v2.x trocando:
+
+| Ponto do bloco | v3.x — Base UI (acima) | v2.x — Radix |
+|---|---|---|
+| Item como link | `<SidebarMenuButton render={<a href={url} />}>…` | `<SidebarMenuButton asChild><a href={url}>…</a></SidebarMenuButton>` |
+| Trigger de dropdown/collapsible | `<DropdownMenuTrigger render={<SidebarMenuButton size="lg" />}>…` | `<DropdownMenuTrigger asChild><SidebarMenuButton size="lg">…</SidebarMenuButton></DropdownMenuTrigger>` |
+| Trigger aberto (NavUser, TeamSwitcher, sidebar-06) | `data-popup-open:bg-sidebar-accent` | `data-[state=open]:bg-sidebar-accent` |
+| Seta de collapsible (sidebar-02, 07) | `group-data-open/collapsible:rotate-90` | `group-data-[state=open]/collapsible:rotate-90` |
+| Plus/Minus (sidebar-05) | `group-data-open/collapsible:hidden` / `group-data-closed/collapsible:hidden` | `group-data-[state=open]/collapsible:hidden` / `group-data-[state=closed]/collapsible:hidden` |
+| `SidebarMenuAction` como trigger (sidebar-08) | `data-panel-open:rotate-90` | `data-[state=open]:rotate-90` |
+| Trigger do popover (sidebar-10) | `data-popup-open:bg-accent` | `data-[state=open]:bg-accent` |
+| Árvore de arquivos (sidebar-11) | `[&[data-open]>button>svg:first-child]:rotate-90` | `[&[data-state=open]>button>svg:first-child]:rotate-90` |
+| Largura do dropdown | `w-(--anchor-width)` (já é o default do `DropdownMenuContent`) | `w-(--radix-dropdown-menu-trigger-width)` |
+| `DropdownMenuLabel` | dentro de `DropdownMenuGroup` | solto |
+| `DropdownMenuItem` como link | `<DropdownMenuItem render={<a href={url} />}>` | `<DropdownMenuItem asChild><a href={url}>…</a></DropdownMenuItem>` |
+| Tooltips do modo ícone (sidebar-07) | `<TooltipProvider delay={0}>` na raiz se quiser abrir na hora | já vêm do `SidebarProvider` (`delayDuration={0}`) |
+| `SidebarTrigger` | `size="icon-sm"`, ícone `SidebarIcon` | `size="icon"` + `size-7`, ícone `SidebarSimple` |
+
+Exemplo (NavUser na v2.x):
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <SidebarMenuButton
+      size="lg"
+      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+    >
+      <Avatar className="h-8 w-8 rounded-lg">{/* ... */}</Avatar>
+      <div className="grid flex-1 text-left text-sm leading-tight">{/* nome + email */}</div>
+      <CaretUpDown className="ml-auto size-4" />
+    </SidebarMenuButton>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent
+    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+    side={isMobile ? "bottom" : "right"}
+    align="end"
+    sideOffset={4}
+  >
+    <DropdownMenuLabel className="p-0 font-normal">{/* avatar + nome */}</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    {/* grupos de itens iguais */}
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+

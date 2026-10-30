@@ -1,0 +1,82 @@
+---
+title: Connection
+description: Linha que segue o cursor enquanto o usuário arrasta uma conexão nova entre dois nós do canvas.
+---
+
+<ComponentPreview name="ai-connection-demo" />
+
+Arraste da alça à direita do agente até um dos subagentes.
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import { Connection } from "@blips/ai/components/connection"
+import { addEdge, useEdgesState } from "@xyflow/react"
+```
+
+```tsx
+const [edges, setEdges, onEdgesChange] = useEdgesState([])
+
+const onConnect = useCallback(
+  (conexao) => setEdges((atuais) => addEdge({ ...conexao, type: "animated" }, atuais)),
+  [setEdges]
+)
+
+<Canvas
+  connectionLineComponent={Connection}
+  edges={edges}
+  edgeTypes={edgeTypes}
+  nodes={nodes}
+  nodeTypes={nodeTypes}
+  onConnect={onConnect}
+  onEdgesChange={onEdgesChange}
+/>
+```
+
+`Connection` é um `ConnectionLineComponent` do React Flow: passe-o em `connectionLineComponent` do
+[Canvas](/docs/ai/canvas). Ele desenha só a linha provisória durante o arraste — uma curva horizontal na
+cor `--ring` com um círculo na ponta. Criar a aresta quando o usuário solta é com o app, no `onConnect`.
+
+## Referência da API
+
+### Connection
+
+Recebe as `ConnectionLineComponentProps` do React Flow; usa só `fromX`, `fromY`, `toX` e `toY`. Não tem
+props próprias.
+
+| Elemento | Estilo                                                                 |
+| -------- | ---------------------------------------------------------------------- |
+| Curva    | Bézier com pontos de controle na metade horizontal, `stroke` `--color-ring`, 1px |
+| Ponta    | Círculo de raio 3, preenchido com `--color-background` e contorno `--color-ring` |
+
+## Origem
+
+Adaptado do componente [Connection](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0). Mudança da Blips: o círculo da ponta passou de `fill="#fff"` para
+`fill="var(--color-background)"`, para funcionar no tema escuro.

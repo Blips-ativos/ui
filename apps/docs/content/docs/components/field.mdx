@@ -68,6 +68,28 @@ descrição pode vir antes ou depois do controle.
 
 <ComponentPreview name="field-input" />
 
+### Select
+
+Associe o `FieldLabel` ao `SelectTrigger` pelo `id`.
+
+<ComponentPreview name="field-select" />
+
+### Slider
+
+Como o slider não tem um único controle focável para o `htmlFor`, use `FieldTitle` e dê um `aria-label` ao `Slider`.
+
+<ComponentPreview name="field-slider" />
+
+### Checkbox
+
+Em `orientation="horizontal"`, o checkbox fica ao lado do rótulo. Agrupe opções relacionadas com `FieldSet` e `FieldLegend variant="label"`.
+
+<ComponentPreview name="field-checkbox" />
+
+### Radio
+
+<ComponentPreview name="field-radio" />
+
 ### Estado de erro (sem react-hook-form)
 
 Marque `data-invalid` no `Field` e `aria-invalid` no controle; use `FieldError`
@@ -97,6 +119,23 @@ breakpoint de contêiner `@md` do `FieldGroup`.
 
 <ComponentPreview name="field-responsive" />
 
+## Migrando da v2
+
+A API (componentes e props) é a mesma. O que muda:
+
+- **Destaque do cartão de escolha.** O `FieldLabel` que envolve um `Field` agora destaca a opção marcada via `has-data-checked`. A variante `data-checked` da lib casa tanto o `data-checked` que o `Checkbox`, o `RadioGroupItem` e o `Switch` do Base UI emitem quanto o `data-state="checked"` do padrão Radix, então controles próprios nos dois padrões acionam o destaque.
+- Densidade menor: `FieldSet` e `FieldGroup` passam a `gap-4` (antes `gap-6`), `FieldContent` a `gap-0.5`, `FieldLegend` a `mb-2`, e `FieldTitle`, `FieldSeparator` e `FieldError` usam `text-xs/relaxed`. O cartão aninhado no `FieldLabel` tem `p-2` (antes `p-4`) e ganha hover e anel de foco.
+- `FieldDescription` em layout horizontal usa `group-has-data-horizontal/field` e alinha o texto à esquerda.
+- Em seletores próprios, troque `data-[state=checked]` por `data-checked` (o mesmo vale para `data-unchecked` e `data-disabled`): os controles do Base UI não emitem `data-state`, e a variante `data-checked` cobre os dois padrões.
+
+```tsx
+// v2
+<FieldLabel className="has-data-[state=checked]:border-primary">
+
+// v3
+<FieldLabel className="has-data-checked:border-primary">
+```
+
 ## Acessibilidade
 
 - Associe `FieldLabel` ao controle via `htmlFor`/`id` — clicar no rótulo foca o
@@ -118,6 +157,7 @@ Contêiner do campo. Renderiza `div[role="group"]`.
 | ------------- | --------------------------------------------- | ------------ |
 | `orientation` | `"vertical" \| "horizontal" \| "responsive"` | `"vertical"` |
 | `data-invalid`| `boolean`                                     | -            |
+| `data-disabled`| `boolean`                                    | -            |
 | `className`   | `string`                                      | -            |
 
 ### FieldLabel

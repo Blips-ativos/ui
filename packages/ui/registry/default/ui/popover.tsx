@@ -1,89 +1,146 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import * as PopoverPrimitive from "@radix-ui/react-popover"
+import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
-import { cn } from "@/lib/utils"
+// O Base UI não tem uma parte "Anchor" como o Radix. Para manter o
+// PopoverAnchor da v2, o Popover guarda num contexto a ref do elemento
+// âncora e o PopoverContent a repassa ao Positioner (prop `anchor`).
+type PopoverAnchorContextValue = {
+  anchorRef: React.RefObject<HTMLDivElement | null>;
+  hasAnchor: boolean;
+  setHasAnchor: (value: boolean) => void;
+};
 
-function Popover({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
-  return <PopoverPrimitive.Root data-slot="popover" {...props} />
+const PopoverAnchorContext =
+  React.createContext<PopoverAnchorContextValue | null>(null);
+
+function Popover({ ...props }: PopoverPrimitive.Root.Props) {
+  const anchorRef = React.useRef<HTMLDivElement | null>(null);
+  const [hasAnchor, setHasAnchor] = React.useState(false);
+  const value = React.useMemo(
+    () => ({ anchorRef, hasAnchor, setHasAnchor }),
+    [hasAnchor]
+  );
+
+  return (
+    <PopoverAnchorContext.Provider value={value}>
+      <PopoverPrimitive.Root data-slot="popover" {...props} />
+    </PopoverAnchorContext.Provider>
+  );
 }
 
-function PopoverTrigger({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
-  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
+function PopoverTrigger({ ...props }: PopoverPrimitive.Trigger.Props) {
+  return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />;
+}
+
+/**
+ * Posiciona o PopoverContent relativo a este elemento em vez do trigger.
+ * Equivale ao `Popover.Anchor` do Radix; alternativa: passar `anchor`
+ * direto ao PopoverContent.
+ */
+function PopoverAnchor({ ref, ...props }: React.ComponentProps<"div">) {
+  const context = React.useContext(PopoverAnchorContext);
+  const setHasAnchor = context?.setHasAnchor;
+
+  React.useEffect(() => {
+    if (!setHasAnchor) return;
+    setHasAnchor(true);
+    return () => setHasAnchor(false);
+  }, [setHasAnchor]);
+
+  const mergedRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      if (context) context.anchorRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    },
+    [context, ref]
+  );
+
+  return <div data-slot="popover-anchor" ref={mergedRef} {...props} />;
 }
 
 function PopoverContent({
   className,
   align = "center",
+  alignOffset = 0,
+  side = "bottom",
   sideOffset = 4,
+  anchor,
   ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+}: PopoverPrimitive.Popup.Props &
+  Pick<
+    PopoverPrimitive.Positioner.Props,
+    "align" | "alignOffset" | "side" | "sideOffset" | "anchor"
+  >) {
+  const context = React.useContext(PopoverAnchorContext);
+  const resolvedAnchor =
+    anchor ?? (context?.hasAnchor ? context.anchorRef : undefined);
+
   return (
     <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Content
-        data-slot="popover-content"
+      <PopoverPrimitive.Positioner
         align={align}
+        alignOffset={alignOffset}
+        side={side}
         sideOffset={sideOffset}
-        className={cn(
-          "z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-hidden data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
-          className
-        )}
-        {...props}
-      />
+        anchor={resolvedAnchor}
+        className="isolate z-50"
+      >
+        <PopoverPrimitive.Popup
+          data-slot="popover-content"
+          className={cn(
+            "z-50 flex w-72 origin-(--transform-origin) flex-col gap-4 rounded-lg bg-popover p-2.5 text-xs text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+            className
+          )}
+          {...props}
+        />
+      </PopoverPrimitive.Positioner>
     </PopoverPrimitive.Portal>
-  )
-}
-
-function PopoverAnchor({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
-  return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />
+  );
 }
 
 function PopoverHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="popover-header"
-      className={cn("flex flex-col gap-1 text-sm", className)}
+      className={cn("flex flex-col gap-1 text-xs", className)}
       {...props}
     />
-  )
+  );
 }
 
-function PopoverTitle({ className, ...props }: React.ComponentProps<"h2">) {
+function PopoverTitle({ className, ...props }: PopoverPrimitive.Title.Props) {
   return (
-    <div
+    <PopoverPrimitive.Title
       data-slot="popover-title"
-      className={cn("font-medium", className)}
+      className={cn("text-sm font-medium", className)}
       {...props}
     />
-  )
+  );
 }
 
 function PopoverDescription({
   className,
   ...props
-}: React.ComponentProps<"p">) {
+}: PopoverPrimitive.Description.Props) {
   return (
-    <p
+    <PopoverPrimitive.Description
       data-slot="popover-description"
       className={cn("text-muted-foreground", className)}
       {...props}
     />
-  )
+  );
 }
 
 export {
   Popover,
-  PopoverTrigger,
-  PopoverContent,
   PopoverAnchor,
+  PopoverContent,
+  PopoverDescription,
   PopoverHeader,
   PopoverTitle,
-  PopoverDescription,
-}
+  PopoverTrigger,
+};

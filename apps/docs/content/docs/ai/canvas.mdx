@@ -1,0 +1,120 @@
+---
+title: Canvas
+description: Área de fluxo sobre o React Flow para desenhar fluxos de agente — etapas, ferramentas e caminhos — com os padrões de interação da Blips.
+---
+
+<ComponentPreview name="ai-canvas-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import "@xyflow/react/dist/style.css"
+
+import { Canvas } from "@blips/ai/components/canvas"
+import { Controls } from "@blips/ai/components/controls"
+import { Edge } from "@blips/ai/components/edge"
+```
+
+```tsx
+// Fora do componente: o React Flow recria tudo se a referência mudar.
+const nodeTypes = { etapa: EtapaNode }
+const edgeTypes = { animated: Edge.Animated, temporary: Edge.Temporary }
+
+<div className="h-[420px]">
+  <Canvas edges={edges} edgeTypes={edgeTypes} nodes={nodes} nodeTypes={nodeTypes}>
+    <Controls />
+  </Canvas>
+</div>
+```
+
+O `Canvas` é o `<ReactFlow>` com um `Background` no token `--sidebar` e padrões de interação próprios:
+rolar move o canvas (em vez de dar zoom), arrastar no vazio seleciona uma área, `Backspace` e `Delete`
+removem o que está selecionado, duplo clique não dá zoom e o enquadramento inicial é automático
+(`fitView`). Qualquer prop do React Flow sobrescreve esses padrões.
+
+O canvas ocupa 100% do pai: o contêiner precisa de altura definida. Os dados (`nodes`, `edges`) vêm do app,
+como estado estático ou de `useNodesState`/`useEdgesState` do `@xyflow/react`. O componente não sabe nada
+do agente: traduzir a execução (etapas concluídas, ferramenta em andamento) para nós e arestas é papel do
+app.
+
+Monte as peças com os outros componentes de canvas:
+
+| Peça | Componente | Onde entra |
+|---|---|---|
+| Etapa | [Node](/docs/ai/node) | componente do `nodeTypes` |
+| Ligação | [Edge](/docs/ai/edge) | `edgeTypes` |
+| Linha ao conectar | [Connection](/docs/ai/connection) | `connectionLineComponent` |
+| Zoom e enquadrar | [Controls](/docs/ai/controls) | filho do `Canvas` |
+| Sobreposições | [Panel](/docs/ai/panel) | filho do `Canvas` |
+| Ações do nó | [Toolbar](/docs/ai/toolbar) | dentro do componente do nó |
+
+### Rótulos acessíveis em pt-BR
+
+O React Flow traz os textos de acessibilidade (rótulos dos botões do [Controls](/docs/ai/controls), das
+alças de conexão e do minimapa, descrições de teclado dos nós e arestas) em inglês. O `Canvas` já passa a
+tradução em pt-BR por padrão, exportada como `canvasAriaLabelConfig`. Para trocar um texto, passe
+`ariaLabelConfig` só com as chaves que quer mudar: elas são mescladas sobre o padrão.
+
+```tsx
+<Canvas
+  ariaLabelConfig={{
+    "controls.interactive.ariaLabel": "Travar ou destravar edição",
+  }}
+/>
+```
+
+## Referência da API
+
+### Canvas
+
+Aceita todas as props do [`<ReactFlow>`](https://reactflow.dev/api-reference/react-flow). Os padrões que
+mudam:
+
+| Prop                | Tipo                 | Padrão                    |
+| ------------------- | -------------------- | ------------------------- |
+| `fitView`           | `boolean`            | `true`                    |
+| `panOnDrag`         | `boolean \| number[]` | `false`                 |
+| `panOnScroll`       | `boolean`            | `true`                    |
+| `selectionOnDrag`   | `boolean`            | `true`                    |
+| `zoomOnDoubleClick` | `boolean`            | `false`                   |
+| `deleteKeyCode`     | `KeyCode \| null`    | `["Backspace", "Delete"]` |
+| `ariaLabelConfig`   | `Partial<AriaLabelConfig>` — mesclado sobre o padrão | `canvasAriaLabelConfig` (pt-BR) |
+| `children`          | `ReactNode` — renderizado depois do fundo | —    |
+
+O fundo (`Background` com `bgColor="var(--sidebar)"`) é sempre renderizado. O `Canvas` não envolve um
+`ReactFlowProvider`: para usar `useReactFlow` fora do canvas (numa barra lateral, por exemplo), envolva a
+árvore no `ReactFlowProvider` do `@xyflow/react`.
+
+## Origem
+
+Adaptado do componente [Canvas](https://github.com/vercel/ai-elements) do AI Elements (Vercel,
+Apache-2.0), que envolve o [React Flow](https://reactflow.dev) (MIT). Mudanças da Blips: o
+`import "@xyflow/react/dist/style.css"` saiu do componente (o app importa a folha uma vez) e o tipo
+`CanvasProps` passou a ser exportado e os textos de acessibilidade do React Flow saem em pt-BR por padrão
+(`canvasAriaLabelConfig`).

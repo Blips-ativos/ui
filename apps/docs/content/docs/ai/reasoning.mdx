@@ -1,0 +1,148 @@
+---
+title: Reasoning
+description: Bloco recolhível que mostra o raciocínio do modelo, abre sozinho durante o streaming e fecha ao terminar.
+---
+
+<ComponentPreview name="ai-reasoning-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai streamdown @streamdown/code @streamdown/math @streamdown/mermaid @streamdown/cjk
+```
+
+O `ReasoningContent` renderiza markdown com o [Streamdown](https://streamdown.ai), por isso o `streamdown` e os quatro plugins `@streamdown/*` são obrigatórios para este componente, mesmo sendo peers opcionais do pacote. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`, junto com o CSS do Streamdown e do KaTeX e os `@source` que deixam o Tailwind do app gerar as classes do Streamdown (ajuste os caminhos `../` conforme a posição do seu CSS em relação ao `node_modules`):
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+@import "streamdown/styles.css";
+@import "katex/dist/katex.min.css";
+@source "../node_modules/streamdown/dist/*.js";
+@source "../node_modules/@streamdown/code/dist/*.js";
+@source "../node_modules/@streamdown/math/dist/*.js";
+@source "../node_modules/@streamdown/mermaid/dist/*.js";
+@source "../node_modules/@streamdown/cjk/dist/*.js";
+```
+
+O plugin de matemática (`@streamdown/math`) é sempre carregado e usa o KaTeX, que não injeta o próprio CSS: instale `katex` (`pnpm add katex`) e importe `katex/dist/katex.min.css`, senão as fórmulas saem sem estilo.
+
+## Uso
+
+```tsx
+import {
+  Reasoning,
+  ReasoningContent,
+  ReasoningTrigger,
+} from "@blips/ai/components/reasoning"
+```
+
+```tsx
+<Reasoning isStreaming={isStreaming}>
+  <ReasoningTrigger />
+  <ReasoningContent>{textoDoRaciocinio}</ReasoningContent>
+</Reasoning>
+```
+
+O componente é apresentacional: ele não busca nada. Com o AI SDK, passe o texto da part `reasoning` da mensagem e marque `isStreaming` enquanto ela for a última part de uma mensagem em streaming:
+
+```tsx
+{message.parts.map((part, i) =>
+  part.type === "reasoning" ? (
+    <Reasoning
+      key={i}
+      isStreaming={
+        status === "streaming" && i === message.parts.length - 1
+      }
+    >
+      <ReasoningTrigger />
+      <ReasoningContent>{part.text}</ReasoningContent>
+    </Reasoning>
+  ) : null
+)}
+```
+
+Com eventos próprios (por exemplo, os eventos de streaming do AgentOS), o mapeamento fica no app: acumule o texto de raciocínio e ligue `isStreaming` entre o primeiro e o último evento.
+
+### Comportamento
+
+- Quando `isStreaming` vira `true`, o bloco abre, a não ser que `defaultOpen={false}` tenha sido passado.
+- Quando `isStreaming` volta a `false`, o componente calcula a duração em segundos e fecha o bloco 1 segundo depois. Isso acontece uma vez só: se a pessoa abrir de novo, ele fica aberto.
+- Se a mensagem já chega pronta (histórico), passe `duration` para mostrar o tempo sem simular streaming.
+
+### Textos padrão
+
+O gatilho mostra "Pensando..." (com [Shimmer](/docs/ai/shimmer)) durante o streaming e "Pensou por N segundos" depois (ou "Pensou por alguns segundos" sem `duration`). Para outro texto, passe `getThinkingMessage`. O gatilho é um `<button>`: devolva `<span>` (e `<Shimmer as="span">`), não `<p>`.
+
+```tsx
+import { Shimmer } from "@blips/ai/components/shimmer"
+
+function mensagem(isStreaming: boolean, duration?: number) {
+  if (isStreaming || duration === 0) {
+    return <Shimmer as="span" duration={1}>Analisando o contrato...</Shimmer>
+  }
+  return <span>Análise concluída{duration ? ` em ${duration} s` : ""}</span>
+}
+
+<ReasoningTrigger getThinkingMessage={mensagem} />
+```
+
+## Exemplos
+
+### Raciocínio concluído
+
+Mensagem do histórico, sem streaming: `duration` fixa o tempo e `defaultOpen` deixa o bloco aberto.
+
+<ComponentPreview name="ai-reasoning-concluido" />
+
+### Gatilho personalizado
+
+Passe `children` ao `ReasoningTrigger` para substituir ícone, texto e seta. O gatilho recebe `data-panel-open` quando o painel está aberto.
+
+<ComponentPreview name="ai-reasoning-gatilho" />
+
+## Referência da API
+
+### Reasoning
+
+Raiz do bloco, sobre o [Collapsible](/docs/components/collapsible) da `@blips/ui`. Aceita as demais props do `Collapsible`.
+
+| Prop           | Tipo                      | Padrão        |
+| -------------- | ------------------------- | ------------- |
+| `isStreaming`  | `boolean`                 | `false`       |
+| `open`         | `boolean`                 |               |
+| `defaultOpen`  | `boolean`                 | `isStreaming` |
+| `onOpenChange` | `(open: boolean) => void` |               |
+| `duration`     | `number`                  |               |
+| `className`    | `string`                  |               |
+
+`onOpenChange` recebe só o booleano, diferente do `Collapsible` do Base UI, que também passa `eventDetails`. `duration` é controlável: sem ela, o componente mede o tempo do streaming.
+
+### ReasoningTrigger
+
+Botão que abre e fecha o bloco. Aceita as props do `CollapsibleTrigger`.
+
+| Prop                 | Tipo                                                   | Padrão              |
+| -------------------- | ------------------------------------------------------ | ------------------- |
+| `getThinkingMessage` | `(isStreaming: boolean, duration?: number) => ReactNode` | "Pensando..." / "Pensou por N segundos" |
+| `children`           | `ReactNode`                                            | ícone + texto + seta |
+
+### ReasoningContent
+
+Painel com o texto em markdown. Aceita as props do `CollapsibleContent`.
+
+| Prop       | Tipo     | Padrão |
+| ---------- | -------- | ------ |
+| `children` | `string` |        |
+
+`children` precisa ser uma string: ela vai direto para o `Streamdown`.
+
+### useReasoning
+
+Hook para componentes filhos de `Reasoning`. Retorna `{ isStreaming, isOpen, setIsOpen, duration }`. Fora de um `Reasoning`, lança erro.
+
+## Origem
+
+Adaptado do componente [Reasoning](https://elements.ai-sdk.dev/components/reasoning) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e as cores pelos tokens da `@blips/ui`.

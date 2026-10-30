@@ -1,0 +1,98 @@
+---
+title: Speech Input
+description: Botão de ditado que transcreve a fala com a Web Speech API e, onde ela não existe, grava o áudio para um serviço de transcrição.
+---
+
+<ComponentPreview name="ai-speech-input-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `speech-input` não exige peer opcional nem o pacote `ai`: ele usa só APIs do navegador. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { SpeechInput } from "@blips/ai/components/speech-input"
+```
+
+```tsx
+<SpeechInput
+  onTranscriptionChange={(trecho) => setTexto((atual) => `${atual} ${trecho}`)}
+/>
+```
+
+`onTranscriptionChange` recebe só o trecho final reconhecido em cada rodada, não o texto acumulado: quem junta os trechos é o app (no campo do [Prompt Input](/docs/ai/prompt-input), por exemplo).
+
+### Como o modo é escolhido
+
+Depois de montar, o componente detecta o que o navegador oferece:
+
+| Modo                 | Quando                                                     | O que acontece                                                                                       |
+| -------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `speech-recognition` | Existe `SpeechRecognition` ou `webkitSpeechRecognition` (Chrome, Edge) | Reconhecimento contínuo no idioma de `lang`; cada resultado final vai para `onTranscriptionChange` |
+| `media-recorder`     | Sem Web Speech, mas com `MediaRecorder` (Firefox, Safari)  | Grava `audio/webm`; ao parar, chama `onAudioRecorded(blob)` e passa o texto devolvido para `onTranscriptionChange` |
+| `none`               | Nenhum dos dois, ou antes da montagem                      | Botão desabilitado                                                                                    |
+
+No modo `media-recorder` o botão só fica habilitado se `onAudioRecorded` for passado. Enquanto a promessa de `onAudioRecorded` não resolve, o botão mostra um spinner e fica desabilitado. Se ela rejeitar, o erro é engolido: trate falhas dentro do seu callback.
+
+O componente não acessa `window` nem `navigator` durante o render, então funciona em SSR: começa em `none` (desabilitado) e só habilita depois da hidratação. O microfone só é pedido no clique.
+
+## Exemplos
+
+### Gravação com transcrição no servidor
+
+Com `onAudioRecorded`, navegadores sem Web Speech gravam o áudio e o app transcreve (por exemplo, com o `experimental_transcribe` do AI SDK numa rota do servidor). No Chrome, o reconhecimento nativo continua tendo prioridade. Aqui a transcrição é simulada e os rótulos acessíveis foram trocados por `labels`.
+
+<ComponentPreview name="ai-speech-input-fallback" />
+
+```tsx
+async function transcrever(audio: Blob) {
+  const body = new FormData()
+  body.append("audio", audio)
+  const resposta = await fetch("/api/transcrever", { method: "POST", body })
+  const { text } = await resposta.json()
+  return text as string
+}
+
+<SpeechInput onAudioRecorded={transcrever} onTranscriptionChange={anexarTexto} />
+```
+
+## Referência da API
+
+### SpeechInput
+
+Aceita as props do [Button](/docs/components/button) da `@blips/ui` (`size`, `variant`, `className`...). O `onClick` passado substitui o de iniciar e parar a gravação.
+
+| Prop                    | Tipo                                  | Padrão                    |
+| ----------------------- | ------------------------------------- | ------------------------- |
+| `onTranscriptionChange` | `(text: string) => void`              | —                         |
+| `onAudioRecorded`       | `(audioBlob: Blob) => Promise<string>` | —                        |
+| `lang`                  | `string` (BCP 47)                     | `"pt-BR"`                 |
+| `labels`                | `SpeechInputLabels`                   | ver abaixo                |
+
+### SpeechInputLabels
+
+Rótulos acessíveis (`aria-label`) do botão, que é só ícone. Um `aria-label` passado direto tem prioridade e fica fixo em todos os estados.
+
+| Chave        | Quando                   | Padrão                  |
+| ------------ | ------------------------ | ----------------------- |
+| `start`      | Parado                   | `"Iniciar ditado"`      |
+| `stop`       | Gravando                 | `"Parar ditado"`        |
+| `processing` | Esperando a transcrição  | `"Transcrevendo áudio"` |
+
+O botão também recebe `aria-pressed` enquanto grava. Durante a gravação aparecem anéis de pulso na cor `destructive`.
+
+## Origem
+
+Adaptado do componente [Speech Input](https://elements.ai-sdk.dev/components/speech-input) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. Mudanças da Blips: `Button` e `Spinner` da `@blips/ui`, ícones Phosphor, `lang` padrão `"pt-BR"` (era `"en-US"`), prop `labels` com rótulos acessíveis em pt-BR e `aria-pressed`, detecção do modo num efeito (seguro para SSR) e tipos da Web Speech locais, sem `declare global` vazando para o app.

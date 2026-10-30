@@ -1,0 +1,124 @@
+---
+title: Package Info
+description: Cartão de um pacote com tipo de mudança, versão atual e nova, descrição e dependências.
+---
+
+<ComponentPreview name="ai-package-info-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Este componente não exige nenhum peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  PackageInfo,
+  PackageInfoChangeType,
+  PackageInfoContent,
+  PackageInfoDependencies,
+  PackageInfoDependency,
+  PackageInfoDescription,
+  PackageInfoHeader,
+  PackageInfoName,
+  PackageInfoVersion,
+} from "@blips/ai/components/package-info"
+```
+
+```tsx
+<PackageInfo
+  name="@blips/ui"
+  currentVersion="2.8.1"
+  newVersion="3.0.0"
+  changeType="major"
+/>
+```
+
+Use o `PackageInfo` quando o agente propõe instalar, atualizar ou remover uma dependência: o usuário vê de relance o pacote, o salto de versão e o tipo de mudança.
+
+Sem `children`, o cartão monta sozinho o cabeçalho (nome e tipo de mudança) e a linha de versão. Passe `children` para acrescentar descrição e dependências, como no exemplo do topo. As partes leem `name`, `currentVersion`, `newVersion` e `changeType` do `PackageInfo` mais próximo.
+
+## Exemplos
+
+### Tipos de mudança
+
+`PackageInfoChangeType` mostra "Major", "Minor", "Patch", "Adicionado" ou "Removido", com ícone e cor. Sem `changeType`, ele não renderiza nada.
+
+<ComponentPreview name="ai-package-info-tipos" />
+
+## Referência da API
+
+### PackageInfo
+
+Raiz e provedor do contexto. Aceita as props de `div`.
+
+| Prop             | Tipo                                                       | Padrão      |
+| ---------------- | ---------------------------------------------------------- | ----------- |
+| `name`           | `string`                                                   | obrigatória |
+| `currentVersion` | `string`                                                   |             |
+| `newVersion`     | `string`                                                   |             |
+| `changeType`     | `"major" \| "minor" \| "patch" \| "added" \| "removed"`    |             |
+
+### PackageInfoHeader
+
+Linha com o nome à esquerda e o tipo de mudança à direita. Aceita as props de `div`.
+
+### PackageInfoName
+
+Ícone de pacote e nome em fonte mono. `children` substitui o `name` do contexto.
+
+### PackageInfoChangeType
+
+[Badge](/docs/components/badge) com o tipo de mudança. `children` substitui o rótulo padrão. Não renderiza sem `changeType`.
+
+| `changeType` | Rótulo padrão |
+| ------------ | ------------- |
+| `major`      | Major         |
+| `minor`      | Minor         |
+| `patch`      | Patch         |
+| `added`      | Adicionado    |
+| `removed`    | Removido      |
+
+### PackageInfoVersion
+
+Versão atual, seta e versão nova. `children` substitui o conteúdo. Não renderiza sem nenhuma das duas versões.
+
+### PackageInfoDescription
+
+Parágrafo atenuado. Aceita as props de `p`.
+
+### PackageInfoContent
+
+Área com borda superior para descrição e dependências. Aceita as props de `div`.
+
+### PackageInfoDependencies
+
+Lista de dependências com título. Aceita as props de `div`.
+
+| Prop    | Tipo        | Padrão           |
+| ------- | ----------- | ---------------- |
+| `label` | `ReactNode` | `"Dependências"` |
+
+### PackageInfoDependency
+
+Uma dependência. `children` substitui o nome e a versão.
+
+| Prop      | Tipo     | Padrão      |
+| --------- | -------- | ----------- |
+| `name`    | `string` | obrigatória |
+| `version` | `string` |             |
+
+## Origem
+
+Adaptado do componente [Package Info](https://elements.ai-sdk.dev/components/package-info) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou o Badge pelo da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor, traduziu os rótulos e acrescentou a prop `label` em `PackageInfoDependencies`. As cores dos tipos de mudança seguem a paleta do upstream.

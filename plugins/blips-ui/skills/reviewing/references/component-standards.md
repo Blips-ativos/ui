@@ -37,7 +37,7 @@ verificáveis.
 
 ## Composição sobre a lib
 
-6. **Nunca reimplementar o que a lib/Radix fornece**: close custom em Dialog
+6. **Nunca reimplementar o que a lib/primitiva fornece** (Radix na v2.x, Base UI na v3.x): close custom em Dialog
    (existe `DialogClose` e o X embutido), checkbox/select/tooltip caseiros,
    gestão manual de foco/Escape sobre primitives. **PORQUÊ:** a primitive já
    resolve foco/ARIA/teclado — recriar regride acessibilidade. (bloqueante ·
@@ -50,6 +50,39 @@ verificáveis.
 8. **Campos de edição vivem num `<form>`** com submit (Enter funciona) e
    ações no `DialogFooter` quando em dialog. **PORQUÊ:** sem `<form>` o Enter
    não submete e a semântica de teclado se perde. (aviso · julgamento (revisor))
+
+## API da versão da lib (v2.x Radix × v3.x Base UI)
+
+Detecte a trilha antes (ver "Detecção de versão" no `SKILL.md`). Cada regra vale **só** na
+trilha indicada — aplicar regra de uma trilha no repo da outra é erro do próprio review.
+
+V1. **v3.x: `asChild` é erro.** A prop não existe no Base UI: troca de elemento é
+    `render={<El />}` (e `nativeButton={false}` quando o `Button` renderiza `<a>`/`Link`).
+    **PORQUÊ:** `asChild` vira prop desconhecida e o componente renderiza o elemento padrão
+    com o filho dentro (botão dentro de botão, link sem estilo). (bloqueante ·
+    auto-verificável (check.mjs))
+V2. **v3.x: seletor `data-[state=…]` de primitiva é aviso.** Base UI emite `data-open`,
+    `data-closed`, `data-checked`, `data-popup-open`, `data-panel-open`, `data-pressed`.
+    Exceções que continuam válidas: `data-state="selected"` (`TableRow`) e
+    `data-state="expanded|collapsed"` (`Sidebar`). **PORQUÊ:** o seletor para de casar em
+    silêncio — o estilo some sem erro. (aviso · auto-verificável (check.mjs) + confirmar)
+V3. **v3.x: ícone Phosphor sem sufixo `Icon` é aviso** (`CaretDown` → `CaretDownIcon`).
+    **PORQUÊ:** os nomes sem sufixo estão `@deprecated` no Phosphor 2.1.10. (aviso ·
+    auto-verificável (check.mjs))
+V4. **v3.x: props removidas são erro** — `TooltipProvider delayDuration` (é `delay`),
+    `Separator decorative`, `Checkbox checked="indeterminate"` (é a prop `indeterminate`),
+    `Accordion type`/`ToggleGroup type` (é `multiple` + `value` array), `forceMount` (é
+    `keepMounted`), `DropdownMenuItem onSelect` (é `onClick`). **PORQUÊ:** quebram o
+    typecheck ou deixam de disparar. (bloqueante · check.mjs cobre os três primeiros;
+    o resto é julgamento)
+V5. **v3.x: armadilhas silenciosas** — `AlertDialogAction` não fecha sozinho (feche no
+    `onClick`); `DropdownMenuLabel` fora de `DropdownMenuGroup`; `Select` com rótulo ≠ `value`
+    sem `items` (o trigger mostra o valor cru). (aviso · julgamento (revisor))
+V6. **v2.x: idioma da v3 é erro** — `render={<El />}` em componente da lib (use `asChild`),
+    import de componente só-v3 (`attachment`, `bubble`, `combobox`, `direction`, `item`,
+    `marker`, `message`, `message-scroller`, `native-select`, `questionnaire`, `toast`).
+    Seletores `data-open:`/`data-checked:` num repo v2.x são aviso (Radix emite
+    `data-[state=open]`). (bloqueante/aviso · auto-verificável (check.mjs) + confirmar)
 
 ## Estrutura de páginas (Next App Router — quando o repo segue page-structure)
 

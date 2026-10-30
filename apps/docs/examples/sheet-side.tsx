@@ -1,8 +1,6 @@
 "use client";
 
 import { Button } from "@blips/ui/components/button";
-import { Input } from "@blips/ui/components/input";
-import { Label } from "@blips/ui/components/label";
 import {
   Sheet,
   SheetBody,
@@ -17,49 +15,46 @@ import {
 
 const SHEET_SIDES = ["top", "right", "bottom", "left"] as const;
 
+const paragraphs = Array.from(
+  { length: 10 },
+  (_, index) => `paragrafo-${index}`
+);
+
 export default function SheetSide() {
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="flex flex-wrap gap-2">
       {SHEET_SIDES.map((side) => (
         <Sheet key={side}>
-          <SheetTrigger asChild>
-            <Button variant="outline">{side}</Button>
+          <SheetTrigger
+            render={<Button variant="outline" className="capitalize" />}
+          >
+            {side}
           </SheetTrigger>
-          <SheetContent side={side}>
+          <SheetContent
+            side={side}
+            className="data-[side=bottom]:max-h-[50vh] data-[side=top]:max-h-[50vh]"
+          >
             <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
+              <SheetTitle>Editar perfil</SheetTitle>
               <SheetDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
+                Altere os dados do seu perfil aqui. Clique em salvar quando
+                terminar.
               </SheetDescription>
             </SheetHeader>
-            <SheetBody>
-              <div className="grid gap-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    value="Pedro Duarte"
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Username
-                  </Label>
-                  <Input
-                    id="username"
-                    value="@peduarte"
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
+            <SheetBody className="no-scrollbar">
+              {paragraphs.map((key) => (
+                <p key={key} className="mb-4 leading-normal">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                  laboris nisi ut aliquip ex ea commodo consequat.
+                </p>
+              ))}
             </SheetBody>
             <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Save changes</Button>
+              <Button type="submit">Salvar alterações</Button>
+              <SheetClose render={<Button variant="outline" />}>
+                Cancelar
               </SheetClose>
             </SheetFooter>
           </SheetContent>

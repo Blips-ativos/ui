@@ -1,0 +1,158 @@
+---
+title: Model Selector
+description: Diálogo com busca para escolher o modelo de IA da conversa, com logotipo do provedor, grupos e atalhos.
+---
+
+<ComponentPreview name="ai-model-selector-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  ModelSelector,
+  ModelSelectorContent,
+  ModelSelectorEmpty,
+  ModelSelectorGroup,
+  ModelSelectorInput,
+  ModelSelectorItem,
+  ModelSelectorList,
+  ModelSelectorLogo,
+  ModelSelectorName,
+  ModelSelectorTrigger,
+} from "@blips/ai/components/model-selector"
+import { Button } from "@blips/ui/components/button"
+```
+
+```tsx
+<ModelSelector open={aberto} onOpenChange={setAberto}>
+  <ModelSelectorTrigger render={<Button variant="outline" />}>
+    <ModelSelectorLogo provider="anthropic" />
+    <ModelSelectorName>Claude Sonnet</ModelSelectorName>
+  </ModelSelectorTrigger>
+  <ModelSelectorContent>
+    <ModelSelectorInput />
+    <ModelSelectorList>
+      <ModelSelectorEmpty />
+      <ModelSelectorGroup heading="Anthropic">
+        <ModelSelectorItem value="Claude Sonnet" onSelect={() => escolher("claude-sonnet")}>
+          <ModelSelectorLogo provider="anthropic" />
+          <ModelSelectorName>Claude Sonnet</ModelSelectorName>
+        </ModelSelectorItem>
+      </ModelSelectorGroup>
+    </ModelSelectorList>
+  </ModelSelectorContent>
+</ModelSelector>
+```
+
+O componente é a casca visual: a lista de modelos e o modelo escolhido ficam no estado do app. Ele junta o
+[Dialog](/docs/components/dialog) e o [Command](/docs/components/command) da `@blips/ui`: `ModelSelector`
+é o `Dialog`, `ModelSelectorContent` abre o `DialogContent` já com um `Command` dentro, e as demais partes
+são as do `Command` (busca, lista, grupos, itens). O gatilho segue o Base UI: o elemento vem de `render`,
+não de um filho.
+
+Para marcar o item escolhido, passe `data-checked` ao `ModelSelectorItem`: o `CommandItem` da `@blips/ui`
+mostra o ícone de confirmação quando `data-checked` é `true`.
+
+### Logotipos
+
+`ModelSelectorLogo` carrega o SVG do provedor de `https://models.dev/logos/<provider>.svg` e inverte as cores
+no tema escuro. O tipo de `provider` sugere os provedores conhecidos do models.dev (`anthropic`, `openai`,
+`google`, `amazon-bedrock`, `mistral`...) e aceita qualquer string. Se o app não pode carregar imagens de
+domínio externo (CSP, rede interna), use um `<img>` ou um ícone próprio no lugar.
+
+### Textos padrão
+
+Os textos já vêm em pt-BR: título acessível "Selecionar modelo", botão "Fechar", busca "Buscar modelo…" e
+lista vazia "Nenhum modelo encontrado.". Troque com `title` e `closeLabel` no `ModelSelectorContent`,
+`placeholder` no `ModelSelectorInput` e `children` no `ModelSelectorEmpty`.
+
+## Exemplos
+
+### Vários provedores e atalhos
+
+`ModelSelectorLogoGroup` empilha logotipos (útil para um roteamento que usa mais de um provedor) e
+`ModelSelectorShortcut` mostra um atalho à direita do item.
+
+<ComponentPreview name="ai-model-selector-logos" />
+
+## Referência da API
+
+### ModelSelector
+
+`Dialog` da `@blips/ui`. Aceita as props dele (`open`, `defaultOpen`, `onOpenChange` etc.).
+
+### ModelSelectorTrigger
+
+`DialogTrigger` da `@blips/ui`. Use `render` para escolher o elemento (por exemplo, `<Button variant="outline" />`).
+
+### ModelSelectorContent
+
+`DialogContent` com um `Command` dentro e título só para leitores de tela. Aceita as props do `DialogContent`.
+
+| Prop              | Tipo        | Padrão                |
+| ----------------- | ----------- | --------------------- |
+| `title`           | `ReactNode` | `"Selecionar modelo"` |
+| `closeLabel`      | `string`    | `"Fechar"`            |
+| `showCloseButton` | `boolean`   | `true`                |
+
+### ModelSelectorDialog
+
+Alternativa ao par `ModelSelector` + `ModelSelectorContent`: é o `CommandDialog` da `@blips/ui` com textos em
+pt-BR. Recebe `open`/`onOpenChange` e os filhos do `Command`.
+
+| Prop          | Tipo     | Padrão                           |
+| ------------- | -------- | -------------------------------- |
+| `title`       | `string` | `"Selecionar modelo"`            |
+| `description` | `string` | `"Busque um modelo para usar…"`  |
+
+### Partes do Command
+
+| Componente               | Base               | Observação                                     |
+| ------------------------ | ------------------ | ---------------------------------------------- |
+| `ModelSelectorInput`     | `CommandInput`     | `placeholder` padrão `"Buscar modelo…"`        |
+| `ModelSelectorList`      | `CommandList`      |                                                |
+| `ModelSelectorEmpty`     | `CommandEmpty`     | `children` padrão `"Nenhum modelo encontrado."` |
+| `ModelSelectorGroup`     | `CommandGroup`     | `heading` é o título do grupo                  |
+| `ModelSelectorItem`      | `CommandItem`      | `value` entra na busca; `onSelect` ao escolher |
+| `ModelSelectorShortcut`  | `CommandShortcut`  | `<span>` alinhado à direita                    |
+| `ModelSelectorSeparator` | `CommandSeparator` |                                                |
+
+### ModelSelectorLogo
+
+`<img>` de 12 px com o logotipo do provedor. Aceita as props de `img`, exceto `src`.
+
+| Prop       | Tipo     | Padrão                     |
+| ---------- | -------- | -------------------------- |
+| `provider` | `string` (com sugestões do models.dev) | obrigatória |
+| `alt`      | `string` | `` `Logotipo de ${provider}` `` |
+
+### ModelSelectorLogoGroup
+
+`<div>` que sobrepõe os logotipos filhos com contorno arredondado.
+
+### ModelSelectorName
+
+`<span>` que ocupa o espaço restante e trunca o nome.
+
+## Origem
+
+Adaptado do componente [Model Selector](https://elements.ai-sdk.dev/components/model-selector) do
+[AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as
+primitivas Radix pelo Dialog e pelo Command da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e
+os textos padrão para pt-BR. O botão de fechar é desenhado pelo próprio componente para o rótulo sair em
+pt-BR, e `ModelSelectorLogo` passou a aceitar `alt`.

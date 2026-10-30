@@ -2,223 +2,61 @@
 
 Import: `@blips/ui/components/input`
 
-A styled `<input>` element with CVA-based size and variant support.
+Campo de texto de uma linha. Props: `React.ComponentProps<"input">` (todos os
+atributos HTML, inclusive `type`). Sem variantes: **não existem** `size`,
+`variant` nem `inputVariants` em nenhuma versão; ajuste com `className`.
 
-## Sub-components
+Export (igual nas duas versões): `Input`.
 
-| Export | Description |
-|---|---|
-| `Input` | The input component (`React.forwardRef`). |
-| `inputVariants` | CVA variant function — can be used to apply input styles to custom elements. |
-| `InputProps` | TypeScript interface extending `React.ComponentProps<'input'>` with CVA variants. Note: HTML `size` attribute is omitted in favor of the CVA `size` variant. |
+## Notas comuns
 
-## Props & Variants
+- Estado de erro: `aria-invalid` deixa a borda e o anel em `destructive`. Com `FormControl`/`Field`, isso vem automático.
+- `type="file"` já tem estilo para o botão do arquivo.
+- Com ícone, prefixo, sufixo ou botão colado, use `InputGroup` (veja `input-group.md`), não um `div` com `absolute`.
+- Máscaras (CPF, CNPJ, telefone, moeda, CEP): veja `components/forms/masks.md` (listado no `SKILL.md`).
 
-### Size Variants
+API igual na v2.x e na v3.x.
 
-| Size | Classes | Description |
+Detecção de versão: `SKILL.md`, Passo 0. Diferenças transversais entre as versões: `v2-vs-v3.md`.
+
+Diferenças só de implementação e visual:
+
+| | v2.x — Radix | v3.x — Base UI |
 |---|---|---|
-| `default` | `h-8 px-3 py-2` | Standard input height (32px). |
-| `sm` | `h-6 px-2 py-1 text-xs` | Small input (24px). |
-| `lg` | `h-12 px-4 py-3` | Large input (48px). |
-
-### Style Variants
-
-| Variant | Classes | Description |
-|---|---|---|
-| `default` | (none additional) | Standard bordered input with ring focus. |
-| `ghost` | `border-transparent bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0` | No border, no background, no focus ring. |
-
-### Base Classes
-
-```
-flex w-full rounded-md border border-input bg-background text-base
-ring-offset-background file:border-0 file:bg-transparent file:font-medium
-file:text-foreground file:text-sm placeholder:text-muted-foreground
-focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring
-focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
-md:text-sm
-```
-
-### Props
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `size` | `"default" \| "sm" \| "lg"` | `"default"` | Input size variant. |
-| `variant` | `"default" \| "ghost"` | `"default"` | Visual style variant. |
-| `type` | `string` | - | HTML input type (`text`, `email`, `password`, `file`, etc.). |
-| `disabled` | `boolean` | `false` | Disables the input. |
-| `placeholder` | `string` | - | Placeholder text. |
-
-Plus all standard HTML `<input>` attributes (except `size`).
-
-## Usage
-
-### Basic Input
+| Elemento | `<input>` nativo | `Input` de `@base-ui/react/input` (integra com o Field do Base UI); continua renderizando `<input>` |
+| Altura / padding | `h-9 px-3`, `shadow-xs` | `h-7 px-2`, sem sombra, `bg-input/20` |
+| Texto | `text-base md:text-sm` | `text-sm md:text-xs/relaxed` |
+| Foco | `ring-[3px] ring-ring/50` | `ring-2 ring-ring/30` |
 
 ```tsx
-import { Input } from "@blips/ui/components/input"
+import { Button } from "@blips/ui/components/button";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 
-<Input type="email" placeholder="Email" />
-```
-
-### With Label
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-<div className="grid w-full max-w-sm items-center gap-3">
-  <Label htmlFor="email">Email</Label>
-  <Input type="email" id="email" placeholder="Email" />
-</div>
-```
-
-### With Helper Text
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-<div className="grid w-full max-w-sm items-center gap-3">
-  <Label htmlFor="email-2">Email</Label>
-  <Input type="email" id="email-2" placeholder="Email" />
-  <p className="text-sm text-muted-foreground">Enter your email address.</p>
-</div>
-```
-
-### With Button
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-
-<div className="flex w-full max-w-sm items-center gap-2">
-  <Input type="email" placeholder="Email" />
-  <Button type="submit" variant="outline">Subscribe</Button>
-</div>
-```
-
-### File Input
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-<div className="grid w-full max-w-sm items-center gap-3">
-  <Label htmlFor="picture">Picture</Label>
-  <Input id="picture" type="file" />
-</div>
-```
-
-### Disabled
-
-```tsx
-<Input disabled type="email" placeholder="Email" />
-```
-
-### Size Variants
-
-```tsx
-<Input size="sm" placeholder="Small" />
-<Input size="default" placeholder="Default" />
-<Input size="lg" placeholder="Large" />
-```
-
-## All Examples
-
-- `input-demo` — Basic email input
-- `input-with-label` — Input with label
-- `input-with-text` — Input with label and helper text
-- `input-with-button` — Input with subscribe button
-- `input-file` — File input with label
-- `input-disabled` — Disabled input
-
-## All Example Variants
-
-### input-demo
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-
-export default function InputDemo() {
-  return <Input type="email" placeholder="Email" />
-}
-```
-
-### input-disabled
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-
-export default function InputDisabled() {
-  return <Input disabled type="email" placeholder="Email" />
-}
-```
-
-### input-file
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-export default function InputFile() {
+export function Campos() {
   return (
-    <div className="grid w-full max-w-sm items-center gap-3">
-      <Label htmlFor="picture">Picture</Label>
-      <Input id="picture" type="file" />
+    <div className="flex w-full max-w-sm flex-col gap-4">
+      <div className="grid gap-1.5">
+        <Label htmlFor="email">E-mail</Label>
+        <Input id="email" type="email" placeholder="voce@empresa.com" />
+        <p className="text-muted-foreground text-xs">Usado para login.</p>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <Input type="search" placeholder="Buscar" />
+        <Button type="submit">Buscar</Button>
+      </div>
+
+      <Input id="arquivo" type="file" />
+      <Input disabled placeholder="Não editável" />
+      <Input aria-invalid placeholder="Campo com erro" />
     </div>
-  )
+  );
 }
 ```
 
-### input-with-button
+Em formulário com validação, use `Field` (`field.md`) ou `Form` (`form.md`), que ligam `id`, `aria-describedby` e `aria-invalid`.
 
-```tsx
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
+## Exemplos na docs
 
-export default function InputWithButton() {
-  return (
-    <div className="flex w-full max-w-sm items-center gap-2">
-      <Input type="email" placeholder="Email" />
-      <Button type="submit" variant="outline">
-        Subscribe
-      </Button>
-    </div>
-  )
-}
-```
-
-### input-with-label
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-export default function InputWithLabel() {
-  return (
-    <div className="grid w-full max-w-sm items-center gap-3">
-      <Label htmlFor="email">Email</Label>
-      <Input type="email" id="email" placeholder="Email" />
-    </div>
-  )
-}
-```
-
-### input-with-text
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-export default function InputWithText() {
-  return (
-    <div className="grid w-full max-w-sm items-center gap-3">
-      <Label htmlFor="email-2">Email</Label>
-      <Input type="email" id="email-2" placeholder="Email" />
-      <p className="text-sm text-muted-foreground">Enter your email address.</p>
-    </div>
-  )
-}
-```
+`input-demo`, `input-with-label`, `input-description`, `input-button`, `input-file`, `input-disabled`, `input-invalid`, `input-form` (em `apps/docs/examples/`, escritos para a v3).

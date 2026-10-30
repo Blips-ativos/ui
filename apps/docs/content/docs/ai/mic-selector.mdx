@@ -1,0 +1,147 @@
+---
+title: Mic Selector
+description: Seletor de microfone com busca, que lista os dispositivos de entrada de áudio do navegador e acompanha quando um é conectado ou removido.
+---
+
+<ComponentPreview name="ai-mic-selector-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `mic-selector` não exige peer opcional nem o pacote `ai`: a lista vem da MediaDevices API do navegador. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  MicSelector,
+  MicSelectorContent,
+  MicSelectorEmpty,
+  MicSelectorInput,
+  MicSelectorItem,
+  MicSelectorLabel,
+  MicSelectorList,
+  MicSelectorTrigger,
+  MicSelectorValue,
+} from "@blips/ai/components/mic-selector"
+```
+
+```tsx
+<MicSelector onValueChange={setMicrofone} value={microfone}>
+  <MicSelectorTrigger>
+    <MicSelectorValue />
+  </MicSelectorTrigger>
+  <MicSelectorContent>
+    <MicSelectorInput />
+    <MicSelectorEmpty />
+    <MicSelectorList>
+      {(dispositivos) =>
+        dispositivos.map((dispositivo) => (
+          <MicSelectorItem key={dispositivo.deviceId} value={dispositivo.deviceId}>
+            <MicSelectorLabel device={dispositivo} />
+          </MicSelectorItem>
+        ))
+      }
+    </MicSelectorList>
+  </MicSelectorContent>
+</MicSelector>
+```
+
+O valor é o `deviceId` do microfone. Para gravar dele, passe-o ao pedir o áudio:
+
+```tsx
+navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: microfone } } })
+```
+
+### Permissão e nomes dos dispositivos
+
+Ao montar, o componente lista os microfones sem pedir permissão. Nesse momento o navegador costuma devolver os dispositivos sem nome (`label` vazio). Na primeira vez que o seletor abre, ele pede o microfone (`getUserMedia`), fecha o stream na hora e lista de novo, agora com os nomes. Depois disso, conectar ou remover um microfone (`devicechange`) atualiza a lista sozinho.
+
+A MediaDevices API só existe em contexto seguro (HTTPS ou `localhost`). Fora dele, ou no servidor, a lista fica vazia e o erro "Não foi possível listar os microfones." é registrado no console, sem quebrar a página. Nada de `navigator` é lido durante o render, então o componente funciona em SSR.
+
+## Exemplos
+
+### Rótulo do dispositivo
+
+`MicSelectorLabel` separa o sufixo `(vendor:product)` que alguns sistemas acrescentam ao nome e o mostra em cor secundária. Dispositivos fixos, só para mostrar a formatação:
+
+<ComponentPreview name="ai-mic-selector-label" />
+
+## Referência da API
+
+### MicSelector
+
+Raiz, sobre o [Popover](/docs/components/popover) da `@blips/ui`. Aceita as demais props do `Popover`.
+
+| Prop            | Tipo                                    | Padrão  |
+| --------------- | --------------------------------------- | ------- |
+| `value`         | `string \| undefined` (`deviceId`)      | —       |
+| `defaultValue`  | `string`                                | —       |
+| `onValueChange` | `(value: string \| undefined) => void`  | —       |
+| `open`          | `boolean`                               | —       |
+| `defaultOpen`   | `boolean`                               | `false` |
+| `onOpenChange`  | `(open: boolean) => void`               | —       |
+
+`onOpenChange` recebe só o booleano, diferente do `Popover` do Base UI, que também passa `eventDetails`.
+
+### MicSelectorTrigger
+
+`PopoverTrigger` renderizado como `Button` `variant="outline"` da `@blips/ui`, com um ícone de seta no fim. Aceita as props do `Button`. A largura do trigger é medida e aplicada ao popup.
+
+### MicSelectorContent
+
+`Command` da `@blips/ui` dentro do `PopoverContent`. Aceita as props do `Command`.
+
+| Prop             | Tipo                                    | Padrão |
+| ---------------- | --------------------------------------- | ------ |
+| `popoverOptions` | props do `PopoverContent`               | —      |
+
+### MicSelectorList
+
+`CommandList` cujo `children` é uma função.
+
+| Prop       | Tipo                                         | Padrão      |
+| ---------- | -------------------------------------------- | ----------- |
+| `children` | `(devices: MediaDeviceInfo[]) => ReactNode`  | obrigatório |
+
+### MicSelectorItem
+
+`CommandItem`. Ao ser escolhido, grava o `value` do item no seletor e fecha o popup. Passe o `deviceId` em `value`.
+
+### MicSelectorValue
+
+`<span>` com o microfone escolhido (formatado como no `MicSelectorLabel`).
+
+| Prop          | Tipo        | Padrão                        |
+| ------------- | ----------- | ----------------------------- |
+| `placeholder` | `ReactNode` | `"Selecione o microfone..."`  |
+
+### Demais partes
+
+| Componente         | Base / descrição                                                                  |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `MicSelectorInput` | `CommandInput`, placeholder padrão `"Buscar microfone..."`                       |
+| `MicSelectorEmpty` | `CommandEmpty`, texto padrão `"Nenhum microfone encontrado."`                   |
+| `MicSelectorLabel` | `<span>` com `device: MediaDeviceInfo` obrigatório                               |
+
+### useAudioDevices
+
+Hook usado pelo `MicSelector`, exportado para quem quer montar outra interface. Retorna `{ devices, loading, error, hasPermission, loadDevices }`: `devices` são os `MediaDeviceInfo` de tipo `audioinput`, e `loadDevices()` pede permissão e lista de novo com os nomes.
+
+### Armadilha
+
+Como no original, o `value` do seletor também é passado ao `Command` (cmdk), onde significa o item destacado. Mover o destaque com as setas ou o mouse já chama `onValueChange` com o `deviceId` destacado, antes da escolha. Se a troca de microfone tiver efeito caro (reabrir o stream), aplique-a quando o popup fechar.
+
+## Origem
+
+Adaptado do componente [Mic Selector](https://elements.ai-sdk.dev/components/mic-selector) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. Mudanças da Blips: `Popover`, `Command` e `Button` da `@blips/ui` (Base UI, trigger com `render` em vez de `asChild`), ícones Phosphor, textos padrão em pt-BR, prop `placeholder` no `MicSelectorValue` e proteção contra `navigator.mediaDevices` ausente (SSR ou contexto inseguro), que registra o erro em vez de lançar.

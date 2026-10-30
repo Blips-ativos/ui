@@ -20,54 +20,55 @@ import {
 
 export default function TabsDemo() {
   return (
-    <Tabs defaultValue="account" className="w-[400px]">
-      <TabsList className="grid w-full grid-cols-2">
-        <TabsTrigger value="account">Account</TabsTrigger>
-        <TabsTrigger value="password">Password</TabsTrigger>
+    <Tabs defaultValue="account" className="w-full max-w-sm">
+      <TabsList className="w-full">
+        <TabsTrigger value="account">Conta</TabsTrigger>
+        <TabsTrigger value="password">Senha</TabsTrigger>
       </TabsList>
       <TabsContent value="account">
         <Card>
           <CardHeader>
-            <CardTitle>Account</CardTitle>
+            <CardTitle>Conta</CardTitle>
             <CardDescription>
-              Make changes to your account here. Click save when you're done.
+              Faça alterações na sua conta aqui. Clique em salvar quando
+              terminar.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" defaultValue="Pedro Duarte" />
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="tabs-demo-name">Nome</Label>
+              <Input id="tabs-demo-name" defaultValue="Ana Souza" />
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="username">Username</Label>
-              <Input id="username" defaultValue="@peduarte" />
+            <div className="grid gap-2">
+              <Label htmlFor="tabs-demo-username">Usuário</Label>
+              <Input id="tabs-demo-username" defaultValue="@anasouza" />
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Save changes</Button>
+            <Button>Salvar alterações</Button>
           </CardFooter>
         </Card>
       </TabsContent>
       <TabsContent value="password">
         <Card>
           <CardHeader>
-            <CardTitle>Password</CardTitle>
+            <CardTitle>Senha</CardTitle>
             <CardDescription>
-              Change your password here. After saving, you'll be logged out.
+              Altere sua senha aqui. Depois de salvar, você será desconectado.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="space-y-1">
-              <Label htmlFor="current">Current password</Label>
-              <Input id="current" type="password" />
+          <CardContent className="grid gap-4">
+            <div className="grid gap-2">
+              <Label htmlFor="tabs-demo-current">Senha atual</Label>
+              <Input id="tabs-demo-current" type="password" />
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="new">New password</Label>
-              <Input id="new" type="password" />
+            <div className="grid gap-2">
+              <Label htmlFor="tabs-demo-new">Nova senha</Label>
+              <Input id="tabs-demo-new" type="password" />
             </div>
           </CardContent>
           <CardFooter>
-            <Button>Save password</Button>
+            <Button>Salvar senha</Button>
           </CardFooter>
         </Card>
       </TabsContent>

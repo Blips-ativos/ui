@@ -8,11 +8,11 @@ export default function ButtonGroupSeparatorDemo() {
   return (
     <ButtonGroup>
       <Button variant="secondary" size="sm">
-        Copy
+        Copiar
       </Button>
       <ButtonGroupSeparator />
       <Button variant="secondary" size="sm">
-        Paste
+        Colar
       </Button>
     </ButtonGroup>
   );

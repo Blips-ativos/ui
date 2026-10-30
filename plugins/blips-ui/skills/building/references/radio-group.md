@@ -2,133 +2,112 @@
 
 Import: `@blips/ui/components/radio-group`
 
-## Sub-components
+Escolha única entre poucas opções visíveis (até ~5). Para muitas opções, use
+Select; para alternar visualização, Toggle Group ou Tabs.
 
-| Component | Description |
-|---|---|
-| `RadioGroup` | Root container wrapping `@radix-ui/react-radio-group` Root. Renders a grid with `gap-2` by default. |
-| `RadioGroupItem` | Individual radio button. Renders a circular indicator with a filled `Circle` icon (Phosphor Icons) when selected. |
+Exports (iguais nas duas versões): `RadioGroup`, `RadioGroupItem`.
 
-## Props & Variants
+## Notas comuns
 
-### RadioGroup
+- `RadioGroup`: `value`, `defaultValue`, `onValueChange`, `disabled`, `required`, `name`, `orientation` (v2) / layout por classe.
+- `RadioGroupItem`: `value` (obrigatório), `id`, `disabled`.
+- Sempre pareie cada item com `Label htmlFor`/`FieldLabel` usando o mesmo `id`.
+- Layout horizontal: `className="flex gap-4"` no `RadioGroup`.
+- Em react-hook-form: `value={field.value}` + `onValueChange={field.onChange}`.
 
-Extends `React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `defaultValue` | `string` | -- | The default selected value (uncontrolled). |
-| `value` | `string` | -- | The controlled selected value. |
-| `onValueChange` | `(value: string) => void` | -- | Callback when value changes. |
-| `disabled` | `boolean` | `false` | Disable all radio items. |
-| `required` | `boolean` | `false` | Mark group as required for form validation. |
-| `orientation` | `"horizontal" \| "vertical"` | `"vertical"` | Orientation of the radio group. |
-| `dir` | `"ltr" \| "rtl"` | -- | Reading direction. |
-| `loop` | `boolean` | `true` | Whether keyboard navigation should loop. |
-| `className` | `string` | -- | Additional CSS classes. Base: `grid gap-2`. |
+## v3.x — Base UI
 
-### RadioGroupItem
+Primitivas: `@base-ui/react/radio-group` (raiz) e `@base-ui/react/radio` (`Radio.Root` como item).
 
-Extends `React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>`.
+| Prop | Tipo | Notas |
+|---|---|---|
+| `value` / `defaultValue` (raiz) | `any` | Pode ser qualquer tipo, não só string (o wrapper usa `RadioGroup.Props` sem genérico, então o tipo é `any`). |
+| `onValueChange` | `(value: any, eventDetails) => void` | `onValueChange={setPlano}` compila direto; como o `value` chega `any`, não há checagem de tipo: confira que os `value` dos itens batem com o estado. |
+| `readOnly`, `inputRef`, `render` | | Base UI. Sem `asChild`. |
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `value` | `string` | **(required)** | The value of the radio item. |
-| `disabled` | `boolean` | `false` | Disable this radio item. |
-| `required` | `boolean` | -- | Override group required for this item. |
-| `id` | `string` | -- | HTML id, pair with `Label htmlFor`. |
-| `className` | `string` | -- | Additional CSS classes. |
+- Raiz com `grid w-full gap-3`.
+- Item marcado fica **preenchido** (`bg-primary` com ponto `bg-primary-foreground` desenhado por `<span>`), sem ícone Phosphor.
+- Estado: `data-checked` / `data-unchecked`. Erro por `aria-invalid`.
 
-**Base styles:** `aspect-square h-4 w-4 rounded-full border border-primary text-primary` with focus-visible ring and disabled states.
+```tsx
+import * as React from "react";
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@blips/ui/components/field";
+import { RadioGroup, RadioGroupItem } from "@blips/ui/components/radio-group";
 
-## Usage
+const planos = [
+  { value: "plus", titulo: "Plus", descricao: "Para autônomos e times pequenos" },
+  { value: "pro", titulo: "Pro", descricao: "Para empresas em crescimento" },
+];
 
-### Basic Radio Group
+export function EscolhaDePlano() {
+  const [plano, setPlano] = React.useState("plus");
+
+  return (
+    <RadioGroup
+      value={plano}
+      onValueChange={setPlano}
+      className="max-w-sm"
+    >
+      {planos.map((p) => (
+        <FieldLabel key={p.value} htmlFor={`plano-${p.value}`}>
+          <Field orientation="horizontal">
+            <FieldContent>
+              <FieldTitle>{p.titulo}</FieldTitle>
+              <FieldDescription>{p.descricao}</FieldDescription>
+            </FieldContent>
+            <RadioGroupItem value={p.value} id={`plano-${p.value}`} />
+          </Field>
+        </FieldLabel>
+      ))}
+    </RadioGroup>
+  );
+}
+```
+
+### Armadilhas
+
+- `data-[state=checked]:` não casa: use `data-checked:`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-radio-group`. Raiz `grid gap-3`. `value`/`defaultValue`
+são `string`; `onValueChange(value: string)`; `orientation`, `loop`, `asChild`.
+Item com borda e bolinha `Circle` (Phosphor) `fill-primary` no centro.
+
+Estado: `data-state="checked" | "unchecked"`.
 
 ```tsx
 import { Label } from "@blips/ui/components/label"
 import { RadioGroup, RadioGroupItem } from "@blips/ui/components/radio-group"
 
-export default function RadioGroupDemo() {
+export function Densidade() {
   return (
-    <RadioGroup defaultValue="comfortable">
+    <RadioGroup defaultValue="confortavel">
       <div className="flex items-center gap-3">
-        <RadioGroupItem value="default" id="r1" />
-        <Label htmlFor="r1">Default</Label>
+        <RadioGroupItem value="padrao" id="r1" />
+        <Label htmlFor="r1">Padrão</Label>
       </div>
       <div className="flex items-center gap-3">
-        <RadioGroupItem value="comfortable" id="r2" />
-        <Label htmlFor="r2">Comfortable</Label>
+        <RadioGroupItem value="confortavel" id="r2" />
+        <Label htmlFor="r2">Confortável</Label>
       </div>
       <div className="flex items-center gap-3">
-        <RadioGroupItem value="compact" id="r3" />
-        <Label htmlFor="r3">Compact</Label>
+        <RadioGroupItem value="compacto" id="r3" />
+        <Label htmlFor="r3">Compacto</Label>
       </div>
     </RadioGroup>
   )
 }
 ```
 
-### With React Hook Form
+## Exemplos na docs
 
-```tsx
-import { Controller, useForm } from "react-hook-form"
-import { RadioGroup, RadioGroupItem } from "@blips/ui/components/radio-group"
-import { Label } from "@blips/ui/components/label"
-import { FormField, FormItem, FormControl, FormLabel, FormMessage } from "@blips/ui/components/form"
-
-<FormField
-  control={form.control}
-  name="type"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Notification type</FormLabel>
-      <FormControl>
-        <RadioGroup
-          onValueChange={field.onChange}
-          defaultValue={field.value}
-        >
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="all" id="all" />
-            <Label htmlFor="all">All notifications</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="mentions" id="mentions" />
-            <Label htmlFor="mentions">Mentions only</Label>
-          </div>
-          <div className="flex items-center gap-3">
-            <RadioGroupItem value="none" id="none" />
-            <Label htmlFor="none">None</Label>
-          </div>
-        </RadioGroup>
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-```
-
-### Horizontal Layout
-
-```tsx
-<RadioGroup defaultValue="option-1" className="flex gap-4" orientation="horizontal">
-  <div className="flex items-center gap-2">
-    <RadioGroupItem value="option-1" id="h1" />
-    <Label htmlFor="h1">Option 1</Label>
-  </div>
-  <div className="flex items-center gap-2">
-    <RadioGroupItem value="option-2" id="h2" />
-    <Label htmlFor="h2">Option 2</Label>
-  </div>
-</RadioGroup>
-```
-
-## All Examples
-
-- `radio-group-demo` -- Basic radio group with three options
-- `dropdown-menu-radio-group` -- Radio group inside a dropdown menu
-
-## Project Notes
-
-- Uses `@phosphor-icons/react` `Circle` icon instead of the default Lucide `Circle` for the indicator.
-- Always pair `RadioGroupItem` with a `Label` using matching `id`/`htmlFor` for accessibility.
+`radio-group-demo`, `radio-group-description`, `radio-group-fieldset`, `radio-group-disabled`, `radio-group-invalid` (em `apps/docs/examples/`, escritos para a v3). Radio dentro de menu: `DropdownMenuRadioGroup` (veja `dropdown-menu.md`).

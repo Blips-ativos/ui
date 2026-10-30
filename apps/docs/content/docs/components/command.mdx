@@ -7,7 +7,7 @@ description: Menu de comandos para busca e ações rápidas.
 
 ## Sobre
 
-O componente `<Command />` utiliza o componente [`cmdk`](https://github.com/dip/cmdk) de [Dip](https://www.dip.org/).
+O componente `<Command />` utiliza o [`cmdk`](https://github.com/dip/cmdk), de [Dip](https://www.dip.org/). O `CommandDialog` é montado sobre o [Dialog](/docs/components/dialog) da lib, que usa o Base UI.
 
 ## Instalação
 
@@ -38,7 +38,7 @@ import {
     <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
     <CommandGroup heading="Sugestões">
       <CommandItem>Calendário</CommandItem>
-      <CommandItem>Buscar Emoji</CommandItem>
+      <CommandItem>Buscar emoji</CommandItem>
       <CommandItem>Calculadora</CommandItem>
     </CommandGroup>
     <CommandSeparator />
@@ -53,18 +53,57 @@ import {
 
 ## Exemplos
 
-### Exemplo
-
-Menu de comandos com grupos, ícones, atalhos e um item desabilitado.
-
-<ComponentPreview name="command-demo" />
-
 ### Diálogo
 
-Abre o menu de comandos em um diálogo, acionado pelo atalho `⌘J`.
+O `CommandDialog` abre o menu num diálogo. Coloque um `<Command>` como filho e passe `title` e `description` em pt-BR: eles ficam ocultos visualmente, mas são lidos por leitores de tela.
+
+<ComponentPreview name="command-dialog-demo" />
+
+### Atalho de teclado
+
+Abre o mesmo diálogo pelo atalho `⌘J`.
 
 <ComponentPreview name="command-dialog" />
 
+## Migrando da v2
+
+`Command`, `CommandInput`, `CommandList`, `CommandItem`, `CommandGroup`, `CommandEmpty`, `CommandSeparator` e `CommandShortcut` continuam no `cmdk`, com a mesma API. As mudanças estão no diálogo e no visual:
+
+- O `CommandDialog` não envolve mais os filhos num `<Command>`. Coloque o `<Command>` você mesmo.
+- O `CommandDialog` usa o Dialog do Base UI: `onOpenChange` recebe `(open, eventDetails)`, `children` é obrigatório e `showCloseButton` passou a ser `false` por padrão.
+- O `title` e a `description` padrão são em inglês (`"Command Palette"`). Passe os textos em pt-BR.
+- O `CommandItem` mostra um ícone de check à direita quando tem `data-checked=true`. Quem já renderizava o próprio check vai ver dois.
+- O item selecionado usa `data-selected:` em vez de `data-[selected=true]:bg-accent`.
+
+```tsx
+// v2
+<CommandDialog open={open} onOpenChange={setOpen}>
+  <CommandInput placeholder="Pesquisar..." />
+  <CommandList>{/* ... */}</CommandList>
+</CommandDialog>
+
+// v3
+<CommandDialog
+  open={open}
+  onOpenChange={setOpen}
+  title="Paleta de comandos"
+  description="Pesquise um comando para executar."
+>
+  <Command>
+    <CommandInput placeholder="Pesquisar..." />
+    <CommandList>{/* ... */}</CommandList>
+  </Command>
+</CommandDialog>
+```
+
 ## Referência da API
+
+### CommandDialog
+
+| Prop              | Tipo      | Padrão                             |
+| ----------------- | --------- | ---------------------------------- |
+| `title`           | `string`  | `"Command Palette"`                |
+| `description`     | `string`  | `"Search for a command to run..."` |
+| `showCloseButton` | `boolean` | `false`                            |
 
 Consulte a documentação do [cmdk](https://github.com/dip/cmdk) para mais informações.

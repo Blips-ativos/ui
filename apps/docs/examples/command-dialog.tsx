@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -10,24 +11,25 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@blips/ui/components/command";
+import { Kbd } from "@blips/ui/components/kbd";
 import {
-  Calculator,
-  Calendar,
-  CreditCard,
-  Gear,
-  Smiley,
-  User,
+  CalculatorIcon,
+  CalendarBlankIcon,
+  CreditCardIcon,
+  GearIcon,
+  SmileyIcon,
+  UserIcon,
 } from "@phosphor-icons/react";
 import * as React from "react";
 
-export default function CommandDialogDemo() {
+export default function CommandDialogShortcut() {
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "j" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen((current) => !current);
       }
     };
 
@@ -38,48 +40,52 @@ export default function CommandDialogDemo() {
   return (
     <>
       <p className="text-sm text-muted-foreground">
-        Press{" "}
-        <kbd className="pointer-events-none inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100 select-none">
-          <span className="text-xs">⌘</span>J
-        </kbd>
+        Pressione <Kbd>⌘J</Kbd>
       </p>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
-              <Calendar />
-              <span>Calendar</span>
-            </CommandItem>
-            <CommandItem>
-              <Smiley />
-              <span>MagnifyingGlass Emoji</span>
-            </CommandItem>
-            <CommandItem>
-              <Calculator />
-              <span>Calculator</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Gear">
-            <CommandItem>
-              <User />
-              <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <CreditCard />
-              <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
-              <Gear />
-              <span>Gear</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        title="Paleta de comandos"
+        description="Pesquise um comando para executar."
+      >
+        <Command>
+          <CommandInput placeholder="Digite um comando ou pesquise..." />
+          <CommandList>
+            <CommandEmpty>Nenhum resultado encontrado.</CommandEmpty>
+            <CommandGroup heading="Sugestões">
+              <CommandItem>
+                <CalendarBlankIcon />
+                <span>Calendário</span>
+              </CommandItem>
+              <CommandItem>
+                <SmileyIcon />
+                <span>Buscar emoji</span>
+              </CommandItem>
+              <CommandItem>
+                <CalculatorIcon />
+                <span>Calculadora</span>
+              </CommandItem>
+            </CommandGroup>
+            <CommandSeparator />
+            <CommandGroup heading="Configurações">
+              <CommandItem>
+                <UserIcon />
+                <span>Perfil</span>
+                <CommandShortcut>⌘P</CommandShortcut>
+              </CommandItem>
+              <CommandItem>
+                <CreditCardIcon />
+                <span>Faturamento</span>
+                <CommandShortcut>⌘B</CommandShortcut>
+              </CommandItem>
+              <CommandItem>
+                <GearIcon />
+                <span>Configurações</span>
+                <CommandShortcut>⌘S</CommandShortcut>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </Command>
       </CommandDialog>
     </>
   );

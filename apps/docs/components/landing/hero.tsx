@@ -37,18 +37,16 @@ export function Hero() {
           className="landing-reveal mt-6 max-w-xl text-muted-foreground text-xs sm:text-sm"
           style={{ animationDelay: "260ms" }}
         >
-          Radix · Tailwind v4 · Acessível
+          Base UI · Tailwind v4 · Acessível
         </p>
 
         <div
           className="landing-reveal mt-10"
           style={{ animationDelay: "360ms" }}
         >
-          <Button asChild size="lg">
-            <Link href="/docs">
-              Explorar componentes
-              <CaretRightIcon />
-            </Link>
+          <Button size="lg" nativeButton={false} render={<Link href="/docs" />}>
+            Explorar componentes
+            <CaretRightIcon />
           </Button>
         </div>
       </div>

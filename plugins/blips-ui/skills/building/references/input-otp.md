@@ -2,307 +2,88 @@
 
 Import: `@blips/ui/components/input-otp`
 
-Built on [input-otp](https://github.com/guilhermerodz/input-otp) by @guilhermerodz. One-time password input with support for groups, separators, and pattern validation.
+Campo de código de uso único (verificação por SMS/e-mail, 2FA), um caractere por
+caixa. Usa a lib `input-otp` nas duas versões (não é primitiva Radix nem Base UI).
 
-## Sub-components
+Exports (iguais nas duas versões): `InputOTP`, `InputOTPGroup`, `InputOTPSlot`,
+`InputOTPSeparator`.
 
-| Component | Description |
+| Componente | Descrição |
 |---|---|
-| `InputOTP` | Root component. Wraps `OTPInput` with flex container and disabled styling. |
-| `InputOTPGroup` | Groups slots together visually (`flex items-center`). |
-| `InputOTPSlot` | Individual character slot. Shows character, active ring, and fake caret animation. |
-| `InputOTPSeparator` | Visual separator between groups (renders a dot icon by default). |
+| `InputOTP` | `OTPInput` da lib `input-otp`. Props: `maxLength` (obrigatório), `value`, `onChange(value)`, `onComplete(value)`, `pattern` (regex, ex. `REGEXP_ONLY_DIGITS` de `input-otp`), `disabled`, `id`, e `containerClassName` (classes do contêiner das caixas). |
+| `InputOTPGroup` | Agrupa caixas coladas (bordas compartilhadas). |
+| `InputOTPSlot` | Uma caixa; `index` (obrigatório) é a posição do caractere. Mostra caret piscando quando ativa. |
+| `InputOTPSeparator` | Traço (ícone Phosphor de menos) entre grupos, com `role="separator"`. |
 
-## Props & Variants
+## Notas comuns
 
-### InputOTP
+- Um `InputOTPSlot` por posição, de `0` a `maxLength - 1`.
+- Em formulário: `FormControl` envolvendo o `InputOTP`, com `{...field}` (veja `form.md`); ou `Field` + `FieldLabel htmlFor` com o `id` do `InputOTP`.
+- Erro: `aria-invalid` nos slots.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `maxLength` | `number` | **required** | Total number of OTP characters. |
-| `value` | `string` | - | Controlled value. |
-| `onChange` | `(value: string) => void` | - | Callback when value changes. |
-| `pattern` | `string` | - | Regex pattern for allowed characters. Use `REGEXP_ONLY_DIGITS_AND_CHARS` from `input-otp`. |
-| `containerClassName` | `string` | - | Class for the outer flex container. |
-| `disabled` | `boolean` | `false` | Disables the input. |
-| `render` | `(props) => ReactElement` | - | Custom render function for full control. |
+API igual na v2.x e na v3.x.
 
-### InputOTPSlot
+Detecção de versão: `SKILL.md`, Passo 0. Diferenças transversais entre as versões: `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `index` | `number` | **required** | The slot index (0-based). Must match position in the OTP input. |
+Diferenças visuais e de padrão:
 
-**Slot styling:**
-- Base: `h-10 w-10 border-input border-y border-r text-sm` (first slot gets `border-l` and `rounded-l-md`, last gets `rounded-r-md`)
-- Active: `z-10 ring-2 ring-ring ring-offset-background`
-- Fake caret: Animated blinking cursor (`animate-caret-blink duration-1000`)
-
-### InputOTPSeparator
-
-Renders a `Dot` icon from `@phosphor-icons/react` by default. Uses `role="separator"`.
-
-## Usage
-
-### Basic 6-digit OTP with Separator
+| | v2.x — Radix | v3.x — Base UI |
+|---|---|---|
+| Espaço entre grupos | `gap-2` no contêiner | **sem gap** (marcador inerte `cn-input-otp`): passe `containerClassName="gap-2"` se quiser espaço |
+| Caixa | `h-9 w-9 text-sm shadow-xs` | `size-7 text-xs/relaxed bg-input/20`, anel ativo `ring-2 ring-ring/30` |
+| Grupo | sem estilo de erro | `rounded-md` + anel `destructive` quando um filho tem `aria-invalid` |
+| Corretor | — | `spellCheck={false}` forçado |
+| Ícone do separador | `Minus` | `MinusIcon` |
 
 ```tsx
-import {
-  InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-function InputOTPDemo() {
-  return (
-    <InputOTP maxLength={6}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-        <InputOTPSlot index={2} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={3} />
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-### Custom Pattern (Digits and Characters)
-
-```tsx
-"use client"
-
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
-import {
-  InputOTP, InputOTPGroup, InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-function InputOTPPattern() {
-  return (
-    <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-        <InputOTPSlot index={2} />
-        <InputOTPSlot index={3} />
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-### Controlled Value
-
-```tsx
-"use client"
-
-import * as React from "react"
-import {
-  InputOTP, InputOTPGroup, InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-function InputOTPControlled() {
-  const [value, setValue] = React.useState("")
-
-  return (
-    <div className="space-y-2">
-      <InputOTP maxLength={6} value={value} onChange={(value) => setValue(value)}>
-        <InputOTPGroup>
-          <InputOTPSlot index={0} />
-          <InputOTPSlot index={1} />
-          <InputOTPSlot index={2} />
-          <InputOTPSlot index={3} />
-          <InputOTPSlot index={4} />
-          <InputOTPSlot index={5} />
-        </InputOTPGroup>
-      </InputOTP>
-      <div className="text-center text-sm">
-        {value === "" ? (
-          <>Enter your one-time password.</>
-        ) : (
-          <>You entered: {value}</>
-        )}
-      </div>
-    </div>
-  )
-}
-```
-
-### Multiple Separators (2-2-2 Layout)
-
-```tsx
-import {
-  InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-function InputOTPWithSeparator() {
-  return (
-    <InputOTP maxLength={6}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={2} />
-        <InputOTPSlot index={3} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-## All Examples
-
-- `input-otp-demo` — Basic 3+3 with separator
-- `input-otp-pattern` — Custom pattern allowing digits and characters
-- `input-otp-controlled` — Controlled value with display text
-- `input-otp-separator` — 2+2+2 layout with two separators
-
-## All Example Variants
-
-### input-otp-demo
-
-```tsx
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+import * as React from "react";
+import { Field, FieldLabel } from "@blips/ui/components/field";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
-} from "@blips/ui/components/input-otp"
+} from "@blips/ui/components/input-otp";
 
-export default function InputOTPDemo() {
-  return (
-    <InputOTP maxLength={6}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-        <InputOTPSlot index={2} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={3} />
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-### input-otp-pattern
-
-```tsx
-"use client"
-
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
-
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-export default function InputOTPPattern() {
-  return (
-    <InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-        <InputOTPSlot index={2} />
-        <InputOTPSlot index={3} />
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-### input-otp-separator
-
-```tsx
-import React from "react"
-
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-export default function InputOTPWithSeparator() {
-  return (
-    <InputOTP maxLength={6}>
-      <InputOTPGroup>
-        <InputOTPSlot index={0} />
-        <InputOTPSlot index={1} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={2} />
-        <InputOTPSlot index={3} />
-      </InputOTPGroup>
-      <InputOTPSeparator />
-      <InputOTPGroup>
-        <InputOTPSlot index={4} />
-        <InputOTPSlot index={5} />
-      </InputOTPGroup>
-    </InputOTP>
-  )
-}
-```
-
-### input-otp-controlled
-
-```tsx
-"use client"
-
-import * as React from "react"
-
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@blips/ui/components/input-otp"
-
-export default function InputOTPControlled() {
-  const [value, setValue] = React.useState("")
+export function CodigoDeVerificacao({
+  verificar,
+}: {
+  verificar: (codigo: string) => void;
+}) {
+  const [codigo, setCodigo] = React.useState("");
 
   return (
-    <div className="space-y-2">
+    <Field>
+      <FieldLabel htmlFor="codigo">Código enviado por SMS</FieldLabel>
       <InputOTP
+        id="codigo"
         maxLength={6}
-        value={value}
-        onChange={(value) => setValue(value)}
+        pattern={REGEXP_ONLY_DIGITS}
+        value={codigo}
+        onChange={setCodigo}
+        onComplete={verificar}
+        containerClassName="gap-2"
       >
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
           <InputOTPSlot index={2} />
+        </InputOTPGroup>
+        <InputOTPSeparator />
+        <InputOTPGroup>
           <InputOTPSlot index={3} />
           <InputOTPSlot index={4} />
           <InputOTPSlot index={5} />
         </InputOTPGroup>
       </InputOTP>
-      <div className="text-center text-sm">
-        {value === "" ? (
-          <>Enter your one-time password.</>
-        ) : (
-          <>You entered: {value}</>
-        )}
-      </div>
-    </div>
-  )
+    </Field>
+  );
 }
 ```
+
+Em repo v2 o exemplo vale igual (o `Field` também existe na v2); o `containerClassName="gap-2"` é dispensável lá, porque já é o padrão.
+
+## Exemplos na docs
+
+`input-otp-demo`, `input-otp-pattern`, `input-otp-separator`, `input-otp-controlled`, `input-otp-form`, `input-otp-invalid` (em `apps/docs/examples/`, escritos para a v3).

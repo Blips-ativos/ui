@@ -2,19 +2,23 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@blips/ui/components/toggle-group";
-import { TextB, TextItalic, TextUnderline } from "@phosphor-icons/react";
+import {
+  TextBIcon,
+  TextItalicIcon,
+  TextUnderlineIcon,
+} from "@phosphor-icons/react";
 
-export default function ToggleGroupDemo() {
+export default function ToggleGroupDisabled() {
   return (
-    <ToggleGroup type="multiple" disabled>
-      <ToggleGroupItem value="bold" aria-label="Toggle bold">
-        <TextB className="h-4 w-4" />
+    <ToggleGroup multiple disabled spacing={1}>
+      <ToggleGroupItem value="bold" aria-label="Alternar negrito">
+        <TextBIcon />
       </ToggleGroupItem>
-      <ToggleGroupItem value="italic" aria-label="Toggle italic">
-        <TextItalic className="h-4 w-4" />
+      <ToggleGroupItem value="italic" aria-label="Alternar itálico">
+        <TextItalicIcon />
       </ToggleGroupItem>
-      <ToggleGroupItem value="strikethrough" aria-label="Toggle strikethrough">
-        <TextUnderline className="h-4 w-4" />
+      <ToggleGroupItem value="underline" aria-label="Alternar sublinhado">
+        <TextUnderlineIcon />
       </ToggleGroupItem>
     </ToggleGroup>
   );

@@ -1,11 +1,11 @@
 ---
 title: Card
-description: Exibe um card com cabecalho, conteudo e rodape.
+description: Exibe um card com cabeçalho, conteúdo e rodapé.
 ---
 
 <ComponentPreview name="card-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -28,88 +28,112 @@ import {
 ```tsx
 <Card>
   <CardHeader>
-    <CardTitle>Card Title</CardTitle>
-    <CardDescription>Card Description</CardDescription>
-    <CardAction>Card Action</CardAction>
+    <CardTitle>Título do card</CardTitle>
+    <CardDescription>Descrição do card</CardDescription>
+    <CardAction>Ação do card</CardAction>
   </CardHeader>
   <CardContent>
-    <p>Card Content</p>
+    <p>Conteúdo do card</p>
   </CardContent>
   <CardFooter>
-    <p>Card Footer</p>
+    <p>Rodapé do card</p>
   </CardFooter>
 </Card>
 ```
 
 ## Exemplos
 
-### Exemplo
+### Com formulário
 
-Um card de login com cabecalho, acao, formulario e rodape.
-
-<ComponentPreview name="card-demo" />
-
-### Com Formulario
-
-Um card que agrupa campos de formulario, incluindo um `Select`, com acoes no rodape.
+Um card que agrupa campos de formulário, incluindo um `Select`, com ações no rodapé.
 
 <ComponentPreview name="card-with-form" />
 
-## Referencia da API
+### Tamanhos
+
+Use `size="sm"` para um card mais compacto. O espaçamento interno vem da variável `--card-spacing`.
+
+<ComponentPreview name="card-small" />
+
+### Com imagem
+
+Uma imagem como primeiro filho do card ganha os cantos arredondados do card. Use `pt-0` no `Card` para encostá-la na borda superior.
+
+<ComponentPreview name="card-image" />
+
+## Migrando da v2
+
+O Card não depende de primitiva e a API continua a mesma, com uma prop nova e um visual mais compacto:
+
+- Nova prop `size` (`"default"` ou `"sm"`). O espaçamento vem de `--card-spacing` (16px no `default`, 12px no `sm`) em vez de `py-6`/`px-6` fixos.
+- O padding caiu de 24px para 16px. `rounded-xl` virou `rounded-lg`, e a borda com sombra virou `ring-1 ring-foreground/10`.
+- O card ganhou `overflow-hidden` e texto base `text-xs/relaxed`. O `CardTitle` passou para `font-heading text-sm font-medium`.
+
+Quem sobrescrevia o padding por `className` pode ajustar a variável:
+
+```tsx
+// v2
+<Card className="px-8 py-8">{/* ... */}</Card>
+
+// v3
+<Card className="[--card-spacing:--spacing(8)]">{/* ... */}</Card>
+```
+
+## Referência da API
 
 ### Card
 
-O componente `Card` e o container raiz para o conteudo do card.
+O componente `Card` é o container raiz para o conteúdo do card.
 
-| Prop        | Type                | Default     |
+| Prop        | Tipo                | Padrão      |
 | ----------- | ------------------- | ----------- |
 | `size`      | `"default" \| "sm"` | `"default"` |
 | `className` | `string`            | -           |
 
 ### CardHeader
 
-O componente `CardHeader` e usado para um titulo, descricao e uma acao opcional.
+O componente `CardHeader` agrupa o título, a descrição e uma ação opcional.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | -       |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ### CardTitle
 
-O componente `CardTitle` e usado para o titulo do card.
+O componente `CardTitle` é o título do card.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | -       |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ### CardDescription
 
-O componente `CardDescription` e usado para texto de apoio abaixo do titulo.
+O componente `CardDescription` é o texto de apoio abaixo do título.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | -       |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ### CardAction
 
-O componente `CardAction` posiciona conteudo no canto superior direito do cabecalho (por exemplo, um botao ou um badge).
+O componente `CardAction` posiciona conteúdo no canto superior direito do cabeçalho (por exemplo, um botão ou um badge).
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | -       |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ### CardContent
 
-O componente `CardContent` e usado para o corpo principal do card.
+O componente `CardContent` é o corpo principal do card.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | -       |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ### CardFooter
 
-O componente `CardFooter` e usado para acoes e conteudo secundario na parte inferior do card.
+O componente `CardFooter` reúne ações e conteúdo secundário na parte inferior do card.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | -       |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |

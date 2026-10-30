@@ -1,0 +1,194 @@
+---
+title: Voice Selector
+description: Diálogo com busca para escolher a voz de um agente, com gênero, sotaque, idade, descrição e botão de prévia em cada item.
+---
+
+<ComponentPreview name="ai-voice-selector-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `voice-selector` não exige peer opcional nem o pacote `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { Button } from "@blips/ui/components/button"
+import {
+  VoiceSelector,
+  VoiceSelectorContent,
+  VoiceSelectorEmpty,
+  VoiceSelectorInput,
+  VoiceSelectorItem,
+  VoiceSelectorList,
+  VoiceSelectorName,
+  VoiceSelectorTrigger,
+} from "@blips/ai/components/voice-selector"
+```
+
+```tsx
+<VoiceSelector onOpenChange={setAberto} open={aberto} onValueChange={setVoz} value={voz}>
+  <VoiceSelectorTrigger render={<Button variant="outline" />}>
+    Escolher voz
+  </VoiceSelectorTrigger>
+  <VoiceSelectorContent>
+    <VoiceSelectorInput />
+    <VoiceSelectorList>
+      <VoiceSelectorEmpty />
+      {vozes.map((v) => (
+        <VoiceSelectorItem
+          key={v.id}
+          onSelect={() => {
+            setVoz(v.id)
+            setAberto(false)
+          }}
+          value={v.nome}
+        >
+          <VoiceSelectorName>{v.nome}</VoiceSelectorName>
+        </VoiceSelectorItem>
+      ))}
+    </VoiceSelectorList>
+  </VoiceSelectorContent>
+</VoiceSelector>
+```
+
+O `VoiceSelector` é um [Dialog](/docs/components/dialog) da `@blips/ui` e o conteúdo é um [Command](/docs/components/command): a busca filtra os itens pelo `value` de cada `VoiceSelectorItem`. Ponha no `value` o texto que a pessoa vai digitar (nome, descrição).
+
+O componente não tem lista de vozes nem toca áudio. As vozes vêm do provedor (a lista de vozes do seu TTS) e a prévia é do app: `VoiceSelectorPreview` só mostra os estados `playing` e `loading` e avisa o clique em `onPlay`.
+
+### Escolher e fechar
+
+Diferente do [Mic Selector](/docs/ai/mic-selector), o `VoiceSelectorItem` não grava o valor nem fecha o diálogo sozinho. Faça isso no `onSelect`: com estado próprio, como no exemplo acima, ou com o hook `useVoiceSelector`, que dá acesso ao estado do seletor mais próximo:
+
+```tsx
+import { useVoiceSelector, VoiceSelectorItem } from "@blips/ai/components/voice-selector"
+
+function ItemDeVoz({ id, nome }: { id: string; nome: string }) {
+  const { setValue, setOpen } = useVoiceSelector()
+  return (
+    <VoiceSelectorItem
+      onSelect={() => {
+        setValue(id)
+        setOpen(false)
+      }}
+      value={nome}
+    >
+      {nome}
+    </VoiceSelectorItem>
+  )
+}
+```
+
+### Atributos da voz
+
+```tsx
+<VoiceSelectorAttributes className="gap-1.5">
+  <VoiceSelectorGender value="female" />
+  <VoiceSelectorBullet />
+  <VoiceSelectorAccent value="brazilian" />
+  <VoiceSelectorBullet />
+  <VoiceSelectorAge>30–40</VoiceSelectorAge>
+</VoiceSelectorAttributes>
+```
+
+`VoiceSelectorGender` troca o `value` por um ícone Phosphor e `VoiceSelectorAccent` por uma bandeira em emoji. Com `children`, os dois mostram o conteúdo passado no lugar do ícone ou da bandeira.
+
+## Referência da API
+
+### VoiceSelector
+
+Raiz, sobre o `Dialog` da `@blips/ui`. Aceita as demais props do `Dialog`.
+
+| Prop            | Tipo                                   | Padrão  |
+| --------------- | -------------------------------------- | ------- |
+| `value`         | `string`                               | —       |
+| `defaultValue`  | `string`                               | —       |
+| `onValueChange` | `(value: string \| undefined) => void` | —       |
+| `open`          | `boolean`                              | —       |
+| `defaultOpen`   | `boolean`                              | `false` |
+| `onOpenChange`  | `(open: boolean) => void`              | —       |
+
+`onOpenChange` recebe só o booleano, diferente do `Dialog` do Base UI, que também passa `eventDetails`.
+
+### VoiceSelectorTrigger
+
+`DialogTrigger` do Base UI. Para usar um botão da `@blips/ui`, passe `render={<Button variant="outline" />}` (não existe `asChild`).
+
+### VoiceSelectorContent
+
+`DialogContent` sem padding com um `Command` dentro. Aceita as props do `DialogContent`.
+
+| Prop    | Tipo        | Padrão              |
+| ------- | ----------- | ------------------- |
+| `title` | `ReactNode` | `"Seletor de voz"`  |
+
+O título fica visível só para leitores de tela (`sr-only`).
+
+### VoiceSelectorDialog
+
+Alternativa ao par `VoiceSelector` + `VoiceSelectorContent`: o `CommandDialog` da `@blips/ui`, um diálogo independente (sem o contexto do `VoiceSelector`, então sem `useVoiceSelector`). Controle-o com `open` e `onOpenChange` do `Dialog`.
+
+| Prop          | Tipo     | Padrão                               |
+| ------------- | -------- | ------------------------------------ |
+| `title`       | `string` | `"Seletor de voz"`                   |
+| `description` | `string` | `"Busque uma voz para selecionar."`  |
+
+### VoiceSelectorPreview
+
+`Button` `variant="outline"` `size="icon-sm"` da `@blips/ui`. O clique não propaga para o item (não seleciona a voz). Aceita as props de `<button>`, exceto `children`.
+
+| Prop           | Tipo         | Padrão                  |
+| -------------- | ------------ | ----------------------- |
+| `playing`      | `boolean`    | —                       |
+| `loading`      | `boolean`    | — (desabilita o botão)  |
+| `onPlay`       | `() => void` | —                       |
+| `playLabel`    | `string`     | `"Reproduzir prévia"`   |
+| `pauseLabel`   | `string`     | `"Pausar prévia"`       |
+| `loadingLabel` | `string`     | `"Carregando prévia"`   |
+
+### VoiceSelectorGender
+
+`<span>` com ícone. Aceita as props de `<span>`.
+
+| Prop    | Tipo                                                                                       | Padrão |
+| ------- | ------------------------------------------------------------------------------------------ | ------ |
+| `value` | `"male" \| "female" \| "transgender" \| "androgyne" \| "non-binary" \| "intersex"`         | — (ponto) |
+
+### VoiceSelectorAccent
+
+`<span>` com bandeira. Aceita as props de `<span>`. `value` aceita qualquer string; os valores reconhecidos (em inglês, como no original) incluem `"brazilian"`, `"portuguese"`, `"american"`, `"british"`, `"spanish"`, `"argentinian"`, `"mexican"`, `"french"`, `"german"`, `"italian"`, `"japanese"` e outros. Um valor desconhecido não mostra nada.
+
+### Demais partes
+
+| Componente                 | Base / descrição                                              |
+| -------------------------- | ------------------------------------------------------------- |
+| `VoiceSelectorInput`       | `CommandInput`, placeholder padrão `"Buscar voz..."`          |
+| `VoiceSelectorList`        | `CommandList`                                                 |
+| `VoiceSelectorEmpty`       | `CommandEmpty`, texto padrão `"Nenhuma voz encontrada."`      |
+| `VoiceSelectorGroup`       | `CommandGroup` (`heading` para o título do grupo)             |
+| `VoiceSelectorItem`        | `CommandItem` com `px-4 py-2`                                 |
+| `VoiceSelectorSeparator`   | `CommandSeparator`                                            |
+| `VoiceSelectorShortcut`    | `CommandShortcut`                                             |
+| `VoiceSelectorName`        | `<span>` em destaque, ocupa o espaço livre                    |
+| `VoiceSelectorDescription` | `<span>` pequeno em cor secundária                            |
+| `VoiceSelectorAge`         | `<span>` pequeno com números tabulares                        |
+| `VoiceSelectorAttributes`  | `<div>` em linha para os atributos                            |
+| `VoiceSelectorBullet`      | `•` decorativo (`aria-hidden`)                                |
+
+### useVoiceSelector
+
+Retorna `{ value, setValue, open, setOpen }` do `VoiceSelector` mais próximo. Fora dele, lança erro.
+
+## Origem
+
+Adaptado do componente [Voice Selector](https://elements.ai-sdk.dev/components/voice-selector) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. Mudanças da Blips: `Dialog`, `Command`, `Button` e `Spinner` da `@blips/ui` (Base UI, trigger com `render` em vez de `asChild`), ícones Phosphor para gênero, textos padrão e rótulos acessíveis da prévia em pt-BR (`playLabel`, `pauseLabel`, `loadingLabel`).

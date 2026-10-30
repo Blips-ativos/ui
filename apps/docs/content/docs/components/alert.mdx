@@ -30,18 +30,61 @@ import {
     Você pode adicionar componentes e dependências ao seu app usando a cli.
   </AlertDescription>
   <AlertAction>
-    <Button variant="outline">Ativar</Button>
+    <Button size="xs" variant="outline">
+      Ativar
+    </Button>
   </AlertAction>
 </Alert>
 ```
 
+O ícone é opcional. Quando existe, ele ocupa a primeira coluna e as duas linhas do alerta; sem ícone, título e descrição usam a largura toda.
+
 ## Exemplos
+
+### Básico
+
+Alertas com título, com título e descrição, ou só com descrição.
+
+<ComponentPreview name="alert-basic" />
 
 ### Destrutivo
 
 Use `variant="destructive"` para criar um alerta destrutivo.
 
 <ComponentPreview name="alert-destructive" />
+
+### Com ação
+
+Use `AlertAction` para posicionar um botão ou badge no canto superior direito. O alerta reserva espaço à direita para ele.
+
+<ComponentPreview name="alert-action" />
+
+## Migrando da v2
+
+O Alert não depende de primitiva e a API continua a mesma. O que muda:
+
+- Novo export `AlertAction`, um slot no canto superior direito para ações como desfazer ou fechar.
+- Visual mais compacto: `px-4 py-3 text-sm` virou `px-2 py-1.5 text-xs/relaxed`. O ícone padrão é `size-3.5`.
+- Sem ícone, título e descrição não ficam mais presos em `col-start-2`.
+- O `AlertTitle` perdeu o `line-clamp-1`: títulos longos agora quebram linha. Para manter o corte, passe `className="line-clamp-1"`.
+
+```tsx
+// v2: ação montada à mão
+<Alert className="flex items-start justify-between">
+  <div>
+    <AlertTitle>E-mails marcados como spam.</AlertTitle>
+  </div>
+  <Button size="sm">Desfazer</Button>
+</Alert>
+
+// v3
+<Alert>
+  <AlertTitle>E-mails marcados como spam.</AlertTitle>
+  <AlertAction>
+    <Button size="xs">Desfazer</Button>
+  </AlertAction>
+</Alert>
+```
 
 ## Referência da API
 

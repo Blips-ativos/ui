@@ -1,0 +1,192 @@
+---
+title: Commit
+description: Cartão recolhível de um commit, com mensagem, autor, hash copiável, data relativa e arquivos alterados.
+---
+
+<ComponentPreview name="ai-commit-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Commit,
+  CommitActions,
+  CommitAuthor,
+  CommitAuthorAvatar,
+  CommitContent,
+  CommitCopyButton,
+  CommitFile,
+  CommitFileAdditions,
+  CommitFileChanges,
+  CommitFileDeletions,
+  CommitFileIcon,
+  CommitFileInfo,
+  CommitFilePath,
+  CommitFileStatus,
+  CommitFiles,
+  CommitHash,
+  CommitHeader,
+  CommitInfo,
+  CommitMessage,
+  CommitMetadata,
+  CommitSeparator,
+  CommitTimestamp,
+} from "@blips/ai/components/commit"
+```
+
+```tsx
+<Commit>
+  <CommitHeader>
+    <CommitAuthor>
+      <CommitAuthorAvatar initials="AS" />
+    </CommitAuthor>
+    <CommitInfo>
+      <CommitMessage>feat(tools): consulta de contratos por CNPJ</CommitMessage>
+      <CommitMetadata>
+        <CommitHash>a3f9c21</CommitHash>
+        <CommitSeparator />
+        <CommitTimestamp date={new Date("2026-10-05T14:30:00Z")} />
+      </CommitMetadata>
+    </CommitInfo>
+    <CommitActions>
+      <CommitCopyButton hash="a3f9c21" />
+    </CommitActions>
+  </CommitHeader>
+  <CommitContent>
+    <CommitFiles>
+      <CommitFile>
+        <CommitFileInfo>
+          <CommitFileStatus status="added" />
+          <CommitFileIcon />
+          <CommitFilePath>src/tools/contratos.py</CommitFilePath>
+        </CommitFileInfo>
+        <CommitFileChanges>
+          <CommitFileAdditions count={48} />
+          <CommitFileDeletions count={0} />
+        </CommitFileChanges>
+      </CommitFile>
+    </CommitFiles>
+  </CommitContent>
+</Commit>
+```
+
+`Commit` é o [Collapsible](/docs/components/collapsible) da `@blips/ui`: clicar no `CommitHeader` abre e
+fecha a lista de arquivos. O cabeçalho é um `<div>` (não um `<button>`) para aceitar botões dentro dele;
+`CommitActions` impede que o clique numa ação abra ou feche o cartão.
+
+Os dados (mensagem, autor, arquivos, contagens) vêm do app, por exemplo da saída de uma ferramenta que lê o
+git. O componente não consulta repositório nenhum.
+
+### Data relativa
+
+`CommitTimestamp` formata `date` em pt-BR com `Intl.RelativeTimeFormat` ("hoje", "ontem", "há 3 dias"), em
+dias. A formatação roda só no cliente, depois da montagem, para não divergir na hidratação; no servidor o
+`<time>` sai vazio (com `dateTime` preenchido). Passe `children` para mostrar outro texto.
+
+### Status dos arquivos
+
+`CommitFileStatus` mostra a letra do `git status` com cor: `added` → A (verde), `modified` → M (amarelo),
+`deleted` → D (vermelho), `renamed` → R (azul). `CommitFileAdditions` e `CommitFileDeletions` não
+renderizam nada quando `count` é 0.
+
+## Exemplos
+
+### Histórico
+
+Vários commits fechados em lista, só com o cabeçalho.
+
+<ComponentPreview name="ai-commit-list" />
+
+## Referência da API
+
+### Commit, CommitHeader, CommitContent
+
+`Collapsible`, `CollapsibleTrigger` (com `render={<div />}`) e `CollapsibleContent` da `@blips/ui`. Aceitam as
+props deles (`open`, `defaultOpen`, `onOpenChange` no `Commit`). `className` aceita string ou função do
+estado, como no Base UI.
+
+### CommitCopyButton
+
+Props do `Button` da `@blips/ui` (padrão `variant="ghost"`, `size="icon"`).
+
+| Prop          | Tipo                     | Padrão                    |
+| ------------- | ------------------------ | ------------------------- |
+| `hash`        | `string`                 | obrigatória               |
+| `onCopy`      | `() => void`             | —                         |
+| `onError`     | `(error: Error) => void` | —                         |
+| `timeout`     | `number` (ms)            | `2000`                    |
+| `copyLabel`   | `string`                 | `"Copiar hash do commit"` |
+| `copiedLabel` | `string`                 | `"Copiado"`               |
+| `children`    | `ReactNode`              | ícone de copiar/confirmado |
+
+Sem `children`, o botão é só ícone e o `aria-label` alterna entre `copyLabel` e `copiedLabel`. Sem a
+Clipboard API, `onError` recebe `Error("Área de transferência indisponível")`.
+
+### CommitAuthorAvatar
+
+`Avatar` da `@blips/ui` com `AvatarFallback`.
+
+| Prop       | Tipo     | Padrão      |
+| ---------- | -------- | ----------- |
+| `initials` | `string` | obrigatória |
+
+### CommitTimestamp
+
+`<time>`. Aceita as props de `time`.
+
+| Prop       | Tipo        | Padrão                |
+| ---------- | ----------- | --------------------- |
+| `date`     | `Date`      | obrigatória           |
+| `children` | `ReactNode` | data relativa em pt-BR |
+
+### CommitFileStatus
+
+`<span>` em fonte mono.
+
+| Prop       | Tipo                                             | Padrão          |
+| ---------- | ------------------------------------------------ | --------------- |
+| `status`   | `"added" \| "modified" \| "deleted" \| "renamed"` | obrigatória     |
+| `children` | `ReactNode`                                      | `A`/`M`/`D`/`R` |
+
+### CommitFileAdditions, CommitFileDeletions
+
+`<span>` verde com `+` e vermelho com `−`. `count: number` é obrigatória; com `count <= 0`, não renderiza.
+
+### Partes de layout
+
+| Componente          | Elemento | Descrição                                     |
+| ------------------- | -------- | --------------------------------------------- |
+| `CommitAuthor`      | `div`    | Agrupa o avatar                               |
+| `CommitInfo`        | `div`    | Coluna com mensagem e metadados               |
+| `CommitMessage`     | `span`   | Mensagem do commit (`font-medium`)            |
+| `CommitMetadata`    | `div`    | Linha de metadados em `muted-foreground`      |
+| `CommitHash`        | `span`   | Hash em fonte mono com `GitCommitIcon`        |
+| `CommitSeparator`   | `span`   | `children` padrão `"•"`                       |
+| `CommitActions`     | `div`    | Ações; não propaga clique nem tecla ao cabeçalho |
+| `CommitFiles`       | `div`    | Lista de arquivos                             |
+| `CommitFile`        | `div`    | Linha de um arquivo                           |
+| `CommitFileInfo`    | `div`    | Status, ícone e caminho                       |
+| `CommitFileIcon`    | `FileIcon` do Phosphor | Aceita as props do ícone        |
+| `CommitFilePath`    | `span`   | Caminho em fonte mono, truncado               |
+| `CommitFileChanges` | `div`    | Contagens de adições e remoções               |
+
+## Origem
+
+Adaptado do componente [Commit](https://elements.ai-sdk.dev/components/commit) do
+[AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as
+primitivas Radix pelo Collapsible, Avatar e Button da `@blips/ui` (Base UI) e os ícones Lucide pelos do
+Phosphor. A data relativa passou a ser em pt-BR e o `CommitCopyButton` ganhou `copyLabel` e `copiedLabel`.
+As cores de status seguem as do upstream.

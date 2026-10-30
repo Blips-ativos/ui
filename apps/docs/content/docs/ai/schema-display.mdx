@@ -1,0 +1,155 @@
+---
+title: Schema Display
+description: Documentação de um endpoint HTTP — método, rota, parâmetros, corpo da requisição e resposta, com propriedades aninhadas.
+---
+
+<ComponentPreview name="ai-schema-display-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { SchemaDisplay } from "@blips/ai/components/schema-display"
+```
+
+```tsx
+<SchemaDisplay
+  method="GET"
+  path="/clientes/{cnpj}/contratos"
+  description="Lista os contratos de um cliente."
+  parameters={[
+    { name: "cnpj", type: "string", location: "path", required: true },
+  ]}
+  responseBody={[
+    {
+      name: "contratos",
+      type: "array",
+      items: {
+        name: "contrato",
+        type: "object",
+        properties: [{ name: "numero", type: "string", required: true }],
+      },
+    },
+  ]}
+/>
+```
+
+Só com props, o `SchemaDisplay` monta tudo: cabeçalho com método e rota, descrição e as seções
+"Parâmetros", "Corpo da requisição" e "Resposta", cada uma só quando o array correspondente tem itens. Os
+parâmetros de rota entre chaves (`{cnpj}`) saem destacados.
+
+Propriedades com `properties` (objeto) ou `items` (array) viram linhas recolhíveis; os dois primeiros níveis
+começam abertos. Os itens de um array aparecem como `nome[]`.
+
+Os dados são estáticos: o componente não lê OpenAPI nem chama o endpoint. Para mostrar a ferramenta que o
+agente vai chamar, converta o schema dela (JSON Schema, OpenAPI) para esses arrays no app.
+
+### Textos padrão
+
+Seções "Parâmetros", "Corpo da requisição" e "Resposta" e selo "obrigatório". Troque com `label` em
+`SchemaDisplayParameters`, `SchemaDisplayRequest` e `SchemaDisplayResponse`, e com `requiredLabel` no
+`SchemaDisplay` (vale para todo o schema) ou num `SchemaDisplayParameter`/`SchemaDisplayProperty`.
+
+## Exemplos
+
+### Composição
+
+Com `children`, o `SchemaDisplay` só fornece o contexto e o layout é montado com as partes. Aqui a resposta
+mostra um exemplo em `SchemaDisplayExample` no lugar das propriedades, e o selo diz "obrigatória".
+
+<ComponentPreview name="ai-schema-display-composicao" />
+
+## Referência da API
+
+### SchemaDisplay
+
+`<div>` com borda que guarda os dados em contexto. Aceita as props de `div`.
+
+| Prop            | Tipo                                             | Padrão          |
+| --------------- | ------------------------------------------------ | --------------- |
+| `method`        | `"GET" \| "POST" \| "PUT" \| "PATCH" \| "DELETE"` | obrigatória     |
+| `path`          | `string`                                         | obrigatória     |
+| `description`   | `string`                                         | —               |
+| `parameters`    | `SchemaParameter[]`                              | —               |
+| `requestBody`   | `SchemaProperty[]`                               | —               |
+| `responseBody`  | `SchemaProperty[]`                               | —               |
+| `requiredLabel` | `string`                                         | `"obrigatório"` |
+| `children`      | `ReactNode`                                      | layout completo |
+
+### SchemaParameter
+
+| Campo         | Tipo                            |
+| ------------- | ------------------------------- |
+| `name`        | `string`                        |
+| `type`        | `string`                        |
+| `required`    | `boolean` (opcional)            |
+| `description` | `string` (opcional)             |
+| `location`    | `"path" \| "query" \| "header"` (opcional) |
+
+### SchemaProperty
+
+| Campo         | Tipo                          |
+| ------------- | ----------------------------- |
+| `name`        | `string`                      |
+| `type`        | `string`                      |
+| `required`    | `boolean` (opcional)          |
+| `description` | `string` (opcional)           |
+| `properties`  | `SchemaProperty[]` (opcional) |
+| `items`       | `SchemaProperty` (opcional)   |
+
+Os tipos `SchemaParameter` e `SchemaProperty` não são exportados; as props de `SchemaDisplayParameter` e
+`SchemaDisplayProperty` têm os mesmos campos.
+
+### SchemaDisplayParameters, SchemaDisplayRequest, SchemaDisplayResponse
+
+Seções recolhíveis (`Collapsible` da `@blips/ui`, abertas por padrão). Sem `children`, renderizam
+`parameters`, `requestBody` e `responseBody` do contexto. `SchemaDisplayParameters` mostra a contagem.
+
+| Prop       | Tipo        | Padrão                                                     |
+| ---------- | ----------- | ---------------------------------------------------------- |
+| `label`    | `ReactNode` | `"Parâmetros"` / `"Corpo da requisição"` / `"Resposta"`    |
+| `children` | `ReactNode` | itens do contexto                                          |
+
+### SchemaDisplayParameter
+
+Linha de um parâmetro com badges de tipo, local e obrigatório. Props: os campos de `SchemaParameter` e
+`requiredLabel?: string`.
+
+### SchemaDisplayProperty
+
+Linha de uma propriedade, recolhível quando tem `properties` ou `items`. Props: os campos de
+`SchemaProperty`, `depth?: number` (padrão `0`, controla o recuo) e `requiredLabel?: string`, herdado pelos
+filhos.
+
+### Partes de layout
+
+| Componente                 | Elemento | Descrição                                          |
+| -------------------------- | -------- | -------------------------------------------------- |
+| `SchemaDisplayHeader`      | `div`    | Faixa do topo com borda inferior                   |
+| `SchemaDisplayMethod`      | `Badge`  | Método com cor própria (`children` sobrepõe)       |
+| `SchemaDisplayPath`        | `span`   | Rota com `{parâmetros}` destacados                 |
+| `SchemaDisplayDescription` | `p`      | Descrição do contexto (`children` sobrepõe)        |
+| `SchemaDisplayContent`     | `div`    | Seções com divisórias                              |
+| `SchemaDisplayBody`        | `div`    | Contêiner com divisórias para layouts próprios     |
+| `SchemaDisplayExample`     | `pre`    | Bloco de exemplo em fonte mono, fundo `muted`      |
+
+## Origem
+
+Adaptado do componente [Schema Display](https://elements.ai-sdk.dev/components/schema-display) do
+[AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as
+primitivas Radix pelo Collapsible e pelo Badge da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e
+os textos para pt-BR, com as props `label` e `requiredLabel` para trocá-los. `SchemaDisplayPath` deixou de
+usar `dangerouslySetInnerHTML`: os parâmetros de rota são destacados com elementos React, o que fecha a
+injeção de HTML pela rota. As cores dos métodos HTTP seguem as do upstream.

@@ -1,0 +1,92 @@
+---
+title: Thinking Orbs
+description: Esfera de partículas animada que indica o que o agente está fazendo — pensando, buscando, escrevendo.
+---
+
+<ComponentPreview name="ai-thinking-orbs-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `thinking-orbs` não exige peer opcional: o pacote `thinking-orbs` já vem como dependência do
+`@blips/ai`. Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { BlipsThinkingOrb } from "@blips/ai/fx/thinking-orbs"
+```
+
+```tsx
+<div className="flex items-center gap-2">
+  <BlipsThinkingOrb aria-label="Pensando" />
+  <span>Pensando na resposta…</span>
+</div>
+```
+
+O orb é um `<canvas>`: no servidor sai o canvas vazio, no tamanho certo, e a animação só começa no cliente. Os padrões Blips: tamanho `20` (escala de texto),
+estado `working` e tinta no amarelo da marca no tema escuro, trocada por âmbar (`--chart-4`) no claro, onde
+o amarelo puro some contra o fundo branco.
+
+Qualquer prop explícita vence o padrão, e `color` vence `tone`. O `ThinkingOrb` original também é
+exportado, sem padrões:
+
+```tsx
+import { ThinkingOrb } from "@blips/ai/fx/thinking-orbs"
+```
+
+## Exemplos
+
+### Estados
+
+Nove animações, cada uma ajustada à mão. Combine o estado com o que o agente está fazendo: `searching` numa
+busca, `composing` ao escrever a resposta, `listening` ao gravar áudio.
+
+<ComponentPreview name="ai-thinking-orbs-states" />
+
+### Tons
+
+`tone` escolhe a tinta a partir dos tokens da `@blips/ui`. `neutral` é a tinta cinza do original.
+
+<ComponentPreview name="ai-thinking-orbs-tones" />
+
+## Referência da API
+
+### BlipsThinkingOrb
+
+Aceita todas as props do `ThinkingOrb` (e as do `<canvas>`) mais `tone`.
+
+| Prop       | Tipo                                                                                                                  | Padrão Blips  |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- | ------------- |
+| `tone`     | `"primary" \| "chart-1" \| "chart-2" \| "chart-3" \| "chart-4" \| "chart-5" \| "neutral"`                              | `"primary"`   |
+| `state`    | `"working" \| "searching" \| "solving" \| "listening" \| "connecting" \| "weaving" \| "composing" \| "breathing" \| "shaping"` | `"working"` |
+| `size`     | `64 \| 32 \| 20`                                                                                                      | `20`          |
+| `theme`    | `"auto" \| "dark" \| "light"`                                                                                         | `"auto"`      |
+| `color`    | `string` (`#rgb`, `#rrggbb` ou `rgb()`)                                                                               | do `tone`     |
+| `speed`    | `number`                                                                                                              | `1`           |
+| `paused`   | `boolean`                                                                                                             | `false`       |
+| `dots`     | `number`                                                                                                              | `1`           |
+| `dotSize`  | `number`                                                                                                              | `1`           |
+| `opts`     | `ModeOpts`                                                                                                            | —             |
+| `frame`    | `ModeFrame`                                                                                                           | —             |
+| `gravity`  | `boolean \| GravityOptions`                                                                                           | —             |
+
+`color` não aceita `var()` nem `oklch()`; por isso o `tone` resolve os tokens para hex
+(`BLIPS_ORB_TONES`). `BLIPS_THINKING_ORB_DEFAULTS` exporta os padrões. Também são exportados os tipos
+`ThinkingOrbProps`, `OrbState`, `OrbSize`, `OrbTheme`, `BlipsOrbTone` e `BlipsThinkingOrbProps`.
+
+Passe `aria-label` descrevendo o que o agente está fazendo: sem ele, o canvas (`role="img"`) recebe o rótulo padrão do pacote, em inglês.
+
+## Origem
+
+Envolve o pacote [thinking-orbs](https://libraries.dev/orbs) do
+[libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT). A Blips acrescenta a prop `tone` e os
+padrões de tamanho e tinta; a renderização é a do pacote.

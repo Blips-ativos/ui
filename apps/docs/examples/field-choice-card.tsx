@@ -4,6 +4,7 @@ import {
   FieldDescription,
   FieldGroup,
   FieldLabel,
+  FieldLegend,
   FieldSet,
   FieldTitle,
 } from "@blips/ui/components/field";
@@ -14,11 +15,11 @@ export default function FieldChoiceCard() {
     <div className="w-full max-w-md">
       <FieldGroup>
         <FieldSet>
-          <FieldLabel htmlFor="plan-group">Plano</FieldLabel>
+          <FieldLegend variant="label">Plano</FieldLegend>
           <FieldDescription>
             Escolha o plano que melhor atende à sua operação.
           </FieldDescription>
-          <RadioGroup defaultValue="pro" id="plan-group">
+          <RadioGroup defaultValue="pro">
             <FieldLabel htmlFor="plan-pro">
               <Field orientation="horizontal">
                 <FieldContent>

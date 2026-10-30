@@ -1,0 +1,7 @@
+/* @blips/ai — só a fonte de conteúdo para o Tailwind do consumidor gerar as
+   classes deste pacote. Tema, tokens e variantes vêm da @blips/ui; importe
+   depois dela:
+     @import "@blips/ui/globals.css";
+     @import "@blips/ai/styles.css";
+   Caminho relativo a este arquivo (resolve para node_modules/@blips/ai/src). */
+@source "./src/**/*.{ts,tsx}";

@@ -1,0 +1,82 @@
+---
+title: Edge
+description: Arestas para o canvas — animada, para o caminho em execução, e tracejada, para ligações possíveis.
+---
+
+<ComponentPreview name="ai-edge-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import { Edge } from "@blips/ai/components/edge"
+```
+
+```tsx
+// Fora do componente, para a referência não mudar a cada render.
+const edgeTypes = {
+  animated: Edge.Animated,
+  temporary: Edge.Temporary,
+}
+
+const edges = [
+  { id: "e1", source: "entrada", target: "classificar", type: "animated" },
+  { id: "e2", source: "classificar", target: "escalar", type: "temporary" },
+]
+
+<Canvas edges={edges} edgeTypes={edgeTypes} nodes={nodes} nodeTypes={nodeTypes} />
+```
+
+`Edge` é um objeto com dois tipos de aresta, registrados em `edgeTypes` do [Canvas](/docs/ai/canvas) e
+escolhidos pelo `type` de cada aresta:
+
+- **`Edge.Animated`** — curva sólida com um ponto na cor `--primary` percorrendo o caminho a cada 2 s.
+  Use para o caminho que o agente está executando ou já executou.
+- **`Edge.Temporary`** — curva tracejada fina na cor `--ring`. Use para caminhos possíveis, ainda não
+  percorridos, ou ligações provisórias.
+
+Monte o `edgeTypes` (e o `Canvas`) num componente cliente (`"use client"`): ele guarda funções, que não
+atravessam a fronteira de um Server Component para o `<ReactFlow>`. As arestas só rodam dentro do canvas.
+
+## Referência da API
+
+Os dois componentes recebem as `EdgeProps` que o React Flow passa a uma
+[aresta personalizada](https://reactflow.dev/api-reference/types/edge-props); não há props próprias.
+
+| Componente       | Caminho                                                                 | Usa da aresta          |
+| ---------------- | ----------------------------------------------------------------------- | ---------------------- |
+| `Edge.Animated`  | Bézier da alça direita da origem à alça esquerda do destino, calculado pelas posições reais dos nós (`useInternalNode`) | `markerEnd`, `style` |
+| `Edge.Temporary` | Bézier simples entre as coordenadas da aresta, tracejado `5, 5`          | —                      |
+
+`Edge.Animated` sempre liga a direita da origem à esquerda do destino, a disposição do [Node](/docs/ai/node).
+Se a origem ou o destino não existir no canvas, ela não renderiza nada.
+
+## Origem
+
+Adaptado do componente [Edge](https://github.com/vercel/ai-elements) do AI Elements (Vercel, Apache-2.0).
+Mudanças da Blips: tokens da `@blips/ui` e mensagem de erro em pt-BR; a API não mudou.

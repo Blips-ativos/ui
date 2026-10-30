@@ -1,0 +1,129 @@
+---
+title: Questionnaire
+description: Formulário de perguntas em sequência, com escolhas, campo livre, atalhos de teclado e navegação.
+---
+
+<ComponentPreview name="questionnaire-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+O primitivo vem de `@shadcn/react/questionnaire`, que já é dependência da `@blips/ui`.
+
+## Uso
+
+```tsx
+import {
+  Questionnaire,
+  QuestionnaireActions,
+  QuestionnaireChoice,
+  QuestionnaireChoices,
+  QuestionnaireError,
+  QuestionnaireItem,
+  QuestionnaireNext,
+  QuestionnairePrevious,
+  QuestionnaireProgress,
+  QuestionnaireSubmit,
+  QuestionnaireTitle,
+} from "@blips/ui/components/questionnaire"
+```
+
+```tsx
+const items = [
+  { name: "canal", required: true, choices: [{ value: "whatsapp" }, { value: "email" }] },
+] as const
+
+<Questionnaire defaultItem="canal" items={items} onSubmit={salvar}>
+  <QuestionnaireProgress />
+  <QuestionnaireItem name="canal" required>
+    <QuestionnaireTitle>Por onde prefere ser avisado?</QuestionnaireTitle>
+    <QuestionnaireChoices>
+      <QuestionnaireChoice value="whatsapp">WhatsApp</QuestionnaireChoice>
+      <QuestionnaireChoice value="email">E-mail</QuestionnaireChoice>
+    </QuestionnaireChoices>
+    <QuestionnaireError />
+  </QuestionnaireItem>
+  <QuestionnaireActions>
+    <QuestionnairePrevious>Voltar</QuestionnairePrevious>
+    <QuestionnaireNext>Avançar</QuestionnaireNext>
+    <QuestionnaireSubmit>Salvar</QuestionnaireSubmit>
+  </QuestionnaireActions>
+</Questionnaire>
+```
+
+O `Questionnaire` é um `<form>`: as respostas chegam no `onSubmit` e podem ser lidas com `FormData` pelo `name` de cada item. Só a pergunta ativa aparece; `Next` e `Submit` se alternam sozinhos na última pergunta.
+
+> Os rótulos padrão dos botões de navegação estão em inglês ("Previous", "Skip", "Next", "Submit"). Passe o texto em pt-BR como `children`.
+
+## Exemplos
+
+### Em card
+
+Use `render` no título e na descrição para reaproveitar as partes do [Card](/docs/components/card). Com o título dentro do card, ligue-o ao item com `aria-labelledby`.
+
+<ComponentPreview name="questionnaire-card" />
+
+### Em dialog
+
+`QuestionnaireProgress` aceita uma função em `render` que recebe `state.current` e `state.total`.
+
+<ComponentPreview name="questionnaire-dialog" />
+
+### Opção desabilitada
+
+Marque `disabled` na escolha e na definição em `items`.
+
+<ComponentPreview name="questionnaire-disabled" />
+
+## Referência da API
+
+### Questionnaire
+
+| Prop           | Type                                 | Default |
+| -------------- | ------------------------------------ | ------- |
+| `items`        | `QuestionnaireItemDefinition[]`      |         |
+| `defaultItem`  | `string`                             |         |
+| `item`         | `string`                             |         |
+| `onItemChange` | `(item: string) => void`             |         |
+| `shortcuts`    | `"letters" \| "numbers"`             |         |
+| `onSubmit`     | `(event: FormEvent<HTMLFormElement>) => void` |  |
+
+`items` descreve as perguntas (`name`, `required`, `disabled`, `choices: { value, disabled }[]`) e é o que permite validar e navegar. Com `shortcuts`, cada escolha mostra uma tecla (A, B, C… ou 1, 2, 3…).
+
+### QuestionnaireItem
+
+| Prop             | Type                                                   | Default |
+| ---------------- | ------------------------------------------------------ | ------- |
+| `name`           | `string`                                               |         |
+| `required`       | `boolean`                                              |         |
+| `multiple`       | `boolean`                                              |         |
+| `invalid`        | `boolean`                                              |         |
+| `onStatusChange` | `(status: "unanswered" \| "answered" \| "skipped") => void` |    |
+
+Renderiza um `<fieldset>`. Com `multiple`, as escolhas viram checkboxes.
+
+### QuestionnaireChoice
+
+| Prop             | Type      | Default |
+| ---------------- | --------- | ------- |
+| `value`          | `string`  |         |
+| `disabled`       | `boolean` |         |
+| `checked`        | `boolean` |         |
+| `defaultChecked` | `boolean` |         |
+
+Use `QuestionnaireChoiceDescription` dentro dela para uma linha de apoio.
+
+### QuestionnaireInput
+
+Campo livre dentro de `QuestionnaireChoices`, como alternativa às escolhas. Aceita `type` (`text`, `email`, `number`, `date`…).
+
+### QuestionnairePrevious, QuestionnaireSkip, QuestionnaireNext, QuestionnaireSubmit
+
+Botões de navegação com o estilo do [Button](/docs/components/button). Aceitam `variant`, `size` e `render`. Ficam dentro de `QuestionnaireActions`, que os distribui numa grade.
+
+### QuestionnaireProgress, QuestionnaireTitle, QuestionnaireDescription, QuestionnaireChoices, QuestionnaireError
+
+Aceitam `render`. O `QuestionnaireError` mostra a mensagem de validação da pergunta ativa.

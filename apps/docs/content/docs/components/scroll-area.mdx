@@ -23,6 +23,8 @@ import { ScrollArea } from "@blips/ui/components/scroll-area"
 </ScrollArea>
 ```
 
+O `ScrollArea` já inclui a barra vertical. O elemento que rola de fato é o viewport interno (`data-slot="scroll-area-viewport"`).
+
 ## Exemplos
 
 ### Horizontal
@@ -31,6 +33,30 @@ Use `ScrollBar` com `orientation="horizontal"` para rolagem horizontal.
 
 <ComponentPreview name="scroll-area-horizontal-demo" />
 
+## Migrando da v2
+
+- As props `type` (`auto` / `always` / `scroll` / `hover`) e `scrollHideDelay` do Radix saíram. Para controlar a visibilidade da barra, estilize pelos atributos `data-hovering` e `data-scrolling`.
+- `ScrollBar` agora é `ScrollArea.Scrollbar`; a prop `orientation` continua. `forceMount` saiu (o Base UI tem `keepMounted`).
+- A barra emite `data-orientation`, e os estilos internos usam `data-horizontal` / `data-vertical`.
+- Quem passava `ref` para o viewport do Radix: o elemento que rola continua sendo o viewport (`data-slot="scroll-area-viewport"`).
+
+```tsx
+// v2
+<ScrollArea type="always" scrollHideDelay={0} className="h-72">
+  …
+</ScrollArea>
+
+// v3: sem type/scrollHideDelay. A barra aparece enquanto houver overflow;
+// para mostrá-la só no hover ou durante a rolagem, use data-hovering/data-scrolling
+<ScrollArea className="h-72 w-96 whitespace-nowrap">
+  …
+  <ScrollBar
+    orientation="horizontal"
+    className="opacity-0 transition-opacity data-hovering:opacity-100 data-scrolling:opacity-100"
+  />
+</ScrollArea>
+```
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI Scroll Area](https://www.radix-ui.com/docs/primitives/components/scroll-area#api-reference).
+Consulte a documentação do [Base UI Scroll Area](https://base-ui.com/react/components/scroll-area).

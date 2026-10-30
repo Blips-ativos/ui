@@ -1,0 +1,117 @@
+---
+title: File Tree
+description: Árvore de arquivos e pastas recolhíveis, com seleção, ícones próprios e ações por item.
+---
+
+<ComponentPreview name="ai-file-tree-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  FileTree,
+  FileTreeFile,
+  FileTreeFolder,
+} from "@blips/ai/components/file-tree"
+```
+
+```tsx
+<FileTree
+  defaultExpanded={new Set(["src"])}
+  selectedPath={selecionado}
+  onSelect={setSelecionado}
+>
+  <FileTreeFolder name="src" path="src">
+    <FileTreeFile name="agente.py" path="src/agente.py" />
+    <FileTreeFile name="config.py" path="src/config.py" />
+  </FileTreeFolder>
+  <FileTreeFile name="README.md" path="README.md" />
+</FileTree>
+```
+
+A árvore é montada com JSX: aninhe `FileTreeFolder` e `FileTreeFile`. Cada item é identificado pelo `path`,
+que precisa ser único na árvore. As pastas abertas são um `Set` de `path` (`defaultExpanded` para não
+controlado, `expanded` + `onExpandedChange` para controlado) e a seleção é `selectedPath` + `onSelect`, que
+recebe o `path` de um arquivo ou de uma pasta.
+
+Na pasta, a seta abre e fecha (é o gatilho de um [Collapsible](/docs/components/collapsible) da
+`@blips/ui`) e o nome seleciona. O arquivo seleciona com clique, `Enter` ou espaço.
+
+Para gerar a árvore a partir de uma lista (por exemplo, a saída de uma ferramenta que lista o repositório),
+transforme a lista em nós no app e renderize recursivamente.
+
+## Exemplos
+
+### Ícones e ações
+
+`icon` troca o ícone de um arquivo. Com `children`, a linha do arquivo é montada à mão com `FileTreeIcon`,
+`FileTreeName` e `FileTreeActions`; as ações não disparam a seleção do item.
+
+<ComponentPreview name="ai-file-tree-actions" />
+
+## Referência da API
+
+### FileTree
+
+`<div role="tree">` com borda e fonte mono. Aceita as props de `div`, exceto `onSelect` nativo.
+
+| Prop               | Tipo                              | Padrão      |
+| ------------------ | --------------------------------- | ----------- |
+| `expanded`         | `Set<string>`                     | —           |
+| `defaultExpanded`  | `Set<string>`                     | `new Set()` |
+| `onExpandedChange` | `(expanded: Set<string>) => void` | —           |
+| `selectedPath`     | `string`                          | —           |
+| `onSelect`         | `(path: string) => void`          | —           |
+
+### FileTreeFolder
+
+Pasta recolhível (`role="treeitem"` com `aria-expanded`). Os filhos ficam num `role="group"` recuado.
+
+| Prop            | Tipo     | Padrão             |
+| --------------- | -------- | ------------------ |
+| `path`          | `string` | obrigatória        |
+| `name`          | `string` | obrigatória        |
+| `expandLabel`   | `string` | `"Expandir pasta"` |
+| `collapseLabel` | `string` | `"Recolher pasta"` |
+
+O botão da seta recebe `aria-label` com o rótulo e o nome da pasta ("Expandir pasta src").
+
+### FileTreeFile
+
+Arquivo (`role="treeitem"` com `aria-selected`). Aceita as props de `div`.
+
+| Prop       | Tipo        | Padrão                         |
+| ---------- | ----------- | ------------------------------ |
+| `path`     | `string`    | obrigatória                    |
+| `name`     | `string`    | obrigatória                    |
+| `icon`     | `ReactNode` | `FileIcon`                     |
+| `children` | `ReactNode` | espaçador, ícone e nome        |
+
+### FileTreeIcon, FileTreeName, FileTreeActions
+
+| Componente        | Elemento | Descrição                                               |
+| ----------------- | -------- | ------------------------------------------------------- |
+| `FileTreeIcon`    | `span`   | Envolve o ícone sem encolher                            |
+| `FileTreeName`    | `span`   | Nome truncado                                           |
+| `FileTreeActions` | `div`    | Ações à direita; não propaga clique nem tecla ao item   |
+
+## Origem
+
+Adaptado do componente [File Tree](https://elements.ai-sdk.dev/components/file-tree) do
+[AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as
+primitivas Radix pelo Collapsible da `@blips/ui` (Base UI) e os ícones Lucide pelos do Phosphor, e
+acrescentou `expandLabel`/`collapseLabel` e os atributos ARIA de árvore (`aria-expanded`, `aria-selected`,
+`role="group"`).

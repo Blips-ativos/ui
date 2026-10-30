@@ -5,18 +5,14 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@blips/ui/components/input-otp";
-import * as React from "react";
+import { useState } from "react";
 
 export default function InputOTPControlled() {
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = useState("");
 
   return (
     <div className="space-y-2">
-      <InputOTP
-        maxLength={6}
-        value={value}
-        onChange={(value) => setValue(value)}
-      >
+      <InputOTP maxLength={6} value={value} onChange={setValue}>
         <InputOTPGroup>
           <InputOTPSlot index={0} />
           <InputOTPSlot index={1} />
@@ -26,11 +22,11 @@ export default function InputOTPControlled() {
           <InputOTPSlot index={5} />
         </InputOTPGroup>
       </InputOTP>
-      <div className="text-center text-sm">
+      <div className="text-center text-xs/relaxed">
         {value === "" ? (
-          <>Enter your one-time password.</>
+          <>Digite sua senha de uso único.</>
         ) : (
-          <>You entered: {value}</>
+          <>Você digitou: {value}</>
         )}
       </div>
     </div>

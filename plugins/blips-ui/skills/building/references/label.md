@@ -2,90 +2,79 @@
 
 Import: `@blips/ui/components/label`
 
-## Sub-components
+Rótulo acessível de um controle de formulário. Associe por `htmlFor` (com o `id`
+do controle) ou aninhando o controle dentro do `Label`. Em formulários com
+react-hook-form, prefira `FormLabel` (veja `form.md`); em layouts com `Field`,
+prefira `FieldLabel` (veja `field.md`).
 
-| Component | Element | Description |
-|-----------|---------|-------------|
-| `Label` | `<label>` | Accessible label component built on `@radix-ui/react-label`. Automatically handles `htmlFor` association and disabled peer styling. |
+Export (igual nas duas versões): `Label`.
 
-## Props & Variants
+## Notas comuns
 
-### Label
+- `flex items-center gap-2 font-medium leading-none select-none`.
+- Esmaece sozinho quando o controle irmão anterior (`peer`) está desabilitado (`peer-disabled:opacity-50`) ou quando o grupo tem `data-disabled="true"`.
+- Sem variantes (`size`/`variant` não existem).
 
-Extends `React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root>` plus CVA `VariantProps`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `htmlFor` | `string` | - | Associates the label with a form control by ID |
-| `className` | `string` | - | Additional CSS classes |
+## v3.x — Base UI
 
-**Default styles (via CVA):**
-- `font-medium text-sm leading-none`
-- `peer-disabled:cursor-not-allowed peer-disabled:opacity-70` (auto-dims when sibling input is disabled)
+`<label>` nativo (o Base UI não tem primitivo de Label). Props:
+`React.ComponentProps<"label">`. Texto `text-xs/relaxed`.
 
-**Note:** This project's Label uses `forwardRef` and wraps `@radix-ui/react-label` Root primitive.
+- `asChild` e `render` **não existem**: use o `<label>` como está ou envolva o controle.
+- O bloqueio de seleção de texto no duplo clique (comportamento do Radix) não existe; a classe `select-none` continua.
 
-## Usage
+```tsx
+import { Checkbox } from "@blips/ui/components/checkbox";
+import { Field } from "@blips/ui/components/field";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 
-### With Checkbox
+export function Rotulos() {
+  return (
+    <div className="flex flex-col gap-4">
+      <Field orientation="horizontal" className="w-fit">
+        <Checkbox id="termos" />
+        <Label htmlFor="termos">Aceito os termos e condições</Label>
+      </Field>
+
+      <div className="grid w-full max-w-sm gap-1.5">
+        <Label htmlFor="email">E-mail</Label>
+        <Input id="email" type="email" placeholder="voce@empresa.com" />
+      </div>
+    </div>
+  );
+}
+```
+
+## v2.x — Radix
+
+`@radix-ui/react-label` (`LabelPrimitive.Root`). Texto `text-sm`. Aceita `asChild`
+e impede seleção de texto no duplo clique.
 
 ```tsx
 import { Checkbox } from "@blips/ui/components/checkbox"
-import { Label } from "@blips/ui/components/label"
-
-<div className="flex items-center space-x-2">
-  <Checkbox id="terms" />
-  <Label htmlFor="terms">Accept terms and conditions</Label>
-</div>
-```
-
-### With Input
-
-```tsx
 import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"
 
-<div className="grid w-full max-w-sm items-center gap-1.5">
-  <Label htmlFor="email">Email</Label>
-  <Input type="email" id="email" placeholder="Email" />
-</div>
+export function Rotulos() {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-2">
+        <Checkbox id="termos" />
+        <Label htmlFor="termos">Aceito os termos e condições</Label>
+      </div>
+
+      <div className="grid w-full max-w-sm gap-1.5">
+        <Label htmlFor="email">E-mail</Label>
+        <Input id="email" type="email" placeholder="voce@empresa.com" />
+      </div>
+    </div>
+  )
+}
 ```
 
-### Inside Form (react-hook-form)
+## Exemplos na docs
 
-```tsx
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@blips/ui/components/form"
-import { Input } from "@blips/ui/components/input"
-
-{/* Note: When using react-hook-form, prefer FormLabel over Label */}
-<FormField
-  control={form.control}
-  name="email"
-  render={({ field }) => (
-    <FormItem>
-      <FormLabel>Email</FormLabel>
-      <FormControl>
-        <Input {...field} />
-      </FormControl>
-      <FormMessage />
-    </FormItem>
-  )}
-/>
-```
-
-### Disabled State (via peer)
-
-```tsx
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-{/* Label auto-dims when the peer input is disabled */}
-<div className="grid w-full max-w-sm items-center gap-1.5">
-  <Label htmlFor="disabled-input">Disabled Field</Label>
-  <Input id="disabled-input" disabled placeholder="Cannot edit" />
-</div>
-```
-
-## All Examples
-
-- `label-demo` - Label with checkbox
+`label-demo`, `label-input`, `label-textarea`, `label-disabled` (em `apps/docs/examples/`, escritos para a v3).

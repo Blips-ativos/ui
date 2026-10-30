@@ -1,6 +1,6 @@
 ---
 title: Radio Group
-description: Um conjunto de botões selecionáveis—conhecidos como radio buttons—onde no máximo um dos botões pode estar selecionado por vez.
+description: Um conjunto de botões selecionáveis, conhecidos como radio buttons, onde no máximo um pode estar selecionado por vez.
 ---
 
 <ComponentPreview name="radio-group-demo" />
@@ -14,25 +14,66 @@ npm install @blips/ui
 ## Uso
 
 ```tsx
-import { Label } from "@blips/ui/components/label"
+import { Field, FieldLabel } from "@blips/ui/components/field"
 import { RadioGroup, RadioGroupItem } from "@blips/ui/components/radio-group"
 ```
 
 ```tsx
-<RadioGroup defaultValue="option-one">
-  <div className="flex items-center gap-3">
-    <RadioGroupItem value="option-one" id="option-one" />
-    <Label htmlFor="option-one">Opção Um</Label>
-  </div>
-  <div className="flex items-center gap-3">
-    <RadioGroupItem value="option-two" id="option-two" />
-    <Label htmlFor="option-two">Opção Dois</Label>
-  </div>
+<RadioGroup defaultValue="opcao-um">
+  <Field orientation="horizontal">
+    <RadioGroupItem value="opcao-um" id="opcao-um" />
+    <FieldLabel htmlFor="opcao-um">Opção um</FieldLabel>
+  </Field>
+  <Field orientation="horizontal">
+    <RadioGroupItem value="opcao-dois" id="opcao-dois" />
+    <FieldLabel htmlFor="opcao-dois">Opção dois</FieldLabel>
+  </Field>
 </RadioGroup>
 ```
 
 ## Exemplos
 
+### Com descrição
+
+Envolva cada opção em um `FieldLabel` para transformar o cartão inteiro em alvo de clique. A opção marcada ganha destaque.
+
+<ComponentPreview name="radio-group-description" />
+
+### Com FieldSet
+
+Use `FieldSet` e `FieldLegend` para dar uma legenda acessível ao grupo.
+
+<ComponentPreview name="radio-group-fieldset" />
+
+### Desabilitado
+
+Use `disabled` no `RadioGroup` (ou em um `RadioGroupItem`) e `data-disabled` no `Field`.
+
+<ComponentPreview name="radio-group-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` nos itens e `data-invalid` nos `Field`.
+
+<ComponentPreview name="radio-group-invalid" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Radio Group](https://base-ui.com/react/components/radio-group).
+
+- `onValueChange` recebe `(value: unknown, eventDetails)`: o valor não é mais tipado como `string`, então pode ser preciso um cast. O `value` do item aceita qualquer tipo.
+- **Atributos de estado:** `data-state="checked" | "unchecked"` vira `data-checked` e `data-unchecked`.
+- `asChild` vira `render`.
+- Visual: o item marcado fica preenchido (`bg-primary`, com um ponto em `primary-foreground` no centro), em vez da borda com bolinha. O `RadioGroup` ganhou `w-full`; use `className="w-fit"` se precisar do tamanho anterior.
+
+```tsx
+// v2
+<RadioGroup onValueChange={(value) => setPlano(value)}>...</RadioGroup>
+
+// v3
+<RadioGroup onValueChange={(value) => setPlano(value as string)}>...</RadioGroup>
+```
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI Radio Group](https://www.radix-ui.com/docs/primitives/components/radio-group#api-reference).
+Consulte a documentação do [Base UI Radio Group](https://base-ui.com/react/components/radio-group) para mais informações.

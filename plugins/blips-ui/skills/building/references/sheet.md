@@ -2,99 +2,48 @@
 
 Import: `@blips/ui/components/sheet`
 
-## Sub-components
+Painel que desliza de uma borda da tela, sobre um overlay. Use para detalhe de
+registro, edição sem sair da lista, filtros avançados. Para confirmação curta,
+Dialog ou Alert Dialog; para gaveta com gesto no mobile, Drawer.
 
-| Component | Description |
+Exports (iguais nas duas versões): `Sheet`, `SheetTrigger`, `SheetClose`,
+`SheetContent`, `SheetHeader`, `SheetBody`, `SheetSection`, `SheetSectionTitle`,
+`SheetFooter`, `SheetTitle`, `SheetDescription`. `SheetPortal` e `SheetOverlay`
+são internos (não exportados). Não existe `sheetVariants`.
+
+## Notas comuns
+
+- `SheetContent` props da lib: `side` (`"top" | "right" | "bottom" | "left"`, padrão `"right"`) e `showCloseButton` (padrão `true`, botão X no canto).
+- Laterais: `h-full w-3/4 sm:max-w-sm` (alargue com `className="sm:max-w-lg"`). Topo/base: largura total, altura automática.
+- `SheetTitle` é obrigatório para acessibilidade (use `className="sr-only"` se não quiser mostrá-lo).
+- **Extensões Blips** (não existem no shadcn):
+  - `SheetBody`: área rolável entre header e footer (`flex-1 overflow-auto`); zera o próprio padding quando contém `SheetSection`.
+  - `SheetSection`: bloco com `border-t` e padding.
+  - `SheetSectionTitle`: título discreto da seção (`font-medium text-muted-foreground mb-4`).
+- `SheetFooter` usa `mt-auto` para ficar no rodapé.
+- Em `Sidebar` mobile, a lib já usa Sheet por dentro (veja `sidebar.md`).
+
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
+
+## v3.x — Base UI
+
+Primitiva: `Dialog` de `@base-ui/react/dialog`.
+
+| Componente | Notas |
 |---|---|
-| `Sheet` | Root component. Wraps Radix `Dialog.Root`. Manages open/close state. |
-| `SheetTrigger` | Button or element that opens the sheet. Wraps Radix `Dialog.Trigger`. |
-| `SheetClose` | Button or element that closes the sheet. Wraps Radix `Dialog.Close`. |
-| `SheetContent` | The sliding panel. Renders in a Portal with an overlay. Supports `side` and `showCloseButton` props. |
-| `SheetHeader` | Header section inside the sheet. Flex column with padding. |
-| `SheetBody` | Scrollable body section. Uses `flex-1 overflow-auto` with special handling for `SheetSection` children. |
-| `SheetSection` | Bordered section within `SheetBody`. Renders with a top border and padding (separates the first section from the header and each section from the previous one). |
-| `SheetSectionTitle` | Title for a `SheetSection`. Styled as muted foreground text. |
-| `SheetFooter` | Footer section with `mt-auto` to pin to bottom. Renders with top border. |
-| `SheetTitle` | Accessible title. Wraps Radix `Dialog.Title`. |
-| `SheetDescription` | Accessible description. Wraps Radix `Dialog.Description`. |
-| `sheetVariants` | CVA variants export for the legacy side-based animation classes. |
+| `Sheet` | `Dialog.Root`. `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `modal`, `disablePointerDismissal`. |
+| `SheetTrigger` / `SheetClose` | Troque o elemento com `render={<Button … />}`. Sem `asChild`. |
+| `SheetContent` | `Dialog.Popup` + Backdrop. `data-side={side}`. Props do Popup: `initialFocus`, `finalFocus`. Painel `bg-popover text-xs/relaxed`; overlay `bg-black/80` com `backdrop-blur-xs`. Botão de fechar é `<Button variant="ghost" size="icon-sm">` com `XIcon`. |
+| `SheetHeader` / `SheetFooter` / `SheetBody` / `SheetSection` | padding `p-6`. |
+| `SheetTitle` | `text-sm font-medium font-heading`. |
+| `SheetDescription` | `text-xs/relaxed text-muted-foreground`. |
 
-## Props & Variants
-
-### Sheet (Root)
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `defaultOpen` | `boolean` | `false` | Uncontrolled open state. |
-| `open` | `boolean` | -- | Controlled open state. |
-| `onOpenChange` | `(open: boolean) => void` | -- | Callback when open state changes. |
-| `modal` | `boolean` | `true` | Whether the sheet is modal. |
-
-### SheetContent
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"right"` | Which edge the sheet slides in from. |
-| `showCloseButton` | `boolean` | `true` | **Project-specific.** Whether to show the X close button in the top-right corner. |
-| `className` | `string` | -- | Additional CSS classes. |
-| `children` | `ReactNode` | -- | Sheet content. |
-
-**Overlay:** Fixed overlay with `bg-black/80`, backdrop blur, and fade animation.
-
-**Content styles per side:**
-- **Right/Left:** Full height, `w-full sm:max-w-sm`, with slide animation from the respective edge.
-- **Top/Bottom:** Full width, auto height, with slide animation from the respective edge.
-
-### SheetHeader
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `flex flex-col gap-1.5 p-4`. |
-
-### SheetBody
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `flex-1 overflow-auto p-4`. Removes padding when containing `SheetSection` children (`has-data-[slot=sheet-section]:p-0`). |
-
-### SheetSection
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `gap-4 border-t p-4`. |
-
-### SheetSectionTitle
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `mb-4 font-medium text-muted-foreground text-sm`. |
-
-### SheetFooter
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `mt-auto flex flex-col gap-2 p-4`. |
-
-### SheetTitle
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `font-medium text-foreground text-sm`. |
-
-### SheetDescription
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | -- | Base: `text-muted-foreground text-xs/relaxed`. |
-
-## Usage
-
-### Basic Sheet
+Estado: `data-open`/`data-closed`; animação por `data-starting-style`/`data-ending-style`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+import { Button } from "@blips/ui/components/button";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 import {
   Sheet,
   SheetBody,
@@ -103,132 +52,78 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetSection,
+  SheetSectionTitle,
   SheetTitle,
   SheetTrigger,
-} from "@blips/ui/components/sheet"
+} from "@blips/ui/components/sheet";
 
-export default function SheetDemo() {
+export function EditarCliente() {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </SheetTrigger>
-      <SheetContent>
+      <SheetTrigger render={<Button variant="outline" />}>Editar</SheetTrigger>
+      <SheetContent className="sm:max-w-md">
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
-          </SheetDescription>
+          <SheetTitle>Editar cliente</SheetTitle>
+          <SheetDescription>As mudanças valem ao salvar.</SheetDescription>
         </SheetHeader>
-        <SheetBody className="grid auto-rows-min gap-6">
-          <div className="grid gap-3">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" defaultValue="Pedro Duarte" />
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="username">Username</Label>
-            <Input id="username" defaultValue="@peduarte" />
-          </div>
+        <SheetBody>
+          <SheetSection>
+            <SheetSectionTitle>Dados gerais</SheetSectionTitle>
+            <div className="grid gap-1.5">
+              <Label htmlFor="nome">Nome</Label>
+              <Input id="nome" defaultValue="Ana Souza" />
+            </div>
+          </SheetSection>
+          <SheetSection>
+            <SheetSectionTitle>Contato</SheetSectionTitle>
+            <div className="grid gap-1.5">
+              <Label htmlFor="email">E-mail</Label>
+              <Input id="email" type="email" />
+            </div>
+          </SheetSection>
         </SheetBody>
         <SheetFooter>
-          <Button type="submit">Save changes</Button>
-          <SheetClose asChild>
-            <Button variant="outline">Close</Button>
-          </SheetClose>
+          <Button type="submit">Salvar</Button>
+          <SheetClose render={<Button variant="outline" />}>Cancelar</SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  )
+  );
 }
 ```
 
-### Different Sides
+Controlado, impedindo fechar por clique fora:
 
 ```tsx
-const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
-
-{SHEET_SIDES.map((side) => (
-  <Sheet key={side}>
-    <SheetTrigger asChild>
-      <Button variant="outline">{side}</Button>
-    </SheetTrigger>
-    <SheetContent side={side}>
-      <SheetHeader>
-        <SheetTitle>Edit profile</SheetTitle>
-        <SheetDescription>
-          Make changes to your profile here.
-        </SheetDescription>
-      </SheetHeader>
-      {/* ... content ... */}
-      <SheetFooter>
-        <SheetClose asChild>
-          <Button type="submit">Save changes</Button>
-        </SheetClose>
-      </SheetFooter>
-    </SheetContent>
-  </Sheet>
-))}
-```
-
-### With Body Sections (Project-Specific)
-
-```tsx
-<SheetContent>
-  <SheetHeader>
-    <SheetTitle>Details</SheetTitle>
-  </SheetHeader>
-  <SheetBody>
-    <SheetSection>
-      <SheetSectionTitle>General Info</SheetSectionTitle>
-      {/* Section content */}
-    </SheetSection>
-    <SheetSection>
-      <SheetSectionTitle>Additional Details</SheetSectionTitle>
-      {/* Section content */}
-    </SheetSection>
-  </SheetBody>
-  <SheetFooter>
-    <Button>Save</Button>
-  </SheetFooter>
-</SheetContent>
-```
-
-### Controlled Sheet (No Trigger)
-
-```tsx
-const [open, setOpen] = useState(false)
-
-<Sheet open={open} onOpenChange={setOpen}>
-  <SheetContent>
-    <SheetHeader>
-      <SheetTitle>Controlled Sheet</SheetTitle>
-    </SheetHeader>
-    {/* ... */}
-  </SheetContent>
+<Sheet open={aberto} onOpenChange={setAberto} disablePointerDismissal>
+  <SheetContent side="left" showCloseButton={false}>…</SheetContent>
 </Sheet>
 ```
 
-### Without Close Button
+### Armadilhas
 
-```tsx
-<SheetContent showCloseButton={false}>
-  {/* ... */}
-</SheetContent>
-```
+- `onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`, `onOpenAutoFocus`, `onCloseAutoFocus`, `forceMount` não existem no `SheetContent`. Dismiss se controla no `Sheet` (`disablePointerDismissal`, ou `onOpenChange` checando `eventDetails.reason` e chamando `eventDetails.cancel()`); foco por `initialFocus`/`finalFocus`.
+- `className` com `data-[state=open]:` não casa: use `data-open:` / `data-starting-style:`.
+- Não aninhe `<Button>` dentro de `SheetTrigger`/`SheetClose`: passe-o em `render`.
 
-## All Examples
+## v2.x — Radix
 
-- `sheet-demo` -- Basic sheet with form inputs
-- `sheet-side` -- Sheets from all four sides
+Primitiva: `@radix-ui/react-dialog`.
 
-## All Example Variants
+| Componente | Notas |
+|---|---|
+| `Sheet` | `open`, `defaultOpen`, `onOpenChange(open)`, `modal`. |
+| `SheetTrigger` / `SheetClose` | `asChild` com um `Button`. |
+| `SheetContent` | `Dialog.Content` + Overlay. Aceita `onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`, `onOpenAutoFocus`, `onCloseAutoFocus`, `forceMount`. Painel `bg-background gap-4`; overlay `bg-black/50`. Botão de fechar é um `<button>` com ícone `X`. |
+| `SheetHeader` / `SheetFooter` / `SheetBody` / `SheetSection` | padding `p-4`. |
+| `SheetTitle` | `font-semibold`. |
+| `SheetDescription` | `text-sm text-muted-foreground`. |
 
-### sheet-demo
+Estado: `data-state="open" | "closed"`.
 
 ```tsx
 import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
 import {
   Sheet,
   SheetBody,
@@ -237,37 +132,36 @@ import {
   SheetDescription,
   SheetFooter,
   SheetHeader,
+  SheetSection,
+  SheetSectionTitle,
   SheetTitle,
   SheetTrigger,
 } from "@blips/ui/components/sheet"
 
-export default function SheetDemo() {
+export function EditarCliente() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
+        <Button variant="outline">Editar</Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent
+        className="sm:max-w-md"
+        onInteractOutside={(e) => e.preventDefault()}
+      >
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </SheetDescription>
+          <SheetTitle>Editar cliente</SheetTitle>
+          <SheetDescription>As mudanças valem ao salvar.</SheetDescription>
         </SheetHeader>
-        <SheetBody className="grid auto-rows-min gap-6">
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-name">Name</Label>
-            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="sheet-demo-username">Username</Label>
-            <Input id="sheet-demo-username" defaultValue="@peduarte" />
-          </div>
+        <SheetBody>
+          <SheetSection>
+            <SheetSectionTitle>Dados gerais</SheetSectionTitle>
+            {/* campos */}
+          </SheetSection>
         </SheetBody>
         <SheetFooter>
-          <Button type="submit">Save changes</Button>
+          <Button type="submit">Salvar</Button>
           <SheetClose asChild>
-            <Button variant="outline">Close</Button>
+            <Button variant="outline">Cancelar</Button>
           </SheetClose>
         </SheetFooter>
       </SheetContent>
@@ -276,78 +170,6 @@ export default function SheetDemo() {
 }
 ```
 
-### sheet-side
+## Exemplos na docs
 
-```tsx
-"use client"
-
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-import {
-  Sheet,
-  SheetBody,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@blips/ui/components/sheet"
-
-const SHEET_SIDES = ["top", "right", "bottom", "left"] as const
-
-export default function SheetSide() {
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      {SHEET_SIDES.map((side) => (
-        <Sheet key={side}>
-          <SheetTrigger asChild>
-            <Button variant="outline">{side}</Button>
-          </SheetTrigger>
-          <SheetContent side={side}>
-            <SheetHeader>
-              <SheetTitle>Edit profile</SheetTitle>
-              <SheetDescription>
-                Make changes to your profile here. Click save when you&apos;re
-                done.
-              </SheetDescription>
-            </SheetHeader>
-            <SheetBody className="grid gap-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="name" className="text-right">
-                  Name
-                </Label>
-                <Input id="name" value="Pedro Duarte" className="col-span-3" />
-              </div>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="username" className="text-right">
-                  Username
-                </Label>
-                <Input id="username" value="@peduarte" className="col-span-3" />
-              </div>
-            </SheetBody>
-            <SheetFooter>
-              <SheetClose asChild>
-                <Button type="submit">Save changes</Button>
-              </SheetClose>
-            </SheetFooter>
-          </SheetContent>
-        </Sheet>
-      ))}
-    </div>
-  )
-}
-```
-
-## Project Notes
-
-- Uses `@phosphor-icons/react` `X` icon for the close button (rendered as a ghost `Button` with `size="icon-sm"`).
-- **Project additions not in vanilla shadcn/ui:**
-  - `SheetBody` -- scrollable body container
-  - `SheetSection` / `SheetSectionTitle` -- bordered sections for organizing content
-  - `showCloseButton` prop on `SheetContent`
-- The close button is rendered inside `SheetContent` using the project's `Button` component, not a plain HTML button.
-- `SheetBody` automatically removes its padding when it contains `SheetSection` children (via `has-data-[slot=sheet-section]:p-0`).
-- The sheet uses `data-slot` attributes on all sub-components for CSS targeting.
+`sheet-demo`, `sheet-side`, `sheet-sections`, `sheet-no-close-button` (em `apps/docs/examples/`, escritos para a v3).

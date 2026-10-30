@@ -6,49 +6,42 @@ import { Input } from "@blips/ui/components/input";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
+  SelectValue,
 } from "@blips/ui/components/select";
-import { ArrowRight } from "@phosphor-icons/react";
-import * as React from "react";
+import { ArrowRightIcon } from "@phosphor-icons/react";
 
-const CURRENCIES = [
-  {
-    value: "$",
-    label: "US Dollar",
-  },
-  {
-    value: "€",
-    label: "Euro",
-  },
-  {
-    value: "£",
-    label: "British Pound",
-  },
+const currencies = [
+  { label: "R$", value: "BRL" },
+  { label: "US$", value: "USD" },
+  { label: "€", value: "EUR" },
 ];
 
 export default function ButtonGroupSelect() {
-  const [currency, setCurrency] = React.useState("$");
-
   return (
     <ButtonGroup>
       <ButtonGroup>
-        <Select value={currency} onValueChange={setCurrency}>
-          <SelectTrigger className="font-mono">{currency}</SelectTrigger>
-          <SelectContent className="min-w-24">
-            {CURRENCIES.map((currency) => (
-              <SelectItem key={currency.value} value={currency.value}>
-                {currency.value}{" "}
-                <span className="text-muted-foreground">{currency.label}</span>
-              </SelectItem>
-            ))}
+        <Select items={currencies} defaultValue="BRL">
+          <SelectTrigger className="font-mono" aria-label="Moeda">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {currencies.map((currency) => (
+                <SelectItem key={currency.value} value={currency.value}>
+                  {currency.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
-        <Input placeholder="10.00" pattern="[0-9]*" />
+        <Input placeholder="10,00" inputMode="decimal" />
       </ButtonGroup>
       <ButtonGroup>
-        <Button aria-label="Send" size="icon" variant="outline">
-          <ArrowRight />
+        <Button aria-label="Enviar" size="icon" variant="outline">
+          <ArrowRightIcon />
         </Button>
       </ButtonGroup>
     </ButtonGroup>

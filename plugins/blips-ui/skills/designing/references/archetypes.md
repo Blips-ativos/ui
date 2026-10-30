@@ -22,8 +22,9 @@ densidade/profundidade/layout do zero a cada tela.
   espaçamento, estratégia de sombra, escala de peso). Traduza cada valor para
   as classes/tokens reais (`bg-card`, `border-border`, `rounded-lg`,
   `font-mono`, `tabular-nums`, `shadow-sm`…).
-- Mapeie sempre ao stack real: shadcn/Radix via `@blips/ui`, Tailwind v4
-  CSS-first, ícones `@phosphor-icons/react`, Recharts para gráficos.
+- Mapeie sempre ao stack real: shadcn via `@blips/ui` (Base UI na v3.x, Radix na
+  v2.x — detecção de versão no Passo 0 do `SKILL.md` do building), Tailwind v4 CSS-first, ícones
+  `@phosphor-icons/react` (nomes `*Icon`), Recharts para gráficos (3 na v3.x, 2 na v2.x).
 - **Fronteira com `creative-presets.md`.** Arquétipo é vocabulário de direção; o
   COMO binário (bans/técnica/checklist) mora em `creative-presets.md` e na
   reviewing; em conflito, a reference canônica vence.

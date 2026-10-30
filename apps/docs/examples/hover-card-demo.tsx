@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Avatar,
   AvatarFallback,
@@ -9,13 +11,13 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@blips/ui/components/hover-card";
-import { Calendar } from "@phosphor-icons/react";
+import { CalendarBlankIcon } from "@phosphor-icons/react";
 
 export default function HoverCardDemo() {
   return (
     <HoverCard>
-      <HoverCardTrigger asChild>
-        <Button variant="link">@nextjs</Button>
+      <HoverCardTrigger render={<Button variant="link" />}>
+        @nextjs
       </HoverCardTrigger>
       <HoverCardContent className="w-80">
         <div className="flex justify-between gap-4">
@@ -23,13 +25,12 @@ export default function HoverCardDemo() {
             <AvatarImage src="https://github.com/vercel.png" />
             <AvatarFallback>VC</AvatarFallback>
           </Avatar>
-          <div className="space-y-1">
-            <h4 className="text-sm font-semibold">@nextjs</h4>
-            <p className="text-sm">
-              The React Framework – created and maintained by @vercel.
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Joined December 2021
+          <div className="flex flex-col gap-1">
+            <h4 className="font-medium">@nextjs</h4>
+            <p>O framework React, criado e mantido pela @vercel.</p>
+            <div className="flex items-center gap-1 text-muted-foreground">
+              <CalendarBlankIcon className="size-3.5" />
+              Entrou em dezembro de 2021
             </div>
           </div>
         </div>

@@ -6,24 +6,24 @@ import {
   InputGroupTextarea,
 } from "@blips/ui/components/input-group";
 import { Spinner } from "@blips/ui/components/spinner";
-import { ArrowUp } from "@phosphor-icons/react";
+import { ArrowUpIcon } from "@phosphor-icons/react";
 
 export default function SpinnerInputGroup() {
   return (
     <div className="flex w-full max-w-md flex-col gap-4">
       <InputGroup>
-        <InputGroupInput placeholder="Send a message..." disabled />
+        <InputGroupInput placeholder="Envie uma mensagem..." disabled />
         <InputGroupAddon align="inline-end">
           <Spinner />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
-        <InputGroupTextarea placeholder="Send a message..." disabled />
+        <InputGroupTextarea placeholder="Envie uma mensagem..." disabled />
         <InputGroupAddon align="block-end">
-          <Spinner /> Validating...
+          <Spinner /> Validando...
           <InputGroupButton className="ml-auto" variant="default">
-            <ArrowUp />
-            <span className="sr-only">Send</span>
+            <ArrowUpIcon />
+            <span className="sr-only">Enviar</span>
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>

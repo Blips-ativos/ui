@@ -17,12 +17,23 @@ ANTES de revisar, leia os critérios canônicos (nesta ordem):
 3. <caminho-da-skill>/references/ui-states.md
 4. <caminho-da-skill>/references/accessibility.md
 5. <caminho-da-skill>/references/data-formatting.md
+6. Se o app tem `@blips/ai` (campo `blipsAi` do JSON): <caminho-da-skill>/references/blips-ai.md
+   — confirme os achados `blips-ai` com `verify` (chat recriado, scroll/markdown à mão)
+   e procure o que o grep não pega: tela de chat que não usa `Conversation`, mapeamento
+   de eventos dentro de componente em vez de no app, componente da @blips/ai recriado à mão
+   (terminal, código, árvore de arquivos, plano, canvas — regra 4g), textos em inglês que o
+   padrão pt-BR não cobre (aria-label de thinking-orbs/bot-avatars, Controls fora do Canvas).
 
 Escopo da revisão: <escopo, ex.: feature de clientes — app/clientes/**,
 components/cliente-*.tsx> no projeto <dir-do-projeto>. Leia somente o projeto.
 
 O check mecânico já encontrou (não re-reporte, apenas confirme os marcados
 com "verify"): <JSON do check.mjs>
+
+Trilha da @blips/ui deste repo: <v2.x — Radix | v3.x — Base UI> (campo `blipsUi.track` do
+JSON). Revise a API contra ESSA trilha (`component-standards.md` §API da versão): na v3.x
+`asChild` é erro e `render` é o certo; na v2.x é o contrário. Nunca peça para migrar de
+trilha como correção de violação.
 
 Seu foco é o que o grep NÃO pega:
 - Estados de query (3 estados na ordem; skeleton vs spinner; erro inline com

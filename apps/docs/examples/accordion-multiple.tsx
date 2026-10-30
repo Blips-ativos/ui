@@ -8,30 +8,30 @@ import {
 const items = [
   {
     value: "notifications",
-    trigger: "Notification Settings",
+    trigger: "Notificações",
     content:
-      "Manage how you receive notifications. You can enable email alerts for updates or push notifications for mobile devices.",
+      "Escolha como receber notificações. Você pode ativar alertas por e-mail ou notificações push no celular.",
   },
   {
     value: "privacy",
-    trigger: "Privacy & Security",
+    trigger: "Privacidade e segurança",
     content:
-      "Control your privacy settings and security preferences. Enable two-factor authentication, manage connected devices, review active sessions, and configure data sharing preferences. You can also download your data or delete your account.",
+      "Controle suas preferências de privacidade e segurança. Ative a autenticação em dois fatores, gerencie dispositivos conectados, revise sessões ativas e configure o compartilhamento de dados.",
   },
   {
     value: "billing",
-    trigger: "Billing & Subscription",
+    trigger: "Cobrança e assinatura",
     content:
-      "View your current plan, payment history, and upcoming invoices. Update your payment method, change your subscription tier, or cancel your subscription.",
+      "Veja seu plano atual, o histórico de pagamentos e as próximas faturas. Atualize a forma de pagamento, troque de plano ou cancele a assinatura.",
   },
 ];
 
-export function AccordionMultiple() {
+export default function AccordionMultiple() {
   return (
     <Accordion
-      type="multiple"
-      className="max-w-lg"
+      multiple
       defaultValue={["notifications"]}
+      className="mx-auto max-w-lg"
     >
       {items.map((item) => (
         <AccordionItem key={item.value} value={item.value}>

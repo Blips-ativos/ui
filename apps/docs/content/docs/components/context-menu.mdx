@@ -17,6 +17,7 @@ npm install @blips/ui
 import {
   ContextMenu,
   ContextMenuContent,
+  ContextMenuGroup,
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@blips/ui/components/context-menu"
@@ -26,22 +27,58 @@ import {
 <ContextMenu>
   <ContextMenuTrigger>Clique com o botão direito aqui</ContextMenuTrigger>
   <ContextMenuContent>
-    <ContextMenuItem>Profile</ContextMenuItem>
-    <ContextMenuItem>Billing</ContextMenuItem>
-    <ContextMenuItem>Team</ContextMenuItem>
-    <ContextMenuItem>Subscription</ContextMenuItem>
+    <ContextMenuGroup>
+      <ContextMenuItem onClick={abrirPerfil}>Perfil</ContextMenuItem>
+      <ContextMenuItem>Faturamento</ContextMenuItem>
+      <ContextMenuItem>Equipe</ContextMenuItem>
+      <ContextMenuItem>Assinatura</ContextMenuItem>
+    </ContextMenuGroup>
   </ContextMenuContent>
 </ContextMenu>
 ```
 
+O `ContextMenuTrigger` renderiza uma `<div>` por padrão. Para usar outro elemento, passe-o pela prop `render`.
+
 ## Exemplos
 
-### Exemplo
+### Com ícones
 
-Um menu de contexto completo com itens, atalhos, submenu, caixas de seleção e grupo de opções.
+Use `variant="destructive"` no `ContextMenuItem` para ações como excluir.
 
-<ComponentPreview name="context-menu-demo" />
+<ComponentPreview name="context-menu-icons" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Context Menu](https://base-ui.com/react/components/context-menu).
+
+- `asChild` saiu do `ContextMenuTrigger`. Use `render` (ex.: `render={<div className="..." />}`).
+- `onSelect` vira `onClick`. Para manter o menu aberto depois do clique, use `closeOnClick={false}`.
+- `onCheckedChange` recebe `(checked, eventDetails)` e `onValueChange` do `ContextMenuRadioGroup` recebe `(value, eventDetails)`.
+- O `ContextMenuContent` aceita `align`, `alignOffset`, `side` e `sideOffset`. Saem `avoidCollisions`, `collisionPadding`, `onCloseAutoFocus` e `forceMount`.
+- `ContextMenuLabel` precisa estar dentro de um `ContextMenuGroup`.
+- Seletores `data-[state=open|checked]` viram `data-open`/`data-checked`. O indicador de checkbox e radio mudou para a direita.
+
+```tsx
+// v2
+<ContextMenuTrigger asChild>
+  <div className="rounded-lg border">Área</div>
+</ContextMenuTrigger>
+<ContextMenuItem onSelect={duplicar}>Duplicar</ContextMenuItem>
+
+// v3
+<ContextMenuTrigger render={<div className="rounded-lg border" />}>
+  Área
+</ContextMenuTrigger>
+<ContextMenuItem onClick={duplicar}>Duplicar</ContextMenuItem>
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix UI](https://www.radix-ui.com/docs/primitives/components/context-menu#api-reference) para mais informações.
+### ContextMenuItem
+
+| Prop      | Tipo                         | Padrão      |
+| --------- | ---------------------------- | ----------- |
+| `variant` | `"default" \| "destructive"` | `"default"` |
+| `inset`   | `boolean`                    | -           |
+
+Consulte a documentação do [Base UI Context Menu](https://base-ui.com/react/components/context-menu) para mais informações.

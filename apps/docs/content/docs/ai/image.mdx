@@ -1,0 +1,71 @@
+---
+title: Image
+description: Mostra uma imagem gerada pelo modelo a partir do arquivo em base64 que o AI SDK devolve.
+---
+
+<ComponentPreview name="ai-image-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
+
+Do pacote `ai` o componente importa só um tipo (`GeneratedFile`, o formato da imagem), nenhum código de runtime. Como o `@blips/ai` publica o fonte `.tsx`, em projetos TypeScript instale o `ai` como devDependency para o compilador resolver o tipo. Nenhum peer opcional é exigido. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { Image } from "@blips/ai/components/image"
+```
+
+```tsx
+<Image {...imagem} alt="Fachada da loja com o letreiro novo" className="max-w-sm" />
+```
+
+`imagem` é um `GeneratedFile` do AI SDK (o `image` de `generateImage`, ou um item de `images`): `{ base64, mediaType, uint8Array }`. O componente monta `data:{mediaType};base64,{base64}` no `src` de um `<img>` com cantos arredondados e largura máxima de 100%. O `uint8Array` e o `providerMetadata` não vão para o DOM.
+
+`generateImage` roda no servidor. Ao mandar a imagem para o cliente, serialize só `base64` e `mediaType`; no cliente, `uint8Array` pode ser um `new Uint8Array()` vazio, que o componente ignora:
+
+```tsx
+<Image base64={base64} mediaType={mediaType} uint8Array={new Uint8Array()} alt={descricao} />
+```
+
+Imagens em base64 pesam: para muitas imagens ou imagens grandes, prefira salvar o arquivo e mostrar por URL num `<img>` comum (ou no `next/image`).
+
+O componente não é client component (não tem `"use client"`), então também serve em Server Components.
+
+## Exemplos
+
+### Várias imagens
+
+Um pedido com `n: 3` devolve três arquivos; cada um vira um `Image`. Dê a cada imagem um `alt` que a diferencie.
+
+<ComponentPreview name="ai-image-grade" />
+
+## Referência da API
+
+### Image
+
+| Prop         | Tipo                                     | Padrão            |
+| ------------ | ---------------------------------------- | ----------------- |
+| `base64`     | `string`                                 | obrigatório       |
+| `mediaType`  | `string` (ex.: `"image/png"`)            | obrigatório       |
+| `uint8Array` | `Uint8Array` — ignorado                  | obrigatório       |
+| `providerMetadata` | `Record<string, JSONObject>` — ignorado | —          |
+| `alt`        | `string`                                 | `"Imagem gerada"` |
+| `className`  | `string`                                 | —                 |
+
+O `alt` padrão só evita uma imagem sem texto alternativo; sempre que possível, passe uma descrição do que foi gerado (o próprio prompt costuma servir de ponto de partida).
+
+## Origem
+
+Adaptado do componente [Image](https://elements.ai-sdk.dev/components/image) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. Mudanças da Blips: tipo baseado em `GeneratedFile` (no `ai` v7, `Experimental_GeneratedImage` é só um alias depreciado dele), `alt` padrão em pt-BR e `providerMetadata` fora dos atributos do `<img>`.

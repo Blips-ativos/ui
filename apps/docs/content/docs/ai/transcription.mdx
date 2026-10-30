@@ -1,0 +1,95 @@
+---
+title: Transcription
+description: Transcrição com marcação de tempo, que destaca o trecho que está tocando e deixa a pessoa pular para um trecho com um clique.
+---
+
+<ComponentPreview name="ai-transcription-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+pnpm add -D ai
+```
+
+Do pacote `ai` o componente importa só um tipo (`Experimental_TranscriptionResult`, para o formato dos segmentos), nenhum código de runtime. Como o `@blips/ai` publica o fonte `.tsx`, em projetos TypeScript instale o `ai` como devDependency para o compilador resolver o tipo. Nenhum peer opcional é exigido. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Transcription,
+  TranscriptionSegment,
+} from "@blips/ai/components/transcription"
+```
+
+```tsx
+<Transcription
+  currentTime={tempoDoAudio}
+  onSeek={(segundo) => (audioRef.current.currentTime = segundo)}
+  segments={resultado.segments}
+>
+  {(segment, index) => (
+    <TranscriptionSegment index={index} key={segment.startSecond} segment={segment} />
+  )}
+</Transcription>
+```
+
+Os segmentos seguem o formato de `segments` do resultado de `experimental_transcribe` do AI SDK: `{ text, startSecond, endSecond }`. O componente é apresentacional: não toca áudio. Quem reproduz é o app (um `<audio>` ou o [Audio Player](/docs/ai/audio-player)), que alimenta `currentTime` com o tempo atual e move o áudio em `onSeek`.
+
+Os `children` são uma função chamada para cada segmento com texto; segmentos vazios ou só com espaço são pulados.
+
+### Estados de cada segmento
+
+| Estado   | Condição                                          | Estilo                   |
+| -------- | ------------------------------------------------- | ------------------------ |
+| Ativo    | `startSecond <= currentTime < endSecond`          | `text-primary`, `data-active="true"` |
+| Lido     | `currentTime >= endSecond`                        | `text-muted-foreground`  |
+| Por vir  | antes do início                                   | `text-muted-foreground/60` |
+
+Com `onSeek`, cada segmento é clicável e chama `onSeek(startSecond)`; sem ele, os segmentos ficam com cursor padrão.
+
+## Exemplos
+
+### Sem navegação
+
+Sem `onSeek` e com `currentTime` fixo, a transcrição só mostra o progresso.
+
+<ComponentPreview name="ai-transcription-estatica" />
+
+## Referência da API
+
+### Transcription
+
+Aceita as props de `<div>`, exceto `children`.
+
+| Prop          | Tipo                                                  | Padrão      |
+| ------------- | ----------------------------------------------------- | ----------- |
+| `segments`    | `TranscriptionResult["segments"]`                     | obrigatório |
+| `children`    | `(segment, index: number) => ReactNode`               | obrigatório |
+| `currentTime` | `number` (segundos)                                   | `0`         |
+| `onSeek`      | `(time: number) => void`                              | —           |
+
+Passe sempre `currentTime`. Sem ele, o tempo interno fica em `0`: o clique num segmento chama `onSeek` direto e não atualiza esse estado (o comportamento é o do original). Na prática, o destaque só anda quando o app devolve o tempo do áudio em `currentTime`.
+
+### TranscriptionSegment
+
+Um `<button type="button">` com o texto do segmento. Aceita as props de `<button>`; o `onClick` passado roda depois do `onSeek`.
+
+| Prop      | Tipo                                         | Padrão      |
+| --------- | -------------------------------------------- | ----------- |
+| `segment` | `{ text, startSecond, endSecond }`           | obrigatório |
+| `index`   | `number` — vira `data-index`                 | obrigatório |
+
+`TranscriptionSegment` precisa estar dentro de `Transcription`; fora dele, lança erro.
+
+## Origem
+
+Adaptado do componente [Transcription](https://elements.ai-sdk.dev/components/transcription) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A API pública é a do original; a Blips trocou o `useControllableState` do Radix por uma implementação própria e as cores pelos tokens da `@blips/ui`.

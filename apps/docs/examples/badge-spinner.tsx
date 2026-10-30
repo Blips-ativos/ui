@@ -1,15 +1,15 @@
 import { Badge } from "@blips/ui/components/badge";
 import { Spinner } from "@blips/ui/components/spinner";
 
-export function BadgeWithSpinner() {
+export default function BadgeWithSpinner() {
   return (
     <div className="flex flex-wrap gap-2">
       <Badge variant="destructive">
         <Spinner data-icon="inline-start" />
-        Deleting
+        Excluindo
       </Badge>
       <Badge variant="secondary">
-        Generating
+        Gerando
         <Spinner data-icon="inline-end" />
       </Badge>
     </div>

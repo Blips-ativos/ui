@@ -2,83 +2,51 @@
 
 Import: `@blips/ui/components/dialog`
 
-## Sub-components
+Modal centralizado para ações rápidas e formulários curtos. Para confirmação
+destrutiva use `AlertDialog`; para formulários longos ou detalhes, `Sheet`.
 
-| Export | Description |
-|--------|-------------|
-| `Dialog` | Root component. Direct re-export of Radix Dialog Root. Controls open/close state. |
-| `DialogTrigger` | Trigger element. Direct re-export. Clicking opens the dialog. |
-| `DialogPortal` | Portal wrapper. Direct re-export. Renders content outside the DOM hierarchy. |
-| `DialogOverlay` | Backdrop overlay. Fixed full-screen black/80 with fade animation. |
-| `DialogClose` | Close trigger. Direct re-export. Closes the dialog when clicked. |
-| `DialogContent` | Main content container. Centered modal with overlay, close button (X), and slide/zoom animations. |
-| `DialogHeader` | Header layout. Flex column with vertical spacing, centered on mobile, left-aligned on sm+. |
-| `DialogFooter` | Footer layout. Column-reverse on mobile, flex-row with right justification on sm+. |
-| `DialogTitle` | Title text. Semibold, lg size, tight tracking. Wraps Radix Dialog.Title. |
-| `DialogDescription` | Description text. Muted foreground, sm size. Wraps Radix Dialog.Description. |
+Exports (iguais nas duas versões): `Dialog`, `DialogTrigger`, `DialogPortal`,
+`DialogOverlay`, `DialogClose`, `DialogContent`, `DialogHeader`, `DialogFooter`,
+`DialogTitle`, `DialogDescription`.
 
-## Props & Variants
+## Notas comuns
 
-### Dialog (Root) Props
+- `DialogContent` já renderiza Portal + Overlay + botão de fechar (X Phosphor). `showCloseButton={false}` remove o X.
+- `DialogFooter` aceita `showCloseButton` (padrão `false`): adiciona um botão "Close" `outline` — o texto é fixo em inglês; para pt-BR, escreva o seu `DialogClose`.
+- O texto sr-only do X também é "Close".
+- **Sempre** inclua `DialogTitle` (e de preferência `DialogDescription`). Se o título não deve aparecer, use `className="sr-only"`.
+- Formulário em Dialog não precisa do wrapper `flex flex-1 flex-col overflow-hidden` (isso é do Sheet). Botão de submit fora do `<form>`: `form="id-do-form"` ou `formRef.current?.requestSubmit()`.
+- Popover/Select/Combobox dentro do Dialog: Popover com `modal`.
+- Não aninhe modais.
+- Guia de composição: `components/dialog.md`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | -- | Controlled open state |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled initial state |
-| `onOpenChange` | `(open: boolean) => void` | -- | Called when open state changes |
-| `modal` | `boolean` | `true` | Whether dialog is modal (traps focus, blocks interaction outside) |
+> A API difere entre as versões (`render` vs `asChild`, props do Content, largura padrão). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-### DialogContent Props
+## v3.x — Base UI
 
-All Radix Dialog.Content props:
+Primitiva: `@base-ui/react/dialog`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | -- | Additional classes (e.g., `sm:max-w-[425px]`, `sm:max-w-md`) |
-| `onPointerDownOutside` | `(event) => void` | -- | Handle clicks outside |
-| `onEscapeKeyDown` | `(event) => void` | -- | Handle Escape key |
-| `onInteractOutside` | `(event) => void` | -- | Handle any interaction outside |
+| Componente | Base | Props relevantes |
+|---|---|---|
+| `Dialog` | `Dialog.Root` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `modal` (`true \| false \| "trap-focus"`), `disablePointerDismissal`, `onOpenChangeComplete`, `actionsRef`, `handle` |
+| `DialogTrigger` | `Dialog.Trigger` | `render`, `nativeButton`, `payload`. Estado: `data-popup-open` |
+| `DialogClose` | `Dialog.Close` | `render`, `nativeButton` |
+| `DialogPortal` | `Dialog.Portal` | `container`, `keepMounted` |
+| `DialogOverlay` | `Dialog.Backdrop` | `bg-black/80 backdrop-blur-xs` |
+| `DialogContent` | `Dialog.Popup` | `showCloseButton`, `initialFocus`, `finalFocus`. Sem `onEscapeKeyDown`/`onPointerDownOutside`/`onInteractOutside`/`onOpenAutoFocus`/`onCloseAutoFocus`/`forceMount` |
+| `DialogHeader` | `div` | `flex flex-col gap-1` (alinhado à esquerda, sem `text-center`) |
+| `DialogFooter` | `div` | `flex flex-col-reverse gap-2 sm:flex-row sm:justify-end` |
+| `DialogTitle` | `Dialog.Title` | `font-heading text-sm font-medium` |
+| `DialogDescription` | `Dialog.Description` | `text-xs/relaxed text-muted-foreground` |
 
-### DialogTrigger / DialogClose Props
+Visual base-mira: `p-4`, `gap-4`, `rounded-xl`, `ring-1 ring-foreground/10`, `bg-popover`, `text-xs/relaxed`, **largura padrão `sm:max-w-sm`** (era `sm:max-w-lg`). X em `top-2 right-2` (Button `ghost` `icon-sm`). Estado: `data-open`/`data-closed`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `asChild` | `boolean` | `false` | Merge props onto child element instead of rendering a button |
-
-### Default Styles
-
-| Component | Key Classes |
-|-----------|-------------|
-| `DialogOverlay` | `fixed inset-0 z-50 bg-black/80` with fade animations |
-| `DialogContent` | `fixed top-[50%] left-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg sm:rounded-lg` with slide/zoom animations |
-| `DialogHeader` | `flex flex-col space-y-1.5 text-center sm:text-left` |
-| `DialogFooter` | `flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2` |
-| `DialogTitle` | `font-semibold text-lg leading-none tracking-tight` |
-| `DialogDescription` | `text-muted-foreground text-sm` |
-
-### Built-in Close Button
-
-`DialogContent` includes an automatic close button (X icon) positioned at `absolute top-4 right-4` with opacity transitions and focus ring.
-
-### Animations
-
-| State | Animations |
-|-------|------------|
-| Open | `fade-in-0`, `zoom-in-95`, `slide-in-from-left-1/2`, `slide-in-from-top-[48%]` |
-| Closed | `fade-out-0`, `zoom-out-95`, `slide-out-to-left-1/2`, `slide-out-to-top-[48%]` |
-| Duration | `200ms` |
-
-## Dependencies
-
-- `@radix-ui/react-dialog`
-- `@phosphor-icons/react` (X icon for close button)
-
-## Usage
-
-### Basic Dialog with Form
+Impedir fechar por clique fora: `<Dialog disablePointerDismissal>`. Impedir por Esc ou outro motivo: no `onOpenChange`, checar `eventDetails.reason` e chamar `eventDetails.cancel()`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
+"use client";
+
+import { Button } from "@blips/ui/components/button";
 import {
   Dialog,
   DialogClose,
@@ -88,373 +56,180 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@blips/ui/components/dialog"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+} from "@blips/ui/components/dialog";
+import { Field, FieldGroup, FieldLabel } from "@blips/ui/components/field";
+import { Input } from "@blips/ui/components/input";
+import * as React from "react";
 
-export default function DialogDemo() {
+export function EditarPerfil() {
+  const [open, setOpen] = React.useState(false);
+
   return (
-    <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">Open Dialog</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger render={<Button variant="outline" />}>Editar perfil</DialogTrigger>
+      <DialogContent className="sm:max-w-md">
+        <form
+          id="form-perfil"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setOpen(false);
+          }}
+          className="grid gap-4"
+        >
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>Editar perfil</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
+              Altere os dados do seu perfil. Clique em salvar ao terminar.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4">
-            <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
-            </div>
-          </div>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="nome">Nome</FieldLabel>
+              <Input id="nome" defaultValue="Ana Souza" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="usuario">Usuário</FieldLabel>
+              <Input id="usuario" defaultValue="@anasouza" />
+            </Field>
+          </FieldGroup>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+            <Button type="submit">Salvar</Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
-    </Dialog>
-  )
-}
-```
-
-### Share Link Dialog (Close Button Pattern)
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@blips/ui/components/dialog"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-export default function DialogCloseButton() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Share link</DialogTitle>
-          <DialogDescription>
-            Anyone who has this link will be able to view this.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex items-center gap-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Link
-            </Label>
-            <Input
-              id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
-              readOnly
-            />
-          </div>
-        </div>
-        <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-        </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 ```
 
-### Controlled Dialog
+Sem X e sem fechar ao clicar fora:
+
+```tsx
+<Dialog disablePointerDismissal>
+  <DialogTrigger render={<Button />}>Abrir</DialogTrigger>
+  <DialogContent showCloseButton={false}>
+    <DialogHeader>
+      <DialogTitle>Importando planilha</DialogTitle>
+      <DialogDescription>Aguarde o fim do processamento.</DialogDescription>
+    </DialogHeader>
+    <DialogFooter>
+      <DialogClose render={<Button variant="outline" />}>Fechar</DialogClose>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-dialog`.
+
+| Componente | Base | Props relevantes |
+|---|---|---|
+| `Dialog` | Radix `Root` | `open`, `defaultOpen`, `onOpenChange(open)`, `modal` |
+| `DialogTrigger` / `DialogClose` | Radix `Trigger` / `Close` | `asChild` |
+| `DialogPortal` | Radix `Portal` | `container`, `forceMount` |
+| `DialogOverlay` | Radix `Overlay` | `bg-black/50` |
+| `DialogContent` | Radix `Content` | `showCloseButton`, `onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`, `onOpenAutoFocus`, `onCloseAutoFocus`, `forceMount` |
+| `DialogHeader` | `div` | `flex flex-col gap-2 text-center sm:text-left` |
+| `DialogFooter` | `div` | `flex flex-col-reverse gap-2 sm:flex-row sm:justify-end` |
+| `DialogTitle` | Radix `Title` | `text-lg leading-none font-semibold` |
+| `DialogDescription` | Radix `Description` | `text-sm text-muted-foreground` |
+
+Visual new-york: `p-6`, `gap-4`, `rounded-lg border shadow-lg`, `bg-background`, **largura padrão `sm:max-w-lg`**. X em `top-4 right-4`. Estado: `data-state="open" | "closed"`. Larguras comuns: `sm:max-w-[425px]` (formulários), `sm:max-w-md` (compartilhar/info).
+
+Impedir fechar por clique fora: `<DialogContent onPointerDownOutside={(e) => e.preventDefault()}>`; por Esc: `onEscapeKeyDown={(e) => e.preventDefault()}`.
 
 ```tsx
 "use client"
 
 import * as React from "react"
+import { Button } from "@blips/ui/components/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@blips/ui/components/dialog"
+import { Input } from "@blips/ui/components/input"
+import { Label } from "@blips/ui/components/label"
 
-export function ControlledDialog() {
+export function EditarPerfil() {
   const [open, setOpen] = React.useState(false)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Controlled Dialog</DialogTitle>
-        </DialogHeader>
-        <p>This dialog is controlled programmatically.</p>
-      </DialogContent>
-    </Dialog>
-  )
-}
-```
-
-## All Examples
-
-- `dialog-demo` -- Edit profile form dialog with cancel/save
-- `dialog-close-button` -- Share link dialog with explicit close button
-- `dropdown-menu-dialog` -- Dialog triggered from DropdownMenu items (modal=false pattern)
-- `alert-dialog-demo` -- AlertDialog (separate component, not Dialog)
-
-## All Example Variants
-
-### dialog-demo
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@blips/ui/components/dialog"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-export default function DialogDemo() {
-  return (
-    <Dialog>
-      <form>
-        <DialogTrigger asChild>
-          <Button variant="outline">Open Dialog</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+      <DialogTrigger asChild>
+        <Button variant="outline">Editar perfil</Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            setOpen(false)
+          }}
+          className="grid gap-4"
+        >
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
+            <DialogTitle>Editar perfil</DialogTitle>
             <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
+              Altere os dados do seu perfil. Clique em salvar ao terminar.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4">
             <div className="grid gap-3">
-              <Label htmlFor="name-1">Name</Label>
-              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+              <Label htmlFor="nome">Nome</Label>
+              <Input id="nome" defaultValue="Ana Souza" />
             </div>
             <div className="grid gap-3">
-              <Label htmlFor="username-1">Username</Label>
-              <Input id="username-1" name="username" defaultValue="@peduarte" />
+              <Label htmlFor="usuario">Usuário</Label>
+              <Input id="usuario" defaultValue="@anasouza" />
             </div>
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">Cancelar</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">Salvar</Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
-    </Dialog>
-  )
-}
-```
-
-### dialog-close-button
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@blips/ui/components/dialog"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-
-export default function DialogCloseButton() {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Share link</DialogTitle>
-          <DialogDescription>
-            Anyone who has this link will be able to view this.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex items-center gap-2">
-          <div className="grid flex-1 gap-2">
-            <Label htmlFor="link" className="sr-only">
-              Link
-            </Label>
-            <Input
-              id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
-              readOnly
-            />
-          </div>
-        </div>
-        <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
-          </DialogClose>
-        </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   )
 }
 ```
 
-### dropdown-menu-dialog
+Compartilhar link (botão de fechar no footer):
 
 ```tsx
-"use client"
-
-import { useState } from "react"
-import { DotsThree } from "@phosphor-icons/react"
-
-import { Button } from "@blips/ui/components/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@blips/ui/components/dialog"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@blips/ui/components/dropdown-menu"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-import { Textarea } from "@blips/ui/components/textarea"
-
-export default function DropdownMenuDialog() {
-  const [showNewDialog, setShowNewDialog] = useState(false)
-  const [showShareDialog, setShowShareDialog] = useState(false)
-
-  return (
-    <>
-      <DropdownMenu modal={false}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" aria-label="Open menu" size="icon-sm">
-            <DotsThree />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-40" align="end">
-          <DropdownMenuLabel>File Actions</DropdownMenuLabel>
-          <DropdownMenuGroup>
-            <DropdownMenuItem onSelect={() => setShowNewDialog(true)}>
-              New File...
-            </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setShowShareDialog(true)}>
-              Share...
-            </DropdownMenuItem>
-            <DropdownMenuItem disabled>Download</DropdownMenuItem>
-          </DropdownMenuGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <Dialog open={showNewDialog} onOpenChange={setShowNewDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Create New File</DialogTitle>
-            <DialogDescription>
-              Provide a name for your new file. Click create when you&apos;re
-              done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 pb-3">
-            <div className="grid gap-3">
-              <Label htmlFor="filename">File Name</Label>
-              <Input id="filename" name="filename" placeholder="document.txt" />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Create</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      <Dialog open={showShareDialog} onOpenChange={setShowShareDialog}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Share File</DialogTitle>
-            <DialogDescription>
-              Anyone with the link will be able to view this file.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-3">
-            <div className="grid gap-3">
-              <Label htmlFor="email">Email Address</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="shadcn@vercel.com"
-                autoComplete="off"
-              />
-            </div>
-            <div className="grid gap-3">
-              <Label htmlFor="message">Message (Optional)</Label>
-              <Textarea
-                id="message"
-                name="message"
-                placeholder="Check out this file"
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DialogClose>
-            <Button type="submit">Send Invite</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </>
-  )
-}
+<Dialog>
+  <DialogTrigger asChild>
+    <Button variant="outline">Compartilhar</Button>
+  </DialogTrigger>
+  <DialogContent className="sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>Compartilhar link</DialogTitle>
+      <DialogDescription>Quem tiver o link poderá ver o documento.</DialogDescription>
+    </DialogHeader>
+    <div className="flex items-center gap-2">
+      <Label htmlFor="link" className="sr-only">Link</Label>
+      <Input id="link" defaultValue="https://app.blips.com.br/d/42" readOnly />
+    </div>
+    <DialogFooter className="sm:justify-start">
+      <DialogClose asChild>
+        <Button type="button" variant="secondary">Fechar</Button>
+      </DialogClose>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
 ```
 
-## Project Notes
+Abrir Dialog a partir de um item de DropdownMenu (v2): controle `open` no estado e chame `setOpen(true)` no `onSelect` do item, com `modal={false}` no `DropdownMenu`.
 
-- Uses `@phosphor-icons/react` X icon for the built-in close button.
-- `DialogContent` always renders an overlay and a built-in close button -- no need to add them manually.
-- For destructive confirmation dialogs, use `AlertDialog` (separate component) instead.
-- The `CommandDialog` component in the Command module wraps this Dialog internally.
-- Common width classes: `sm:max-w-[425px]` (forms), `sm:max-w-md` (share/info), `sm:max-w-lg` (default).
+## Exemplos na docs
+
+`dialog-demo`, `dialog-close-button`, `dialog-no-close-button`, `dialog-scrollable-content`, `dialog-sticky-footer` (v3).

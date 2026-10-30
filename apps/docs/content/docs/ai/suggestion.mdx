@@ -1,0 +1,74 @@
+---
+title: Suggestion
+description: Sugestões de pergunta em pílulas roláveis na horizontal, que entregam o texto ao clicar.
+---
+
+<ComponentPreview name="ai-suggestion-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { Suggestion, Suggestions } from "@blips/ai/components/suggestion"
+```
+
+```tsx
+<Suggestions>
+  {sugestoes.map((s) => (
+    <Suggestion key={s} suggestion={s} onClick={enviar} />
+  ))}
+</Suggestions>
+```
+
+O `onClick` recebe o texto da sugestão, não o evento: dá para passar direto a função que envia a mensagem. O `Suggestions` é um [Scroll Area](/docs/components/scroll-area) horizontal, então as pílulas não quebram linha e rolam quando não cabem.
+
+Coloque as sugestões acima do campo de prompt, ou no estado vazio da [Conversation](/docs/ai/conversation).
+
+## Exemplos
+
+### Variantes e ícones
+
+`variant` e `size` são os do [Button](/docs/components/button) (padrão `outline` e `sm`). Com `children`, o conteúdo da pílula muda, mas o `onClick` continua recebendo `suggestion`.
+
+<ComponentPreview name="ai-suggestion-variants" />
+
+```tsx
+<Suggestion suggestion="Financeiro" onClick={enviar}>
+  <WalletIcon data-icon="inline-start" />
+  Financeiro
+</Suggestion>
+```
+
+## Referência da API
+
+### Suggestions
+
+Aceita as props do `ScrollArea` da `@blips/ui` (Base UI). O `className` vai para a linha interna das pílulas (`flex gap-2`), não para a área de rolagem.
+
+### Suggestion
+
+Aceita as props do `Button`, com `onClick` trocado.
+
+| Prop         | Tipo                           | Padrão      |
+| ------------ | ------------------------------ | ----------- |
+| `suggestion` | `string`                       |             |
+| `onClick`    | `(suggestion: string) => void` |             |
+| `variant`    | variantes do `Button`          | `"outline"` |
+| `size`       | tamanhos do `Button`           | `"sm"`      |
+| `children`   | `ReactNode`                    | `suggestion` |
+
+## Origem
+
+Adaptado do [Suggestion do AI Elements](https://github.com/vercel/ai-elements) (Apache-2.0, Vercel). Na Blips, o botão e a área de rolagem são os da `@blips/ui`.

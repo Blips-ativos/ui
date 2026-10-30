@@ -1,0 +1,158 @@
+---
+title: Voice Glow
+description: Brilho que reage à voz na borda inferior de um elemento, para mostrar que o agente está ouvindo.
+---
+
+<ComponentPreview name="ai-voice-glow-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `voice-glow` não exige peer opcional: o código do pacote vem copiado dentro do `@blips/ai` (o original
+não está publicado no npm). Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+> **SSR e Safari:** o `VoiceBeam` copiado do upstream decide no carregamento do módulo se usa `ctx.filter` do canvas. No servidor o valor sai `true` e no WebKit (Safari/iOS) `false`, então a hidratação diverge e o React avisa. Em app com SSR, monte o efeito só no cliente (por exemplo, `next/dynamic` com `ssr: false`, ou renderizando depois de montar). Evite também `theme="auto"` explícito em SSR: sem `theme`, o wrapper segue o tema da `@blips/ui` sem divergência.
+
+## Uso
+
+```tsx
+import { BlipsVoiceBeam, useBlipsMicrophone } from "@blips/ai/fx/voice-glow"
+```
+
+```tsx
+const mic = useBlipsMicrophone()
+
+<BlipsVoiceBeam stream={mic.stream} active={mic.state === "live"}>
+  <InputGroup>...</InputGroup>
+</BlipsVoiceBeam>
+
+<Button onClick={mic.start}>Falar</Button>
+```
+
+O `BlipsVoiceBeam` envolve um único filho e lê o `border-radius` dele. O brilho nasce no centro da borda de
+baixo e sobe e se abre com o volume da voz. Há duas formas de alimentá-lo:
+
+- **`stream`**: um `MediaStream` (do `useBlipsMicrophone`, de `getUserMedia` ou de WebRTC). O componente
+  analisa o áudio e separa graves, médios e agudos para mover cada lóbulo de cor.
+- **`level`**: um número de 0 a 1, ou uma função lida a cada quadro (`level={() => meter.current}`), para
+  quando o nível já vem de outro lugar — o áudio de resposta do agente, por exemplo. A função não causa
+  re-render.
+
+Os padrões Blips pintam os lóbulos e a faixa de luz com o amarelo da marca (`#FCBA28`) e os tons
+`--chart-*`, mais escuros no tema claro; a variação de matiz fica curta para não sair do amarelo, o halo é um
+pouco mais curto (densidade mira) e o tema segue a classe `.dark` da `@blips/ui` no `<html>` — o original
+usa `dark` fixo.
+
+Qualquer prop explícita vence o padrão. O `VoiceBeam` e o `useMicrophone` originais também são exportados,
+sem padrões:
+
+```tsx
+import { useMicrophone, VoiceBeam } from "@blips/ai/fx/voice-glow"
+```
+
+### Microfone e SSR
+
+O efeito só acessa o navegador dentro de efeitos: no servidor sai o contêiner com o filho, e o brilho liga
+no cliente. Prefira o `useBlipsMicrophone` ao `useMicrophone` original: o original lê `navigator` no
+primeiro render e o HTML do servidor diverge do cliente na hidratação. O `useBlipsMicrophone` devolve
+`supported: false` e `state: "idle"` até montar.
+
+Chame `start()` a partir de um clique: o Safari só libera o áudio dentro de um gesto do usuário.
+
+## Exemplos
+
+### Hospedeiros
+
+`type` ajusta a geometria ao elemento envolvido: `default` para o campo do chat (cerca de 350 px de
+largura), `pill` para uma pílula de gravação e `mobile` para a base de uma tela de celular.
+
+<ComponentPreview name="ai-voice-glow-types" />
+
+### Cores
+
+Sem `colors` nem `colorVariant`, valem as cores Blips. Passar `colorVariant` troca para a paleta do
+original; `colors` preenche os lóbulos que você listar (centro primeiro, depois os pares para fora) e os
+demais ficam com a paleta. `bandColors` pinta a faixa de luz.
+
+<ComponentPreview name="ai-voice-glow-cores" />
+
+## Referência da API
+
+### BlipsVoiceBeam
+
+Aceita todas as props do `VoiceBeam` (e as da `<div>`, exceto `children`, que é obrigatório). Encaminha
+`ref` para a `<div>` raiz. As principais:
+
+| Prop               | Tipo                                                                                    | Padrão Blips                 |
+| ------------------ | --------------------------------------------------------------------------------------- | ---------------------------- |
+| `children`         | `ReactNode`                                                                             | obrigatório                  |
+| `stream`           | `MediaStream \| null`                                                                   | `null`                       |
+| `level`            | `number \| (() => number)` (0–1)                                                        | `0`                          |
+| `active`           | `boolean`                                                                               | `true`                       |
+| `paused`           | `boolean`                                                                               | `false`                      |
+| `type`             | `"default" \| "pill" \| "mobile"`                                                       | `"default"`                  |
+| `theme`            | `"dark" \| "light" \| "auto"`                                                           | tema do documento            |
+| `colors`           | `string[]` (até 7; `#rgb`, `#rrggbb` ou `rgb()`)                                        | `BLIPS_VOICE_GLOW_COLORS`    |
+| `bandColors`       | `{ core?, above?, mid?, below? }` (strings de cor)                                      | `BLIPS_VOICE_GLOW_BAND_COLORS` |
+| `colorVariant`     | `"colorful" \| "mono" \| "ocean" \| "sunset" \| "forest" \| "candy" \| "ice" \| "gold"` | `"gold"` (base dos slots)    |
+| `hueRange`         | `number` (graus)                                                                        | `12`                         |
+| `glowSize`         | `number`                                                                                | `0.85`                       |
+| `staticColors`     | `boolean`                                                                               | `false`                      |
+| `scale`            | `number`                                                                                | `1` (`0.45` em `pill`, `1.25` em `mobile`) |
+| `sensitivity`      | `number`                                                                                | `3.1`                        |
+| `threshold`        | `number` (0–1)                                                                          | `0.015`                      |
+| `attack`           | `number` (segundos)                                                                     | `0.325`                      |
+| `release`          | `number` (segundos)                                                                     | `0.86`                       |
+| `idle`             | `number` (0–1)                                                                          | `0.18`                       |
+| `bands`            | `boolean`                                                                               | `true`                       |
+| `flow`             | `number` (px/s)                                                                         | `48` (`0` em `pill`, `60` em `mobile`) |
+| `strength`         | `number` (0–1)                                                                          | `1` (escuro) / `0.8` (claro; `1` em `mobile`) |
+| `borderRadius`     | `number` (px)                                                                           | lido do filho                |
+| `css`              | `string`                                                                                | —                            |
+| `onLevel`          | `(level: number) => void`                                                               | —                            |
+| `onActivate`       | `() => void`                                                                            | —                            |
+| `onDeactivate`     | `() => void`                                                                            | —                            |
+
+O `VoiceBeam` tem ainda dezenas de props de ajuste fino da forma (`reach`, `spread`, `bend`, `band*`,
+`distortion`, `glow*`, `range*`, `core*`, `*Opacity`, `*Scale`); estão documentadas no tipo `VoiceBeamProps`.
+As props de superfície (`look="dots"`/`"lines"`, `dot*`, `line*`, `surface*`) ainda não foram lançadas pelo
+original: nesta versão `look` é sempre `glow` (`VOICE_SURFACE_LOOKS` é `false`).
+
+As cores Blips só entram quando nem `colors` nem `colorVariant` são passados; `bandColors` explícito vence a
+faixa. `BLIPS_VOICE_GLOW_DEFAULTS` exporta os demais padrões.
+
+### useBlipsMicrophone
+
+Mesmas opções e retorno do `useMicrophone` original, seguro para SSR.
+
+| Retorno     | Tipo                                                                          |
+| ----------- | ----------------------------------------------------------------------------- |
+| `stream`    | `MediaStream \| null`                                                         |
+| `state`     | `"idle" \| "requesting" \| "live" \| "denied" \| "unsupported" \| "error"`    |
+| `error`     | `Error \| null`                                                               |
+| `supported` | `boolean` (`false` até montar)                                                |
+| `start`     | `() => Promise<MediaStream \| null>`                                          |
+| `stop`      | `() => void`                                                                  |
+
+Opções: `constraints` (`MediaTrackConstraints`; o padrão desliga cancelamento de eco, supressão de ruído e
+ganho automático, para o brilho ver a dinâmica real da voz) e `autoStart` (pede o microfone ao montar).
+
+Também são exportados os tipos `VoiceBeamProps`, `VoiceBeamType`, `VoiceBeamTheme`, `VoiceBeamColorVariant`,
+`VoiceBeamLevel`, `VoiceBeamMotion`, `UseMicrophoneOptions`, `UseMicrophoneResult`, `MicrophoneState` e
+`BlipsVoiceBeamProps`, além dos utilitários do original (`isAudioSupported`, `getAudioContext`, `parseRgb`,
+`voicePalettes`, `voiceDefaults`, `voiceTypePresets`).
+
+## Origem
+
+Envolve o pacote [voice-glow](https://github.com/Jakubantalik/Libraries.dev/tree/9f59769/packages/voice-glow)
+do [libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT), versão 0.3.0, copiado sem
+modificação para `src/vendor/voice-glow` por não estar publicado no npm. A Blips acrescenta os padrões
+(cores, halo e tema) e o `useBlipsMicrophone`; a renderização é a do pacote.

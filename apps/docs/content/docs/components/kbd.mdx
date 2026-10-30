@@ -14,7 +14,7 @@ npm install @blips/ui
 ## Uso
 
 ```tsx
-import { Kbd } from "@blips/ui/components/kbd"
+import { Kbd, KbdGroup } from "@blips/ui/components/kbd"
 ```
 
 ```tsx
@@ -29,15 +29,21 @@ Use o componente `KbdGroup` para agrupar teclas do teclado.
 
 <ComponentPreview name="kbd-group" />
 
+### Com ícone
+
+O `Kbd` aceita ícones, sozinhos ou acompanhados de texto.
+
+<ComponentPreview name="kbd-icon" />
+
 ### Botão
 
-Use o componente `Kbd` dentro de um `Button` para exibir uma tecla do teclado dentro de um botão.
+Use o componente `Kbd` dentro de um `Button` para exibir uma tecla do teclado dentro de um botão. Passe `data-icon="inline-end"` para o botão reduzir o padding do lado da tecla.
 
 <ComponentPreview name="kbd-button" />
 
 ### Tooltip
 
-Use o componente `Kbd` dentro de um `Tooltip` para exibir uma dica com uma tecla do teclado.
+Use o componente `Kbd` dentro de um `Tooltip` para exibir uma dica com uma tecla do teclado. Dentro do `TooltipContent`, o `Kbd` troca as cores sozinho para contrastar com o fundo da dica.
 
 <ComponentPreview name="kbd-tooltip" />
 
@@ -51,11 +57,11 @@ Use o componente `Kbd` dentro de um `InputGroupAddon` para exibir uma tecla do t
 
 ### Kbd
 
-Use o componente `Kbd` para exibir uma tecla do teclado.
+Use o componente `Kbd` para exibir uma tecla do teclado. Renderiza um elemento `<kbd>`.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | ``      |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ```tsx
 <Kbd>Ctrl</Kbd>
@@ -65,9 +71,9 @@ Use o componente `Kbd` para exibir uma tecla do teclado.
 
 Use o componente `KbdGroup` para agrupar componentes `Kbd`.
 
-| Prop        | Type     | Default |
-| ----------- | -------- | ------- |
-| `className` | `string` | ``      |
+| Prop        | Tipo     | Padrão |
+| ----------- | -------- | ------ |
+| `className` | `string` | -      |
 
 ```tsx
 <KbdGroup>
@@ -75,3 +81,10 @@ Use o componente `KbdGroup` para agrupar componentes `Kbd`.
   <Kbd>B</Kbd>
 </KbdGroup>
 ```
+
+## Migrando da v2
+
+A API não mudou. Só o visual:
+
+- O raio passou de `rounded-sm` para `rounded-xs` e o texto de `text-xs` para `text-[0.625rem]`.
+- O ajuste de cores dentro de tooltips agora usa o seletor `in-data-[slot=tooltip-content]`, que casa com o `data-slot` do `TooltipContent` da v3. Se você estilizava o `Kbd` dentro de um tooltip próprio, dê a ele `data-slot="tooltip-content"`.

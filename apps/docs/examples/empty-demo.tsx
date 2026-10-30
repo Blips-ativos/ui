@@ -7,14 +7,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@blips/ui/components/empty";
-import { FolderPlus } from "@phosphor-icons/react";
+import { FolderPlusIcon } from "@phosphor-icons/react";
 
 export default function EmptyDemo() {
   return (
     <Empty>
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <FolderPlus />
+          <FolderPlusIcon />
         </EmptyMedia>
         <EmptyTitle>Nenhum projeto ainda</EmptyTitle>
         <EmptyDescription>

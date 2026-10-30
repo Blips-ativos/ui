@@ -190,7 +190,7 @@ Tells sutis; não reprovam sozinhos, mas somados deixam "cara de template".
 ## A fórmula: 80% padrão comprovado + 20% escolha distintiva
 
 Mire **~80% padrões comprovados + ~20% escolha distintiva**. Os 80% são o
-shadcn/Radix da `@blips/ui` no tema (não brigue com o sistema). Os 20% — a
+shadcn da `@blips/ui` (Radix na v2.x, Base UI na v3.x) no tema (não brigue com o sistema). Os 20% — a
 "alma" — devem viver em UM destes quatro lugares (não espalhe por todos):
 
 1. **Um movimento visual ousado** — uma decisão de tipografia (`font-display`

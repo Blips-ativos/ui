@@ -9,14 +9,16 @@ Adapte: `web` no --filter e os caminhos ao app real.
 Rota de coexistência Tailwind v3 (ver references/tailwind-v3-preexistente.md):
 substitua os bullets de Tailwind v4 pela realidade do repo — o template não
 pode afirmar o que o repo não é.
-Preencha vX.Y.Z no marcador com a versão do plugin blips-ui.
+Preencha vX.Y.Z no marcador com a versão do plugin blips-ui e a trilha
+(v3.x Base UI / v2.x Radix) conforme a @blips/ui instalada.
 -->
 
 <!-- blips-ui:claude-md:start vX.Y.Z -->
 ## UI — @blips/ui
 
 A interface usa a biblioteca de componentes da Blips (`@blips/ui` — shadcn/ui
-+ Radix + Tailwind v4).
++ Tailwind v4), na trilha **vX.x** (`v3.x` = Base UI · `v2.x` = Radix — preencha
+conforme a versão instalada; as skills seguem a API da trilha).
 
 Com o plugin **blips-ui** instalado, o ciclo de UI é guiado por skills (os
 padrões canônicos vivem nelas — este repo NÃO usa rules de UI):

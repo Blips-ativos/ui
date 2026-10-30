@@ -4,13 +4,17 @@
 
 shadcn/ui charts are built on top of Recharts, wrapped with `ChartContainer`, `ChartTooltip`, and `ChartTooltipContent` from the `chart` primitive. All charts follow a Card + ChartContainer pattern with consistent theming via `ChartConfig`.
 
+> **Versão da lib:** este bloco está na **v3.x — Base UI** (recharts 3, `Select` com `items`,
+> imports por subpath). Para repo **v2.x — Radix** (recharts 2), veja só as diferenças em
+> [v2.x — Radix](#v2x--radix) no fim. Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Core Pattern
 
 Every chart follows this structure:
 
 ```tsx
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/ui/chart"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/ui/card"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@blips/ui/components/chart"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@blips/ui/components/card"
 
 const chartConfig = {
   desktop: {
@@ -58,15 +62,15 @@ const chartConfig = {
 ```tsx
 "use client"
 
-import { TrendUp } from "@phosphor-icons/react"
+import { TrendUpIcon } from "@phosphor-icons/react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
 import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
-} from "@/ui/card"
+} from "@blips/ui/components/card"
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
-} from "@/ui/chart"
+} from "@blips/ui/components/chart"
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -117,7 +121,7 @@ export function ChartAreaDefault() {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 leading-none font-medium">
-              Trending up by 5.2% this month <TrendUp className="h-4 w-4" />
+              Trending up by 5.2% this month <TrendUpIcon className="h-4 w-4" />
             </div>
             <div className="flex items-center gap-2 leading-none text-muted-foreground">
               January - June 2024
@@ -153,11 +157,11 @@ import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
-} from "@/ui/card"
+} from "@blips/ui/components/card"
 import {
   ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig,
-} from "@/ui/chart"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/ui/select"
+} from "@blips/ui/components/chart"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@blips/ui/components/select"
 
 // chartData: daily entries from 2024-04-01 to 2024-06-30 with desktop + mobile
 
@@ -188,7 +192,12 @@ export function ChartAreaInteractive() {
           <CardTitle>Area Chart - Interactive</CardTitle>
           <CardDescription>Showing total visitors for the last 3 months</CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
+        {/* v3.x: items faz o SelectValue mostrar o rótulo, não o value cru ("90d") */}
+        <Select
+          items={{ "90d": "Last 3 months", "30d": "Last 30 days", "7d": "Last 7 days" }}
+          value={timeRange}
+          onValueChange={(value) => value && setTimeRange(value)}
+        >
           <SelectTrigger className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex" aria-label="Select a value">
             <SelectValue placeholder="Last 3 months" />
           </SelectTrigger>
@@ -253,15 +262,15 @@ export function ChartAreaInteractive() {
 ```tsx
 "use client"
 
-import { TrendUp } from "@phosphor-icons/react"
+import { TrendUpIcon } from "@phosphor-icons/react"
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
 import {
   Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,
-} from "@/ui/card"
+} from "@blips/ui/components/card"
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig,
-} from "@/ui/chart"
+} from "@blips/ui/components/chart"
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -295,7 +304,7 @@ export function ChartBarDefault() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 leading-none font-medium">
-          Trending up by 5.2% this month <TrendUp className="h-4 w-4" />
+          Trending up by 5.2% this month <TrendUpIcon className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           Showing total visitors for the last 6 months
@@ -348,7 +357,7 @@ return (
             >
               <span className="text-xs text-muted-foreground">{chartConfig[chart].label}</span>
               <span className="text-lg leading-none font-bold sm:text-3xl">
-                {total[key as keyof typeof total].toLocaleString()}
+                {total[key as keyof typeof total].toLocaleString("pt-BR")}
               </span>
             </button>
           )
@@ -451,7 +460,7 @@ For donut with center text, add `<Label>` inside `<Pie>`:
         return (
           <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
             <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-3xl font-bold">
-              {totalVisitors.toLocaleString()}
+              {totalVisitors.toLocaleString("pt-BR")}
             </tspan>
             <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 24} className="fill-muted-foreground">
               Visitors
@@ -466,12 +475,12 @@ For donut with center text, add `<Label>` inside `<Pie>`:
 
 ### chart-pie-interactive: Interactive with Select
 
-Uses `ChartStyle` for dynamic color injection, Select for month switching, and custom `shape` prop with `Sector`:
+Uses `ChartStyle` for dynamic color injection, Select for month switching, and custom `shape` prop with `Sector` (API do recharts 3; na v2.x é `activeIndex` + `activeShape`, ver seção v2.x):
 
 ```tsx
 import { Label, Pie, PieChart, Sector } from "recharts"
 import type { PieSectorDataItem, PieSectorShapeProps } from "recharts/types/polar/Pie"
-import { ChartStyle } from "@/ui/chart"
+import { ChartStyle } from "@blips/ui/components/chart"
 
 // Dynamic shape renderer:
 const renderPieShape = React.useCallback(
@@ -497,7 +506,11 @@ const renderPieShape = React.useCallback(
       <CardTitle>Pie Chart - Interactive</CardTitle>
       <CardDescription>January - June 2024</CardDescription>
     </div>
-    <Select value={activeMonth} onValueChange={setActiveMonth}>
+    <Select
+      items={Object.fromEntries(months.map((key) => [key, chartConfig[key as keyof typeof chartConfig]?.label]))}
+      value={activeMonth}
+      onValueChange={(value) => value && setActiveMonth(value)}
+    >
       <SelectTrigger className="ml-auto h-7 w-[130px] rounded-lg pl-2.5" aria-label="Select a value">
         <SelectValue placeholder="Select month" />
       </SelectTrigger>
@@ -655,3 +668,52 @@ Charts use CSS variables from the theme:
 - `var(--chart-1)` through `var(--chart-5)` for categorical data
 - `var(--primary)` for single-series emphasis
 - Colors are referenced via `var(--color-{key})` where key matches the chartConfig key
+
+---
+
+## v2.x — Radix
+
+O bloco acima vale para a v2.x com estas diferenças (recharts **2.15.x**):
+
+- **`accessibilityLayer`** não é default no recharts 2: mantenha a prop em todos os gráficos.
+- **`Select`** sem `items`: o `SelectValue` já mostra o texto do `SelectItem`.
+
+```tsx
+<Select value={timeRange} onValueChange={setTimeRange}>
+  <SelectTrigger className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex" aria-label="Select a value">
+    <SelectValue placeholder="Last 3 months" />
+  </SelectTrigger>
+  {/* SelectContent igual */}
+</Select>
+```
+
+- **Pie interativo:** `shape`/`PieSectorShapeProps` não existem no recharts 2. Use `activeIndex` +
+  `activeShape`:
+
+```tsx
+import { Label, Pie, PieChart, Sector } from "recharts"
+import type { PieSectorDataItem } from "recharts/types/polar/Pie"
+
+<Pie
+  data={desktopData}
+  dataKey="desktop"
+  nameKey="month"
+  innerRadius={60}
+  strokeWidth={5}
+  activeIndex={activeIndex}
+  activeShape={({ outerRadius = 0, ...props }: PieSectorDataItem) => (
+    <g>
+      <Sector {...props} outerRadius={outerRadius + 10} />
+      <Sector {...props} outerRadius={outerRadius + 25} innerRadius={outerRadius + 12} />
+    </g>
+  )}
+>
+  <Label content={/* center text */} />
+</Pie>
+```
+
+- **Tipos de tooltip/legenda:** `formatter`/`labelFormatter` e conteúdos próprios tipados com
+  os tipos do recharts 2 (`TooltipProps<ValueType, NameType>`); o tooltip esconde valores `0`.
+- **Densidade:** `Card` com `py-6`/`px-6` e `border shadow-sm` e `Select` `h-9` (new-york); as classes
+  `h-7`/`rounded-lg` do bloco continuam válidas como override.
+

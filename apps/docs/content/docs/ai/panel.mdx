@@ -1,0 +1,73 @@
+---
+title: Panel
+description: Caixa posicionada sobre o canvas para título, status e ações do fluxo.
+---
+
+<ComponentPreview name="ai-panel-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai @xyflow/react
+```
+
+Os componentes de canvas (`canvas`, `node`, `edge`, `connection`, `controls`, `panel`, `toolbar`) exigem o
+peer opcional [`@xyflow/react`](https://reactflow.dev) (^12). Ele é importado de forma estática: quem
+importa qualquer um deles precisa ter o `@xyflow/react` instalado. A `@blips/ai` exige `@blips/ui` ^3 e
+React 19.
+
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+A `@blips/ai` **não** importa a folha do React Flow (o pacote é `sideEffects: false`). Importe-a uma vez no
+app — no CSS global ou no componente cliente que monta o canvas. Sem ela, nós, arestas e controles saem
+sem posicionamento:
+
+```tsx
+import "@xyflow/react/dist/style.css"
+```
+
+## Uso
+
+```tsx
+import { Panel } from "@blips/ai/components/panel"
+```
+
+```tsx
+<Canvas nodes={nodes}>
+  <Panel position="top-left">
+    <span className="font-medium text-sm">Fluxo comercial</span>
+  </Panel>
+  <Panel className="flex gap-1" position="top-right">
+    <Button size="sm">Executar</Button>
+  </Panel>
+</Canvas>
+```
+
+`Panel` é o `Panel` do React Flow com moldura de cartão (borda, fundo `card`, `p-1`). Ele fica fixo sobre o
+canvas — não se move com o zoom nem com a rolagem — e entra como filho do [Canvas](/docs/ai/canvas). Use
+para o nome e o status do fluxo, ações (salvar, executar) ou uma legenda. Não traz texto padrão.
+
+O espaçamento até a borda do canvas vem da folha do React Flow (`margin: 15px` em `.react-flow__panel`).
+
+## Referência da API
+
+### Panel
+
+Aceita as props do [`Panel`](https://reactflow.dev/api-reference/components/panel) do React Flow e de
+`<div>`.
+
+| Prop        | Tipo                                                                                     | Padrão       |
+| ----------- | ---------------------------------------------------------------------------------------- | ------------ |
+| `position`  | `"top-left" \| "top-center" \| "top-right" \| "bottom-left" \| "bottom-center" \| "bottom-right" \| "center-left" \| "center-right"` | `"top-left"` |
+| `className` | `string` — mesclado com a moldura                                                         | —            |
+| `children`  | `ReactNode`                                                                              | —            |
+
+## Origem
+
+Adaptado do componente [Panel](https://github.com/vercel/ai-elements) do AI Elements (Vercel, Apache-2.0).
+Mudança da Blips: o tipo `PanelProps` passou a ser exportado; a API não mudou.

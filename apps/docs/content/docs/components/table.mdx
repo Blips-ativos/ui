@@ -5,7 +5,7 @@ description: Um componente de tabela responsivo.
 
 <ComponentPreview name="table-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -32,16 +32,16 @@ import {
     <TableRow>
       <TableHead className="w-[100px]">Fatura</TableHead>
       <TableHead>Status</TableHead>
-      <TableHead>Metodo</TableHead>
+      <TableHead>Forma de pagamento</TableHead>
       <TableHead className="text-right">Valor</TableHead>
     </TableRow>
   </TableHeader>
   <TableBody>
     <TableRow>
-      <TableCell className="font-medium">INV001</TableCell>
+      <TableCell className="font-medium">FAT001</TableCell>
       <TableCell>Pago</TableCell>
-      <TableCell>Cartao de Credito</TableCell>
-      <TableCell className="text-right">$250.00</TableCell>
+      <TableCell>Cartão de crédito</TableCell>
+      <TableCell className="text-right">R$ 250,00</TableCell>
     </TableRow>
   </TableBody>
 </Table>
@@ -49,8 +49,37 @@ import {
 
 ## Exemplos
 
-### Exemplo
+### Com rodapé
 
-Uma tabela completa com cabecalho, corpo e rodape exibindo uma lista de faturas.
+Uma tabela completa com cabeçalho, corpo e rodapé (`TableFooter`) exibindo uma lista de faturas.
 
 <ComponentPreview name="table-demo" />
+
+### Com badges
+
+<ComponentPreview name="table-badges" />
+
+### Com ações
+
+Um `DropdownMenu` por linha. O gatilho recebe o botão pela prop `render`.
+
+<ComponentPreview name="table-actions" />
+
+## Data Table
+
+Para ordenação, filtros e paginação, combine o `Table` com o [TanStack Table](https://tanstack.com/table).
+
+## Migrando da v2
+
+A API não mudou (os componentes continuam sendo elementos HTML estilizados). O que muda é o visual:
+
+- A fonte de `Table` e `TableCaption` caiu de `text-sm` para `text-xs`.
+- `TableHead` e `TableCell` perderam `[&>[role=checkbox]]:translate-y-[2px]`. Checkboxes na tabela podem precisar desse ajuste local.
+- `TableRow` ganhou `has-aria-expanded:bg-muted/50`: a linha com conteúdo expandido fica destacada.
+
+```tsx
+// Para recuperar o alinhamento antigo do checkbox
+<TableCell className="[&>[role=checkbox]]:translate-y-[2px]">
+  <Checkbox />
+</TableCell>
+```

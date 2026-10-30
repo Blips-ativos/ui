@@ -2,58 +2,30 @@
 
 Import: `@blips/ui/components/pagination`
 
-## Sub-components
+Navegação entre páginas de uma lista. Em Data Table, a paginação costuma ser só
+"Anterior / Próxima" com contagem (veja `components/data-table/pagination.md`);
+use este componente quando houver páginas numeradas.
 
-| Component | Element | Description |
-|-----------|---------|-------------|
-| `Pagination` | `<nav>` | Root container with `aria-label="pagination"`. Centered flex layout. |
-| `PaginationContent` | `<ul>` | Horizontal list of pagination items with `gap-1`. Uses `forwardRef`. |
-| `PaginationItem` | `<li>` | Wrapper for individual pagination elements. Uses `forwardRef`. |
-| `PaginationLink` | `<a>` | Page number link. Uses `buttonVariants` for styling. Supports active state. |
-| `PaginationPrevious` | `PaginationLink` | "Previous" navigation with left chevron icon and text label. |
-| `PaginationNext` | `PaginationLink` | "Next" navigation with right chevron icon and text label. |
-| `PaginationEllipsis` | `<span>` | Dots indicator (...) for skipped page ranges. Hidden from screen readers. |
+Exports (iguais nas duas versões): `Pagination`, `PaginationContent`,
+`PaginationItem`, `PaginationLink`, `PaginationPrevious`, `PaginationNext`,
+`PaginationEllipsis`.
 
-## Props & Variants
+## Notas comuns
 
-### Pagination
+- `Pagination` é um `<nav aria-label="pagination">`; `PaginationContent` um `<ul>`; `PaginationItem` um `<li>`.
+- `PaginationLink` renderiza um `<a>` com visual de Button: `isActive` (variante `outline` + `aria-current="page"`; senão `ghost`) e `size` (padrão `"icon"`). Aceita as props de `<a>` (`href`, `onClick`).
+- `PaginationPrevious`/`PaginationNext` usam `size="default"` e escondem o texto abaixo de `sm`.
+- `PaginationEllipsis` mostra `…` com `sr-only` "More pages".
+- Não há `asChild`/`render` no `PaginationLink`: para paginação controlada por estado, use `href="#"` + `onClick` com `preventDefault()`, ou `href` com a query (`?page=2`).
+- Ícones Phosphor (carets e três pontos).
 
-Standard `React.ComponentProps<'nav'>`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-**Default styles:**
-- `mx-auto flex w-full justify-center`
+## v3.x — Base UI
 
-### PaginationLink
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `isActive` | `boolean` | `false` | Highlights as current page. Uses `outline` variant when active, `ghost` otherwise. |
-| `size` | `VariantProps<typeof buttonVariants>['size']` | `"icon"` | Button size variant |
-| `href` | `string` | - | Link target |
-
-**Active state:**
-- Active: `buttonVariants({ variant: "outline" })` + `aria-current="page"`
-- Inactive: `buttonVariants({ variant: "ghost" })`
-
-### PaginationPrevious / PaginationNext
-
-Extend `PaginationLink` props. Override `size` to `"default"`.
-
-**PaginationPrevious styles:** `gap-1 pl-2.5`
-**PaginationNext styles:** `gap-1 pr-2.5`
-
-### PaginationEllipsis
-
-Standard `React.ComponentProps<'span'>`.
-
-**Default styles:**
-- `flex h-9 w-9 items-center justify-center`
-- Contains `DotsThree` icon + screen-reader text "More pages"
-- `aria-hidden` on the span
-
-## Usage
-
-### Basic Pagination
+- `PaginationLink` é `<Button nativeButton={false} render={<a … />}>` (Button Base UI). O elemento final continua `<a>`.
+- **`PaginationPrevious` e `PaginationNext` têm a prop `text`** (padrão `"Previous"`/`"Next"`): traduza com `text="Anterior"` / `text="Próxima"`.
+- Visual: `PaginationContent gap-0.5`; tamanhos do Button v3 (`icon` = `size-7`, `default` = `h-7`); ellipsis `size-7`. Os ícones de Anterior/Próxima não giram em RTL.
 
 ```tsx
 import {
@@ -64,81 +36,93 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@blips/ui/components/pagination"
+} from "@blips/ui/components/pagination";
 
-<Pagination>
-  <PaginationContent>
-    <PaginationItem>
-      <PaginationPrevious href="#" />
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="#">1</PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="#" isActive>
-        2
-      </PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationLink href="#">3</PaginationLink>
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationEllipsis />
-    </PaginationItem>
-    <PaginationItem>
-      <PaginationNext href="#" />
-    </PaginationItem>
-  </PaginationContent>
-</Pagination>
-```
+export function Paginacao({
+  pagina,
+  totalPaginas,
+  onMudar,
+}: {
+  pagina: number;
+  totalPaginas: number;
+  onMudar: (pagina: number) => void;
+}) {
+  const ir = (p: number) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (p >= 1 && p <= totalPaginas) onMudar(p);
+  };
 
-### Controlled Pagination (with onClick)
-
-```tsx
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@blips/ui/components/pagination"
-
-function PaginatedList({ totalPages, currentPage, onPageChange }) {
   return (
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          <PaginationPrevious
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              onPageChange(currentPage - 1)
-            }}
-          />
+          <PaginationPrevious href="#" text="Anterior" onClick={ir(pagina - 1)} />
         </PaginationItem>
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <PaginationItem key={page}>
-            <PaginationLink
-              href="#"
-              isActive={page === currentPage}
-              onClick={(e) => {
-                e.preventDefault()
-                onPageChange(page)
-              }}
-            >
-              {page}
+        {[1, 2, 3].map((p) => (
+          <PaginationItem key={p}>
+            <PaginationLink href="#" isActive={p === pagina} onClick={ir(p)}>
+              {p}
             </PaginationLink>
           </PaginationItem>
         ))}
         <PaginationItem>
-          <PaginationNext
-            href="#"
-            onClick={(e) => {
-              e.preventDefault()
-              onPageChange(currentPage + 1)
-            }}
-          />
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationNext href="#" text="Próxima" onClick={ir(pagina + 1)} />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
+```
+
+## v2.x — Radix
+
+- `PaginationLink` é um `<a>` com `buttonVariants` aplicado.
+- `PaginationPrevious`/`PaginationNext` **não têm `text`**: o rótulo é fixo em inglês ("Previous"/"Next"). Para pt-BR, monte com `PaginationLink` direto.
+- Visual: `gap-1`; tamanhos do Button v2 (`icon` = `size-9`, `default` = `h-9`); ellipsis `size-9`.
+
+```tsx
+import { CaretLeft, CaretRight } from "@phosphor-icons/react"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+} from "@blips/ui/components/pagination"
+
+export function Paginacao({ pagina, onMudar }: { pagina: number; onMudar: (p: number) => void }) {
+  const ir = (p: number) => (e: React.MouseEvent) => {
+    e.preventDefault()
+    onMudar(p)
+  }
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationLink href="#" size="default" className="gap-1 px-2.5" aria-label="Página anterior" onClick={ir(pagina - 1)}>
+            <CaretLeft />
+            <span className="hidden sm:block">Anterior</span>
+          </PaginationLink>
+        </PaginationItem>
+        {[1, 2, 3].map((p) => (
+          <PaginationItem key={p}>
+            <PaginationLink href="#" isActive={p === pagina} onClick={ir(p)}>
+              {p}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem>
+          <PaginationEllipsis />
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink href="#" size="default" className="gap-1 px-2.5" aria-label="Próxima página" onClick={ir(pagina + 1)}>
+            <span className="hidden sm:block">Próxima</span>
+            <CaretRight />
+          </PaginationLink>
         </PaginationItem>
       </PaginationContent>
     </Pagination>
@@ -146,13 +130,6 @@ function PaginatedList({ totalPages, currentPage, onPageChange }) {
 }
 ```
 
-## Project Notes
+## Exemplos na docs
 
-- Uses `@phosphor-icons/react` (`CaretLeft`, `CaretRight`, `DotsThree`).
-- Uses `buttonVariants` from `@selfie/ui/components/button` for link styling.
-- The component uses `forwardRef` pattern for `PaginationContent` and `PaginationItem`.
-- The project has a custom `pagination.tsx` noted in `packages/ui/CLAUDE.md` -- this is the shadcn-based pagination component.
-
-## All Examples
-
-- `pagination-demo` - Standard pagination with previous, numbered pages, ellipsis, and next
+`pagination-demo`, `pagination-simple`, `pagination-select` (em `apps/docs/examples/`, escritos para a v3).

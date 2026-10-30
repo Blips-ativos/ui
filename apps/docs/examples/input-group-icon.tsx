@@ -4,43 +4,43 @@ import {
   InputGroupInput,
 } from "@blips/ui/components/input-group";
 import {
-  Check,
-  CreditCard,
-  Info,
-  EnvelopeSimple,
-  MagnifyingGlass,
-  Star,
+  CheckIcon,
+  CreditCardIcon,
+  EnvelopeSimpleIcon,
+  InfoIcon,
+  MagnifyingGlassIcon,
+  StarIcon,
 } from "@phosphor-icons/react";
 
 export default function InputGroupIcon() {
   return (
     <div className="grid w-full max-w-sm gap-6">
       <InputGroup>
-        <InputGroupInput placeholder="MagnifyingGlass..." />
+        <InputGroupInput placeholder="Buscar..." />
         <InputGroupAddon>
-          <MagnifyingGlass />
+          <MagnifyingGlassIcon />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
-        <InputGroupInput type="email" placeholder="Enter your email" />
+        <InputGroupInput type="email" placeholder="Digite seu e-mail" />
         <InputGroupAddon>
-          <EnvelopeSimple />
+          <EnvelopeSimpleIcon />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
-        <InputGroupInput placeholder="Card number" />
+        <InputGroupInput placeholder="Número do cartão" />
         <InputGroupAddon>
-          <CreditCard />
+          <CreditCardIcon />
         </InputGroupAddon>
         <InputGroupAddon align="inline-end">
-          <Check />
+          <CheckIcon />
         </InputGroupAddon>
       </InputGroup>
       <InputGroup>
-        <InputGroupInput placeholder="Card number" />
+        <InputGroupInput placeholder="Número do cartão" />
         <InputGroupAddon align="inline-end">
-          <Star />
-          <Info />
+          <StarIcon />
+          <InfoIcon />
         </InputGroupAddon>
       </InputGroup>
     </div>

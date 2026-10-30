@@ -1,0 +1,198 @@
+---
+title: Queue
+description: Fila do agente em seções recolhíveis, com mensagens aguardando envio, tarefas pendentes e concluídas e anexos.
+---
+
+<ComponentPreview name="ai-queue-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Nenhum peer opcional é exigido, e o componente não importa nada do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Queue,
+  QueueItem,
+  QueueItemContent,
+  QueueItemIndicator,
+  QueueList,
+  QueueSection,
+  QueueSectionContent,
+  QueueSectionLabel,
+  QueueSectionTrigger,
+} from "@blips/ai/components/queue"
+```
+
+```tsx
+<Queue>
+  <QueueSection>
+    <QueueSectionTrigger>
+      <QueueSectionLabel count={pendentes.length} label="tarefas pendentes" />
+    </QueueSectionTrigger>
+    <QueueSectionContent>
+      <QueueList>
+        {tarefas.map((tarefa) => (
+          <QueueItem key={tarefa.id}>
+            <div className="flex items-center gap-2">
+              <QueueItemIndicator completed={tarefa.status === "completed"} />
+              <QueueItemContent completed={tarefa.status === "completed"}>
+                {tarefa.title}
+              </QueueItemContent>
+            </div>
+          </QueueItem>
+        ))}
+      </QueueList>
+    </QueueSectionContent>
+  </QueueSection>
+</Queue>
+```
+
+O componente é apresentacional: ele não guarda a fila. O app mantém as mensagens e tarefas (por exemplo, mensagens que o usuário mandou enquanto o agente ainda respondia, ou a lista de afazeres de uma ferramenta) e renderiza um `QueueItem` por entrada. Os tipos `QueueMessage`, `QueueMessagePart` e `QueueTodo` descrevem esses dados, mas nenhum componente os recebe direto: use-os para tipar o estado do app, se servirem.
+
+Cada `QueueSection` abre por padrão (`defaultOpen` é `true`). O `QueueSectionLabel` monta o texto como "`count` `label`", então escreva o `label` no plural e em minúsculas ("tarefas pendentes"). A seta gira quando a seção fecha.
+
+### Ações e anexos
+
+`QueueItemActions` fica à direita do item, e cada `QueueItemAction` é um botão de ícone que só aparece com o mouse sobre o item. Como o botão só tem ícone, passe `aria-label`. Para anexos, `QueueItemAttachment` agrupa `QueueItemImage` (miniatura de 32 px) e `QueueItemFile` (nome com ícone de clipe, truncado em 100 px).
+
+```tsx
+<QueueItem>
+  <div className="flex items-center gap-2">
+    <QueueItemIndicator />
+    <QueueItemContent>Pode incluir o contrato da filial também?</QueueItemContent>
+    <QueueItemActions>
+      <QueueItemAction aria-label="Remover da fila" onClick={remover}>
+        <TrashIcon className="size-3" />
+      </QueueItemAction>
+    </QueueItemActions>
+  </div>
+  <QueueItemAttachment>
+    <QueueItemFile>contrato-filial.pdf</QueueItemFile>
+  </QueueItemAttachment>
+</QueueItem>
+```
+
+## Referência da API
+
+### Queue
+
+Contêiner com borda arredondada e sombra leve. Aceita as props de `div`.
+
+### QueueSection
+
+[Collapsible](/docs/components/collapsible) da `@blips/ui`. Aceita as props dele.
+
+| Prop          | Tipo      | Padrão |
+| ------------- | --------- | ------ |
+| `defaultOpen` | `boolean` | `true` |
+
+### QueueSectionTrigger
+
+Cabeçalho clicável da seção (o `CollapsibleTrigger`, que já renderiza um `<button>`). Aceita as props de `button`.
+
+### QueueSectionLabel
+
+Texto do cabeçalho com a seta, um ícone opcional e a contagem. Aceita as props de `span`.
+
+| Prop    | Tipo        | Padrão      |
+| ------- | ----------- | ----------- |
+| `label` | `string`    | obrigatória |
+| `count` | `number`    |             |
+| `icon`  | `ReactNode` |             |
+
+### QueueSectionContent
+
+Conteúdo que abre e fecha. Aceita as props do `CollapsibleContent`.
+
+### QueueList
+
+Lista com rolagem ([ScrollArea](/docs/components/scroll-area)) e altura máxima de `max-h-40`; os filhos vão dentro de um `<ul>`. Aceita as props do `ScrollArea`.
+
+### QueueItem
+
+Item `<li>` com fundo no hover. Aceita as props de `li`.
+
+### QueueItemIndicator
+
+Bolinha de status. Aceita as props de `span`.
+
+| Prop        | Tipo      | Padrão  |
+| ----------- | --------- | ------- |
+| `completed` | `boolean` | `false` |
+
+### QueueItemContent
+
+Texto do item numa linha só (`line-clamp-1`), riscado quando concluído. Aceita as props de `span`.
+
+| Prop        | Tipo      | Padrão  |
+| ----------- | --------- | ------- |
+| `completed` | `boolean` | `false` |
+
+### QueueItemDescription
+
+Texto secundário recuado, riscado quando concluído. Aceita as props de `div`.
+
+| Prop        | Tipo      | Padrão  |
+| ----------- | --------- | ------- |
+| `completed` | `boolean` | `false` |
+
+### QueueItemActions
+
+Linha de ações. Aceita as props de `div`.
+
+### QueueItemAction
+
+[Button](/docs/components/button) `ghost` de ícone, visível só com o mouse sobre o item. Aceita as props do `Button`, menos `variant` e `size`.
+
+### QueueItemAttachment
+
+Linha de anexos com quebra. Aceita as props de `div`.
+
+### QueueItemImage
+
+Miniatura `<img>` de 32 × 32 px. Aceita as props de `img`; `alt` é `""` por padrão (decorativa), passe um texto se a imagem informar algo.
+
+### QueueItemFile
+
+Etiqueta com `PaperclipIcon` e o nome truncado. Aceita as props de `span`.
+
+### Tipos
+
+```ts
+interface QueueMessagePart {
+  type: string
+  text?: string
+  url?: string
+  filename?: string
+  mediaType?: string
+}
+
+interface QueueMessage {
+  id: string
+  parts: QueueMessagePart[]
+}
+
+interface QueueTodo {
+  id: string
+  title: string
+  description?: string
+  status?: "pending" | "completed"
+}
+```
+
+## Origem
+
+Adaptado do componente [Queue](https://elements.ai-sdk.dev/components/queue) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as primitivas Radix pelo Collapsible, pelo ScrollArea e pelo Button da `@blips/ui` (Base UI) e os ícones Lucide pelos do Phosphor.

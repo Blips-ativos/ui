@@ -5,12 +5,7 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@blips/ui/components/input-group";
-import {
-  Copy,
-  ArrowBendDownLeft,
-  FileCode,
-  ArrowsClockwise,
-} from "@phosphor-icons/react";
+import { ArrowClockwiseIcon, CodeIcon, CopyIcon } from "@phosphor-icons/react";
 
 export default function InputGroupTextareaExample() {
   return (
@@ -18,26 +13,28 @@ export default function InputGroupTextareaExample() {
       <InputGroup>
         <InputGroupTextarea
           id="textarea-code-32"
-          placeholder="console.log('Hello, world!');"
-          className="min-h-[200px]"
+          placeholder="console.log('Olá, mundo!');"
+          className="min-h-[200px] py-3"
         />
-        <InputGroupAddon align="block-end" className="border-t">
-          <InputGroupText>Line 1, Column 1</InputGroupText>
-          <InputGroupButton size="sm" className="ml-auto" variant="default">
-            Run <ArrowBendDownLeft />
-          </InputGroupButton>
-        </InputGroupAddon>
         <InputGroupAddon align="block-start" className="border-b">
-          <InputGroupText className="font-mono font-medium">
-            <FileCode />
+          <InputGroupText className="font-medium font-mono">
+            <CodeIcon />
             script.js
           </InputGroupText>
-          <InputGroupButton className="ml-auto" size="icon-xs">
-            <ArrowsClockwise />
+          <InputGroupButton
+            size="icon-xs"
+            className="ml-auto"
+            aria-label="Recarregar"
+          >
+            <ArrowClockwiseIcon />
           </InputGroupButton>
-          <InputGroupButton variant="ghost" size="icon-xs">
-            <Copy />
+          <InputGroupButton size="icon-xs" variant="ghost" aria-label="Copiar">
+            <CopyIcon />
           </InputGroupButton>
+        </InputGroupAddon>
+        <InputGroupAddon align="block-end" className="border-t">
+          <InputGroupText>Linha 1, Coluna 1</InputGroupText>
+          <InputGroupText className="ml-auto">JavaScript</InputGroupText>
         </InputGroupAddon>
       </InputGroup>
     </div>

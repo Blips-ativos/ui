@@ -1,0 +1,19 @@
+{
+  "name": "fixture-ai-fail",
+  "private": true,
+  "description": "Fixture da blips-ui:reviewing: app com @blips/ai violando cada regra (check.mjs acusa todas).",
+  "dependencies": {
+    "@blips/ai": "^0.1.0",
+    "@blips/ui": "^3.0.0",
+    "@phosphor-icons/react": "^2.1.10",
+    "next": "^16.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.0.0",
+    "streamdown": "^2.7.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.9.0"
+  }
+}

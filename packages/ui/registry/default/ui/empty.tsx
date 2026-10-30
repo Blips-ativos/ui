@@ -8,7 +8,7 @@ function Empty({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="empty"
       className={cn(
-        "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-balance text-center",
+        "flex w-full min-w-0 flex-1 flex-col items-center justify-center gap-4 rounded-xl border-dashed p-6 text-center text-balance",
         className
       )}
       {...props}
@@ -20,22 +20,19 @@ function EmptyHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="empty-header"
-      className={cn(
-        "flex max-w-sm flex-col items-center gap-1 text-center",
-        className
-      )}
+      className={cn("flex max-w-sm flex-col items-center gap-1", className)}
       {...props}
     />
   );
 }
 
 const emptyMediaVariants = cva(
-  "mb-2 flex shrink-0 items-center justify-center",
+  "mb-2 flex shrink-0 items-center justify-center [&_svg]:pointer-events-none [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default: "bg-transparent",
-        icon: "size-8 rounded-md bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4",
+        icon: "flex size-8 shrink-0 items-center justify-center rounded-md bg-muted text-foreground [&_svg:not([class*='size-'])]:size-4",
       },
     },
     defaultVariants: {
@@ -51,9 +48,10 @@ function EmptyMedia({
 }: React.ComponentProps<"div"> & VariantProps<typeof emptyMediaVariants>) {
   return (
     <div
+      // Delta Blips: o slot se chama "empty-media" (v2), não "empty-icon" como no shadcn
       data-slot="empty-media"
       data-variant={variant}
-      className={cn(emptyMediaVariants({ variant }), className)}
+      className={cn(emptyMediaVariants({ variant, className }))}
       {...props}
     />
   );
@@ -63,13 +61,17 @@ function EmptyTitle({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="empty-title"
-      className={cn("text-sm font-medium tracking-tight", className)}
+      className={cn(
+        "font-heading text-sm font-medium tracking-tight",
+        className
+      )}
       {...props}
     />
   );
 }
 
 function EmptyDescription({ className, ...props }: React.ComponentProps<"p">) {
+  // Delta Blips: renderiza <p> de fato (o shadcn tipa como "p" mas renderiza <div>)
   return (
     <p
       data-slot="empty-description"
@@ -98,8 +100,8 @@ function EmptyContent({ className, ...props }: React.ComponentProps<"div">) {
 export {
   Empty,
   EmptyHeader,
-  EmptyMedia,
   EmptyTitle,
   EmptyDescription,
   EmptyContent,
+  EmptyMedia,
 };

@@ -1,0 +1,123 @@
+---
+title: Open in Chat
+description: Menu que abre a pergunta atual em outro chat de IA (Claude, ChatGPT, T3, Scira, v0, Cursor).
+---
+
+<ComponentPreview name="ai-open-in-chat-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Não exige peer opcional. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  OpenIn,
+  OpenInChatGPT,
+  OpenInClaude,
+  OpenInContent,
+  OpenInTrigger,
+} from "@blips/ai/components/open-in-chat"
+```
+
+```tsx
+<OpenIn query="Explique a diferença entre cancelamento e distrato.">
+  <OpenInTrigger />
+  <OpenInContent>
+    <OpenInClaude />
+    <OpenInChatGPT />
+  </OpenInContent>
+</OpenIn>
+```
+
+`OpenIn` guarda a `query` em contexto e é o [Dropdown Menu](/docs/components/dropdown-menu) da `@blips/ui`.
+Cada item de provedor é um link (`<a target="_blank" rel="noopener">`) para o chat externo com a `query`
+na URL: nada é enviado por API. Os itens só funcionam dentro de um `OpenIn`; fora dele, lançam erro.
+
+| Item            | Destino                         | Título padrão        |
+| --------------- | ------------------------------- | -------------------- |
+| `OpenInClaude`  | `claude.ai/new?q=`              | Abrir no Claude      |
+| `OpenInChatGPT` | `chatgpt.com/?hints=search&prompt=` | Abrir no ChatGPT |
+| `OpenInT3`      | `t3.chat/new?q=`                | Abrir no T3 Chat     |
+| `OpenInScira`   | `scira.ai/?q=`                  | Abrir no Scira       |
+| `OpenInv0`      | `v0.app?q=`                     | Abrir no v0          |
+| `OpenInCursor`  | `cursor.com/link/prompt?text=`  | Abrir no Cursor      |
+
+A consulta vai inteira na URL do provedor. Não passe dados sensíveis de cliente na `query`.
+
+### Gatilho
+
+Sem props, `OpenInTrigger` é um `Button` `variant="outline"` com "Abrir no chat" e uma seta. `children` troca o
+conteúdo do botão; para trocar o elemento, passe `render` (padrão do Base UI, no lugar do `asChild` do Radix).
+
+## Exemplos
+
+### Gatilho e títulos próprios
+
+Botão só com ícone via `render` e títulos trocados por `children` em cada item.
+
+<ComponentPreview name="ai-open-in-chat-trigger" />
+
+## Referência da API
+
+### OpenIn
+
+`DropdownMenu` da `@blips/ui` com contexto da consulta. Aceita as props do `DropdownMenu`.
+
+| Prop    | Tipo     | Padrão      |
+| ------- | -------- | ----------- |
+| `query` | `string` | obrigatória |
+
+### OpenInTrigger
+
+`DropdownMenuTrigger`.
+
+| Prop       | Tipo           | Padrão                                       |
+| ---------- | -------------- | -------------------------------------------- |
+| `render`   | elemento React | `<Button type="button" variant="outline" />` |
+| `children` | `ReactNode`    | "Abrir no chat" + `CaretDownIcon`            |
+
+### OpenInContent
+
+`DropdownMenuContent` com `align="start"` e largura de 240 px.
+
+### Itens de provedor
+
+`OpenInClaude`, `OpenInChatGPT`, `OpenInT3`, `OpenInScira`, `OpenInv0` e `OpenInCursor` aceitam as props do
+`DropdownMenuItem`. `children` troca o título padrão; ícone do provedor e seta de link externo continuam.
+
+### OpenInItem, OpenInLabel, OpenInSeparator
+
+`DropdownMenuItem`, `DropdownMenuLabel` e `DropdownMenuSeparator` da `@blips/ui`, para itens e seções próprias.
+
+O `OpenInLabel` é o `Menu.GroupLabel` do Base UI e precisa estar dentro de um `DropdownMenuGroup` (de
+`@blips/ui/components/dropdown-menu`); fora de um grupo, o Base UI lança erro quando o menu abre.
+
+```tsx
+<OpenInContent>
+  <DropdownMenuGroup>
+    <OpenInLabel>Continuar a conversa em</OpenInLabel>
+    <OpenInClaude />
+    <OpenInChatGPT />
+  </DropdownMenuGroup>
+</OpenInContent>
+```
+
+## Origem
+
+Adaptado do componente [Open in Chat](https://elements.ai-sdk.dev/components/open-in-chat) do
+[AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips trocou as
+primitivas Radix pelo Dropdown Menu da `@blips/ui` (Base UI), os ícones Lucide pelos do Phosphor e os títulos
+para pt-BR. Mudanças de API: o gatilho usa `render` em vez de `asChild` (no upstream, `children` substituía
+o gatilho inteiro; aqui é o conteúdo do botão), e os itens de provedor passaram a aceitar `children` para
+trocar o título. Os SVGs de marca dos provedores são os do upstream.

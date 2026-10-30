@@ -1,0 +1,75 @@
+---
+title: Checkpoint
+description: Marcador de ponto de restauração na conversa, com botão para voltar a ele.
+---
+
+<ComponentPreview name="ai-checkpoint-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+Nenhum peer opcional é exigido, e o componente não importa nada do `ai`. A `@blips/ai` exige `@blips/ui` ^3 e React 19.
+
+Importe o CSS depois do da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import {
+  Checkpoint,
+  CheckpointIcon,
+  CheckpointTrigger,
+} from "@blips/ai/components/checkpoint"
+```
+
+```tsx
+<Checkpoint>
+  <CheckpointIcon />
+  <CheckpointTrigger
+    tooltip="Descarta as mensagens depois deste ponto"
+    onClick={() => restaurar(checkpoint.messageIndex)}
+  >
+    Restaurar até aqui
+  </CheckpointTrigger>
+</Checkpoint>
+```
+
+O `Checkpoint` é uma linha com o ícone, o botão e um [Separator](/docs/components/separator) que ocupa o resto da largura. Ele é apresentacional: guardar os pontos de restauração e cortar o histórico fica com o app. Com o AI SDK, por exemplo, o app guarda o índice da mensagem e, no clique, chama `setMessages(messages.slice(0, indice + 1))` do `useChat`.
+
+Coloque o `Checkpoint` entre as mensagens da [Conversation](/docs/ai/conversation), depois da mensagem em que o ponto foi salvo. As mensagens continuam sendo a [Message](/docs/components/message) da `@blips/ui`, com o [Bubble](/docs/components/bubble) no balão do usuário.
+
+O componente não traz texto padrão: o rótulo do botão e o `tooltip` vêm sempre do app.
+
+## Referência da API
+
+### Checkpoint
+
+Linha com os filhos e um `Separator` no fim. Aceita as props de `div`.
+
+### CheckpointIcon
+
+Ícone `BookmarkSimpleIcon` do Phosphor em `size-4`. Aceita as props de ícone do Phosphor (`IconProps`). Com `children`, renderiza os `children` no lugar do ícone padrão.
+
+### CheckpointTrigger
+
+[Button](/docs/components/button) que dispara a restauração. Aceita as props do `Button`.
+
+| Prop      | Tipo                  | Padrão    |
+| --------- | --------------------- | --------- |
+| `tooltip` | `string`              |           |
+| `variant` | variantes do `Button` | `"ghost"` |
+| `size`    | tamanhos do `Button`  | `"sm"`    |
+
+Com `tooltip`, o botão fica dentro de um [Tooltip](/docs/components/tooltip) que abre embaixo, alinhado ao início.
+
+## Origem
+
+Adaptado do componente [Checkpoint](https://elements.ai-sdk.dev/components/checkpoint) do [AI Elements](https://github.com/vercel/ai-elements), da Vercel, sob a licença Apache-2.0. A Blips usa o Button, o Separator e o Tooltip da `@blips/ui` (Base UI) e trocou o ícone Lucide pelo `BookmarkSimpleIcon` do Phosphor.

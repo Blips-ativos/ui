@@ -1,0 +1,84 @@
+---
+title: Border Beam
+description: Feixe de luz animado em volta da borda, para marcar um elemento em que o agente está trabalhando.
+---
+
+<ComponentPreview name="ai-border-beam-demo" />
+
+## Instalação
+
+```bash
+pnpm add @blips/ai
+```
+
+O `border-beam` não exige peer opcional: o pacote `border-beam` já vem como dependência do `@blips/ai`.
+Importe o CSS depois do tema da `@blips/ui`:
+
+```css
+@import "@blips/ui/globals.css";
+@import "@blips/ai/styles.css";
+```
+
+## Uso
+
+```tsx
+import { BlipsBorderBeam } from "@blips/ai/fx/border-beam"
+```
+
+```tsx
+<BlipsBorderBeam active={isRunning}>
+  <Card>...</Card>
+</BlipsBorderBeam>
+```
+
+O `BlipsBorderBeam` envolve um único filho e lê o `border-radius` dele. Os padrões Blips usam a paleta
+`gold` (a mais próxima do amarelo da marca) com variação de matiz curta, e o tema segue a classe `.dark`
+da `@blips/ui` no `<html>` — o `theme="auto"` do original só olha `prefers-color-scheme`.
+
+Qualquer prop explícita vence o padrão. O `BorderBeam` original também é exportado, sem padrões:
+
+```tsx
+import { BorderBeam } from "@blips/ai/fx/border-beam"
+```
+
+## Exemplos
+
+### Tamanhos
+
+`sm`, `md` e `line` giram ou percorrem a borda; `pulse-inner` e `pulse-outside` pulsam sem girar.
+
+<ComponentPreview name="ai-border-beam-sizes" />
+
+## Referência da API
+
+### BlipsBorderBeam
+
+Aceita todas as props do `BorderBeam` (e as da `<div>`, exceto `children`, que é obrigatório).
+
+| Prop            | Tipo                                                                                | Padrão Blips            |
+| --------------- | ----------------------------------------------------------------------------------- | ----------------------- |
+| `children`      | `ReactNode`                                                                         | obrigatório             |
+| `size`          | `"sm" \| "md" \| "line" \| "pulse-outside" \| "pulse-inner"`                        | `"md"`                  |
+| `colorVariant`  | `"colorful" \| "mono" \| "ocean" \| "sunset" \| "forest" \| "candy" \| "ice" \| "gold"` | `"gold"`            |
+| `theme`         | `"dark" \| "light" \| "auto"`                                                       | tema do documento       |
+| `hueRange`      | `number` (graus)                                                                    | `12`                    |
+| `glowSize`      | `number`                                                                            | `0.85`                  |
+| `strength`      | `number` (0–1)                                                                      | `0.85`                  |
+| `active`        | `boolean`                                                                           | `true`                  |
+| `duration`      | `number` (segundos)                                                                 | `1.96` (`2.4` em `line`) |
+| `staticColors`  | `boolean`                                                                           | `false`                 |
+| `borderRadius`  | `number` (px)                                                                       | lido do filho           |
+| `brightness`    | `number`                                                                            | do preset (`1.3`)       |
+| `saturation`    | `number`                                                                            | do preset               |
+| `css`           | `string`                                                                            | —                       |
+| `onActivate`    | `() => void`                                                                        | —                       |
+| `onDeactivate`  | `() => void`                                                                        | —                       |
+
+`BLIPS_BORDER_BEAM_DEFAULTS` exporta os padrões acima. Também são exportados os tipos `BorderBeamProps`,
+`BorderBeamSize`, `BorderBeamColorVariant`, `BorderBeamTheme` e `BlipsBorderBeamProps`.
+
+## Origem
+
+Envolve o pacote [border-beam](https://libraries.dev/beam) do
+[libraries.dev](https://github.com/Jakubantalik/Libraries.dev) (MIT). A Blips acrescenta só os padrões
+(paleta, halo e tema); a renderização é a do pacote.
