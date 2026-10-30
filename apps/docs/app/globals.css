@@ -220,16 +220,6 @@
     }
   }
 
-  /* Marquee de telemetria: trilho com conteúdo duplicado desliza -50%. */
-  @keyframes blips-marquee {
-    from {
-      transform: translateX(0);
-    }
-    to {
-      transform: translateX(-50%);
-    }
-  }
-
   /* delay do stagger vem por `style={{ animationDelay }}` inline (tipado). */
   .landing-reveal {
     animation: blips-rise 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -237,18 +227,6 @@
 
   .landing-stamp {
     animation: blips-stamp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .landing-marquee-track {
-    display: flex;
-    width: max-content;
-    animation: blips-marquee 40s linear infinite;
-  }
-
-  /* pausa o marquee no hover/foco — controle de "stop" (WCAG 2.2.2) */
-  .landing-marquee:hover .landing-marquee-track,
-  .landing-marquee:focus-within .landing-marquee-track {
-    animation-play-state: paused;
   }
 
   /* Scanlines analógicas SOBRE os tokens — camada fixa, adapta light/dark. */
@@ -267,8 +245,5 @@
     animation: none;
     opacity: 1;
     clip-path: none;
-  }
-  .landing-marquee-track {
-    animation: none;
   }
 }

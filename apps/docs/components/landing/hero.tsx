@@ -2,54 +2,64 @@
 
 import { Logo } from "@blips/brand";
 import { Button } from "@blips/ui/components/button";
-import { CaretRightIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export function Hero() {
   return (
-    <section className="relative flex flex-1 flex-col justify-center overflow-hidden border-b border-border">
-      {/* b-mark estrutural sangrando a borda — motivo neutro, baixa presença */}
-      <Logo
-        variant="mark"
-        aria-hidden
-        className="pointer-events-none absolute top-1/2 -right-[8%] hidden h-[150%] w-auto -translate-y-1/2 text-foreground/[0.05] md:block"
-      />
-      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-        <div
-          className="landing-reveal flex items-center gap-3"
-          style={{ animationDelay: "0ms" }}
-        >
+    <section className="relative flex flex-1 flex-col justify-center overflow-hidden">
+      <div className="pointer-events-none relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 px-4 py-12 sm:px-6 md:grid-cols-2">
+        {/* shadcn/typeset: o texto da hero é estilizado pelo container, sem
+            classes de tipografia; nos elementos só ficam as animações. */}
+        <div className="typeset typeset-docs pointer-events-auto max-w-[37em]">
           {/* strike amarelo: o único acento do hero, além do CTA */}
-          <span className="h-1 w-12 bg-primary" aria-hidden />
-          <p className="text-[11px] text-muted-foreground uppercase tracking-[0.28em]">
+          <span
+            className="landing-reveal block h-1 w-12 bg-primary"
+            style={{ animationDelay: "0ms" }}
+            aria-hidden
+          />
+          <p className="landing-reveal" style={{ animationDelay: "40ms" }}>
             Design System
           </p>
-        </div>
-
-        <h1
-          className="landing-stamp mt-6 font-bold font-sans text-foreground text-[clamp(3.5rem,11vw,11rem)] uppercase leading-[0.9] tracking-tighter"
-          style={{ animationDelay: "80ms" }}
-        >
-          Blips <span className="text-primary font-thin">UI</span>
-        </h1>
-
-        <p
-          className="landing-reveal mt-6 max-w-xl text-muted-foreground text-xs sm:text-sm"
-          style={{ animationDelay: "260ms" }}
-        >
-          Base UI · Tailwind v4 · Acessível
-        </p>
-
-        <div
-          className="landing-reveal mt-10"
-          style={{ animationDelay: "360ms" }}
-        >
-          <Button size="lg" nativeButton={false} render={<Link href="/docs" />}>
-            Explorar componentes
-            <CaretRightIcon />
-          </Button>
+          <h1 className="landing-stamp" style={{ animationDelay: "80ms" }}>
+            Blips UI
+          </h1>
+          <p className="landing-reveal" style={{ animationDelay: "260ms" }}>
+            Base UI · Tailwind v4 · Acessível
+          </p>
+          {/* Botões são da lib (data-slot) e ficam fora do typeset; a linha
+              só herda o ritmo vertical do container (--typeset-flow). */}
+          <div
+            className="landing-reveal mt-[var(--typeset-flow)] flex flex-wrap gap-2"
+            style={{ animationDelay: "360ms" }}
+          >
+            <Button
+              size="lg"
+              nativeButton={false}
+              render={<Link href="/docs" />}
+            >
+              Explorar componentes
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              nativeButton={false}
+              render={<Link href="/docs/skills" />}
+            >
+              Ver skills
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Símbolo invisível no lugar e no tamanho do b-mark da hero da v2: a cena
+          o lê via [data-triangle-container] e desenha o "b" de vidro sobre o
+          traço dele. Em telas pequenas a cena centraliza o "b" no canvas. */}
+      <Logo
+        variant="mark"
+        data-triangle-container
+        aria-hidden
+        className="pointer-events-none invisible absolute top-1/2 -right-[8%] hidden h-[150%] w-auto -translate-y-1/2 md:block"
+      />
     </section>
   );
 }

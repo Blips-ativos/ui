@@ -20,12 +20,26 @@ const NAV_ITEMS = [
   { label: "Marca", href: "/docs/brand", match: "/docs/brand" },
 ];
 
-export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
+export function SiteHeader({
+  hasSidebar = true,
+  transparent = false,
+}: {
+  hasSidebar?: boolean;
+  /** Sem fundo, blur nem borda: a home deixa a cena do "b" aparecer atrás. */
+  transparent?: boolean;
+}) {
   const { setOpenSearch } = useSearchContext();
   const pathname = usePathname();
 
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 h-(--header-height) border-b backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-40 h-(--header-height)",
+        transparent
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      )}
+    >
       <div className="flex h-full items-center gap-2 px-4 lg:px-6">
         {/* gatilho da sidebar só existe quando há SidebarProvider (docs) */}
         {hasSidebar ? <SidebarTrigger className="lg:hidden" /> : null}
