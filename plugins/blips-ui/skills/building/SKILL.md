@@ -198,6 +198,12 @@ Estes padrões aparecem frequentemente entre componentes. Internalize-os:
 - **Popover em Sheet/Dialog**: Sempre adicione a prop `modal` no Popover para corrigir scroll.
 - **Largura do Sheet**: na v3.x, use `sm:data-[side=right]:max-w-lg` (o `SheetContent` emite `data-side` e a largura base vem de `data-[side=right]:sm:max-w-sm`, que um `sm:max-w-lg` solto não vence). Na v2.x, use `sm:max-w-lg`: o `SheetContent` Radix não emite `data-side`, então `sm:data-[side=right]:` nunca casa.
 - **Estados vazios**: Sempre trate estados vazios/nulos (CommandEmpty, verificações de no-data).
+- **Fonte**: uma família só, **Inter** (vem do tema; em Next, `next/font/google` com `variable: "--font-inter"` no `<html>`). `font-heading`/`font-display`/`font-mono` são aliases de Inter — use-os onde a lib usa, mas nunca para "dar personalidade" ou contraste de família. Hierarquia por tamanho, peso, cor e espaço; números com `tabular-nums`. Nunca carregue outra fonte.
+- **Texto rico (MDX, react-markdown, Streamdown, HTML de CMS, texto longo)**: shadcn/typeset, já embutido no `@blips/ui/globals.css` (sem instalação). Envolva o conteúdo — sem classes nele:
+  ```tsx
+  <div className="typeset typeset-docs max-w-[37em]">{content}</div>
+  ```
+  Tabela larga: `<div className="typeset-scroll">`. Componentes da lib embutidos ficam fora do typeset sozinhos (têm `data-slot`); outros, com a classe `not-typeset` ou o atributo `data-not-typeset`. **Proibido**: `prose`/`@tailwindcss/typography` e mapa de componentes markdown que estiliza h1/p/ul/table elemento a elemento (mapear para comportamento, ex. `a` com `target`, é ok). Docs: https://ui.shadcn.com/docs/typeset
 
 ---
 

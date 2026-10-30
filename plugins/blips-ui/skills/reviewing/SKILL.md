@@ -53,7 +53,9 @@ dúvida, no próprio `node_modules/@blips/ui/src/`).
 | Racionalização do revisor | Realidade verificada |
 | --- | --- |
 | "Subpaths não fazem parte do contrato; a API é o barrel" | O exports map publica `./components/*` — subpath é a CONVENÇÃO em React 18/19; o barrel quebra App Router (sem `"use client"` no dist) |
-| "`text-success`/`font-display` não existem no tema" | Existem (`--color-success`, `--font-display: Quicksand`) — ver lib-facts |
+| "`text-success`/`font-display` não existem no tema" | Existem (`--color-success`; `--font-display` = alias de Inter, por compatibilidade) — ver lib-facts |
+| "`font-display`/`font-mono` dão contraste de família ao título/número" | Não: tudo resolve para Inter. Hierarquia é tamanho/peso/cor/espaço; número é `tabular-nums` — ver `typography.md` §0 |
+| "Para o markdown, `prose` (ou um mapa de componentes estilizado) resolve" | Padrão é shadcn/typeset (`typeset typeset-docs`), já no globals da lib. `prose`/`@tailwindcss/typography` e mapa h1/p/ul estilizado à mão são violação |
 | "Falta `@source` para node_modules" | O globals da lib declara o próprio `@source`; sugerir isso é o anti-padrão do @source defensivo |
 | "Complete o override de token com o par + dark" | Override de token da lib é violação — tema é fonte única; a correção é REMOVER o override |
 
@@ -65,7 +67,8 @@ dúvida, no próprio `node_modules/@blips/ui/src/`).
 2. **Rodar o check mecânico** — `node <skill>/scripts/check.mjs <dir-do-app>`
    (determinístico: imports, lucide, tailwind.config, tokens copiados/hardcoded,
    `hsl(var(`, Intl sem locale, Dialog sem Title, icon-button sem label, deps
-   fantasmas e, conforme `blipsUi.track`, a dimensão `api-versao` — `asChild`/`render`,
+   fantasmas, fonte fora de Inter, `prose`/mapa de markdown estilizado e,
+   conforme `blipsUi.track`, a dimensão `api-versao` — `asChild`/`render`,
    `data-state`, sufixo `Icon`, props removidas, componentes só-v3). Saída JSON; trate
    cada item como candidato confirmado (os `verify:true` pedem confirmação).
 3. **Despachar o revisor de julgamento** — subagente com o prompt
@@ -92,7 +95,7 @@ reference da dimensão que está revisando ANTES do código.
 | Construção | `references/component-standards.md` | extração, estado derivado, ordem de hooks, composição, **API da versão (v2.x × v3.x)**, **completude de código**, **proximidade/agrupamento (Leis de UX)**, estrutura de página |
 | Estados de UI | `references/ui-states.md` | loading/empty/erro/mutação; thresholds de loading, retry, matriz ARIA/foco |
 | Acessibilidade | `references/accessibility.md` | mínimos que a primitiva (Radix/Base UI) não cobre; target size, foco, contraste, rótulos |
-| Tipografia | `references/typography.md` | 3 pesos, medida, tracking, hierarchy lint, editorial |
+| Tipografia | `references/typography.md` | família única (Inter), texto rico via typeset, 3 pesos, medida, tracking, hierarchy lint, editorial |
 | Formulários | `references/forms.md` | máquina de estados de validação, timing, RHF+Zod, nunca-resetar |
 | Movimento | `references/motion.md` | durações, transform/opacity, reduced-motion, loops/WCAG |
 | Formatação | `references/data-formatting.md` | BRL/datas/pt-BR (8 convenções) |

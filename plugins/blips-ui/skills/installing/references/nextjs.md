@@ -79,19 +79,38 @@ seguir. Em repos com shadcn CLI antigo, ajuste também `components.json` →
 @import "@blips/ui/globals.css";
 ```
 
-Isso já traz Tailwind, tw-animate-css, fontes (Inter/Quicksand/JetBrains
-Mono), todos os tokens do tema e o dark mode. Não adicione `@import
-"tailwindcss"` de novo, não copie tokens, não crie `tailwind.config.js`, não
-adicione `@source` (a auto-detecção cobre o app).
+Isso já traz Tailwind, tw-animate-css, **shadcn/typeset** (com o preset
+`.typeset-docs`), a fonte (**Inter**, a única do sistema), todos os tokens do
+tema e o dark mode. Não adicione `@import "tailwindcss"` de novo, não copie
+tokens, não crie `tailwind.config.js`, não adicione `@source` (a
+auto-detecção cobre o app), não instale `@tailwindcss/typography`.
 
-No `app/layout.tsx`:
+No `app/layout.tsx`, importe o CSS e carregue Inter com `next/font/google`,
+expondo a variável `--font-inter` no `<html>` (o token `--font-sans` da lib
+resolve para `var(--font-inter, "Inter")`, e o preset `.typeset-docs` também
+lê `--font-inter`):
 
 ```tsx
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="pt-BR" className={inter.variable}>
+      <body className="antialiased">{children}</body>
+    </html>
+  );
+}
 ```
 
-e `className="antialiased"` no `<body>` — background, cor e fonte vêm do
-`@layer base` da lib.
+Background, cor e família vêm do `@layer base` da lib. **Só Inter**: não
+carregue outra família (`next/font/google` de outra fonte, `next/font/local`,
+`@font-face`, `@fontsource/*`, `<link>` do Google Fonts) — o sistema tem uma
+família só, e `font-heading`/`font-display`/`font-mono` resolvem para ela.
+Sem o `next/font`, o fallback é o `@import` de Inter do globals da lib
+(funciona, mas perde o self-hosting/preload do Next).
 
 CSS pré-existente do app: mantenha os `@import`/regras legados **depois** do
 import do globals, e migre gradualmente.
@@ -107,7 +126,7 @@ import { ChatCircleTextIcon } from "@phosphor-icons/react/dist/ssr";
 export default function Page() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="font-display text-3xl font-bold tracking-tight">
+      <h1 className="text-3xl font-semibold tracking-tight">
         Central de Ajuda
       </h1>
       <Button>

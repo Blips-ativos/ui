@@ -47,11 +47,26 @@ aplicável): `background`, `foreground`, `card`, `popover`, `surface`,
 `primary` (`#FCBA28`, o amarelo Blips), `secondary`, `muted`, `accent`,
 `destructive`, **`warning`**, **`success`**, **`info`**, `code`
 (`+ -highlight/-number`), `selection`, `border`, `input`, `ring`,
-`chart-1..5` (escala âmbar `yellow-300…800`), tokens de `sidebar-*`, `--radius` (+ `sm/md/lg/xl/2xl/3xl/4xl`), e fontes
-**`--font-sans` (Inter)**, **`--font-display` (Quicksand)**, **`--font-mono`
-(JetBrains Mono)**. ⚠️ **`--font-heading` é um ALIAS de `--font-sans` (Inter),
-NÃO Quicksand** — para "anunciar" use `font-display`. Logo: `text-success`,
-`font-display`, `bg-warning`, `bg-surface` etc. são classes VÁLIDAS do tema.
+`chart-1..5` (escala âmbar `yellow-300…800`), tokens de `sidebar-*`, `--radius` (+ `sm/md/lg/xl/2xl/3xl/4xl`), e fontes:
+**uma única família, Inter** — `--font-sans: var(--font-inter, "Inter"),
+ui-sans-serif, system-ui, …`; **`--font-heading`, `--font-display` e
+`--font-mono` existem por compatibilidade e são todos `var(--font-sans)`**
+(Quicksand e JetBrains Mono saíram do projeto). Logo: `text-success`,
+`font-display`, `font-mono`, `font-heading`, `bg-warning`, `bg-surface` etc.
+são classes VÁLIDAS do tema — mas `font-display`/`font-mono` **não trocam de
+face**: usá-los para "dar personalidade"/contraste de família é engano, não
+violação de token (ver `typography.md` §0).
+
+- **shadcn/typeset vem no globals:** `typeset.css` (cópia de
+  https://ui.shadcn.com/typeset.css) é importado logo após o Tailwind, seguido
+  do preset `.typeset-docs` (`--typeset-font-*: var(--font-inter)`,
+  `--typeset-size: 15px`, `--typeset-leading: 1.6`, `--typeset-flow: 1em`).
+  Texto rico = `<div className="typeset typeset-docs max-w-[37em]">`; nada de
+  instalação separada. Componentes com `data-slot` (todos os da lib) ficam fora
+  do typeset automaticamente; o resto, com `not-typeset`/`data-not-typeset`.
+- **Fonte em app Next:** `Inter` de `next/font/google` com
+  `variable: "--font-inter"` aplicado no `<html>`. Fora do Next, o `@import`
+  de Inter no globals é o fallback.
 
 - Tokens são **cor completa** (oklch/hex) — `hsl(var(--x))` é violação E
   produz CSS inválido; o consumo é `var(--x)` ou a utility (`ring-primary`).

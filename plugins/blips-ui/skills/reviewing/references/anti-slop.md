@@ -54,7 +54,7 @@ Lista canônica a grepar (hex cru, qualquer caixa, em `bg-[...]`/`text-[...]`/
 
 Roxo→azul, azul→ciano, indigo→rosa atrás do headline. PORQUÊ: é o fundo de IA
 por excelência; uma superfície chapada (`bg-background`/`bg-surface`) + tipo
-intencional (`font-display tracking-tight`) ganha sempre. Heurística:
+intencional (escala + `font-semibold tracking-tight`) ganha sempre. Heurística:
 `linear-gradient`/`bg-gradient-to-*` com 2 stops cujas cores caem na família
 P0.1 dentro de um `<header>`/`<section>` de topo. Confirmação do revisor (um
 gradiente sutil dentro do tema pode ser legítimo).
@@ -77,14 +77,30 @@ U+2190–U+21FF setas decorativas) nesses contextos.
 <Button><Sparkle /> Gerar relatório</Button>
 ```
 
-### P0.4 · Fonte sans hardcoded em display quando o tema liga display · **auto-verificável (check.mjs)**
+### P0.4 · Fonte fora do tema (outra família, ou família cravada) · **auto-verificável (check.mjs)**
 
-H1/H2 com `font-['Inter']`, `font-[Roboto]`, `system-ui` cravado, ou
-`font-family: Inter` inline em vez de `font-display` (Quicksand). PORQUÊ: o
-tema Blips reserva Quicksand para display/heading; cravar Inter no título
-ignora a hierarquia tipográfica da marca. Grep: `font-\[` com nome de fonte, ou
-`font-family:` literal em arquivo de app. Cura: `font-display` (títulos),
-`font-sans` (corpo), `font-mono` (números/código).
+Qualquer família que não seja a Inter do tema, ou família cravada fora do
+token: `font-['Inter']`, `font-[Roboto]`, `system-ui` cravado, `font-family:`
+literal, `<link>`/`@import` do Google Fonts de outra fonte, `next/font/google`
+de outra família, `next/font/local`, `@font-face`, `@fontsource/*`. PORQUÊ: o
+padrão Blips é **uma família só (Inter), seguindo o shadcn/typeset** — fonte
+"com personalidade" no título é exatamente o pareamento tipográfico de template
+que o sistema dispensou; e família cravada fura o token. Grep: imports/`@font-face`
+de fonte, `font-\[` com nome de fonte, `font-family:` literal em arquivo de app.
+Cura: remova a família extra; `font-sans` (ou nada — é o default do `body`).
+Hierarquia por tamanho/peso/cor/espaço; números com `tabular-nums`.
+`font-display`/`font-mono` resolvem para Inter — não são cura de personalidade.
+
+### P0.4b · Texto rico estilizado à mão (`prose` ou mapa de markdown) · **auto-verificável (check.mjs)**
+
+Markdown/MDX/HTML de CMS com `prose`/`@tailwindcss/typography`, ou um mapa de
+componentes (`components={{ h1: …, p: …, ul: … }}`) que estiliza cada elemento.
+PORQUÊ: é o atalho genérico de "deixar o markdown bonito" — diverge do typeset
+do sistema e duplica regra tipográfica em cada app. Cura:
+`<div className="typeset typeset-docs max-w-[37em]">{content}</div>` (typeset
+já vem no globals da lib), tabela larga em `typeset-scroll`, componentes
+embutidos fora via `data-slot`/`not-typeset`. `prose` é bloqueante; o mapa é
+aviso heurístico (`verify:true`).
 
 ### P0.5 · Card arredondado + borda-esquerda colorida (o "alert card" genérico) · **julgamento (revisor)**
 
@@ -193,8 +209,8 @@ Mire **~80% padrões comprovados + ~20% escolha distintiva**. Os 80% são o
 shadcn da `@blips/ui` (Radix na v2.x, Base UI na v3.x) no tema (não brigue com o sistema). Os 20% — a
 "alma" — devem viver em UM destes quatro lugares (não espalhe por todos):
 
-1. **Um movimento visual ousado** — uma decisão de tipografia (`font-display`
-   num tamanho inesperado), uma única decisão de cor (o amarelo `primary` num
+1. **Um movimento visual ousado** — uma decisão de tipografia (escala
+   inesperada na Inter do tema — nunca uma segunda família), uma única decisão de cor (o amarelo `primary` num
    lugar surpreendente), uma proporção fora do óbvio.
 2. **Voz e microcopy** — um botão "Começar acompanhamento" vale mais que
    "Começar"; rótulos específicos do produto Blips, não genéricos.
@@ -221,7 +237,8 @@ Auto-verificável (grep determinístico) → entra no script:
 | P0.7 lorem/filler | `lorem ipsum`, `feature one/two/three`, `placeholder text`, etc. | bloqueante | no script |
 | P1.1 >12 hex fora do tema | contagem de `#[0-9a-f]{3,8}` por arquivo, exceto `globals.css`/`:root` | aviso | no script |
 | P1.2 CDN de placeholder | 7 domínios: `unsplash.com`, `placehold.co`, `via.placeholder`, `dummyimage.com`, `placekitten.com`, `picsum.photos`, `loremflickr.com` | aviso | no script |
-| P0.4 font hardcoded em display | `font-\[` com nome de fonte / `font-family:` literal | bloqueante | ainda NÃO no script (porta futura) |
+| P0.4 fonte fora do tema | `font-\[` com nome de fonte / `font-family:` literal / `@font-face` / Google Fonts ≠ Inter / `next/font` ≠ `Inter` / `next/font/local` / `@fontsource` | bloqueante | no script |
+| P0.4b texto rico à mão | classe `prose`/`prose-*`, `@tailwindcss/typography`; mapa markdown com `className` em h*/p/ul/ol/li/table/blockquote | bloqueante (`prose`) · aviso verify (mapa) | no script |
 | P0.5 card + border-l colorida | `rounded-` E `border-l-` (cor/≥2px) no mesmo nó | bloqueante | ainda NÃO no script (porta futura) |
 
 > Nota sobre o emoji (P0.3): no script ele entra como `verify:true`, ou seja,

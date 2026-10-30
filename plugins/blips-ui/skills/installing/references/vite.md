@@ -48,13 +48,18 @@ No topo do CSS importado pelo `main.tsx` (ex.: `src/index.css`):
 @import "@blips/ui/globals.css";
 ```
 
-Traz Tailwind, tw-animate-css, fontes (Inter/Quicksand/JetBrains Mono),
-tokens do tema e dark mode. Não adicione `@import "tailwindcss"` de novo, não
+Traz Tailwind, tw-animate-css, **shadcn/typeset** (preset `.typeset-docs`),
+a fonte (**Inter**, a única do sistema — fora do Next ela chega pelo `@import`
+do Google Fonts no globals da lib), tokens do tema e dark mode. Não adicione `@import "tailwindcss"` de novo, não
 copie tokens, não crie `tailwind.config.js`, não adicione `@source` (a
 auto-detecção do v4 cobre o `src/` — verificado no CSS gerado).
 
 CSS legado do app: mantenha **abaixo** do import durante a migração — o
 cascade preserva as telas antigas.
+
+Não carregue outra família (`<link>`/`@import` do Google Fonts de outra fonte,
+`@font-face`, `@fontsource/*`) nem instale `@tailwindcss/typography` — texto
+rico usa `typeset typeset-docs`, que já vem no globals.
 
 Opcional (perf): preconnect das fontes no `index.html`:
 

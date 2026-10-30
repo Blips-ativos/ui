@@ -6,19 +6,55 @@ e de Bringhurst, *Elements of Typographic Style* §3.2.7 (piso de 5–10% do em
 para caixa-alta). Reference canônica de tipografia — **fonte única**; `designing`
 e `building` apontam para cá, não duplicam.
 
-O tema já fecha duas das regras mais quebradas pela IA: **máximo 2 typefaces**
-(Inter em `font-sans`/`font-heading` + Quicksand em `font-display`; JetBrains Mono
-em `font-mono` é família de função, não de leitura) e o **fallback intencional**
-(o `globals.css` declara a cadeia — `font-family: system-ui` puro num heading,
-o default-slop da IA, não acontece aqui). O que resta lintar é o **como** em cada
-tamanho. Severidades entre parênteses; cada regra marcada **auto-verificável
-(check.mjs)** ou **julgamento (revisor)**. Hoje o check.mjs faz só **3** checks
-de tipografia — todos **aviso** (uppercase sem tracking ≥0.06em, display
-`text-4xl`+ sem tracking negativo, `text-justify`); todo o resto depende do olho
-do revisor sobre a composição renderizada.
+O tema já fecha duas das regras mais quebradas pela IA: **uma família só**
+(Inter — `font-sans`, e `font-heading`/`font-display`/`font-mono` são aliases
+dela) e o **fallback intencional** (o `globals.css` declara a cadeia —
+`font-family: system-ui` puro num heading, o default-slop da IA, não acontece
+aqui). Texto rico usa **shadcn/typeset**, que já vem no globals da lib (§0). O
+que resta lintar é o **como** em cada tamanho. Severidades entre parênteses;
+cada regra marcada **auto-verificável (check.mjs)** ou **julgamento
+(revisor)**. O check.mjs cobre a família e o texto rico (§0, **bloqueante**) e
+faz **3** checks de forma — todos **aviso** (uppercase sem tracking ≥0.06em,
+display `text-4xl`+ sem tracking negativo, `text-justify`); todo o resto
+depende do olho do revisor sobre a composição renderizada.
 
-> Tokens são consumidos como utilities Tailwind (`font-display`, `tracking-tight`,
+> Tokens são consumidos como utilities Tailwind (`font-sans`, `tracking-tight`,
 > `leading-relaxed`, `max-w-prose`) ou `var(--font-*)` — **nunca** `hsl(var(--…))`.
+
+---
+
+## 0. Família única e texto rico (typeset)
+
+Padrão: **tudo segue o shadcn/typeset, sem outras fontes.**
+
+A. **Só Inter.** Em app Next, `Inter` de `next/font/google` com
+   `variable: "--font-inter"` no `<html>`; fora do Next, o `@import` de Inter
+   do globals da lib. Qualquer outra família é violação: `<link>`/`@import` do
+   Google Fonts de outra fonte, `next/font/google` de outra família,
+   `next/font/local`, `@font-face`, `@fontsource/*`, `font-[…]`/`font-family:`
+   literal. (bloqueante — **auto-verificável (check.mjs)**)
+B. **`font-display`/`font-mono`/`font-heading` não são outra face.** Continuam
+   válidos (os componentes da lib usam `font-heading` e `font-mono`), mas
+   resolvem para Inter. Usá-los para "dar personalidade", contraste de família
+   ou pareamento tipográfico é engano — a hierarquia vem de **tamanho, peso,
+   cor e espaçamento**; números alinham com **`tabular-nums`**. Não acuse o uso
+   em si; acuse a intenção quando o review/plano depende de uma face que não
+   existe. (aviso — **julgamento (revisor)**)
+C. **Texto rico = typeset.** MDX, react-markdown, Streamdown, HTML de CMS ou
+   texto longo vão num contêiner
+   `<div className="typeset typeset-docs max-w-[37em]">{content}</div>`, sem
+   classes no conteúdo. Tabela larga: envolver em `<div className="typeset-scroll">`.
+   Componente embutido fica fora do typeset se tiver `data-slot` (todos os da
+   `@blips/ui` têm) ou com `not-typeset`/`data-not-typeset`.
+   Docs: https://ui.shadcn.com/docs/typeset
+   - `prose`/`@tailwindcss/typography` → violação. (bloqueante —
+     **auto-verificável (check.mjs)**)
+   - Mapa de componentes markdown (`components={{ h1: …, p: …, ul: … }}`)
+     estilizando elemento a elemento → violação; o typeset já estiliza.
+     Mapear para *comportamento* (ex.: `a` com `target`, `code` com
+     highlighter) é aceitável se não adicionar classes tipográficas. (aviso
+     heurístico — **auto-verificável (check.mjs)**, `verify:true`; revisor
+     promove a bloqueante)
 
 ---
 
@@ -30,9 +66,9 @@ A IA grada peso uniformemente (regular→medium→semibold→bold); UI com craft
 | Papel | Peso canônico (open-design) | Peso no tema | Classe Tailwind |
 |---|---|---|---|
 | **Ler** | 400 / 450 | Inter 400 | `font-normal` |
-| **Enfatizar** | 510 / 550 | Inter 500 · Quicksand 500 | `font-medium` |
-| **Anunciar** | 590 / 600 | Inter 600 · Quicksand 600 | `font-semibold` |
-| (raro) | 700+ | Inter 700 · Quicksand 700 | `font-bold` |
+| **Enfatizar** | 510 / 550 | Inter 500 | `font-medium` |
+| **Anunciar** | 590 / 600 | Inter 600 | `font-semibold` |
+| (raro) | 700+ | Inter 700 | `font-bold` |
 
 1. **`font-bold` (700+) é raro e justificado** — só destaque pontual dentro de
    corpo ("esta palavra importa além da frase") ou número-herói. Bold como peso
@@ -50,7 +86,7 @@ A IA grada peso uniformemente (regular→medium→semibold→bold); UI com craft
 ## 2. Medida, line-height e número de tamanhos (legibilidade)
 
 4. **Corpo de texto limitado a 50–75ch, alvo ~65ch** — `max-w-prose` (≈65ch) ou
-   `max-w-[65ch]`. Linha longa demais perde o olho no retorno; bloco de prosa
+   `max-w-[65ch]`; em texto rico com typeset, `max-w-[37em]` (§0). Linha longa demais perde o olho no retorno; bloco de prosa
    (`<p>`/artigo/descrição longa) sem teto de medida é violação. (aviso —
    **julgamento (revisor)**)
 5. **Line-height por faixa** — display/heading aperta, corpo respira:
@@ -140,8 +176,8 @@ constraint de layout que achate o tamanho mata a hierarquia).
 
 ## 5. Tabela elemento → peso · escala · tracking · leading (produto/SaaS)
 
-Padrão **produto** (default Inter; `font-display`/Quicksand só onde a `designing`
-declarar). Classes reais do tema:
+Padrão **produto** (tudo Inter; a hierarquia vem só de escala, peso, tracking,
+leading e cor). Classes reais do tema:
 
 | Elemento | Escala | Peso | Tracking | Leading |
 |---|---|---|---|---|
@@ -154,7 +190,8 @@ declarar). Classes reais do tema:
 | Pequeno | `text-sm`/`text-xs` | `font-normal` | `tracking-wide` | `leading-normal` |
 | Caption | `text-xs` | `font-normal` | `tracking-wide` | `leading-normal` |
 | Eyebrow/CAIXA-ALTA | `text-xs` | `font-medium` `uppercase` | `tracking-widest` (≥0.06em) | `leading-normal` |
-| Código/mono | `text-sm` | `font-mono` `font-normal` | `tracking-normal` | `leading-normal` |
+| Números/dados | herda | `font-normal`/`font-medium` + `tabular-nums` | `tracking-normal` | herda |
+| Código | `text-sm` | `font-mono` (= Inter) `font-normal` | `tracking-normal` | `leading-normal` |
 
 Cor segue `color.md`: heading/corpo em `text-foreground`, secundário em
 `text-muted-foreground`; cor de marca (`bg-primary`/amarelo) **não** pinta texto
@@ -165,12 +202,12 @@ de leitura.
 ## 6. Editorial / modo criativo (opt-in)
 
 **Só** quando a `designing` ativa o **modo criativo** (landing, showcase, artigo
-long-form) — aqui o display usa **Quicksand** (`font-display`) com salto de escala
-dramático. Em produto/SaaS estas regras **não** se aplicam. Extende as seções 1–5,
+long-form) — aqui o display (Inter, a única família) ganha salto de escala
+dramático. Corpo de artigo long-form vai em typeset (§0). Em produto/SaaS estas regras **não** se aplicam. Extende as seções 1–5,
 não as substitui.
 
-17. **Display editorial 56–96px em peso light/regular** (`font-display
-    font-normal`, `text-6xl`–`text-8xl`). **Bold display = outdoor/billboard** —
+17. **Display editorial 56–96px em peso light/regular** (`font-normal`,
+    `text-6xl`–`text-8xl`). **Bold display = outdoor/billboard** —
     a hierarquia editorial é carregada por escala e espaço, não por massa. (aviso —
     **julgamento (revisor)**)
 18. **Salto display→deck é a assinatura editorial**: deck/standfirst 18–24px
@@ -202,11 +239,14 @@ não as substitui.
 
 ## Resumo dos checks mecânicos (check.mjs)
 
-São **3** checks de tipografia hoje — todos **aviso** (heurísticos; o revisor
-promove a bloqueante se confirmar):
+São os checks de família/texto rico (§0) e **3** de forma — os de forma são
+**aviso** (heurísticos; o revisor promove a bloqueante se confirmar):
 
 | # | Padrão lintável | Severidade |
 |---|---|---|
+| 0.A | fonte fora de Inter: Google Fonts de outra família, `next/font/google` ≠ `Inter`, `next/font/local`, `@font-face`, `@fontsource`, `font-[…]`/`font-family:` literal | bloqueante |
+| 0.C | classe `prose`/`prose-*` ou `@tailwindcss/typography` (CSS `@plugin` ou `package.json`) | bloqueante |
+| 0.C | mapa de componentes markdown com `className` em `h1`–`h6`/`p`/`ul`/`ol`/`li`/`table`/`blockquote` | aviso (verify) |
 | 8 | `uppercase` (ou texto literal CAIXA-ALTA) sem `tracking-widest`/`tracking-[≥0.06em]` | aviso |
 | 9 | display `text-4xl`+ sem `tracking-tight`/`tighter`/`-tracking-[…]` | aviso |
 | 22 | `text-justify` em qualquer lugar | aviso |

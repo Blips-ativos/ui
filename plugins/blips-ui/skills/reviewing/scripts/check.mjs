@@ -142,6 +142,25 @@ for (const banned of ["react-icons", "@heroicons/react"])
       "bloqueante"
     );
 
+// Tipografia: uma família só (Inter) e texto rico via shadcn/typeset (já no globals da lib).
+if (deps["@tailwindcss/typography"])
+  add(
+    "package.json",
+    0,
+    "@tailwindcss/typography em dependencies — texto rico usa typeset (typeset typeset-docs), já no globals da lib",
+    "tipografia",
+    "bloqueante"
+  );
+for (const d of Object.keys(deps).filter((x) => x.startsWith("@fontsource")))
+  if (!/^@fontsource(-variable)?\/inter$/.test(d))
+    add(
+      "package.json",
+      0,
+      `${d} em dependencies — o sistema tem uma família só (Inter, via tema/next/font)`,
+      "tipografia",
+      "bloqueante"
+    );
+
 for (const cfg of [
   "tailwind.config.js",
   "tailwind.config.ts",
@@ -205,6 +224,21 @@ const CODE_ELISION_RE =
 const PROSE_ELISION_RE =
   /\b(o resto segue o mesmo padr[ãa]o|similarmente para os demais|por brevidade|e assim por diante|deixo como exerc[íi]cio|posso continuar se quiser)\b/i;
 const LOREM_RE = /\blorem ipsum\b/i;
+// Tipografia: Google Fonts com família ≠ Inter; classe prose do @tailwindcss/typography
+// (max-w-prose NÃO casa — o hífen antes de "prose" fica fora do grupo de borda).
+const GOOGLE_FONTS_RE = /fonts\.googleapis\.com\/css2?\?[^"')\s]*/;
+const nonInterGoogleFamilies = (l) => {
+  const m = l.match(GOOGLE_FONTS_RE);
+  if (!m) return [];
+  return [...m[0].matchAll(/family=([^&:;"')\s]+)/g)]
+    .map((x) => decodeURIComponent(x[1]).replace(/\+/g, " "))
+    .filter((f) => !/^Inter$/i.test(f));
+};
+const PROSE_CLASS_RE = /(^|[\s"'`:{])prose(-[a-z0-9]+)?(?=[\s"'`}]|$)/;
+const MARKDOWN_LIB_RE =
+  /react-markdown|streamdown|@mdx-js|next-mdx-remote|useMDXComponents|MDXProvider|MDXRemote/;
+const MARKDOWN_KEY_RE =
+  /^\s*(h[1-6]|p|ul|ol|li|table|thead|tbody|tr|th|td|blockquote)\s*:/;
 
 const files = [...walk(root)];
 for (const abs of files) {
@@ -244,6 +278,51 @@ for (const abs of files) {
             "anti-slop",
             "bloqueante"
           );
+      // tipografia: uma família só (Inter) — nada de @font-face/fontsource/Google Fonts de outra família.
+      if (/@font-face\b/.test(l))
+        add(
+          file,
+          n,
+          "@font-face no app — o sistema tem uma família só (Inter, via tema)",
+          "tipografia",
+          "bloqueante"
+        );
+      if (/@fontsource/.test(l) && !/@fontsource(-variable)?\/inter\b/.test(l))
+        add(
+          file,
+          n,
+          "@fontsource de outra família — o sistema tem uma família só (Inter)",
+          "tipografia",
+          "bloqueante"
+        );
+      const gfCss = nonInterGoogleFamilies(l);
+      if (gfCss.length)
+        add(
+          file,
+          n,
+          `Google Fonts de outra família (${gfCss.join(", ")}) — só Inter`,
+          "tipografia",
+          "bloqueante"
+        );
+      if (
+        /font-family\s*:/.test(l) &&
+        !/var\(--font-|inherit|initial|unset/.test(l)
+      )
+        add(
+          file,
+          n,
+          "font-family literal no CSS do app — família vem do token (Inter)",
+          "tipografia",
+          "bloqueante"
+        );
+      if (/@plugin\s+["']@tailwindcss\/typography["']/.test(l))
+        add(
+          file,
+          n,
+          "@tailwindcss/typography — texto rico usa typeset (typeset typeset-docs), já no globals da lib",
+          "tipografia",
+          "bloqueante"
+        );
       return;
     }
     // imports da lib conforme React
@@ -517,8 +596,50 @@ for (const abs of files) {
       add(
         file,
         n,
-        "fonte hardcoded (font-[…]/font-family) — usar font-sans/display/mono do tema",
+        "fonte hardcoded (font-[…]/font-family) — família única é Inter, via token (font-sans/default do body)",
         "anti-slop",
+        "bloqueante"
+      );
+
+    // tipografia: só Inter — Google Fonts/next/font de outra família, next/font/local, fontsource.
+    const gfJs = nonInterGoogleFamilies(l);
+    if (gfJs.length)
+      add(
+        file,
+        n,
+        `Google Fonts de outra família (${gfJs.join(", ")}) — só Inter (next/font/google com --font-inter)`,
+        "tipografia",
+        "bloqueante"
+      );
+    if (/["']next\/font\/local["']/.test(l))
+      add(
+        file,
+        n,
+        "next/font/local — o sistema tem uma família só (Inter via next/font/google)",
+        "tipografia",
+        "bloqueante"
+      );
+    if (
+      /["']@fontsource(-variable)?\/[^"']+["']/.test(l) &&
+      !/["']@fontsource(-variable)?\/inter[/"']/.test(l)
+    )
+      add(
+        file,
+        n,
+        "@fontsource de outra família — o sistema tem uma família só (Inter)",
+        "tipografia",
+        "bloqueante"
+      );
+    // texto rico: prose (@tailwindcss/typography) → typeset.
+    if (
+      /className|class=|\bcn\(|clsx\(|cva\(/.test(l) &&
+      PROSE_CLASS_RE.test(l)
+    )
+      add(
+        file,
+        n,
+        'classe prose (@tailwindcss/typography) — texto rico usa <div className="typeset typeset-docs max-w-[37em]">',
+        "tipografia",
         "bloqueante"
       );
 
@@ -600,6 +721,53 @@ for (const abs of files) {
   });
 
   // checks de arquivo inteiro (multi-linha)
+  // tipografia: next/font/google só com Inter.
+  if (/\.(tsx|ts|jsx|js|mjs)$/.test(file)) {
+    const re = /import\s*\{([^}]*)\}\s*from\s*["']next\/font\/google["']/g;
+    for (const m of text.matchAll(re)) {
+      const bad = m[1]
+        .split(",")
+        .map((x) => x.trim().split(/\s+as\s+/)[0])
+        .filter((x) => x && x !== "Inter");
+      if (bad.length)
+        add(
+          file,
+          text.slice(0, m.index).split("\n").length,
+          `next/font/google com outra família (${bad.join(", ")}) — só Inter (variable: "--font-inter")`,
+          "tipografia",
+          "bloqueante"
+        );
+    }
+  }
+  // texto rico: mapa de componentes markdown estilizado elemento a elemento → typeset.
+  if (
+    /\.(tsx|jsx|ts|js|mdx)$/.test(file) &&
+    (MARKDOWN_LIB_RE.test(text) ||
+      /mdx-components\.(tsx|ts|jsx|js)$/.test(file))
+  ) {
+    const styled = lines
+      .map((l, i) => [l, i])
+      .filter(
+        ([l, i]) =>
+          MARKDOWN_KEY_RE.test(l) &&
+          // classes do próprio typeset (wrapper de tabela, exclusão) não contam
+          /className/.test(
+            lines
+              .slice(i, i + 4)
+              .join("\n")
+              .replace(/className="(typeset-scroll|not-typeset)"/g, "")
+          )
+      );
+    if (styled.length)
+      add(
+        file,
+        styled[0][1] + 1,
+        `mapa de componentes markdown estilizando ${styled.length} elemento(s) à mão — usar typeset (typeset typeset-docs) no contêiner`,
+        "tipografia",
+        "aviso",
+        true
+      );
+  }
   // v3.x: ícones Phosphor sem sufixo Icon estão @deprecated no Phosphor 2.1.10
   if (isV3 && /\.(tsx|ts|jsx|js)$/.test(file)) {
     const re =

@@ -32,6 +32,11 @@ Essencial:
   Components, importe de `@phosphor-icons/react/dist/ssr`. Nunca `lucide-react`.
 - Tailwind v4 é CSS-first: tema único via `@import "@blips/ui/globals.css"`
   em `app/globals.css`. Nunca crie `tailwind.config.js` nem copie tokens.
+- Tipografia: uma família só, **Inter** — carregada com `next/font/google`
+  (`variable: "--font-inter"` no `<html>`). Nenhuma outra fonte.
+- Texto rico (markdown/MDX/CMS): `<div className="typeset typeset-docs
+  max-w-[37em]">` (shadcn/typeset, já no globals). Nunca `prose` nem mapa de
+  componentes markdown estilizado à mão.
 - Infra que não pode ser removida: `transpilePackages: ["@blips/ui"]` no
   `next.config.ts`, `postcss.config.mjs` com `@tailwindcss/postcss` e o
   import do globals no `app/layout.tsx`.

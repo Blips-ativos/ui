@@ -36,6 +36,11 @@ Essencial:
   `lucide-react`.
 - Tailwind v4 é CSS-first: tema único via `@import "@blips/ui/globals.css"`.
   Nunca crie `tailwind.config.js` nem copie tokens.
+- Tipografia: uma família só, **Inter** (vem do globals da lib). Nenhuma
+  outra fonte.
+- Texto rico (markdown/MDX/CMS): `<div className="typeset typeset-docs
+  max-w-[37em]">` (shadcn/typeset, já no globals). Nunca `prose` nem mapa de
+  componentes markdown estilizado à mão.
 - Infra que não pode ser removida: plugin `tailwindcss()` (de
   `@tailwindcss/vite`) no `vite.config.ts` e o import do globals em
   `src/index.css`.

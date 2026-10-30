@@ -31,15 +31,15 @@ puro `oklch(1 0 0)` é o palco no modo claro, o quase-preto `oklch(0.145 0 0)` n
 escuro, e o amarelo é idêntico (`#fcba28`) nos dois — a marca não muda de
 temperatura quando a luz muda.
 
-O craft é **contido**: tipografia em duas vozes (Inter para ler, Quicksand para
-anunciar), profundidade por borda antes de sombra, raio único e generoso
+O craft é **contido**: tipografia em **uma família só** (Inter, seguindo o
+shadcn/typeset — hierarquia por tamanho, peso, cor e espaço), profundidade por borda antes de sombra, raio único e generoso
 (`--radius: 0.625rem` = 10px). A elegância vem de **restrição**, não de efeito.
 
 **Key Characteristics:**
 - Neutros frios oklch de croma zero (`oklch(… 0 0)`) — estrutura silenciosa, sem viés de cor.
 - **Um único acento de marca**: amarelo Blips `#fcba28` (`--primary`), foreground `yellow-900` (`oklch(0.421 0.095 57.708)`). ~5–10% dos pixels, nunca mais.
 - Palco branco puro no claro (`oklch(1 0 0)`), quase-preto no escuro (`oklch(0.145 0 0)`); o amarelo é constante entre os dois.
-- Duas vozes tipográficas: **Inter** (`--font-sans`, ler/UI — `--font-heading` é só um alias de Inter) + **Quicksand** (`--font-display`, a única voz de "anúncio"/display). **JetBrains Mono** (`--font-mono`) é função (dados/código), não leitura.
+- Uma família: **Inter** (`--font-sans`). `--font-heading`, `--font-display` e `--font-mono` existem por compatibilidade e resolvem para ela — não são outras faces. Texto rico (markdown/MDX/CMS) em **shadcn/typeset** (`typeset typeset-docs`).
 - Profundidade por **borda sutil** primeiro; sombra é exceção, e no escuro a borda vence a sombra.
 - Raio único generoso (`--radius` 10px) com escala derivada — suavidade consistente, nunca cantos vivos.
 - Semânticas (`success`/`warning`/`destructive`/`info`) são **só significado de estado**, jamais decoração.
@@ -86,26 +86,26 @@ Cada uma com par `-foreground`. Nunca decorativas.
 
 ## 3. Typography Rules
 
-Duas vozes, uma função. **Inter** (`--font-sans`, pesos 400/500/600/700) lê e
-opera toda a UI — e `--font-heading` é só um **alias de Inter** (`var(--font-sans)`),
-não uma terceira família. **Quicksand** (`--font-display`, 500/600/700) é a única
-voz de display e **anuncia** — títulos de página, números-herói, momentos de
-marca; seu desenho arredondado ecoa a curva do amarelo. **JetBrains Mono** (`--font-mono`, 400/500)
-é **família de função**: dados tabulares, valores monetários, IDs, código — onde
-o alinhamento de dígito importa. Por quê duas e não três famílias de leitura: o
-tema já trava o limite de 2 typefaces de leitura (mono é função), que é a regra
-de tipografia mais quebrada pela IA.
+Uma família, toda a função. **Inter** (`--font-sans`, pesos 400/500/600/700)
+lê, opera e anuncia toda a UI. `--font-heading`, `--font-display` e
+`--font-mono` continuam existindo por compatibilidade (os componentes da lib
+usam `font-heading` e `font-mono`), mas são **aliases de `var(--font-sans)`** —
+não trocam de face. Por quê uma só: o padrão Blips segue o **shadcn/typeset**,
+sem outras fontes; a hierarquia vem de **tamanho, peso, cor e espaçamento**, e
+o alinhamento de dígitos vem de **`tabular-nums`**, não de uma família mono.
+Não use `font-display`/`font-mono` para "dar personalidade" nem para contraste
+de família — esse grau de liberdade não existe.
 
 | Elemento | Família (token) | Peso | Tracking | Aplicação à marca |
 |---|---|---|---|---|
-| Título de página / display | Quicksand (`font-display`) | 600–700 | `tracking-tight` | O "anúncio" — uma voz por tela; arredondado ecoa a marca. |
-| Heading de seção | Quicksand (`font-display`) | 600 | `tracking-tight` | Âncora de seção; salta de massa, não sobe degrau. |
-| Heading de card | Inter ou Quicksand (`font-display`) | 600 (`font-semibold`) | normal | 600 já anuncia — `font-bold` é raro. |
-| Alias `font-heading` | Inter (`--font-heading` = `var(--font-sans)`) | 600 | normal | Apenas um alias semântico de Inter — **não** é Quicksand; use `font-display` para anunciar. |
+| Título de página / display | Inter | 600 (`font-semibold`) | `tracking-tight` | O "anúncio" — uma voz por tela; salta de escala, não de família. |
+| Heading de seção | Inter | 600 | `tracking-tight` | Âncora de seção; salta de massa, não sobe degrau. |
+| Heading de card | Inter | 600 (`font-semibold`) | normal | 600 já anuncia — `font-bold` é raro. |
 | Corpo / UI | Inter (`font-sans`) | 400 | normal | `leading-relaxed` em texto corrido; eficiência silenciosa. |
 | Ênfase em corpo | Inter | 500 (`font-medium`) | normal | Salto de peso = ênfase, não decoração. |
 | Label / metadado | Inter | 400–500 | normal | `text-muted-foreground` para de-ênfase. |
-| Dados / dinheiro / IDs / código | JetBrains Mono (`font-mono`) | 400–500 | normal | Dígitos alinham em colunas — ver §4 Table. |
+| Dados / dinheiro / IDs | Inter + `tabular-nums` | 400–500 | normal | Dígitos alinham em colunas — ver §4 Table. |
+| Texto rico (markdown/MDX/CMS) | typeset (`typeset typeset-docs max-w-[37em]`) | — | — | O typeset estiliza h1/p/listas/tabelas; nada de classes no conteúdo, nada de `prose`. |
 
 > Para os **números exatos** (escala px/rem, line-heights, thresholds de
 > tracking, regras de massa/peso) a fonte única é
@@ -127,7 +127,7 @@ a fonte é a skill **`blips-ui:building`** — não reimplemente aqui.
   (`className="[--card-spacing:--spacing(6)]"`) em vez de `p-6`; **v2.x** (new-york) vem com
   `border`, `rounded-xl`, `py-6`/`px-6` e `shadow-sm`.
 - **Dialog/Sheet/Popover** — `bg-popover`/`bg-card`, `border-border`, `rounded-lg`; overlay escurece o fundo para isolar foco. **Sempre com título** (acessível). Por quê: overlay sem título é a violação clássica que `reviewing` pega.
-- **Table** — cabeçalho `text-muted-foreground` (peso 500), linhas separadas por `border-border`, **colunas numéricas em `font-mono` e alinhadas à direita**. Por quê: dinheiro/quantidade só se compara visualmente se os dígitos alinham (ver `reviewing/references/data-formatting.md`).
+- **Table** — cabeçalho `text-muted-foreground` (peso 500), linhas separadas por `border-border`, **colunas numéricas em `tabular-nums` e alinhadas à direita**. Por quê: dinheiro/quantidade só se compara visualmente se os dígitos alinham (ver `reviewing/references/data-formatting.md`).
 - **Badge** — neutro (`bg-muted text-muted-foreground`) por padrão; variantes semânticas (`bg-success`/`bg-warning`/`bg-destructive`/`bg-info` com seu `-foreground`) **só para estado real**. `rounded-md` ou pill. Por quê: badge colorido sem semântica vira ruído — reserve cor para significado.
 
 ---
@@ -136,7 +136,7 @@ a fonte é a skill **`blips-ui:building`** — não reimplemente aqui.
 
 - **Grid de 4px.** Todo espaçamento é múltiplo de 4 (escala Tailwind: `gap-1`=4 / `gap-2`=8 / `gap-3`=12 / `gap-4`=16 / `gap-6`=24 / `gap-8`=32…). Por quê: ritmo consistente é o que separa "denso e calmo" de "apertado e nervoso".
 - **Escala de espaçamento disciplinada.** Salte degraus (4→8→16→24), não invente 13px ou 18px. Padding de seção generoso, padding interno de controle compacto — a densidade alta exige respiro entre blocos.
-- **Max-width de conteúdo.** Texto corrido em `max-w-prose` (legibilidade); dashboards/tabelas usam a largura útil mas com contêiner centralizado em telas largas. Breakpoints extra do tema (`3xl` 1600px, `4xl` 2000px) servem monitores de mesa de gestão — não deixe a tabela esticar infinitamente.
+- **Max-width de conteúdo.** Texto corrido em `max-w-prose` (legibilidade); conteúdo rico (markdown/MDX) em `typeset typeset-docs max-w-[37em]`; dashboards/tabelas usam a largura útil mas com contêiner centralizado em telas largas. Breakpoints extra do tema (`3xl` 1600px, `4xl` 2000px) servem monitores de mesa de gestão — não deixe a tabela esticar infinitamente.
 - **Sidebar = mesmo ambiente.** `bg-sidebar` é praticamente o mesmo do conteúdo, separado por **`border-sidebar-border`** (sutil), não por um bloco escuro contrastante. Por quê: a coesão visual reforça "uma ferramenta", não "duas zonas".
 
 ---
@@ -176,8 +176,9 @@ Raio real (derivado de `--radius` = 10px): `--radius-sm` 6px · `--radius-md` 8p
 - Construa estrutura com neutros oklch (`background`/`card`/`muted`/`border`); deixe a tela ~90% neutra.
 - Use semânticas (`success`/`warning`/`destructive`/`info`) **apenas** para estado real.
 - Prefira **borda** (`border-border`) à sombra; escolha uma estratégia de profundidade por tela.
-- Dinheiro, quantidades e IDs em `font-mono`, alinhados à direita em tabelas.
-- Use Quicksand (`font-display`) só para anunciar; Inter para ler/operar (`font-heading` é alias de Inter, não Quicksand).
+- Dinheiro, quantidades e IDs em `tabular-nums`, alinhados à direita em tabelas.
+- Uma família (Inter) para tudo: anuncie com tamanho/peso/tracking, não com outra fonte.
+- Texto rico (markdown/MDX/CMS) num contêiner `typeset typeset-docs max-w-[37em]`.
 - Use a escala de raio do tema (`rounded-md`/`-lg`/`-xl`) — suavidade consistente.
 - No escuro, deixe a borda translúcida carregar a elevação.
 
@@ -187,7 +188,8 @@ Raio real (derivado de `--radius` = 10px): `--radius-sm` 6px · `--radius-md` 8p
 - Não escreva `hsl(var(--primary))` — os tokens já são cores completas (oklch/hex); consuma `var(--primary)` ou `bg-primary`.
 - Não use `success`/`info` para enfeitar (verde/azul "bonito") — rouba o significado de estado.
 - Não empilhe sombras pesadas, nem misture borda-only com drop-shadow na mesma tela.
-- Não use Quicksand (display) em corpo de texto nem JetBrains Mono em prosa de leitura.
+- Não carregue outra família (Google Fonts, `next/font` de outra fonte, `@font-face`, fontsource) nem use `font-display`/`font-mono` como se fossem outra face.
+- Não estilize markdown com `prose` nem com mapa de componentes h1/p/ul — é typeset.
 - Não invente espaçamentos fora do grid 4px (nada de 13/18/25px).
 - Não trate a sidebar como bloco escuro contrastante — é o mesmo ambiente + borda sutil.
 
@@ -211,7 +213,7 @@ acontecem no celular — nenhuma tela pode quebrar embaixo.
 
 - **Touch targets** ≥ 44×44px em controles tocáveis; padding generoso em mobile.
 - **Sidebar**: drawer no mobile → fixa do `md`/`lg` para cima.
-- **Tabela densa**: scroll horizontal ou colapso para cards no mobile; mantém `font-mono` alinhado em qualquer tamanho.
+- **Tabela densa**: scroll horizontal ou colapso para cards no mobile; mantém `tabular-nums` alinhado em qualquer tamanho.
 
 ---
 
@@ -224,13 +226,13 @@ acontecem no celular — nenhuma tela pode quebrar embaixo.
 - Texto primário `text-foreground` · secundário/metadado `text-muted-foreground`.
 - Borda: `border-border` · foco: `ring-ring`.
 - Estado: `text-success` / `bg-warning` / `text-destructive` / `text-info` (+ `-foreground`).
-- Títulos/anúncio: `font-display` (Quicksand) `tracking-tight`. Corpo/UI: `font-sans` (Inter) `leading-relaxed` (`font-heading` é alias de Inter, não Quicksand). Dados: `font-mono` (JetBrains Mono).
+- Fonte: só Inter. Títulos/anúncio: `text-2xl`+ `font-semibold tracking-tight`. Corpo/UI: `leading-relaxed`. Dados: `tabular-nums`. Texto rico: `typeset typeset-docs max-w-[37em]`.
 - Raio: `rounded-md`/`-lg`/`-xl`. Charts: tokens `chart-1..5`.
 
 ### Exemplos de direção declarada (prontos)
-- **Dashboard de carteira:** "Tela densa-mas-calma em `bg-background`. Cards `bg-card` + `border-border` + `rounded-xl`, padding `p-6`, **profundidade só por borda** (sem sombra). KPIs com rótulo em `text-muted-foreground` (Inter 500) e o número-herói em `font-display` (Quicksand 600). Um único CTA `bg-primary` no topo ('Novo aporte'). Variação de valor em `text-success`/`text-destructive` conforme sinal. Tabela de posições com colunas de valor em `font-mono`, alinhadas à direita."
+- **Dashboard de carteira:** "Tela densa-mas-calma em `bg-background`. Cards `bg-card` + `border-border` + `rounded-xl`, padding `p-6`, **profundidade só por borda** (sem sombra). KPIs com rótulo em `text-muted-foreground` (Inter 500) e o número-herói em `text-3xl font-semibold tracking-tight tabular-nums`. Um único CTA `bg-primary` no topo ('Novo aporte'). Variação de valor em `text-success`/`text-destructive` conforme sinal. Tabela de posições com colunas de valor em `tabular-nums`, alinhadas à direita."
 - **Formulário de cadastro de ativo:** "Coluna única em `max-w-prose` sobre `bg-background`. Campos (react-hook-form + zod) com `border-input`, foco `ring-ring`, label `font-sans` 500. Botão de envio `bg-primary` (único amarelo da tela); 'Cancelar' em `ghost` (só `border-border`). Erros em `text-destructive` com a mensagem do zod; estado de salvo em `text-success`. Raio `rounded-md`, espaçamento múltiplo de 4 (`gap-4`)."
-- **Página de marketing / showcase (criativo, mas tema é lei):** "Hero em `bg-background` com headline `font-display` (Quicksand 700) `tracking-tight`, subtítulo `font-sans` em `text-muted-foreground`, e **um** CTA `bg-primary`. Profundidade por degrau de luminância (`bg-surface` em seções alternadas) — sem gradiente, sem cor fora dos tokens. O amarelo aparece uma vez por dobra; o resto é neutro oklch."
+- **Página de marketing / showcase (criativo, mas tema é lei):** "Hero em `bg-background` com headline Inter `text-6xl font-semibold tracking-tight`, subtítulo `text-muted-foreground`, e **um** CTA `bg-primary`. Profundidade por degrau de luminância (`bg-surface` em seções alternadas) — sem gradiente, sem cor fora dos tokens. O amarelo aparece uma vez por dobra; o resto é neutro oklch."
 
 ### Guia de iteração
 1. Foque **uma tela/componente** por vez e declare a direção antes de construir.
@@ -238,7 +240,7 @@ acontecem no celular — nenhuma tela pode quebrar embaixo.
 3. **Um momento `bg-primary` por tela** — se há dois amarelos, um está errado.
 4. Escolha **uma** estratégia de profundidade (§6) e mantenha na tela inteira.
 5. Cor semântica só com significado de estado; o resto é neutro.
-6. Quicksand anuncia, Inter lê, JetBrains Mono alinha dados — nunca troque os papéis.
+6. Uma família só (Inter): hierarquia por tamanho/peso/cor/espaço, dados com `tabular-nums`, texto rico em typeset.
 7. Para números de tipografia/contraste/motion, consulte as references de `reviewing/`; para API de componente, a skill `blips-ui:building`.
 
 <!-- Fonte: nexu-io/open-design (Apache 2.0) — design-systems/_schema/AGENTS.md, design-systems/claude/DESIGN.md, design-systems/linear-app/DESIGN.md. Tokens: packages/ui/src/globals.css (Blips, fonte da verdade). -->

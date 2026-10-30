@@ -10,7 +10,7 @@
       "expectations": [
         "C nunca é classificado como criativo (tela de app = produto, mesmo sendo 'simples')",
         "B usa modo criativo SEM propor fonte ou paleta nova (tokens são lei)",
-        "A declara densidade densa + dados em font-mono/tabular-nums",
+        "A declara densidade densa + dados em tabular-nums",
         "Cada cenário tem direção declarada nas 4 dimensões (densidade/profundidade/layout/tom)",
         "Nenhuma menção a escolher cor de fundação/acento ou fonte (saíram da mesa)"
       ]

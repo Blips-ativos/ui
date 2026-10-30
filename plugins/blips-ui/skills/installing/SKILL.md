@@ -77,8 +77,11 @@ sinalize ao usuário que a rota não é canônica.
   Next precisa de `transpilePackages: ["@blips/ui"]`; Vite compila TSX de
   node_modules nativamente.
 - **`./globals.css`** = tema completo: `@import "tailwindcss"`,
-  tw-animate-css, fontes Google (Inter, Quicksand, JetBrains Mono), tokens
-  shadcn + amarelo Blips `#FCBA28` como `primary`, dark mode via `.dark`.
+  tw-animate-css, **shadcn/typeset** (`typeset.css` + preset `.typeset-docs`),
+  uma única família — **Inter** (`--font-sans`; `--font-heading`,
+  `--font-display` e `--font-mono` existem por compatibilidade e resolvem para
+  ela; `@import` do Google Fonts só com Inter, como fallback p/ apps não-Next),
+  tokens shadcn + amarelo Blips `#FCBA28` como `primary`, dark mode via `.dark`.
 - **peerDependencies**: só `react`/`react-dom` `^17 || ^18 || ^19` — **igual na v2.x e na
   v3.x** (o Base UI aceita a mesma faixa).
 - **Já vêm com a lib (não reinstale)**: CVA, clsx, tailwind-merge, cmdk, recharts, sonner,
@@ -155,10 +158,12 @@ apresentar custos reais e não estimativas.
 | v3.x em React 17/18 | `Questionnaire` e `MessageScroller` vêm de `@shadcn/react`, que declara peer `react >=19` (opcional: o install não falha). Em React 17 eles quebram em runtime (`React.useId` não existe); em React 18 a faixa do peer não é atendida e `ref` não chega como prop. Use-os só em React 19 |
 | Ícones na v3.x | Use os nomes com sufixo `Icon` (`CaretDownIcon`); os sem sufixo estão `@deprecated` no Phosphor 2.1.10. Na v2.x os dois funcionam — prefira o sufixo em código novo |
 | pnpm 10 avisa "Ignored build scripts: esbuild" | Inofensivo — o binário vem por optionalDependencies |
-| Fontes | Já vêm por `@import url(...)` no globals da lib. Opcional: `<link rel="preconnect">` para fonts.googleapis.com/fonts.gstatic.com |
+| Fontes | **Só Inter.** Next: carregue com `next/font/google` expondo `--font-inter` no `<html>` (reference do Next) — o token `--font-sans` usa `var(--font-inter, "Inter")`. Vite/não-Next: o `@import` de Inter no globals da lib já cobre; opcional `<link rel="preconnect">`. Não instale nem importe outra família (Google Fonts, `next/font` de outra fonte, `@font-face`, `@fontsource/*`) |
+| Conteúdo rico (MDX, react-markdown, Streamdown, HTML de CMS, texto longo) | **shadcn/typeset** já vem no globals da lib — não instale nada. Envolva o conteúdo em `<div className="typeset typeset-docs max-w-[37em]">`. **Não** instale `@tailwindcss/typography` (`prose`) nem escreva mapa de componentes markdown estilizando h1/p/ul elemento a elemento. Detalhe em `blips-ui:building` / https://ui.shadcn.com/docs/typeset |
 | CSS legado do app | Mantenha abaixo do `@import` do globals durante a migração — o cascade preserva telas antigas |
 | Repo com design system interno (globals próprio) | Importe o globals da lib ANTES do globals interno — os tokens do app vencem o cascade (visual atual intacto) e os componentes da lib herdam o tema local. O duplo `@import "tailwindcss"` é dedupado pelo v4 (verificado) |
-| App com tema próprio sem tokens de fonte | O globals da lib define `--font-sans: Inter` e carrega as fontes Google — telas existentes mudam de fonte. Sinalize o efeito ao usuário; NÃO "resolva" copiando/neutralizando tokens |
+| App com tema próprio sem tokens de fonte (ou com outra família) | O globals da lib define `--font-sans` = Inter e carrega Inter — telas existentes mudam de fonte. É o padrão (uma família só): sinalize o efeito ao usuário; NÃO "resolva" copiando/neutralizando tokens nem mantendo a família antiga em paralelo |
+| `@tailwindcss/typography` / classes `prose` já no app | Não remova às cegas em adoção: sinalize que o padrão é typeset (`typeset typeset-docs`) e migre junto com o usuário — o `reviewing` acusa `prose` como violação |
 | `moduleResolution: "node"` no tsconfig | Não resolve subpath exports → migre para `"bundler"` (padrão Next 15+; mudança mínima, valide com tsc). Detalhe na reference do Next |
 | `lucide-react` JÁ usado pelo legado | Mantenha (remover quebra o app). Ban do Biome `noRestrictedImports` SÓ em repo sem lucide legado — senão quebra o lint inteiro. Na seção do CLAUDE.md: Phosphor obrigatório em código novo |
 

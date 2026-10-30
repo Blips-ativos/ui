@@ -44,14 +44,15 @@ quebrar acessibilidade.
 > + neutros do tema (`background`, `foreground`, `muted`, `border`, `card`,
 > `surface`) + semânticas só por significado (`success`/`warning`/`destructive`/
 > `info`). **Zero hex novo, zero paleta nova — nem em modo criativo.**
-> **Fonte** = Inter (`font-sans`), Quicksand (`font-display`), JetBrains Mono
-> (`font-mono`). Escolher fonte não é grau de liberdade.
+> **Fonte** = Inter, a única família (shadcn/typeset). `font-display`/`font-mono`
+> resolvem para Inter — não são outra face. Escolher ou parear fonte não é grau
+> de liberdade; corpo long-form/markdown vai em `typeset typeset-docs`.
 > Tokens são cor completa (oklch/hex): consuma como utility (`bg-primary`) ou
 > `var(--primary)` — **nunca** `hsl(var(--primary))` (quebra: o token já é a cor).
 
 Porquê: a identidade Blips vem da marca constante; se cada landing inventa
 paleta/fonte, deixa de ser Blips. O open-design bane "Inter" e exige serifa
-custom — **nós invertemos**: Inter/Quicksand são lei, e o que o open-design
+custom — **nós invertemos**: Inter (só ela) é lei, e o que o open-design
 chama de "premium font" nós obtemos via **escala** e **composição**.
 
 Os números de motion/tracking abaixo são a aplicação criativa das references
@@ -86,7 +87,7 @@ sensação "documento premium", calma e cara, sem decoração.
   (hairline), `rounded-lg` (8–12px), padding generoso `p-6`–`p-10`. Coluna de
   conteúdo travada em `max-w-4xl`/`max-w-5xl`. Porquê: estrutura plana + medida
   controlada é o que produz o "document-style".
-- **Escala:** display em `font-display` (Quicksand) `text-5xl`–`text-7xl`,
+- **Escala:** display em Inter `text-5xl`–`text-7xl`,
   `tracking-tight`, `leading-tight` — contraste por **escala e espaço**, não por
   massa (`font-bold` é raro; ver `typography.md` §6 #17). Eyebrow `text-xs
   uppercase tracking-widest` (≥0.06em — `typography.md` #8, **bloqueante**).
@@ -114,9 +115,9 @@ sensação "documento premium", calma e cara, sem decoração.
 
 ### Checklist de saída (binário)
 
-- [ ] Zero cor/fonte fora do tema (amarelo + neutros + semânticas; Inter/Quicksand/mono)?
+- [ ] Zero cor/fonte fora do tema (amarelo + neutros + semânticas; só Inter)?
 - [ ] Nenhuma sombra > 0.05 de opacidade; nenhum `rounded-full` em container grande?
-- [ ] Display em `font-display` com `tracking-tight`; eyebrow caixa-alta com tracking ≥0.06em?
+- [ ] Display grande com `tracking-tight`; eyebrow caixa-alta com tracking ≥0.06em?
 - [ ] ≤3 tamanhos de tipo acima da dobra; conteúdo em `max-w-4xl`/`5xl`?
 - [ ] Entradas via `IntersectionObserver`, `transform`/`opacity`, ≤600ms?
 - [ ] Textura/ambiente só em camada `fixed pointer-events-none`?
@@ -149,10 +150,10 @@ sensação "documento premium", calma e cara, sem decoração.
   container inteiro para segregar zonas. Negative space assimétrico punctuado
   por numeral/letra que sangra a viewport.
 - **Escala (a assinatura):** macro-tipo fluido `clamp(4rem, 10vw, 15rem)` em
-  `font-display` (Quicksand) ou `font-sans` (Inter 700), **uppercase**,
+  Inter `font-semibold`/`font-bold`, **uppercase**,
   `tracking-tighter` (−0.03 a −0.06em — casa com `typography.md` #9
   **bloqueante**), `leading-none` comprimido (0.85–0.95). Micro-tipo de telemetria
-  em `font-mono` 10–14px, `tracking-wide`, uppercase, para metadados/IDs/labels.
+  em 10–14px `tabular-nums`, `tracking-widest`, uppercase, para metadados/IDs/labels.
 - **Movimento:** entrada decisiva e seca — `opacity:0` + `translateY` curto,
   duração de **produto** (≤300ms na entrada de UI; `motion.md` tabela). Sem
   spring/bounce mesmo no criativo aqui: a personalidade é mecânica, não lúdica.
@@ -211,7 +212,7 @@ quando o objetivo é profundidade háptica, espaço cinematográfico e calma car
   flush à direita. Bento assimétrico OU cascade Z (cards levemente sobrepostos,
   rotação `-2deg`/`3deg`). Eyebrow `rounded-full px-3 py-1 text-[10px] uppercase
   tracking-[0.2em]` (≥0.06em ok).
-- **Escala:** display `font-display` (Quicksand) grande e arejado,
+- **Escala:** display Inter grande e arejado,
   `tracking-tight`; macro-whitespace `py-24`–`py-40`; dobre o padding default.
 - **Movimento (orquestrado, com física):** este é o único preset que admite
   **spring/Motion (React)** — é modo criativo (`motion.md`: spring/physics é
@@ -265,7 +266,7 @@ quando o objetivo é profundidade háptica, espaço cinematográfico e calma car
 **Regra de ouro:** escolha UM e comprometa-se. Misturar planura editorial com
 double-bezel háptico no mesmo hero lê como indecisão, não autoria. E em qualquer
 um: **a ousadia é composição/escala/movimento — a cor é sempre o amarelo + neutros
-do tema, a fonte é sempre Inter/Quicksand.** Antes do handoff, a `designing`
+do tema, a fonte é sempre Inter (só ela).** Antes do handoff, a `designing`
 exige declarar a direção; a `reviewing` valida contra ela (gate).
 
 <!-- Fonte: nexu-io/open-design (Apache 2.0) — skills/minimalist-skill/SKILL.md, skills/brutalist-skill/SKILL.md, skills/soft-skill/SKILL.md (high-end-visual-design); thresholds ancorados em reviewing/references/motion.md e typography.md -->
