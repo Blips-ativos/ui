@@ -1,0 +1,131 @@
+---
+title: Combobox
+description: Um input com lista de sugestões filtrada enquanto o usuário digita.
+---
+
+<ComponentPreview name="combobox-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@blips/ui/components/combobox"
+```
+
+```tsx
+const frameworks = ["Next.js", "SvelteKit", "Nuxt.js", "Remix", "Astro"]
+
+<Combobox items={frameworks}>
+  <ComboboxInput placeholder="Selecione um framework" />
+  <ComboboxContent>
+    <ComboboxEmpty>Nenhum item encontrado.</ComboboxEmpty>
+    <ComboboxList>
+      {(item) => (
+        <ComboboxItem key={item} value={item}>
+          {item}
+        </ComboboxItem>
+      )}
+    </ComboboxList>
+  </ComboboxContent>
+</Combobox>
+```
+
+O `Combobox` é construído sobre o [Combobox do Base UI](https://base-ui.com/react/components/combobox). Passe a lista em `items` e uma função como filho do `ComboboxList`: o componente filtra os itens pelo texto digitado e renderiza só os que combinam. O `ComboboxEmpty` aparece quando nada combina.
+
+Itens podem ser strings ou objetos. Com objetos no formato `{ value, label }`, o rótulo exibido no input vem de `label` e o valor enviado no formulário vem de `value`. Para outros formatos, use `itemToStringLabel` e `itemToStringValue`.
+
+## Exemplos
+
+### Botão de limpar
+
+Use `showClear` no `ComboboxInput` para exibir um botão que limpa a seleção.
+
+<ComponentPreview name="combobox-clear" />
+
+### Grupos
+
+Passe uma lista de grupos em `items` e renderize cada um com `ComboboxGroup`, `ComboboxLabel` e `ComboboxCollection`. Um `InputGroupAddon` como filho do `ComboboxInput` adiciona um ícone.
+
+<ComponentPreview name="combobox-groups" />
+
+### Seleção múltipla
+
+Com `multiple`, use `ComboboxChips` como âncora. O hook `useComboboxAnchor` cria a ref que liga os chips ao popup.
+
+<ComponentPreview name="combobox-multiple" />
+
+### Em um popup
+
+Use um `ComboboxTrigger` (aqui com um `Button` pela prop `render`) e coloque o `ComboboxInput` dentro do `ComboboxContent`, com `showTrigger={false}`.
+
+<ComponentPreview name="combobox-popup" />
+
+### Itens customizados
+
+Com objetos em outro formato, renderize o item como quiser, diga qual texto mostrar no input com `itemToStringLabel` e qual valor enviar no formulário com `itemToStringValue`.
+
+<ComponentPreview name="combobox-custom" />
+
+### Desabilitado
+
+Use `disabled` no `ComboboxInput` para desabilitar o campo, ou no `ComboboxItem` para desabilitar uma opção.
+
+<ComponentPreview name="combobox-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` no `ComboboxInput` e `data-invalid` no `Field`.
+
+<ComponentPreview name="combobox-invalid" />
+
+## Combobox, Select ou Command?
+
+- **Combobox:** escolher um valor (ou vários) de uma lista, com busca. É um campo de formulário.
+- **[Select](/docs/components/select):** escolher de uma lista curta, sem busca.
+- **[Command](/docs/components/command):** paleta de comandos e menus de ação com busca. Não guarda valor.
+
+## Referência da API
+
+### ComboboxInput
+
+| Prop          | Tipo      | Padrão  |
+| ------------- | --------- | ------- |
+| `showTrigger` | `boolean` | `true`  |
+| `showClear`   | `boolean` | `false` |
+| `disabled`    | `boolean` | `false` |
+
+Os filhos são renderizados dentro do `InputGroup`, o que permite adicionar um `InputGroupAddon`.
+
+### ComboboxContent
+
+| Prop          | Tipo                                     | Padrão     |
+| ------------- | ---------------------------------------- | ---------- |
+| `side`        | `"top" \| "bottom" \| "left" \| "right" \| "inline-start" \| "inline-end"` | `"bottom"` |
+| `sideOffset`  | `number`                                 | `6`        |
+| `align`       | `"start" \| "center" \| "end"`           | `"start"`  |
+| `alignOffset` | `number`                                 | `0`        |
+| `anchor`      | `React.RefObject<HTMLElement \| null>`   |            |
+
+### ComboboxChip
+
+| Prop         | Tipo      | Padrão |
+| ------------ | --------- | ------ |
+| `showRemove` | `boolean` | `true` |
+
+### useComboboxAnchor
+
+Retorna uma ref para passar ao `ComboboxChips` (`ref`) e ao `ComboboxContent` (`anchor`), alinhando o popup aos chips.
+
+Consulte a documentação do [Base UI Combobox](https://base-ui.com/react/components/combobox) para as props do `Combobox` (`items`, `value`, `onValueChange`, `multiple`, `autoHighlight`, `itemToStringLabel`, `itemToStringValue` e outras).

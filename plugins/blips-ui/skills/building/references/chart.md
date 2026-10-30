@@ -2,131 +2,113 @@
 
 Import: `@blips/ui/components/chart`
 
-## Sub-components
+Wrappers do shadcn para gráficos Recharts: tema por variáveis CSS, tooltip e
+legenda estilizados.
 
-| Export | Description |
-|--------|-------------|
-| `ChartContainer` | Root wrapper. Provides `ChartConfig` context, injects CSS color variables, and wraps children in Recharts' `ResponsiveContainer`. |
-| `ChartTooltip` | Re-export of Recharts' `Tooltip` component. Use with `ChartTooltipContent` as its `content` prop. |
-| `ChartTooltipContent` | Styled tooltip content. Reads chart config for labels, colors, and icons. Supports indicator styles (dot, line, dashed). |
-| `ChartLegend` | Re-export of Recharts' `Legend` component. Use with `ChartLegendContent` as its `content` prop. |
-| `ChartLegendContent` | Styled legend content. Renders color swatches with labels from chart config. |
-| `ChartStyle` | Internal component that generates `<style>` tags for CSS color variables per theme (light/dark). |
+Exports (iguais nas duas versões): `ChartContainer`, `ChartTooltip`,
+`ChartTooltipContent`, `ChartLegend`, `ChartLegendContent`, `ChartStyle` e o tipo
+`ChartConfig`. O hook interno `useChart` **não** é exportado.
 
-### Types
+## Notas comuns
 
-| Type | Description |
-|------|-------------|
-| `ChartConfig` | Configuration object mapping data keys to `{ label?, icon?, color? }` or `{ label?, icon?, theme: { light, dark } }`. |
+| Export | Descrição |
+|---|---|
+| `ChartContainer` | Raiz: provê o `ChartConfig`, injeta as variáveis `--color-<chave>` e envolve o gráfico em `ResponsiveContainer`. Classe base `flex aspect-video justify-center text-xs`. |
+| `ChartTooltip` | O `Tooltip` do Recharts. Use com `content={<ChartTooltipContent />}`. |
+| `ChartTooltipContent` | Tooltip estilizado: `hideLabel`, `hideIndicator`, `indicator` (`"dot" \| "line" \| "dashed"`, padrão `"dot"`), `nameKey`, `labelKey`, `labelFormatter`, `formatter`, `labelClassName`, `color`. |
+| `ChartLegend` | O `Legend` do Recharts. Use com `content={<ChartLegendContent />}`. |
+| `ChartLegendContent` | Legenda estilizada: `hideIcon`, `nameKey`, `verticalAlign` (`"top" \| "bottom"`, padrão `"bottom"`). |
+| `ChartStyle` | Gera o `<style>` com as variáveis por tema (uso interno). |
 
-### Hook
+`ChartConfig` mapeia cada chave dos dados para `{ label?, icon?, color? }` ou
+`{ label?, icon?, theme: { light, dark } }`:
 
-| Hook | Description |
-|------|-------------|
-| `useChart()` | Access chart context (`config`). Must be used within `<ChartContainer>`. |
-
-## Props & Variants
-
-### ChartContainer Props
-
-| Prop | Type | Required | Description |
-|------|------|----------|-------------|
-| `config` | `ChartConfig` | Yes | Maps data keys to labels, colors, and optional icons |
-| `children` | `ResponsiveContainer` children | Yes | Recharts chart component (BarChart, LineChart, etc.) |
-| `id` | `string` | No | Custom chart ID (auto-generated if omitted) |
-| `className` | `string` | No | Additional classes. Default includes `flex aspect-video justify-center text-xs` |
-
-### ChartConfig Structure
-
-```typescript
+```ts
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",        // single color for both themes
-  },
-  mobile: {
-    label: "Mobile",
-    theme: {                  // per-theme colors
-      light: "#60a5fa",
-      dark: "#3b82f6",
-    },
-  },
-} satisfies ChartConfig
+  receita: { label: "Receita", color: "var(--chart-1)" },
+  despesa: { label: "Despesa", color: "var(--chart-2)" },
+} satisfies ChartConfig;
 ```
 
-Colors become CSS variables: `--color-desktop`, `--color-mobile`. Reference them in chart components as `fill="var(--color-desktop)"`.
+Regras do projeto (valem nas duas versões):
 
-### ChartTooltipContent Props
+- Sempre envolva o gráfico em `ChartContainer` e dê altura mínima: `className="min-h-[200px] w-full"`.
+- Cores: tokens do tema (`var(--chart-1)` … `var(--chart-5)`) no config e `var(--color-<chave>)` nos elementos (`fill`, `stroke`). Nunca hex hardcoded.
+- Use `satisfies ChartConfig`.
+- Tooltip/legenda: sempre os wrappers da lib, nunca o conteúdo padrão do Recharts.
+- Valores monetários no `formatter`: `Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })`.
+- Guias de composição: `components/charts/*.md`; blocos prontos: `blocks/chart-compositions.md`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `hideLabel` | `boolean` | `false` | Hide the tooltip label/header |
-| `hideIndicator` | `boolean` | `false` | Hide the color indicator |
-| `indicator` | `"dot"` \| `"line"` \| `"dashed"` | `"dot"` | Indicator style |
-| `nameKey` | `string` | -- | Override the key used for item names |
-| `labelKey` | `string` | -- | Override the key used for the tooltip label |
-| `labelFormatter` | `(value, payload) => ReactNode` | -- | Custom label formatter |
-| `formatter` | Recharts formatter | -- | Custom value formatter |
+> A API difere entre as versões (recharts 2 vs 3, tipos do tooltip/legenda, `initialDimension`). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-### ChartLegendContent Props
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `hideIcon` | `boolean` | `false` | Hide color icons |
-| `nameKey` | `string` | -- | Override the key used for legend item names |
-| `verticalAlign` | `"top"` \| `"bottom"` | `"bottom"` | Vertical alignment (adds padding accordingly) |
+Usa **recharts 3** (3.10.x). Quem escreve código Recharts direto no gráfico segue a API do recharts 3 (props/tipos removidos do 2, `Customized` etc.: ver o guia de migração do recharts 3).
 
-## Dependencies
-
-- `recharts` (v3.8.0)
-- `@phosphor-icons/react`
-
-## Usage
-
-### Basic Bar Chart
+- `ChartContainer` ganhou `initialDimension?: { width: number; height: number }` (padrão `320x200`), repassado ao `ResponsiveContainer` — define a medida da renderização inicial/SSR, antes de medir o contêiner.
+- `ChartTooltipContent` tipado com `DefaultTooltipContentProps` do recharts 3; `ChartLegendContent` recebe `DefaultLegendContentProps`. `formatter`/`labelFormatter` tipados contra o recharts 2 podem precisar de ajuste.
+- O tooltip agora mostra valor `0` (antes era escondido) e valores não numéricos via `String()`. Container `min-w-32 text-xs/relaxed`.
+- No recharts 3, `accessibilityLayer` já vem ligado por padrão nos gráficos; não precisa passar.
 
 ```tsx
-"use client"
+"use client";
 
-import { Bar, BarChart } from "recharts"
 import {
-  ChartContainer,
   type ChartConfig,
-} from "@blips/ui/components/chart"
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@blips/ui/components/chart";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
 
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+  { mes: "Janeiro", receita: 18600, despesa: 8000 },
+  { mes: "Fevereiro", receita: 30500, despesa: 20000 },
+  { mes: "Março", receita: 23700, despesa: 12000 },
+];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
-  },
-} satisfies ChartConfig
+  receita: { label: "Receita", color: "var(--chart-1)" },
+  despesa: { label: "Despesa", color: "var(--chart-2)" },
+} satisfies ChartConfig;
 
-export default function Component() {
+export function GraficoReceita() {
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+      <BarChart data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="mes"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          tickFormatter={(value: string) => value.slice(0, 3)}
+        />
+        <ChartTooltip
+          content={
+            <ChartTooltipContent formatter={(value) => brl.format(Number(value))} />
+          }
+        />
+        <ChartLegend content={<ChartLegendContent />} />
+        <Bar dataKey="receita" fill="var(--color-receita)" radius={4} />
+        <Bar dataKey="despesa" fill="var(--color-despesa)" radius={4} />
       </BarChart>
     </ChartContainer>
-  )
+  );
 }
 ```
 
-### Bar Chart with Axis, Grid, Tooltip and Legend
+## v2.x — Radix
+
+Usa **recharts 2** (2.15.x). Não existe `initialDimension`.
+
+- `ChartTooltipContent` usa os tipos do `Tooltip` do recharts 2; `ChartLegendContent` recebe `Pick<LegendProps, "payload" | "verticalAlign">`.
+- O tooltip esconde valor `0` (`item.value && …`). Container `min-w-[8rem] text-xs`.
+- Passe `accessibilityLayer` no gráfico raiz (`BarChart`, `LineChart`…) para os atributos ARIA.
 
 ```tsx
 "use client"
@@ -141,59 +123,43 @@ import {
   type ChartConfig,
 } from "@blips/ui/components/chart"
 
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" })
+
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
+  { mes: "Janeiro", receita: 18600, despesa: 8000 },
+  { mes: "Fevereiro", receita: 30500, despesa: 20000 },
+  { mes: "Março", receita: 23700, despesa: 12000 },
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
-    color: "#2563eb",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "#60a5fa",
-  },
+  receita: { label: "Receita", color: "var(--chart-1)" },
+  despesa: { label: "Despesa", color: "var(--chart-2)" },
 } satisfies ChartConfig
 
-export default function Component() {
+export function GraficoReceita() {
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
       <BarChart accessibilityLayer data={chartData}>
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="month"
+          dataKey="mes"
           tickLine={false}
           tickMargin={10}
           axisLine={false}
           tickFormatter={(value) => value.slice(0, 3)}
         />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <ChartTooltip
+          content={<ChartTooltipContent formatter={(value) => brl.format(Number(value))} />}
+        />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="receita" fill="var(--color-receita)" radius={4} />
+        <Bar dataKey="despesa" fill="var(--color-despesa)" radius={4} />
       </BarChart>
     </ChartContainer>
   )
 }
 ```
 
-## All Examples
+## Exemplos na docs
 
-- `chart-bar-demo` -- Basic bar chart (no axis)
-- `chart-bar-demo-axis` -- Bar chart with XAxis and CartesianGrid
-- `chart-bar-demo-grid` -- Bar chart with CartesianGrid only
-- `chart-bar-demo-tooltip` -- Bar chart with ChartTooltip
-- `chart-bar-demo-legend` -- Bar chart with ChartTooltip and ChartLegend
-- `chart-tooltip-demo` -- Visual tooltip indicator styles showcase (dot, line, dashed)
-
-## Project Notes
-
-- Always wrap Recharts charts in `ChartContainer` -- it provides the `ResponsiveContainer` and CSS variable injection.
-- Color references use `var(--color-KEY)` where KEY matches the `ChartConfig` object keys.
-- The `accessibilityLayer` prop on chart components (BarChart, LineChart, etc.) adds proper ARIA attributes.
+`chart-demo`, `chart-example`, `chart-example-axis`, `chart-example-grid`, `chart-example-tooltip`, `chart-example-legend`, `chart-tooltip`, `chart-area`, `chart-line`, `chart-pie`, `chart-radar`, `chart-radial` (v3, recharts 3).

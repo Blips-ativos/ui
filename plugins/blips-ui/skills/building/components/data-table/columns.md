@@ -2,6 +2,10 @@
 
 Definição e configuração de colunas para TanStack Table.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Estrutura Base (Array Estático)](#estrutura-base-array-estático)
@@ -12,6 +16,8 @@ Definição e configuração de colunas para TanStack Table.
 - [Sorting Functions Built-in](#sorting-functions-built-in)
 - [Padrões de Colunas por Tipo](#padrões-de-colunas-por-tipo)
 - [Colunas Fixas (Column Pinning)](#colunas-fixas-column-pinning)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Estrutura Base (Array Estático)
 
@@ -67,13 +73,14 @@ Quando colunas precisam de handlers ou callbacks externos, use o padrão `getCol
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { DotsThree, Trash } from "@phosphor-icons/react";
+import { DotsThreeIcon, TrashIcon } from "@phosphor-icons/react";
 
 import { Button } from "@blips/ui/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -107,14 +114,14 @@ export const getColumns = ({
 
       return (
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <DotsThree className="h-4 w-4" />
-            </Button>
+          <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" />}>
+            <span className="sr-only">Abrir menu</span>
+            <DotsThreeIcon className="h-4 w-4" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => handleEdit(resource.id)}>
               Editar
@@ -129,7 +136,7 @@ export const getColumns = ({
               variant="destructive"
               onClick={() => handleDelete(resource.id)}
             >
-              <Trash className="mr-2 h-4 w-4" />
+              <TrashIcon className="mr-2 h-4 w-4" />
               Excluir
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -252,9 +259,9 @@ import { Checkbox } from "@blips/ui/components/checkbox";
   id: "select",
   header: ({ table }) => (
     <Checkbox
-      checked={
-        table.getIsAllPageRowsSelected() ||
-        (table.getIsSomePageRowsSelected() && "indeterminate")
+      checked={table.getIsAllPageRowsSelected()}
+      indeterminate={
+        table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
       }
       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
       aria-label="Selecionar todos"
@@ -279,12 +286,13 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuGroup,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
 import { Button } from "@blips/ui/components/button";
-import { DotsThree, Eye, Pencil, Trash } from "@phosphor-icons/react";
+import { DotsThreeIcon, EyeIcon, PencilIcon, TrashIcon } from "@phosphor-icons/react";
 
 {
   id: "actions",
@@ -293,28 +301,28 @@ import { DotsThree, Eye, Pencil, Trash } from "@phosphor-icons/react";
 
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Abrir menu</span>
-            <DotsThree className="h-4 w-4" />
-          </Button>
+        <DropdownMenuTrigger render={<Button variant="ghost" className="h-8 w-8 p-0" />}>
+          <span className="sr-only">Abrir menu</span>
+          <DotsThreeIcon className="h-4 w-4" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>Ações</DropdownMenuLabel>
+          </DropdownMenuGroup>
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(resource.id)}>
             Copiar ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Eye className="mr-2 h-4 w-4" />
+            <EyeIcon className="mr-2 h-4 w-4" />
             Visualizar
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Pencil className="mr-2 h-4 w-4" />
+            <PencilIcon className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem className="text-destructive">
-            <Trash className="mr-2 h-4 w-4" />
+            <TrashIcon className="mr-2 h-4 w-4" />
             Excluir
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -417,12 +425,12 @@ import { DotsThree, Eye, Pencil, Trash } from "@phosphor-icons/react";
 ### Status com Ícone
 
 ```tsx
-import { Check, X, Clock } from "@phosphor-icons/react";
+import { CheckIcon, XIcon, ClockIcon } from "@phosphor-icons/react";
 
 const STATUS_CONFIG = {
-  active: { label: "Ativo", icon: Check, variant: "default" },
-  inactive: { label: "Inativo", icon: X, variant: "secondary" },
-  pending: { label: "Pendente", icon: Clock, variant: "outline" },
+  active: { label: "Ativo", icon: CheckIcon, variant: "default" },
+  inactive: { label: "Inativo", icon: XIcon, variant: "secondary" },
+  pending: { label: "Pendente", icon: ClockIcon, variant: "outline" },
 } as const;
 
 {
@@ -546,3 +554,37 @@ import { cn } from "@blips/ui/lib/utils";
 - **Background obrigatório**: Células sticky precisam de `bg-background` para não mostrar conteúdo abaixo
 - **Shadow para separação**: Use shadow à esquerda para indicar visualmente que há conteúdo oculto
 - **Linhas com background diferente**: Ajuste o background da célula sticky para corresponder (ex: linha inativa)
+
+## v3.x — Base UI
+
+Os exemplos acima já estão na v3.x: trigger do dropdown de ações com `render`,
+`DropdownMenuLabel` dentro de `DropdownMenuGroup`, checkbox de cabeçalho com `indeterminate`.
+
+## v2.x — Radix
+
+```tsx
+// Ações por linha
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost" className="h-8 w-8 p-0">
+      <span className="sr-only">Abrir menu</span>
+      <DotsThree className="h-4 w-4" />
+    </Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent align="end">
+    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem onClick={() => handleEdit(resource.id)}>Editar</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+// Coluna de seleção
+<Checkbox
+  checked={
+    table.getIsAllPageRowsSelected() ||
+    (table.getIsSomePageRowsSelected() && "indeterminate")
+  }
+  onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  aria-label="Selecionar todos"
+/>
+```

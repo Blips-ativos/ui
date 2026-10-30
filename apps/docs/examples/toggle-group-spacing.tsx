@@ -2,35 +2,32 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@blips/ui/components/toggle-group";
-import { Bookmark, Heart, Star } from "@phosphor-icons/react";
 
 export default function ToggleGroupSpacing() {
   return (
-    <ToggleGroup type="multiple" variant="outline" spacing={2} size="sm">
-      <ToggleGroupItem
-        value="star"
-        aria-label="Toggle star"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-yellow-500 data-[state=on]:*:[svg]:stroke-yellow-500"
+    <div className="flex flex-col gap-4">
+      <ToggleGroup
+        variant="outline"
+        size="sm"
+        defaultValue={["top"]}
+        spacing={0}
       >
-        <Star />
-        Star
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="heart"
-        aria-label="Toggle heart"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-red-500 data-[state=on]:*:[svg]:stroke-red-500"
+        <ToggleGroupItem value="top">Topo</ToggleGroupItem>
+        <ToggleGroupItem value="bottom">Base</ToggleGroupItem>
+        <ToggleGroupItem value="left">Esquerda</ToggleGroupItem>
+        <ToggleGroupItem value="right">Direita</ToggleGroupItem>
+      </ToggleGroup>
+      <ToggleGroup
+        variant="outline"
+        size="sm"
+        defaultValue={["top"]}
+        spacing={2}
       >
-        <Heart />
-        Heart
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="bookmark"
-        aria-label="Toggle bookmark"
-        className="data-[state=on]:bg-transparent data-[state=on]:*:[svg]:fill-blue-500 data-[state=on]:*:[svg]:stroke-blue-500"
-      >
-        <Bookmark />
-        Bookmark
-      </ToggleGroupItem>
-    </ToggleGroup>
+        <ToggleGroupItem value="top">Topo</ToggleGroupItem>
+        <ToggleGroupItem value="bottom">Base</ToggleGroupItem>
+        <ToggleGroupItem value="left">Esquerda</ToggleGroupItem>
+        <ToggleGroupItem value="right">Direita</ToggleGroupItem>
+      </ToggleGroup>
+    </div>
   );
 }

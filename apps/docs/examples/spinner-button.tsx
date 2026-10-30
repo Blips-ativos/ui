@@ -3,18 +3,22 @@ import { Spinner } from "@blips/ui/components/spinner";
 
 export default function SpinnerButton() {
   return (
-    <div className="flex flex-col items-center gap-4">
-      <Button disabled size="sm">
-        <Spinner />
-        Loading...
+    <div className="flex flex-wrap items-center gap-4">
+      <Button disabled>
+        <Spinner data-icon="inline-start" />
+        Carregando...
       </Button>
-      <Button variant="outline" disabled size="sm">
-        <Spinner />
-        Please wait
+      <Button variant="outline" disabled>
+        <Spinner data-icon="inline-start" />
+        Aguarde
       </Button>
-      <Button variant="secondary" disabled size="sm">
+      <Button variant="secondary" disabled>
+        <Spinner data-icon="inline-start" />
+        Processando
+      </Button>
+      <Button variant="outline" size="icon" disabled>
         <Spinner />
-        Processing
+        <span className="sr-only">Carregando...</span>
       </Button>
     </div>
   );

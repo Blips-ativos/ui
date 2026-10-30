@@ -6,7 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@blips/ui/components/collapsible";
-import { CaretUpDown } from "@phosphor-icons/react";
+import { CaretUpDownIcon } from "@phosphor-icons/react";
 import * as React from "react";
 
 export default function CollapsibleDemo() {
@@ -20,24 +20,24 @@ export default function CollapsibleDemo() {
     >
       <div className="flex items-center justify-between gap-4 px-4">
         <h4 className="text-sm font-semibold">
-          @peduarte starred 3 repositories
+          @anasouza favoritou 3 repositórios
         </h4>
-        <CollapsibleTrigger asChild>
-          <Button variant="ghost" size="icon" className="size-8">
-            <CaretUpDown />
-            <span className="sr-only">Toggle</span>
-          </Button>
+        <CollapsibleTrigger
+          render={<Button variant="ghost" size="icon" className="size-8" />}
+        >
+          <CaretUpDownIcon />
+          <span className="sr-only">Alternar</span>
         </CollapsibleTrigger>
       </div>
-      <div className="rounded-md border px-4 py-2 font-mono text-sm">
-        @radix-ui/primitives
+      <div className="rounded-md border px-4 py-2 font-mono text-xs">
+        @base-ui/react
       </div>
       <CollapsibleContent className="flex flex-col gap-2">
-        <div className="rounded-md border px-4 py-2 font-mono text-sm">
-          @radix-ui/colors
+        <div className="rounded-md border px-4 py-2 font-mono text-xs">
+          @phosphor-icons/react
         </div>
-        <div className="rounded-md border px-4 py-2 font-mono text-sm">
-          @stitches/react
+        <div className="rounded-md border px-4 py-2 font-mono text-xs">
+          @blips/ui
         </div>
       </CollapsibleContent>
     </Collapsible>

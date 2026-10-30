@@ -18,13 +18,40 @@ import { Textarea } from "@blips/ui/components/textarea"
 ```
 
 ```tsx
-<Textarea />
+<Textarea placeholder="Digite sua mensagem aqui." />
 ```
 
+O `Textarea` é um `<textarea>` nativo estilizado e cresce com o conteúdo (`field-sizing-content`).
+
 ## Exemplos
+
+### Com rótulo
+
+Use `Field`, `FieldLabel` e `FieldDescription` para rotular e descrever o textarea.
+
+<ComponentPreview name="textarea-with-label" />
 
 ### Desabilitado
 
 Use a prop `disabled` para desabilitar o textarea. Para estilizar o estado desabilitado, adicione o atributo `data-disabled` ao componente `Field`.
 
 <ComponentPreview name="textarea-disabled" />
+
+### Inválido
+
+Marque `aria-invalid` no textarea e `data-invalid` no `Field`.
+
+<ComponentPreview name="textarea-invalid" />
+
+## Migrando da v2
+
+- **`resize-none` por padrão.** O usuário não consegue mais redimensionar o campo arrastando o canto. Para voltar ao comportamento antigo, passe `className="resize-y"`.
+- Densidade menor: `px-2` (antes `px-3`) e texto `text-xs/relaxed` a partir de `md`. Sai o `shadow-xs`, entra o fundo `bg-input/20` e o foco passa a `ring-2 ring-ring/30`.
+
+```tsx
+// v2: redimensionável por padrão
+<Textarea />
+
+// v3: para manter o redimensionamento vertical
+<Textarea className="resize-y" />
+```

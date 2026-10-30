@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@blips/ui/components/button";
 import {
   Dialog,
@@ -15,14 +17,14 @@ import { Label } from "@blips/ui/components/label";
 export default function DialogCloseButton() {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Share</Button>
+      <DialogTrigger render={<Button variant="outline" />}>
+        Compartilhar
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Share link</DialogTitle>
+          <DialogTitle>Compartilhar link</DialogTitle>
           <DialogDescription>
-            Anyone who has this link will be able to view this.
+            Qualquer pessoa com este link poderá visualizar o conteúdo.
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center gap-2">
@@ -32,16 +34,14 @@ export default function DialogCloseButton() {
             </Label>
             <Input
               id="link"
-              defaultValue="https://ui.shadcn.com/docs/installation"
+              defaultValue="https://ui.blips.com.br/docs/installation"
               readOnly
             />
           </div>
         </div>
         <DialogFooter className="sm:justify-start">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Close
-            </Button>
+          <DialogClose render={<Button type="button" variant="secondary" />}>
+            Fechar
           </DialogClose>
         </DialogFooter>
       </DialogContent>

@@ -35,7 +35,7 @@ import {
         <FormItem>
           <FormLabel>Nome de usuário</FormLabel>
           <FormControl>
-            <Input placeholder="shadcn" {...field} />
+            <Input placeholder="blips" {...field} />
           </FormControl>
           <FormDescription>Seu nome de exibição público.</FormDescription>
           <FormMessage />
@@ -45,4 +45,65 @@ import {
     <Button type="submit">Enviar</Button>
   </form>
 </Form>
+```
+
+O `FormControl` repassa `id`, `aria-describedby` e `aria-invalid` ao controle, que pode vir como filho único ou pela prop `render`, no idioma do Base UI:
+
+```tsx
+<FormControl render={<Input placeholder="blips" {...field} />} />
+```
+
+Para formulários que não usam react-hook-form, veja o [`Field`](/docs/components/field).
+
+## Exemplos
+
+### Select, Switch e Checkbox
+
+Os controles do Base UI não emitem um evento de `change` nativo: ligue o valor ao `field` pelas props controladas. O `Select` usa `value` e `onValueChange`; o `Switch` e o `Checkbox` usam `checked` e `onCheckedChange`.
+
+<ComponentPreview name="form-controls" />
+
+```tsx
+<FormField
+  control={form.control}
+  name="terms"
+  render={({ field }) => (
+    <FormItem>
+      <FormControl>
+        <Checkbox
+          checked={field.value}
+          onCheckedChange={(checked) => field.onChange(checked)}
+        />
+      </FormControl>
+      <FormLabel>Aceito os termos de uso</FormLabel>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+```
+
+## Migrando da v2
+
+A API (`Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`) continua a mesma. O que muda:
+
+- O `FormControl` não usa mais o `Slot` do Radix: ele é baseado no `useRender` do Base UI. Continua aceitando um único filho e passa a aceitar a prop `render`. O tipo das props mudou para `useRender.ComponentProps<"div">`.
+- Se o filho não for um único elemento React (texto ou vários filhos lado a lado), o `FormControl` renderiza um `<div>` em volta, onde o `Slot` falhava. Um fragmento conta como elemento: não envolva o controle em `<>…</>`.
+- Como no `Slot`, as props do filho vencem em conflito: um `id` definido no filho sobrescreve o gerado e quebra o `htmlFor` do `FormLabel`. Não passe `id` ao controle.
+- `FormLabel` agora é tipado como o `Label` nativo e não aceita `asChild`.
+- `FormDescription` e `FormMessage` passam de `text-sm` para `text-xs/relaxed`.
+- Os callbacks dos controles mudaram: `onCheckedChange` do `Checkbox` recebe só `boolean` (não há mais `"indeterminate"`), e os callbacks do Base UI recebem um segundo argumento `eventDetails`. O react-hook-form usa só o primeiro argumento, mas deixar explícito `(value) => field.onChange(value)` evita surpresas com tipos e com handlers próprios.
+
+```tsx
+// v2
+<FormControl>
+  <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+</FormControl>
+
+// v3
+<FormControl>
+  <Checkbox
+    checked={field.value}
+    onCheckedChange={(checked) => field.onChange(checked)}
+  />
+</FormControl>
 ```

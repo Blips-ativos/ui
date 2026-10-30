@@ -1,0 +1,119 @@
+---
+title: Attachment
+description: Exibe um arquivo anexado com ícone ou miniatura, nome, metadados, estado de envio e ações.
+---
+
+<ComponentPreview name="attachment-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Attachment,
+  AttachmentAction,
+  AttachmentActions,
+  AttachmentContent,
+  AttachmentDescription,
+  AttachmentGroup,
+  AttachmentMedia,
+  AttachmentTitle,
+  AttachmentTrigger,
+} from "@blips/ui/components/attachment"
+```
+
+```tsx
+<Attachment>
+  <AttachmentMedia>
+    <FileTextIcon />
+  </AttachmentMedia>
+  <AttachmentContent>
+    <AttachmentTitle>relatorio.pdf</AttachmentTitle>
+    <AttachmentDescription>PDF · 2,4 MB</AttachmentDescription>
+  </AttachmentContent>
+  <AttachmentActions>
+    <AttachmentAction aria-label="Remover relatorio.pdf">
+      <XIcon />
+    </AttachmentAction>
+  </AttachmentActions>
+</Attachment>
+```
+
+## Exemplos
+
+### Vertical
+
+Com `orientation="vertical"`, o anexo vira um cartão. Use `AttachmentGroup` para uma fileira com rolagem horizontal.
+
+<ComponentPreview name="attachment-vertical" />
+
+### Estados
+
+A prop `state` comunica o envio: `idle` (borda tracejada, ainda não enviado), `uploading` e `processing` (título com shimmer), `error` (tons de destructive) e `done`.
+
+<ComponentPreview name="attachment-states" />
+
+### Imagens
+
+`AttachmentMedia variant="image"` recorta a imagem em quadrado. Enquanto o estado não é `done` ou `idle`, a miniatura fica esmaecida.
+
+<ComponentPreview name="attachment-image" />
+
+### Tamanhos
+
+<ComponentPreview name="attachment-sizes" />
+
+### Gatilho
+
+`AttachmentTrigger` cobre o anexo inteiro com um elemento clicável (botão por padrão), sem tirar o foco das ações. Use `render` para trocá-lo por um link, ou passe-o como `render` de um `DialogTrigger` para abrir uma pré-visualização.
+
+<ComponentPreview name="attachment-trigger" />
+
+```tsx
+<Dialog>
+  <Attachment>
+    {/* … */}
+    <DialogTrigger render={<AttachmentTrigger aria-label="Pré-visualizar" />} />
+  </Attachment>
+  <DialogContent>{/* … */}</DialogContent>
+</Dialog>
+```
+
+## Referência da API
+
+### Attachment
+
+| Prop          | Tipo                                                        | Padrão         |
+| ------------- | ----------------------------------------------------------- | -------------- |
+| `state`       | `"idle" \| "uploading" \| "processing" \| "error" \| "done"` | `"done"`       |
+| `size`        | `"default" \| "sm" \| "xs"`                                 | `"default"`    |
+| `orientation` | `"horizontal" \| "vertical"`                                | `"horizontal"` |
+
+Os valores saem em `data-state`, `data-size` e `data-orientation`.
+
+### AttachmentMedia
+
+| Prop      | Tipo                | Padrão   |
+| --------- | ------------------- | -------- |
+| `variant` | `"icon" \| "image"` | `"icon"` |
+
+### AttachmentAction
+
+Um [Button](/docs/components/button) com `variant="ghost"` e `size="icon-xs"` por padrão. Aceita todas as props do `Button`.
+
+### AttachmentTrigger
+
+| Prop     | Tipo           | Padrão     |
+| -------- | -------------- | ---------- |
+| `render` | `ReactElement` | `<button>` |
+
+Sem `render`, recebe `type="button"`. Informe sempre um `aria-label`.
+
+### AttachmentContent, AttachmentTitle, AttachmentDescription, AttachmentActions, AttachmentGroup
+
+Partes de layout. Aceitam as props do elemento HTML correspondente (`div` ou `span`).

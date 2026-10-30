@@ -36,9 +36,11 @@ moram na `building`/`reviewing`. A **crítica** não é modo: é o gate (reviewi
 - **Cor**: o amarelo Blips (`primary`) é o único acento de marca; cores
   semânticas (`success`/`warning`/`destructive`/`info`) só para significado.
   Nenhuma paleta nova, nenhum hex — nem no modo criativo.
-- **Fonte**: Inter (`font-sans`), Quicksand (`font-display`), JetBrains Mono
-  (`font-mono`) — via tokens. `--font-heading` é alias de Inter (não Quicksand;
-  para "anunciar" use `font-display`). Escolher fonte não é grau de liberdade.
+- **Fonte**: uma família só, **Inter**, seguindo o shadcn/typeset.
+  `font-heading`/`font-display`/`font-mono` existem por compatibilidade mas
+  resolvem para Inter — não servem para "dar personalidade" nem contraste de
+  família. Texto rico (markdown/MDX/CMS) vai em `typeset typeset-docs`.
+  Escolher ou parear fonte não é grau de liberdade.
 - **Escalas**: `--radius` do tema e as escalas default de sombra/espaçamento
   do Tailwind — nada de valores custom arbitrários.
 
@@ -138,7 +140,8 @@ Vale para TODA tela de app: dashboard, admin, fluxo, formulário, tabela.
   → `text-foreground/80` → `text-muted-foreground` → `text-muted-foreground/60`.
   Não invente cinzas.
 - **Tipografia**: hierarquia por peso (600 títulos com tracking apertado,
-  400-500 corpo); **dados/números/IDs em `font-mono` + `tabular-nums`**. Os
+  400-500 corpo); **dados/números/IDs em `tabular-nums`**; texto rico em
+  `typeset typeset-docs max-w-[37em]` (nunca `prose`). Os
   números duros (tracking, medida, line-height) em `reviewing/references/typography.md`.
 - **Cor só para significado**: cinza constrói estrutura; cor aparece em
   status/ação/erro. Score bars e badges não precisam de arco-íris.
@@ -166,7 +169,7 @@ claramente identificada ou pedido explícito. **Na dúvida, é produto.** Tela d
 app nunca entra aqui.
 
 A ousadia vem de **composição** (assimetria, sobreposição, grid-break, negative
-space) · **escala** (display Quicksand generoso) · **movimento** (um page-load
+space) · **escala** (display generoso na Inter do tema) · **movimento** (um page-load
 orquestrado vale mais que dez micro-interações; Motion no React) · **atmosfera**
 (texturas/noise/transparências SOBRE os tokens). O que NÃO muda: tokens, fontes
 e acento. A identidade vem de composição/movimento/escala, não de trocar a

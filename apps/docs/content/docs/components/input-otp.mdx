@@ -46,13 +46,15 @@ import {
 
 Use a prop `pattern` para definir um padrão personalizado para o input OTP.
 
-```tsx {1,5}
+```tsx
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp"
 
-;<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
+<InputOTP maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS}>
   ...
 </InputOTP>
 ```
+
+<ComponentPreview name="input-otp-pattern" />
 
 ## Exemplos
 
@@ -67,6 +69,34 @@ Use o componente `<InputOTPSeparator />` para adicionar um separador entre os gr
 Use as props `value` e `onChange` para controlar o valor do input.
 
 <ComponentPreview name="input-otp-controlled" />
+
+### Inválido
+
+Marque `aria-invalid` em cada `InputOTPSlot`. O `InputOTPGroup` desenha o anel de erro quando algum slot está inválido.
+
+<ComponentPreview name="input-otp-invalid" />
+
+### Formulário
+
+Um cartão de verificação em duas etapas, com slots maiores via `className` no `InputOTPGroup`.
+
+<ComponentPreview name="input-otp-form" />
+
+## Migrando da v2
+
+A API do `input-otp` não mudou. O que muda é o visual:
+
+- `InputOTPSlot` ficou menor: `size-7` (antes `h-9 w-9`) e texto `text-xs/relaxed`. Para slots maiores, aplique as classes pelo grupo, como no exemplo de formulário.
+- **O container perdeu o `gap-2`.** Os grupos e separadores ficam colados; para espaçá-los, passe `containerClassName="gap-2"`.
+- `InputOTPGroup` ganha `rounded-md` e um anel de erro quando algum filho tem `aria-invalid`.
+- O `InputOTP` passa a forçar `spellCheck={false}`.
+
+```tsx
+// v3: recupera o espaçamento entre grupos da v2
+<InputOTP maxLength={6} containerClassName="gap-2">
+  ...
+</InputOTP>
+```
 
 ## Referência da API
 

@@ -1,11 +1,16 @@
 # File Upload - Referência
 
-Hook `useFileUpload` de `@blips/ui/hooks/use-file-upload`.
+Hook `useFileUpload` para upload com drag-and-drop.
+
+> **Atenção:** a `@blips/ui` **não exporta** `hooks/use-file-upload` em nenhuma versão (v2.x e
+> v3.x exportam só `@blips/ui/hooks/use-mobile`). O hook vive no app consumidor — os exemplos
+> importam de `@/hooks/use-file-upload`. Se o repo não tiver, crie o hook no app com a API
+> abaixo. Os componentes de UI usados aqui (`Button`, ícones) têm a mesma API nas duas versões.
 
 ## Hook useFileUpload
 
 ```typescript
-import { useFileUpload, type FileWithPreview } from '@blips/ui/hooks/use-file-upload'
+import { useFileUpload, type FileWithPreview } from '@/hooks/use-file-upload'
 
 const [state, actions] = useFileUpload({
   maxFiles: 5,
@@ -61,8 +66,8 @@ interface FileUploadActions {
 ## Componente de Upload
 
 ```typescript
-import { useFileUpload } from '@blips/ui/hooks/use-file-upload'
-import { Upload, X, File } from '@phosphor-icons/react'
+import { useFileUpload } from '@/hooks/use-file-upload'
+import { UploadIcon, XIcon, FileIcon } from '@phosphor-icons/react'
 import { cn } from '@blips/ui/lib/utils'
 import { Button } from '@blips/ui/components/button'
 
@@ -115,7 +120,7 @@ function FileUploadField({
         )}
       >
         <input {...getInputProps()} />
-        <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+        <UploadIcon className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
         <p className="text-sm text-muted-foreground">
           Arraste arquivos ou clique para selecionar
         </p>
@@ -139,7 +144,7 @@ function FileUploadField({
               {file.preview ? (
                 <img src={file.preview} alt="" className="h-10 w-10 object-cover rounded" />
               ) : (
-                <File className="h-10 w-10 text-muted-foreground" />
+                <FileIcon className="h-10 w-10 text-muted-foreground" />
               )}
               <span className="flex-1 text-sm truncate">
                 {'name' in file.file ? file.file.name : ''}
@@ -149,8 +154,9 @@ function FileUploadField({
                 variant="ghost"
                 size="sm"
                 onClick={() => removeFile(file.id)}
+                aria-label="Remover arquivo"
               >
-                <X className="h-4 w-4" />
+                <XIcon className="h-4 w-4" />
               </Button>
             </div>
           ))}
@@ -244,7 +250,7 @@ function AvatarUpload({ value, onChange }: {
         </>
       ) : (
         <div className="h-full w-full flex items-center justify-center">
-          <Upload className="h-8 w-8 text-muted-foreground" />
+          <UploadIcon className="h-8 w-8 text-muted-foreground" />
         </div>
       )}
     </div>
@@ -254,4 +260,4 @@ function AvatarUpload({ value, onChange }: {
 
 ## Arquivo de Referência
 
-`packages/ui/src/hooks/use-file-upload.ts`
+`hooks/use-file-upload.ts` do app consumidor (não faz parte da `@blips/ui`)

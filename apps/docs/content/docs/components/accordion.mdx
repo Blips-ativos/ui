@@ -23,7 +23,7 @@ import {
 ```
 
 ```tsx
-<Accordion type="single" collapsible defaultValue="item-1">
+<Accordion defaultValue={["item-1"]}>
   <AccordionItem value="item-1">
     <AccordionTrigger>É acessível?</AccordionTrigger>
     <AccordionContent>
@@ -32,6 +32,8 @@ import {
   </AccordionItem>
 </Accordion>
 ```
+
+Por padrão só um item fica aberto por vez, e clicar de novo no item aberto o fecha. `value` e `defaultValue` são sempre arrays, mesmo nesse modo.
 
 ## Exemplos
 
@@ -43,7 +45,7 @@ Um accordion básico que mostra um item por vez. O primeiro item começa aberto 
 
 ### Múltiplos
 
-Use `type="multiple"` para permitir que vários itens fiquem abertos ao mesmo tempo.
+Use a prop `multiple` para permitir que vários itens fiquem abertos ao mesmo tempo.
 
 <ComponentPreview name="accordion-multiple" />
 
@@ -55,7 +57,7 @@ Use a prop `disabled` no `AccordionItem` para desabilitar itens individuais.
 
 ### Bordas
 
-Adicione `border` ao `Accordion` e `border-b last:border-b-0` ao `AccordionItem` para adicionar bordas aos itens.
+A raiz já vem com borda e cada item é separado por uma linha. Use `className` no `AccordionTrigger` e no `AccordionContent` para ajustar o peso do título e a cor do conteúdo.
 
 <ComponentPreview name="accordion-borders" />
 
@@ -65,6 +67,33 @@ Envolva o `Accordion` em um componente `Card`.
 
 <ComponentPreview name="accordion-card" />
 
+## Migrando da v2
+
+- As props `type="single" | "multiple"` e `collapsible` saíram. Use `multiple` para abrir vários itens; todo item já fecha ao clicar de novo.
+- `value` e `defaultValue` agora são **sempre arrays**. `onValueChange` recebe `(value: any[], eventDetails)`.
+- `AccordionContent` é um `Accordion.Panel`: `forceMount` virou `keepMounted`, e entrou `hiddenUntilFound`.
+- Atributos de estado: `data-state="open" | "closed"` virou `data-open` / `data-closed` no item e no painel. O trigger ganha `data-panel-open` e `aria-expanded`, e o disabled vira `aria-disabled`.
+- `asChild` no trigger virou `render`.
+- Visual: a raiz virou uma caixa com borda (`rounded-md border`), o item aberto ganha `bg-muted/50` e o texto passou para `text-xs/relaxed`.
+
+```tsx
+// v2
+<Accordion type="single" collapsible defaultValue="item-1">
+  ...
+</Accordion>
+<Accordion type="multiple" defaultValue={["a", "b"]}>
+  ...
+</Accordion>
+
+// v3
+<Accordion defaultValue={["item-1"]}>
+  ...
+</Accordion>
+<Accordion multiple defaultValue={["a", "b"]}>
+  ...
+</Accordion>
+```
+
 ## Referência da API
 
-Consulte a documentação do [Radix UI](https://www.radix-ui.com/primitives/docs/components/accordion#api-reference) para mais informações.
+Consulte a documentação do [Base UI](https://base-ui.com/react/components/accordion) para mais informações.

@@ -1,7 +1,8 @@
 "use client";
+
 import { Button } from "@blips/ui/components/button";
+import { Field, FieldGroup, FieldLabel } from "@blips/ui/components/field";
 import { Input } from "@blips/ui/components/input";
-import { Label } from "@blips/ui/components/label";
 import {
   Sheet,
   SheetBody,
@@ -13,49 +14,34 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@blips/ui/components/sheet";
+
 export default function SheetDemo() {
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline">Open</Button>
-      </SheetTrigger>
+      <SheetTrigger render={<Button variant="outline" />}>Abrir</SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
+          <SheetTitle>Editar perfil</SheetTitle>
           <SheetDescription>
-            Make changes to your profile here. Click save when you're done.
+            Altere os dados do seu perfil aqui. Clique em salvar quando
+            terminar.
           </SheetDescription>
         </SheetHeader>
         <SheetBody>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input
-                id="name"
-                value="Pedro Duarte"
-                className="col-span-3"
-                readOnly
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="username" className="text-right">
-                Username
-              </Label>
-              <Input
-                id="username"
-                value="@peduarte"
-                className="col-span-3"
-                readOnly
-              />
-            </div>
-          </div>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="sheet-demo-name">Nome</FieldLabel>
+              <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="sheet-demo-username">Usuário</FieldLabel>
+              <Input id="sheet-demo-username" defaultValue="@peduarte" />
+            </Field>
+          </FieldGroup>
         </SheetBody>
         <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit">Save changes</Button>
-          </SheetClose>
+          <Button type="submit">Salvar alterações</Button>
+          <SheetClose render={<Button variant="outline" />}>Fechar</SheetClose>
         </SheetFooter>
       </SheetContent>
     </Sheet>

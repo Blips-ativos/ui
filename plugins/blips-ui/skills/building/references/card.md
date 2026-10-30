@@ -2,42 +2,107 @@
 
 Import: `@blips/ui/components/card`
 
-## Sub-components
+Contêiner com cabeçalho, conteúdo e rodapé. Só HTML (`div`s com `data-slot`), sem
+primitiva, nas duas versões.
 
-| Export | Description |
-|--------|-------------|
-| `Card` | Root container. Renders a `<div>` with `data-role="card"`, rounded border, background, and shadow. |
-| `CardHeader` | Header section with `data-role="card-header"`. Flex column layout with vertical spacing and padding. |
-| `CardTitle` | Title element with `data-role="card-title"`. Semibold, xl text, tight tracking. |
-| `CardDescription` | Description text with `data-role="card-description"`. Muted foreground, sm text. |
-| `CardContent` | Main content area with `data-role="card-content"`. Padding with no top padding (assumes header above). |
-| `CardFooter` | Footer section with `data-role="card-footer"`. Flex row with center alignment and padding. |
+Exports (iguais nas duas versões): `Card`, `CardHeader`, `CardTitle`,
+`CardDescription`, `CardAction`, `CardContent`, `CardFooter`.
 
-> **Note**: The upstream shadcn v4 also exports `CardAction` (for header actions). This project's local version does NOT export `CardAction` -- use a flex layout inside `CardHeader` instead.
+## Notas comuns
 
-## Props & Variants
+| Componente | Descrição |
+|---|---|
+| `Card` | Raiz `flex flex-col`, `bg-card`, `data-slot="card"`. |
+| `CardHeader` | Grid; quando tem `CardAction`, vira `grid-cols-[1fr_auto]`. Com `className="border-b"`, ganha padding inferior. Container query `@container/card-header`. |
+| `CardTitle` | Título (`div`, não `h*` — passe a semântica se precisar: `<CardTitle role="heading" aria-level={2}>` ou um `<h2>` dentro). |
+| `CardDescription` | Texto `text-muted-foreground`. |
+| `CardAction` | Ação no canto superior direito do header (`col-start-2 row-span-2`). |
+| `CardContent` | Corpo com padding horizontal. |
+| `CardFooter` | `flex items-center`; com `className="border-t"`, ganha padding superior. |
 
-All sub-components accept standard `React.HTMLAttributes<HTMLDivElement>` plus `className` for customization. They are all `forwardRef` components accepting a `ref`.
+- Todos são componentes de função com `data-slot` (não há `forwardRef` nem `data-role`).
+- Em dashboards, use `CardAction` para menu/filtro do card em vez de flex manual no header.
 
-### Default Styles
+> A API difere entre as versões (prop `size` e espaçamento só na v3). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
 
-| Component | Default Classes |
-|-----------|----------------|
-| `Card` | `rounded-xl border bg-card text-card-foreground shadow-sm` |
-| `CardHeader` | `flex flex-col space-y-1.5 p-6` |
-| `CardTitle` | `font-semibold text-xl leading-none tracking-tight` |
-| `CardDescription` | `text-muted-foreground text-sm` |
-| `CardContent` | `p-6 pt-0` |
-| `CardFooter` | `flex items-center p-6 pt-0` |
+## v3.x — Base UI
 
-## Usage
+| Prop | Tipo | Padrão | Descrição |
+|---|---|---|---|
+| `size` (no `Card`) | `"default" \| "sm"` | `"default"` | Espaçamento interno via `--card-spacing`: 16px (`default`) ou 12px (`sm`). `data-size`. |
 
-### Login Card
+Visual base-mira: `rounded-lg`, `ring-1 ring-foreground/10` (sem `border` e sem `shadow`), `overflow-hidden`, texto base `text-xs/relaxed`. `CardTitle`: `font-heading text-sm font-medium`. `CardDescription`: `text-xs/relaxed`. `CardHeader` `gap-1`, com 2 linhas só quando há `CardDescription`.
+
+- Para mudar o espaçamento, prefira `className="[--card-spacing:--spacing(6)]"` a sobrescrever `px-*`/`py-*`.
+- `<img>` como primeiro/último filho ganha cantos arredondados, e o card tira o padding superior quando a imagem vem primeiro.
+
+```tsx
+import { Button } from "@blips/ui/components/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@blips/ui/components/card";
+import { Field, FieldGroup, FieldLabel } from "@blips/ui/components/field";
+import { Input } from "@blips/ui/components/input";
+
+export function CardLogin() {
+  return (
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle>Entre na sua conta</CardTitle>
+        <CardDescription>Informe o seu e-mail para entrar</CardDescription>
+        <CardAction>
+          <Button variant="link">Criar conta</Button>
+        </CardAction>
+      </CardHeader>
+      <CardContent>
+        <form id="form-login">
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="email">E-mail</FieldLabel>
+              <Input id="email" type="email" placeholder="voce@exemplo.com" required />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="senha">Senha</FieldLabel>
+              <Input id="senha" type="password" required />
+            </Field>
+          </FieldGroup>
+        </form>
+      </CardContent>
+      <CardFooter className="flex-col gap-2">
+        <Button type="submit" form="form-login" className="w-full">
+          Entrar
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+
+// Card compacto de métrica
+<Card size="sm">
+  <CardHeader>
+    <CardDescription>Receita do mês</CardDescription>
+    <CardTitle className="text-2xl tabular-nums">R$ 48.230,00</CardTitle>
+  </CardHeader>
+</Card>
+```
+
+## v2.x — Radix
+
+Sem prop `size`. Espaçamento fixo: `py-6`, `gap-6`, `px-6` nas seções.
+
+Visual new-york: `rounded-xl border shadow-sm`. `CardTitle`: `leading-none font-semibold`. `CardDescription`: `text-sm`. `CardHeader`: `gap-2`, sempre `grid-rows-[auto_auto]`.
 
 ```tsx
 import { Button } from "@blips/ui/components/button"
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -47,79 +112,48 @@ import {
 import { Input } from "@blips/ui/components/input"
 import { Label } from "@blips/ui/components/label"
 
-export default function CardDemo() {
+export function CardLogin() {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Login to your account</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
+        <CardTitle>Entre na sua conta</CardTitle>
+        <CardDescription>Informe o seu e-mail para entrar</CardDescription>
+        <CardAction>
+          <Button variant="link">Criar conta</Button>
+        </CardAction>
       </CardHeader>
       <CardContent>
-        <form>
+        <form id="form-login">
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
-              />
+              <Label htmlFor="email">E-mail</Label>
+              <Input id="email" type="email" placeholder="voce@exemplo.com" required />
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Label htmlFor="senha">Senha</Label>
+              <Input id="senha" type="password" required />
             </div>
           </div>
         </form>
       </CardContent>
       <CardFooter className="flex-col gap-2">
-        <Button type="submit" className="w-full">
-          Login
-        </Button>
-        <Button variant="outline" className="w-full">
-          Login with Google
+        <Button type="submit" form="form-login" className="w-full">
+          Entrar
         </Button>
       </CardFooter>
     </Card>
   )
 }
+
+// Card de métrica (menos padding)
+<Card className="gap-2 py-4">
+  <CardHeader className="px-4">
+    <CardDescription>Receita do mês</CardDescription>
+    <CardTitle className="text-2xl tabular-nums">R$ 48.230,00</CardTitle>
+  </CardHeader>
+</Card>
 ```
 
-### Simple Info Card
+## Exemplos na docs
 
-```tsx
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@blips/ui/components/card"
-
-export function InfoCard() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Notifications</CardTitle>
-        <CardDescription>You have 3 unread messages.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <p>Card content goes here.</p>
-      </CardContent>
-    </Card>
-  )
-}
-```
-
-## All Examples
-
-- `card-demo` -- Login card with form inputs and footer buttons
-- `hover-card-demo` -- HoverCard component (separate component, not Card)
-
-## Project Notes
-
-- This project's Card uses `forwardRef` pattern (older style). Upstream shadcn v4 uses function components with `data-slot`.
-- The local Card uses `data-role` attributes instead of `data-slot` for semantic identification.
+`card-demo`, `card-with-form` (v3).

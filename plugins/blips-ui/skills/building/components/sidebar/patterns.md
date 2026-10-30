@@ -46,11 +46,11 @@ export interface NavItem {
 ```tsx
 // nav-config.ts
 import {
-  Users,
-  ShoppingCart,
-  BookOpen,
-  FileText,
-  SquaresFour,
+  UsersIcon,
+  ShoppingCartIcon,
+  BookOpenIcon,
+  FileTextIcon,
+  SquaresFourIcon,
   type Icon,
 } from "@phosphor-icons/react";
 
@@ -58,28 +58,28 @@ export const mainNavItems: NavItem[] = [
   {
     title: "Dashboard",
     href: "/dashboard",
-    icon: SquaresFour,
+    icon: SquaresFourIcon,
     disabled: true,  // Em breve
   },
   {
     title: "Usuários",
     href: "/users",
-    icon: Users,
+    icon: UsersIcon,
   },
   {
     title: "Compras",
     href: "/purchases",
-    icon: ShoppingCart,
+    icon: ShoppingCartIcon,
   },
   {
     title: "Concursos",
     href: "/exams",
-    icon: FileText,
+    icon: FileTextIcon,
   },
   {
     title: "Disciplinas",
     href: "/disciplines",
-    icon: BookOpen,
+    icon: BookOpenIcon,
   },
 ];
 
@@ -94,7 +94,7 @@ export const secondaryNavItems: NavItem[] = [];
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SidebarSimple, SignOut, DotsThreeVertical } from "@phosphor-icons/react";
+import { SidebarSimpleIcon, SignOutIcon, DotsThreeVerticalIcon } from "@phosphor-icons/react";
 
 import {
   Sidebar,
@@ -112,6 +112,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -158,16 +159,14 @@ export function AdminShell({ children, user }: AdminShellProps) {
         <SidebarHeader className="border-b border-sidebar-border">
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton size="lg" asChild>
-                <Link href="/users">
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <SidebarSimple className="size-4" />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Concursa AI</span>
-                    <span className="truncate text-xs text-muted-foreground">Admin</span>
-                  </div>
-                </Link>
+              <SidebarMenuButton size="lg" render={<Link href="/users" />}>
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                  <SidebarSimpleIcon className="size-4" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="truncate font-semibold">Concursa AI</span>
+                  <span className="truncate text-xs text-muted-foreground">Admin</span>
+                </div>
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
@@ -201,14 +200,12 @@ export function AdminShell({ children, user }: AdminShellProps) {
               return (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
-                    asChild
                     isActive={isActive}
                     tooltip={item.title}
+                    render={<Link href={item.href} />}
                   >
-                    <Link href={item.href}>
-                      <item.icon className="size-4" />
-                      <span>{item.title}</span>
-                    </Link>
+                    <item.icon className="size-4" />
+                    <span>{item.title}</span>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               );
@@ -243,14 +240,12 @@ export function AdminShell({ children, user }: AdminShellProps) {
                   return (
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton
-                        asChild
                         isActive={isActive}
                         tooltip={item.title}
+                        render={<Link href={item.href} />}
                       >
-                        <Link href={item.href}>
-                          <item.icon className="size-4" />
-                          <span>{item.title}</span>
-                        </Link>
+                        <item.icon className="size-4" />
+                        <span>{item.title}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -265,32 +260,34 @@ export function AdminShell({ children, user }: AdminShellProps) {
           <SidebarMenu>
             <SidebarMenuItem>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton
-                    size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                  >
-                    <div className="flex size-8 items-center justify-center rounded-full bg-sidebar-accent text-sm font-medium">
-                      {user.image ? (
-                        <img
-                          src={user.image}
-                          alt={user.name ?? "Avatar"}
-                          className="size-8 rounded-full object-cover"
-                        />
-                      ) : (
-                        <span>{initials}</span>
-                      )}
-                    </div>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {user.name ?? "Usuário"}
-                      </span>
-                      <span className="truncate text-xs text-muted-foreground">
-                        {user.email}
-                      </span>
-                    </div>
-                    <DotsThreeVertical className="ml-auto size-4" />
-                  </SidebarMenuButton>
+                <DropdownMenuTrigger
+                  render={
+                    <SidebarMenuButton
+                      size="lg"
+                      className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground"
+                    />
+                  }
+                >
+                  <div className="flex size-8 items-center justify-center rounded-full bg-sidebar-accent text-sm font-medium">
+                    {user.image ? (
+                      <img
+                        src={user.image}
+                        alt={user.name ?? "Avatar"}
+                        className="size-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <span>{initials}</span>
+                    )}
+                  </div>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">
+                      {user.name ?? "Usuário"}
+                    </span>
+                    <span className="truncate text-xs text-muted-foreground">
+                      {user.email}
+                    </span>
+                  </div>
+                  <DotsThreeVerticalIcon className="ml-auto size-4" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className="w-56"
@@ -298,23 +295,26 @@ export function AdminShell({ children, user }: AdminShellProps) {
                   align="end"
                   sideOffset={8}
                 >
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {user.name}
-                      </p>
-                      <p className="text-xs leading-none text-muted-foreground">
-                        {user.email}
-                      </p>
-                    </div>
-                  </DropdownMenuLabel>
+                  {/* v3.x: DropdownMenuLabel precisa estar dentro de DropdownMenuGroup */}
+                  <DropdownMenuGroup>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user.name}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                  </DropdownMenuGroup>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleSignOut}
                     variant="destructive"
                     className="flex items-center gap-2"
                   >
-                    <SignOut className="size-4" />
+                    <SignOutIcon className="size-4" />
                     Sair
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -382,14 +382,14 @@ export default async function AdminLayout({
 
 ```tsx
 // nav-config.ts
-import { Star } from "@phosphor-icons/react";
+import { StarIcon } from "@phosphor-icons/react";
 
 export const mainNavItems: NavItem[] = [
   // ... itens existentes
   {
     title: "Nova Rota",
     href: "/nova-rota",
-    icon: Star,
+    icon: StarIcon,
     disabled: true,  // Comece desabilitado se não implementado
   },
 ];
@@ -410,7 +410,7 @@ app/(admin)/nova-rota/
 {
   title: "Nova Rota",
   href: "/nova-rota",
-  icon: Star,
+  icon: StarIcon,
   // disabled: true,  // Remover para habilitar
 }
 ```
@@ -421,16 +421,19 @@ Use ícones do `@phosphor-icons/react` que representem visualmente a funcionalid
 
 | Funcionalidade | Ícone Sugerido |
 |----------------|----------------|
-| Dashboard | `SquaresFour` |
-| Usuários | `Users` |
-| Compras/Pagamentos | `ShoppingCart`, `CreditCard` |
-| Configurações | `Gear`, `Cog` |
-| Relatórios | `BarChart`, `PieChart` |
-| Documentos | `FileText`, `Files` |
-| Educação | `BookOpen`, `GraduationCap` |
-| Mensagens | `MessageSquare`, `Mail` |
-| Calendário | `Calendar` |
-| Notificações | `Bell` |
+| Dashboard | `SquaresFourIcon` |
+| Usuários | `UsersIcon` |
+| Compras/Pagamentos | `ShoppingCartIcon`, `CreditCardIcon` |
+| Configurações | `GearIcon`, `GearSixIcon` |
+| Relatórios | `ChartBarIcon`, `ChartPieIcon` |
+| Documentos | `FileTextIcon`, `FilesIcon` |
+| Educação | `BookOpenIcon`, `GraduationCapIcon` |
+| Mensagens | `ChatCircleIcon`, `EnvelopeIcon` |
+| Calendário | `CalendarIcon` |
+| Notificações | `BellIcon` |
+
+Nomes com sufixo `Icon` são o padrão na v3.x e também existem no Phosphor da v2.x; os nomes
+sem sufixo (`Users`, `Gear`) estão `@deprecated` no Phosphor 2.1.10.
 
 ## Convenções
 
@@ -440,3 +443,56 @@ Use ícones do `@phosphor-icons/react` que representem visualmente a funcionalid
 4. **Tooltips**: Automáticos em icon mode via prop `tooltip`
 5. **Estado Ativo**: Match por `startsWith` (não exato por padrão)
 6. **Ícones**: Sempre `size-4` para consistência
+
+## v3.x — Base UI
+
+O `AdminShell` acima já está na v3.x: `render` nos `SidebarMenuButton` e no
+`DropdownMenuTrigger`, `data-popup-open:` para o trigger aberto, `onClick` no item de sair e
+`DropdownMenuLabel` dentro de `DropdownMenuGroup`. Como o `SidebarProvider` não traz mais
+`TooltipProvider`, envolva o shell em `<TooltipProvider delay={0}>` (de
+`@blips/ui/components/tooltip`) se quiser os tooltips do modo ícone abrindo na hora.
+
+## v2.x — Radix
+
+Trocas no `AdminShell` para um repo v2.x:
+
+```tsx
+{/* Header */}
+<SidebarMenuButton size="lg" asChild>
+  <Link href="/users">{/* logo + nome */}</Link>
+</SidebarMenuButton>
+
+{/* Itens */}
+<SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
+  <Link href={item.href}>
+    <item.icon className="size-4" />
+    <span>{item.title}</span>
+  </Link>
+</SidebarMenuButton>
+
+{/* Footer com usuário */}
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <SidebarMenuButton
+      size="lg"
+      className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+    >
+      {/* avatar + nome + DotsThreeVertical */}
+    </SidebarMenuButton>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent className="w-56" side="top" align="end" sideOffset={8}>
+    <DropdownMenuLabel className="font-normal">{/* nome + email */}</DropdownMenuLabel>
+    <DropdownMenuSeparator />
+    <DropdownMenuItem onSelect={handleSignOut} variant="destructive">
+      <SignOut className="size-4" />
+      Sair
+    </DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+- `DropdownMenuLabel` pode ficar solto (sem `DropdownMenuGroup`).
+- `onClick` no `DropdownMenuItem` também funciona na v2.x, mas `onSelect` é o evento do Radix
+  (dispara por teclado e mouse).
+- O `SidebarProvider` já fornece `TooltipProvider delayDuration={0}`.
+

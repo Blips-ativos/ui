@@ -2,84 +2,99 @@
 
 Import: `@blips/ui/components/separator`
 
-## Sub-components
+Linha fina (horizontal ou vertical) para dividir grupos de conteúdo. Cor `bg-border`.
 
-| Component | Description |
-|---|---|
-| `Separator` | Visual divider wrapping `@radix-ui/react-separator` Root. Renders as a thin line, horizontal or vertical. |
+Export (igual nas duas versões): `Separator`.
 
-## Props & Variants
+## Notas comuns
 
-### Separator
+- `orientation`: `"horizontal"` (padrão) ou `"vertical"`.
+- Horizontal: `h-px w-full`. Vertical: `w-px` e altura do contêiner flex.
+- Uso típico: header com `SidebarTrigger` + separador vertical + breadcrumb; listas; seções de card ou popover.
 
-Extends `React.ComponentPropsWithoutRef<typeof SeparatorPrimitive.Root>`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
+## v3.x — Base UI
+
+Primitiva: `@base-ui/react/separator`. Props: `SeparatorPrimitive.Props`
+(`orientation`, `className` string ou função de estado, `render`).
+
+- **Não existe `decorative`**: passar a prop quebra o typecheck. O separador é sempre semântico (`role="separator"` + `aria-orientation`). Para algo puramente visual, passe `role="none"` / `aria-hidden` ou use um `<div>`.
+- Estilos por orientação: `data-horizontal:` / `data-vertical:`. Vertical usa `self-stretch` (não `h-full`).
+
+```tsx
+import { Separator } from "@blips/ui/components/separator";
+
+export function SeparatorDemo() {
+  return (
+    <div className="text-xs">
+      <div className="flex flex-col gap-1">
+        <h4 className="text-sm font-medium">Blips UI</h4>
+        <p className="text-muted-foreground">Biblioteca de componentes da Blips.</p>
+      </div>
+      <Separator className="my-4" />
+      <div className="flex h-5 items-center gap-4">
+        <span>Blog</span>
+        <Separator orientation="vertical" />
+        <span>Docs</span>
+        <Separator orientation="vertical" />
+        <span>Código</span>
+      </div>
+    </div>
+  );
+}
+```
+
+No header com sidebar:
+
+```tsx
+<header className="flex h-12 items-center gap-2 px-4">
+  <SidebarTrigger className="-ml-1" />
+  <Separator orientation="vertical" className="mr-2 data-vertical:h-4" />
+  <Breadcrumb>…</Breadcrumb>
+</header>
+```
+
+### Armadilhas
+
+- O Base UI também emite `data-orientation`, então `data-[orientation=vertical]:h-4` (código vindo da v2) continua casando; prefira `data-vertical:h-4`, que é a convenção da v3. O que muda é a altura padrão do vertical: `self-stretch` em vez de `h-full`, então num pai sem altura definida ele acompanha a linha flex, e não 100% do pai.
+- `decorative` copiado da v2 quebra o typecheck: remova.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-separator`.
+
+| Prop | Tipo | Padrão | Descrição |
 |---|---|---|---|
-| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Direction of the separator line. |
-| `decorative` | `boolean` | `true` | When `true`, renders as `role="none"` (not a semantic separator). When `false`, renders as `role="separator"`. |
-| `className` | `string` | -- | Additional CSS classes. |
+| `orientation` | `"horizontal" \| "vertical"` | `"horizontal"` | Direção. |
+| `decorative` | `boolean` | `true` (padrão da lib) | `true` renderiza `role="none"`; `false` renderiza `role="separator"`. |
+| `asChild` | `boolean` | `false` | Troca o elemento. |
 
-**Styles by orientation:**
-- **Horizontal:** `shrink-0 bg-border h-[1px] w-full`
-- **Vertical:** `shrink-0 bg-border h-full w-[1px]`
-
-## Usage
-
-### Horizontal Separator
+Estilos por orientação: `data-[orientation=horizontal]:` / `data-[orientation=vertical]:`. Vertical usa `h-full`.
 
 ```tsx
 import { Separator } from "@blips/ui/components/separator"
 
-export default function SeparatorDemo() {
+export function SeparatorDemo() {
   return (
     <div>
       <div className="space-y-1">
-        <h4 className="text-sm leading-none font-medium">Radix Primitives</h4>
-        <p className="text-sm text-muted-foreground">
-          An open-source UI component library.
-        </p>
+        <h4 className="text-sm leading-none font-medium">Blips UI</h4>
+        <p className="text-sm text-muted-foreground">Biblioteca de componentes da Blips.</p>
       </div>
       <Separator className="my-4" />
       <div className="flex h-5 items-center space-x-4 text-sm">
         <div>Blog</div>
         <Separator orientation="vertical" />
         <div>Docs</div>
-        <Separator orientation="vertical" />
-        <div>Source</div>
       </div>
     </div>
   )
 }
 ```
 
-### Vertical Separator (e.g., in a header)
+No header com sidebar: `<Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />`.
 
-```tsx
-<header className="flex h-16 items-center gap-2">
-  <SidebarTrigger className="-ml-1" />
-  <Separator orientation="vertical" className="mr-2 data-[orientation=vertical]:h-4" />
-  <Breadcrumb>...</Breadcrumb>
-</header>
-```
+## Exemplos na docs
 
-### In a List
-
-```tsx
-{items.map((item, index) => (
-  <React.Fragment key={item.id}>
-    <div className="text-sm">{item.name}</div>
-    {index < items.length - 1 && <Separator className="my-2" />}
-  </React.Fragment>
-))}
-```
-
-## All Examples
-
-- `separator-demo` -- Horizontal and vertical separators with text content
-
-## Project Notes
-
-- Commonly used in sidebar headers alongside `SidebarTrigger` with `orientation="vertical"`.
-- Use `data-[orientation=vertical]:h-4` to constrain vertical separator height in flex layouts.
-- The separator uses `bg-border` color token from the project theme.
+`separator-demo`, `separator-list`, `separator-vertical-menu` (em `apps/docs/examples/`, escritos para a v3).

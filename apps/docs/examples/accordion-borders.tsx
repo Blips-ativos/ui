@@ -8,40 +8,43 @@ import {
 const items = [
   {
     value: "billing",
-    trigger: "How does billing work?",
+    trigger: "Como funciona a cobrança?",
     content:
-      "We offer monthly and annual subscription plans. Billing is charged at the beginning of each cycle, and you can cancel anytime. All plans include automatic backups, 24/7 support, and unlimited team members.",
+      "Oferecemos planos mensais e anuais. A cobrança é feita no início de cada ciclo e você pode cancelar quando quiser. Todos os planos incluem backups automáticos, suporte 24/7 e membros ilimitados.",
   },
   {
     value: "security",
-    trigger: "Is my data secure?",
+    trigger: "Meus dados estão seguros?",
     content:
-      "Yes. We use end-to-end encryption, SOC 2 Type II compliance, and regular third-party security audits. All data is encrypted at rest and in transit using industry-standard protocols.",
+      "Sim. Usamos criptografia de ponta a ponta, conformidade SOC 2 Tipo II e auditorias de segurança independentes. Os dados são criptografados em repouso e em trânsito.",
   },
   {
     value: "integration",
-    trigger: "What integrations do you support?",
-    content:
-      "We integrate with 500+ popular tools including Slack, Zapier, Salesforce, HubSpot, and more. You can also build custom integrations using our REST API and webhooks.",
+    trigger: "Quais integrações vocês suportam?",
+    content: (
+      <>
+        <p>
+          Integramos com mais de 500 ferramentas, como Slack, Zapier, Salesforce
+          e HubSpot. Também é possível criar integrações próprias com a nossa
+          API REST e webhooks.
+        </p>
+        <p>A documentação da API traz exemplos em mais de 10 linguagens.</p>
+      </>
+    ),
   },
 ];
 
 export default function AccordionBorders() {
   return (
-    <Accordion
-      type="single"
-      collapsible
-      className="max-w-lg rounded-lg border"
-      defaultValue="billing"
-    >
+    <Accordion defaultValue={["billing"]} className="mx-auto max-w-lg">
       {items.map((item) => (
-        <AccordionItem
-          key={item.value}
-          value={item.value}
-          className="border-b px-4 last:border-b-0"
-        >
-          <AccordionTrigger>{item.trigger}</AccordionTrigger>
-          <AccordionContent>{item.content}</AccordionContent>
+        <AccordionItem key={item.value} value={item.value}>
+          <AccordionTrigger className="font-medium">
+            {item.trigger}
+          </AccordionTrigger>
+          <AccordionContent className="text-muted-foreground">
+            {item.content}
+          </AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>

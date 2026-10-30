@@ -1,5 +1,11 @@
 import type { ShikiTransformer } from "shiki";
 
+/** Temas do destaque de código (MDX e blocos de código fora do MDX). */
+export const CODE_THEMES = {
+  dark: "github-dark",
+  light: "github-light-default",
+} as const;
+
 // rehype-pretty-code transformers: stash the raw command on the <code> node so
 // the copy button and the package-manager install tabs can read it. Mirrors
 // shadcn/ui's docs pipeline.

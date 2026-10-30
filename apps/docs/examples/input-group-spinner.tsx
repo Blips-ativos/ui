@@ -5,38 +5,38 @@ import {
   InputGroupText,
 } from "@blips/ui/components/input-group";
 import { Spinner } from "@blips/ui/components/spinner";
-import { CircleNotch } from "@phosphor-icons/react";
+import { CircleNotchIcon } from "@phosphor-icons/react";
 
 export default function InputGroupSpinner() {
   return (
     <div className="grid w-full max-w-sm gap-4">
-      <InputGroup data-disabled>
-        <InputGroupInput placeholder="Searching..." disabled />
+      <InputGroup data-disabled="true">
+        <InputGroupInput placeholder="Buscando..." disabled />
         <InputGroupAddon align="inline-end">
           <Spinner />
         </InputGroupAddon>
       </InputGroup>
-      <InputGroup data-disabled>
-        <InputGroupInput placeholder="Processing..." disabled />
+      <InputGroup data-disabled="true">
+        <InputGroupInput placeholder="Processando..." disabled />
         <InputGroupAddon>
           <Spinner />
         </InputGroupAddon>
       </InputGroup>
-      <InputGroup data-disabled>
-        <InputGroupInput placeholder="Saving changes..." disabled />
+      <InputGroup data-disabled="true">
+        <InputGroupInput placeholder="Salvando alterações..." disabled />
         <InputGroupAddon align="inline-end">
-          <InputGroupText>Saving...</InputGroupText>
+          <InputGroupText>Salvando...</InputGroupText>
           <Spinner />
         </InputGroupAddon>
       </InputGroup>
-      <InputGroup data-disabled>
-        <InputGroupInput placeholder="Refreshing data..." disabled />
+      <InputGroup data-disabled="true">
+        <InputGroupInput placeholder="Atualizando dados..." disabled />
         <InputGroupAddon>
-          <CircleNotch className="animate-spin" />
+          <CircleNotchIcon className="animate-spin" />
         </InputGroupAddon>
         <InputGroupAddon align="inline-end">
           <InputGroupText className="text-muted-foreground">
-            Please wait...
+            Aguarde...
           </InputGroupText>
         </InputGroupAddon>
       </InputGroup>

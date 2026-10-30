@@ -28,17 +28,17 @@ import {
 
 ```tsx
 <DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="outline">Abrir</Button>
+  <DropdownMenuTrigger render={<Button variant="outline" />}>
+    Abrir
   </DropdownMenuTrigger>
   <DropdownMenuContent>
     <DropdownMenuGroup>
       <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
-      <DropdownMenuItem>Perfil</DropdownMenuItem>
+      <DropdownMenuItem onClick={abrirPerfil}>Perfil</DropdownMenuItem>
       <DropdownMenuItem>Faturamento</DropdownMenuItem>
     </DropdownMenuGroup>
+    <DropdownMenuSeparator />
     <DropdownMenuGroup>
-      <DropdownMenuSeparator />
       <DropdownMenuItem>Equipe</DropdownMenuItem>
       <DropdownMenuItem>Assinatura</DropdownMenuItem>
     </DropdownMenuGroup>
@@ -46,17 +46,17 @@ import {
 </DropdownMenu>
 ```
 
+O `DropdownMenuTrigger` renderiza o próprio `<button>`: passe o `Button` pela prop `render`, nunca como filho. O `DropdownMenuLabel` precisa ficar dentro de um `DropdownMenuGroup`.
+
 ## Exemplos
 
-### Exemplo
+### Com ícones
 
-Um menu completo com grupos, submenu e atalhos de teclado.
-
-<ComponentPreview name="dropdown-menu-demo" />
+<ComponentPreview name="dropdown-menu-icons" />
 
 ### Caixas de seleção
 
-Use `DropdownMenuCheckboxItem` para opções que podem ser alternadas de forma independente.
+Use `DropdownMenuCheckboxItem` para opções que podem ser alternadas de forma independente. O indicador fica à direita do item.
 
 <ComponentPreview name="dropdown-menu-checkboxes" />
 
@@ -66,6 +66,66 @@ Use `DropdownMenuRadioGroup` para escolhas mutuamente exclusivas.
 
 <ComponentPreview name="dropdown-menu-radio-group" />
 
+### Itens destrutivos
+
+Use `variant="destructive"` no `DropdownMenuItem` para ações como excluir.
+
+<ComponentPreview name="dropdown-menu-destructive" />
+
+## Migrando da v2
+
+A primitiva passou de Radix Dropdown Menu para [Base UI Menu](https://base-ui.com/react/components/menu).
+
+- `asChild` saiu do trigger e de todos os itens. Use `render`.
+- `onSelect` vira `onClick`. Para manter o menu aberto depois do clique (o antigo `event.preventDefault()`), use `closeOnClick={false}` no item.
+- `onCheckedChange` do `DropdownMenuCheckboxItem` recebe `(checked: boolean, eventDetails)`. Não existe mais o estado `"indeterminate"`.
+- `onValueChange` do `DropdownMenuRadioGroup` recebe `(value, eventDetails)`.
+- O `align` padrão do `DropdownMenuContent` passou de `"center"` para `"start"`. Saem `avoidCollisions`, `collisionPadding`, `onCloseAutoFocus`, `onEscapeKeyDown` e `forceMount`.
+- `DropdownMenuContent` e `DropdownMenuSubContent` já incluem o portal: não os envolva em `DropdownMenuPortal`.
+- `DropdownMenuLabel` precisa estar dentro de um `DropdownMenuGroup`.
+- Seletores `data-[state=open]` viram `data-open` (e `data-popup-open` no trigger); `data-[state=checked]` vira `data-checked`.
+- O indicador de checkbox e radio mudou da esquerda para a direita.
+
+```tsx
+// v2
+<DropdownMenuTrigger asChild>
+  <Button variant="ghost">Ações</Button>
+</DropdownMenuTrigger>
+<DropdownMenuContent>
+  <DropdownMenuLabel>Conta</DropdownMenuLabel>
+  <DropdownMenuItem onSelect={(e) => { e.preventDefault(); copiar() }}>
+    Copiar
+  </DropdownMenuItem>
+</DropdownMenuContent>
+
+// v3
+<DropdownMenuTrigger render={<Button variant="ghost" />}>Ações</DropdownMenuTrigger>
+<DropdownMenuContent>
+  <DropdownMenuGroup>
+    <DropdownMenuLabel>Conta</DropdownMenuLabel>
+    <DropdownMenuItem closeOnClick={false} onClick={copiar}>
+      Copiar
+    </DropdownMenuItem>
+  </DropdownMenuGroup>
+</DropdownMenuContent>
+```
+
 ## Referência da API
 
-Consulte a [documentação do Radix UI](https://www.radix-ui.com/docs/primitives/components/dropdown-menu) para a referência completa da API.
+### DropdownMenuContent
+
+| Prop          | Tipo                                     | Padrão     |
+| ------------- | ---------------------------------------- | ---------- |
+| `side`        | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` |
+| `sideOffset`  | `number`                                 | `4`        |
+| `align`       | `"start" \| "center" \| "end"`           | `"start"`  |
+| `alignOffset` | `number`                                 | `0`        |
+
+### DropdownMenuItem
+
+| Prop      | Tipo                         | Padrão      |
+| --------- | ---------------------------- | ----------- |
+| `variant` | `"default" \| "destructive"` | `"default"` |
+| `inset`   | `boolean`                    | -           |
+
+Consulte a documentação do [Base UI Menu](https://base-ui.com/react/components/menu) para a referência completa da API.

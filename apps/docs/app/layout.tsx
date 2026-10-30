@@ -3,18 +3,29 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "Blips UI",
   description:
-    "A modern React component library built with Radix UI and Tailwind CSS",
+    "A modern React component library built with Base UI and Tailwind CSS",
   // favicon/app-icons da marca (sincronizados de @blips/brand → public/brand)
   icons: {
     icon: [
       { url: "/brand/favicon/favicon.svg", type: "image/svg+xml" },
-      { url: "/brand/favicon/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/brand/favicon/icon-512.png", sizes: "512x512", type: "image/png" },
+      {
+        url: "/brand/favicon/icon-192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/brand/favicon/icon-512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
     ],
     apple: {
       url: "/brand/favicon/apple-touch-icon.png",
@@ -31,8 +42,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body className={inter.className}>
+    <html lang="pt-BR" className={`${inter.variable}`} suppressHydrationWarning>
+      <body>
         <RootProvider
           theme={{ defaultTheme: "light", enableSystem: false }}
           i18n={{

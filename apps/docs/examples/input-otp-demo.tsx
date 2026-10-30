@@ -1,10 +1,10 @@
-"use client";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@blips/ui/components/input-otp";
+
 export default function InputOTPDemo() {
   return (
     <InputOTP maxLength={6}>

@@ -11,9 +11,10 @@ legal de WCAG 2.1 AA e prepara o futuro). Severidades: **bloqueante** ou
   `target-size`, `color-contrast`, `heading-order`, `aria-*`.
 - **julgamento (revisor)** — exige inspeção humana / contexto.
 
-## O que o Radix já garante (não re-verifique)
+## O que a primitiva já garante (não re-verifique)
 
-Componentes de `@blips/ui` envolvem primitivas Radix. O Radix entrega, de
+Componentes de `@blips/ui` envolvem primitivas headless — **Radix na v2.x**, **Base UI na
+v3.x** (detecção de versão no `SKILL.md`). Nas duas, a primitiva entrega, de
 graça, nos patterns que ele cobre: **roles/ARIA** corretos, **gestão de foco**
 (trap + restore em Dialog/Popover), **Escape** para fechar, **navegação por
 teclado** (setas em Menu/Tabs/Select, roving tabindex), e `aria-expanded`/
@@ -21,7 +22,7 @@ teclado** (setas em Menu/Tabs/Select, roving tabindex), e `aria-expanded`/
 quase sempre erra teclado, foco ou estado — ver regra 4. O que sobra pro app
 é tudo abaixo: **nome acessível**, **rótulo de input**, **estrutura de heading/
 landmark**, **contraste**, **target size**, **erro de form** e **título de
-Dialog** (o Radix exige, mas não preenche).
+Dialog** (a primitiva exige, mas não preenche).
 
 ## Cores e contraste
 
@@ -145,7 +146,7 @@ categorias que a WebAIM aponta como **em alta** (média de 56,1 erros/página).
   nunca âncora-placeholder com `onClick`. **Por quê:** vira um vazio invisível
   ao teclado e ao leitor de tela. (lint Biome `useValidAnchor` /
   auto-verificável / bloqueante)
-- **Não recriar o que o Radix resolve.** `div`/`span` clicável fazendo papel de
+- **Não recriar o que a primitiva (Radix/Base UI) resolve.** `div`/`span` clicável fazendo papel de
   botão/link/close é proibido (sem role, foco ou teclado) — use `Button`,
   `DialogClose` ou a primitiva correspondente. `<div role="button">` exige
   re-implementar foco, `aria-pressed`, disabled e Space-no-keyup, e a maioria
@@ -186,9 +187,10 @@ categorias que a WebAIM aponta como **em alta** (média de 56,1 erros/página).
   conteúdo só-visual = dado perdido para quem não vê. (julgamento / aviso)
 - **`DialogContent` (e `Sheet`/`AlertDialog`) sempre com `DialogTitle`** — se o
   título for visualmente oculto, use `sr-only`/`VisuallyHidden`; inclua
-  `DialogDescription` ou `aria-describedby={undefined}` explícito. **Por quê:**
-  o Radix **exige** o título para nome acessível e dispara warning em runtime
-  se faltar — sem ele o diálogo abre "sem nome". (auto-verificável check.mjs:
+  `DialogDescription` (na v2.x, sem descrição, passe `aria-describedby={undefined}`
+  para calar o warning do Radix; na v3.x o Base UI só liga a descrição se ela existir).
+  **Por quê:** o título é o nome acessível do diálogo (o Radix ainda avisa em runtime
+  se faltar) — sem ele o diálogo abre "sem nome". (auto-verificável check.mjs:
   grep `DialogContent` sem `DialogTitle` na mesma composição / bloqueante)
 
 ## Movimento e flash

@@ -2,6 +2,10 @@
 
 Implementação de filtros em data tables.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Client-Side Filtering](#client-side-filtering)
@@ -14,6 +18,8 @@ Implementação de filtros em data tables.
 - [Table APIs](#table-apis)
 - [Filter Functions Built-in](#filter-functions-built-in)
 - [Reset Filters](#reset-filters)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Client-Side Filtering
 
@@ -241,7 +247,7 @@ const [slaFilter, setSlaFilter] = useState<"with_sla" | "without_sla">();
 "use client";
 
 import { Column } from "@tanstack/react-table";
-import { Check, PlusCircle } from "@phosphor-icons/react";
+import { CheckIcon, PlusCircleIcon } from "@phosphor-icons/react";
 
 import { cn } from "@blips/ui/lib/utils";
 import { Badge } from "@blips/ui/components/badge";
@@ -282,41 +288,41 @@ export function DataTableFacetedFilter<TData, TValue>({
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8 border-dashed">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          {title}
-          {selectedValues?.size > 0 && (
-            <>
-              <Separator orientation="vertical" className="mx-2 h-4" />
-              <Badge
-                variant="secondary"
-                className="rounded-sm px-1 font-normal lg:hidden"
-              >
-                {selectedValues.size}
-              </Badge>
-              <div className="hidden space-x-1 lg:flex">
-                {selectedValues.size > 2 ? (
-                  <Badge variant="secondary" className="rounded-sm px-1 font-normal">
-                    {selectedValues.size} selecionados
-                  </Badge>
-                ) : (
-                  options
-                    .filter((option) => selectedValues.has(option.value))
-                    .map((option) => (
-                      <Badge
-                        variant="secondary"
-                        key={option.value}
-                        className="rounded-sm px-1 font-normal"
-                      >
-                        {option.label}
-                      </Badge>
-                    ))
-                )}
-              </div>
-            </>
-          )}
-        </Button>
+      <PopoverTrigger
+        render={<Button variant="outline" size="sm" className="h-8 border-dashed" />}
+      >
+        <PlusCircleIcon className="mr-2 h-4 w-4" />
+        {title}
+        {selectedValues?.size > 0 && (
+          <>
+            <Separator orientation="vertical" className="mx-2 h-4" />
+            <Badge
+              variant="secondary"
+              className="rounded-sm px-1 font-normal lg:hidden"
+            >
+              {selectedValues.size}
+            </Badge>
+            <div className="hidden space-x-1 lg:flex">
+              {selectedValues.size > 2 ? (
+                <Badge variant="secondary" className="rounded-sm px-1 font-normal">
+                  {selectedValues.size} selecionados
+                </Badge>
+              ) : (
+                options
+                  .filter((option) => selectedValues.has(option.value))
+                  .map((option) => (
+                    <Badge
+                      variant="secondary"
+                      key={option.value}
+                      className="rounded-sm px-1 font-normal"
+                    >
+                      {option.label}
+                    </Badge>
+                  ))
+              )}
+            </div>
+          </>
+        )}
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align="start">
         <Command>
@@ -349,7 +355,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                           : "opacity-50 [&_svg]:invisible"
                       )}
                     >
-                      <Check className="h-4 w-4" />
+                      <CheckIcon className="h-4 w-4" />
                     </div>
                     {option.icon && (
                       <option.icon className="mr-2 h-4 w-4 text-muted-foreground" />
@@ -519,7 +525,7 @@ import {
 <Select
   value={statusFilter ?? "all"}
   onValueChange={(v) => {
-    setStatusFilter(v === "all" ? undefined : v);
+    setStatusFilter(!v || v === "all" ? undefined : v);
     setPage(1); // Reset página ao filtrar
   }}
 >
@@ -586,3 +592,32 @@ import {
   </Button>
 )}
 ```
+
+## v3.x — Base UI
+
+- Faceted filter: `<PopoverTrigger render={<Button variant="outline" size="sm" className="h-8 border-dashed" />}>`.
+- `Separator` não tem `decorative`: é sempre `role="separator"`. Dentro do trigger, prefira
+  `<Separator orientation="vertical" aria-hidden className="mx-2 h-4" />`.
+- `CommandItem` desenha um `CheckIcon` próprio quando recebe `data-checked`; o faceted filter
+  acima usa um quadrado de seleção próprio, então **não** passe `data-checked` junto.
+- `Select` com rótulos diferentes do `value` (status): passe `items` (ver `toolbar.md`).
+
+## v2.x — Radix
+
+```tsx
+<Popover>
+  <PopoverTrigger asChild>
+    <Button variant="outline" size="sm" className="h-8 border-dashed">
+      <PlusCircle className="mr-2 h-4 w-4" />
+      {title}
+      {selectedValues?.size > 0 && (
+        <Separator orientation="vertical" className="mx-2 h-4" /> // decorative por padrão
+      )}
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className="w-[200px] p-0" align="start">{/* Command igual */}</PopoverContent>
+</Popover>
+```
+
+- `Separator` é `decorative` por padrão (sem papel de acessibilidade).
+- `CommandItem` não tem check automático.

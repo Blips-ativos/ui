@@ -28,7 +28,7 @@ import {
 <Empty>
   <EmptyHeader>
     <EmptyMedia variant="icon">
-      <FolderPlus />
+      <FolderPlusIcon />
     </EmptyMedia>
     <EmptyTitle>Nenhum projeto ainda</EmptyTitle>
     <EmptyDescription>
@@ -68,6 +68,12 @@ dentro de um card ou seção.
 
 <ComponentPreview name="empty-outline" />
 
+### Fundo neutro
+
+Use `className="bg-muted"` para destacar o estado vazio do fundo da página. Links de apoio podem ser um `Button variant="link"` renderizado como `<a>` (`render={<a href="…" />}` e `nativeButton={false}`).
+
+<ComponentPreview name="empty-muted" />
+
 ## Acessibilidade
 
 - `EmptyTitle` e `EmptyDescription` formam o texto anunciado pelo leitor de
@@ -76,6 +82,14 @@ dentro de um card ou seção.
   (busca, carregamento), anuncie a região com `role="status"` no contêiner que
   envolve o `Empty`, para que a troca de conteúdo seja percebida.
 - A ação (botão/link) deve ser focável e descrever o que acontece ao acioná-la.
+
+## Migrando da v2
+
+A API não mudou. Diferenças pequenas de visual:
+
+- `EmptyTitle` ganhou a classe `font-heading` (token `--font-heading` da lib).
+- O `EmptyMedia`, em qualquer variante, passa a incluir `[&_svg]:pointer-events-none [&_svg]:shrink-0`. Na prática o visual não muda.
+- Nos exemplos, os ícones Phosphor usam os nomes com sufixo `Icon` (`FolderPlusIcon` em vez de `FolderPlus`).
 
 ## Referência da API
 

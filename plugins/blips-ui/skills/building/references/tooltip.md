@@ -2,166 +2,100 @@
 
 Import: `@blips/ui/components/tooltip`
 
-## Sub-components
+Dica curta (uma linha) que aparece no hover ou foco de um elemento. Obrigatória em
+botões só com ícone. Não coloque conteúdo interativo dentro: para isso use
+Popover; para prévia rica, Hover Card.
 
-- **`TooltipProvider`** - Context provider that configures tooltip behavior for all tooltips within it. Wraps `@radix-ui/react-tooltip` Provider with customized defaults (`delayDuration=0`, `skipDelayDuration=0`).
-- **`Tooltip`** - Root tooltip component (alias for `TooltipPrimitive.Root`). Manages open/close state for a single tooltip.
-- **`TooltipTrigger`** - The element that triggers the tooltip on hover/focus (alias for `TooltipPrimitive.Trigger`).
-- **`TooltipContent`** - The popup content that appears. Styled with border, background, shadow, and entry/exit animations.
+Exports (iguais nas duas versões): `TooltipProvider`, `Tooltip`, `TooltipTrigger`,
+`TooltipContent`.
 
-## Props & Variants
+## Notas comuns
 
-### TooltipProvider Props
+- Coloque um `<TooltipProvider>` na raiz do app (layout). O Provider da lib abre sem atraso (`0`) por padrão, nas duas versões.
+- `TooltipContent`: `bg-foreground text-background text-xs`, com seta, num Portal. `side` padrão `"top"`.
+- Botão só com ícone: tooltip + `<span className="sr-only">` (ou `aria-label`) no botão.
+- `Kbd` dentro do `TooltipContent` ganha cores adaptadas automaticamente.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `delayDuration` | `number` | `0` | Delay in ms before tooltip opens (project override, Radix default is 700) |
-| `skipDelayDuration` | `number` | `0` | Delay before opening another tooltip after one was just open |
-| `children` | `ReactNode` | **required** | Child elements |
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-### Tooltip (Root) Props
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | `undefined` | Controlled open state |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled default open state |
-| `onOpenChange` | `(open: boolean) => void` | `undefined` | Callback when open state changes |
-| `delayDuration` | `number` | Inherited from Provider | Override delay for this tooltip |
+Primitiva: `@base-ui/react/tooltip`.
 
-### TooltipTrigger Props
+| Componente | Props principais |
+|---|---|
+| `TooltipProvider` | `delay` (padrão da lib `0`), `closeDelay`, `timeout` (janela em que o próximo tooltip abre sem atraso). |
+| `Tooltip` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `disableHoverablePopup`, `disabled`. |
+| `TooltipTrigger` | `render` (renderiza `<button>` por padrão), `delay`, `closeDelay` por tooltip. |
+| `TooltipContent` | `side` (`"top"`), `sideOffset` (`4`), `align` (`"center"`), `alignOffset` (`0`). `max-w-xs`, `inline-flex gap-1.5`. Seta sempre renderizada. |
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `asChild` | `boolean` | `false` | Merge props onto child element instead of rendering a button |
-| `children` | `ReactNode` | **required** | Trigger element |
+Sem `<TooltipProvider>` ancestral o Base UI usa o atraso padrão dele (cerca de
+600 ms). O `SidebarProvider` da v3 **não** fornece mais um Provider.
 
-### TooltipContent Props
-
-Extends `React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>`.
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `sideOffset` | `number` | `4` | Distance from trigger in px |
-| `side` | `'top' \| 'right' \| 'bottom' \| 'left'` | `'top'` | Preferred side to render |
-| `align` | `'start' \| 'center' \| 'end'` | `'center'` | Alignment relative to trigger |
-| `className` | `string` | `undefined` | Additional CSS classes |
-| `children` | `ReactNode` | **required** | Tooltip content |
-
-### TooltipContent Styles
-
-```
-z-50 origin-[--radix-tooltip-content-transform-origin]
-overflow-hidden rounded-md border bg-popover px-3 py-1.5
-text-popover-foreground text-sm shadow-md
-```
-
-### Animations
-
-| Direction | Entry Animation |
-|-----------|----------------|
-| From top | `slide-in-from-bottom-2` |
-| From bottom | `slide-in-from-top-2` |
-| From left | `slide-in-from-right-2` |
-| From right | `slide-in-from-left-2` |
-
-All entries include `fade-in-0 zoom-in-95`. Exit: `fade-out-0 zoom-out-95`.
-
-## Usage
-
-### Basic Tooltip
+Estado: `data-open`, `data-closed`, `data-instant` (abriu/fechou sem animação), `data-side`, `data-starting-style`/`data-ending-style`. O Base UI não emite `data-state`: as classes `data-[state=delayed-open]:` que sobraram no `TooltipContent` da lib são inertes, não as use. CSS vars: `--transform-origin`, `--anchor-width`, `--available-height`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
+import { PlusIcon } from "@phosphor-icons/react";
+import { Button } from "@blips/ui/components/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "@blips/ui/components/tooltip"
+} from "@blips/ui/components/tooltip";
 
-export default function TooltipDemo() {
+export function AdicionarComDica() {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button variant="outline">Hover</Button>
+      <TooltipTrigger render={<Button variant="outline" size="icon" />}>
+        <PlusIcon />
+        <span className="sr-only">Adicionar item</span>
       </TooltipTrigger>
-      <TooltipContent>
-        <p>Add to library</p>
-      </TooltipContent>
+      <TooltipContent side="right">Adicionar item</TooltipContent>
     </Tooltip>
-  )
+  );
 }
 ```
 
-### With Provider (Root Layout Setup)
-
-The `TooltipProvider` should be placed in your root layout to configure all tooltips:
+Provider na raiz:
 
 ```tsx
-import { TooltipProvider } from "@blips/ui/components/tooltip"
+import { TooltipProvider } from "@blips/ui/components/tooltip";
 
-export default function RootLayout({ children }) {
-  return (
-    <TooltipProvider>
-      {children}
-    </TooltipProvider>
-  )
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <TooltipProvider>{children}</TooltipProvider>;
 }
 ```
 
-### Custom Side and Alignment
+Com atalho:
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@blips/ui/components/tooltip"
-
-export default function TooltipPositions() {
-  return (
-    <div className="flex gap-4">
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline">Top</Button>
-        </TooltipTrigger>
-        <TooltipContent side="top">
-          <p>Top tooltip</p>
-        </TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline">Right</Button>
-        </TooltipTrigger>
-        <TooltipContent side="right">
-          <p>Right tooltip</p>
-        </TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline">Bottom</Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom">
-          <p>Bottom tooltip</p>
-        </TooltipContent>
-      </Tooltip>
-
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant="outline">Left</Button>
-        </TooltipTrigger>
-        <TooltipContent side="left">
-          <p>Left tooltip</p>
-        </TooltipContent>
-      </Tooltip>
-    </div>
-  )
-}
+<TooltipContent>
+  Salvar <Kbd>⌘S</Kbd>
+</TooltipContent>
 ```
 
-### On Icon Button
+### Armadilhas
+
+- `delayDuration` não existe: `TooltipProvider delay={…}` ou `TooltipTrigger delay={…}`. `skipDelayDuration` virou `timeout`; `disableHoverableContent` virou `disableHoverablePopup`.
+- `asChild` não existe. Não aninhe `<Button>` dentro do trigger: passe-o em `render`.
+- Botão desabilitado não dispara hover: envolva num `<span>` e use `render={<span />}` no trigger.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-tooltip`.
+
+| Componente | Props principais |
+|---|---|
+| `TooltipProvider` | `delayDuration` (padrão da lib `0`), `skipDelayDuration` (padrão Radix 300), `disableHoverableContent`. |
+| `Tooltip` | `open`, `defaultOpen`, `onOpenChange(open)`, `delayDuration` (sobrescreve o Provider). |
+| `TooltipTrigger` | `asChild`. |
+| `TooltipContent` | `sideOffset` (padrão da lib **`0`**), `side` (`"top"`), `align` (`"center"`), `avoidCollisions`, `collisionPadding`. Seta sempre renderizada. |
+
+`Tooltip` não cria um Provider sozinho: sem `TooltipProvider` ancestral o Radix
+lança erro. O `SidebarProvider` da v2 já envolve os filhos num
+`TooltipProvider delayDuration={0}`.
+
+Estado: `data-state="closed" | "delayed-open" | "instant-open"`. CSS var de origem: `--radix-tooltip-content-transform-origin`.
 
 ```tsx
 import { Plus } from "@phosphor-icons/react"
@@ -172,24 +106,31 @@ import {
   TooltipTrigger,
 } from "@blips/ui/components/tooltip"
 
-export default function TooltipIconButton() {
+export function AdicionarComDica() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button variant="outline" size="icon">
           <Plus />
-          <span className="sr-only">Add item</span>
+          <span className="sr-only">Adicionar item</span>
         </Button>
       </TooltipTrigger>
-      <TooltipContent>
-        <p>Add item</p>
-      </TooltipContent>
+      <TooltipContent side="right">Adicionar item</TooltipContent>
     </Tooltip>
   )
 }
 ```
 
-## All Examples
+Provider na raiz:
 
-- `tooltip-demo` - Basic tooltip on an outline button
-- `chart-tooltip-demo` - Chart-specific tooltip component (custom implementation, not using Radix Tooltip)
+```tsx
+import { TooltipProvider } from "@blips/ui/components/tooltip"
+
+export default function RootLayout({ children }) {
+  return <TooltipProvider>{children}</TooltipProvider>
+}
+```
+
+## Exemplos na docs
+
+`tooltip-demo`, `tooltip-icon`, `tooltip-sides`, `tooltip-keyboard`, `tooltip-disabled` (em `apps/docs/examples/`, escritos para a v3). O tooltip de gráfico (`ChartTooltip`) é outro componente: veja `chart.md`.

@@ -2,6 +2,10 @@
 
 Implementação de seleção de linhas em data tables.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Setup Básico](#setup-básico)
@@ -17,6 +21,8 @@ Implementação de seleção de linhas em data tables.
 - [Seleção Cross-Page (Server-Side Pagination)](#seleção-cross-page-server-side-pagination)
 - [Exibir Contagem de Selecionados](#exibir-contagem-de-selecionados)
 - [Estilo Visual para Linhas Selecionadas](#estilo-visual-para-linhas-selecionadas)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Setup Básico
 
@@ -61,9 +67,9 @@ import { Checkbox } from "@blips/ui/components/checkbox";
   id: "select",
   header: ({ table }) => (
     <Checkbox
-      checked={
-        table.getIsAllPageRowsSelected() ||
-        (table.getIsSomePageRowsSelected() && "indeterminate")
+      checked={table.getIsAllPageRowsSelected()}
+      indeterminate={
+        table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
       }
       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
       aria-label="Selecionar todos"
@@ -201,7 +207,7 @@ export function DataTableToolbar<TData>({ table }: DataTableToolbarProps<TData>)
               handleBulkDelete(ids);
             }}
           >
-            <Trash className="mr-2 h-4 w-4" />
+            <TrashIcon className="mr-2 h-4 w-4" />
             Excluir selecionados
           </Button>
           <Button
@@ -448,19 +454,19 @@ const handleSelectAll = async () => {
   header: ({ table }) => (
     <div className="flex items-center gap-2">
       <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+        checked={table.getIsAllPageRowsSelected()}
+        indeterminate={
+          table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Selecionar página"
       />
       {/* Opção de selecionar todos */}
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-            <ChevronDown className="h-3 w-3" />
-          </Button>
+        <DropdownMenuTrigger
+          render={<Button variant="ghost" size="sm" className="h-6 w-6 p-0" />}
+        >
+          <CaretDownIcon className="h-3 w-3" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => table.toggleAllPageRowsSelected(true)}>
@@ -519,3 +525,35 @@ O atributo `data-state="selected"` pode ser usado com CSS:
   @apply bg-muted;
 }
 ```
+
+## v3.x — Base UI
+
+- `Checkbox` só aceita `checked` boolean; o estado misto é `indeterminate`.
+- `onCheckedChange(checked, eventDetails)`: `(value) => row.toggleSelected(!!value)` continua válido.
+- Estilo de checkbox marcado: `data-checked:`/`peer-data-checked:`.
+- Trigger do dropdown com `render={<Button … />}`.
+
+## v2.x — Radix
+
+```tsx
+<Checkbox
+  checked={
+    table.getIsAllPageRowsSelected() ||
+    (table.getIsSomePageRowsSelected() && "indeterminate")
+  }
+  onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  aria-label="Selecionar página"
+/>
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+      <CaretDown className="h-3 w-3" />
+    </Button>
+  </DropdownMenuTrigger>
+  {/* ... */}
+</DropdownMenu>
+```
+
+- Estilo de checkbox marcado: `data-[state=checked]:`/`peer-data-[state=checked]:`.
+- `TableRow data-state="selected"` é igual nas duas versões.

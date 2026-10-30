@@ -7,14 +7,16 @@ Adapte: o caminho do CSS de entrada se não for src/index.css; em repos React
 Rota de coexistência Tailwind v3 (ver references/tailwind-v3-preexistente.md):
 substitua os bullets de Tailwind v4 pela realidade do repo — o template não
 pode afirmar o que o repo não é.
-Preencha vX.Y.Z no marcador com a versão do plugin blips-ui.
+Preencha vX.Y.Z no marcador com a versão do plugin blips-ui e a trilha
+(v3.x Base UI / v2.x Radix) conforme a @blips/ui instalada.
 -->
 
 <!-- blips-ui:claude-md:start vX.Y.Z -->
 ## UI — @blips/ui
 
 A interface usa a biblioteca de componentes da Blips (`@blips/ui` — shadcn/ui
-+ Radix + Tailwind v4).
++ Tailwind v4), na trilha **vX.x** (`v3.x` = Base UI · `v2.x` = Radix — preencha
+conforme a versão instalada; as skills seguem a API da trilha).
 
 Com o plugin **blips-ui** instalado, o ciclo de UI é guiado por skills (os
 padrões canônicos vivem nelas — este repo NÃO usa rules de UI):
@@ -34,6 +36,11 @@ Essencial:
   `lucide-react`.
 - Tailwind v4 é CSS-first: tema único via `@import "@blips/ui/globals.css"`.
   Nunca crie `tailwind.config.js` nem copie tokens.
+- Tipografia: uma família só, **Inter** (vem do globals da lib). Nenhuma
+  outra fonte.
+- Texto rico (markdown/MDX/CMS): `<div className="typeset typeset-docs
+  max-w-[37em]">` (shadcn/typeset, já no globals). Nunca `prose` nem mapa de
+  componentes markdown estilizado à mão.
 - Infra que não pode ser removida: plugin `tailwindcss()` (de
   `@tailwindcss/vite`) no `vite.config.ts` e o import do globals em
   `src/index.css`.

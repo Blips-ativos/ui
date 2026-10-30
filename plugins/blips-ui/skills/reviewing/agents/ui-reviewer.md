@@ -24,6 +24,11 @@ components/cliente-*.tsx> no projeto <dir-do-projeto>. Leia somente o projeto.
 O check mecânico já encontrou (não re-reporte, apenas confirme os marcados
 com "verify"): <JSON do check.mjs>
 
+Trilha da @blips/ui deste repo: <v2.x — Radix | v3.x — Base UI> (campo `blipsUi.track` do
+JSON). Revise a API contra ESSA trilha (`component-standards.md` §API da versão): na v3.x
+`asChild` é erro e `render` é o certo; na v2.x é o contrário. Nunca peça para migrar de
+trilha como correção de violação.
+
 Seu foco é o que o grep NÃO pega:
 - Estados de query (3 estados na ordem; skeleton vs spinner; erro inline com
   retry; empty state com anatomia nas DUAS variantes; queryFn lança em !res.ok)

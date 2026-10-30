@@ -2,53 +2,147 @@
 
 Import: `@blips/ui/components/accordion`
 
-## Sub-components
+Seções empilhadas que expandem e recolhem. Use para FAQ, grupos de configurações e
+conteúdo secundário que não precisa estar sempre visível.
 
-| Component | Description |
+Exports (iguais nas duas versões): `Accordion`, `AccordionItem`, `AccordionTrigger`,
+`AccordionContent`.
+
+## Notas comuns
+
+- Ícone do trigger é Phosphor (nunca lucide).
+- A animação usa os utilitários `animate-accordion-down` / `animate-accordion-up` do `globals.css` da lib.
+- Cada `AccordionItem` precisa de um `value` único.
+- `AccordionContent` aplica o `className` na `div` interna (o padding fica certo sem brigar com a animação de altura).
+
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
+
+## v3.x — Base UI
+
+Primitiva: `@base-ui/react/accordion`.
+
+### Sub-componentes
+
+| Componente | Descrição |
 |---|---|
-| `Accordion` | Root component. Wraps `@radix-ui/react-accordion` Root. Controls single/multiple expansion. |
-| `AccordionItem` | Individual collapsible section. Requires a unique `value` prop. Renders with `border-b`. |
-| `AccordionTrigger` | Clickable header that toggles the item. Renders a chevron icon (Phosphor `CaretDown`) that rotates on open. |
-| `AccordionContent` | Collapsible content area with enter/exit animations (`accordion-up`/`accordion-down`). |
+| `Accordion` | `Accordion.Root`. Já vem como caixa com borda: `flex w-full flex-col overflow-hidden rounded-md border`. |
+| `AccordionItem` | `Accordion.Item`. `not-last:border-b`; item aberto ganha `data-open:bg-muted/50`. |
+| `AccordionTrigger` | `Accordion.Header` + `Accordion.Trigger`. `p-2 text-xs/relaxed font-medium`. Alterna `CaretDownIcon`/`CaretUpIcon` (`data-slot="accordion-trigger-icon"`) conforme `aria-expanded`. |
+| `AccordionContent` | `Accordion.Panel`. Anima com `--accordion-panel-height`. Div interna: `pt-0 pb-4`, links sublinhados, `mb-4` entre parágrafos. |
 
-## Props & Variants
+### Props
 
-### Accordion (Root)
+**Accordion (Root)**
 
-| Prop | Type | Default | Description |
+| Prop | Tipo | Padrão | Descrição |
 |---|---|---|---|
-| `type` | `"single" \| "multiple"` | **required** | Whether one or multiple items can be open at once. |
-| `collapsible` | `boolean` | `false` | When `type="single"`, allows closing the open item by clicking its trigger again. |
-| `defaultValue` | `string \| string[]` | - | The value(s) of the item(s) open by default (uncontrolled). |
-| `value` | `string \| string[]` | - | The controlled value(s) of the open item(s). |
-| `onValueChange` | `(value: string \| string[]) => void` | - | Callback when the open item(s) change. |
-| `className` | `string` | - | Additional CSS classes. |
+| `multiple` | `boolean` | `false` | Permite vários itens abertos. Sem ele, só um fica aberto. |
+| `defaultValue` | `any[]` | — | Itens abertos de início (não controlado). **Sempre array**, mesmo com um item só. |
+| `value` | `any[]` | — | Itens abertos (controlado). Sempre array. |
+| `onValueChange` | `(value: any[], eventDetails) => void` | — | Mudança dos itens abertos. |
+| `disabled` | `boolean` | `false` | Desabilita o accordion inteiro. |
+| `hiddenUntilFound` | `boolean` | `false` | Deixa a busca do navegador (Ctrl+F) achar e abrir painéis fechados. |
+| `keepMounted` | `boolean` | `false` | Mantém os painéis no DOM fechados. |
 
-### AccordionItem
+Não existem `type` nem `collapsible`: todo item fecha ao clicar de novo.
 
-| Prop | Type | Default | Description |
+**AccordionItem**: `value` (identificador), `disabled`, `onOpenChange(open, eventDetails)`.
+
+**AccordionTrigger**: `render`, `nativeButton`. Estado: `data-panel-open`, `aria-expanded`; desabilitado vira `aria-disabled`.
+
+**AccordionContent**: `keepMounted`, `hiddenUntilFound`. Estado: `data-open`/`data-closed`, `data-starting-style`/`data-ending-style`.
+
+### Exemplos
+
+```tsx
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@blips/ui/components/accordion";
+
+export function FaqAccordion() {
+  return (
+    <Accordion defaultValue={["item-1"]} className="max-w-lg">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>É acessível?</AccordionTrigger>
+        <AccordionContent>Sim. Segue o padrão WAI-ARIA.</AccordionContent>
+      </AccordionItem>
+      <AccordionItem value="item-2">
+        <AccordionTrigger>Já vem estilizado?</AccordionTrigger>
+        <AccordionContent>
+          Sim. Usa os mesmos tokens dos outros componentes da lib.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+}
+```
+
+Vários abertos ao mesmo tempo:
+
+```tsx
+<Accordion multiple defaultValue={["notificacoes", "privacidade"]}>
+  <AccordionItem value="notificacoes">
+    <AccordionTrigger>Notificações</AccordionTrigger>
+    <AccordionContent>Escolha como receber alertas.</AccordionContent>
+  </AccordionItem>
+  <AccordionItem value="privacidade">
+    <AccordionTrigger>Privacidade</AccordionTrigger>
+    <AccordionContent>Controle o compartilhamento de dados.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+Controlado:
+
+```tsx
+const [abertos, setAbertos] = React.useState<string[]>([]);
+
+<Accordion value={abertos} onValueChange={setAbertos}>
+  {/* itens */}
+</Accordion>
+```
+
+Sem a caixa com borda padrão: `<Accordion className="rounded-none border-0">`.
+
+### Armadilhas
+
+- `defaultValue="item-1"` (string) não abre nada: use `["item-1"]`.
+- Seletores de consumidor: `data-open:` / `group-data-open:`; `data-[state=open]:` não casa.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-accordion`.
+
+### Sub-componentes
+
+| Componente | Descrição |
+|---|---|
+| `Accordion` | `AccordionPrimitive.Root`, sem estilo próprio (sem borda externa). |
+| `AccordionItem` | `border-b last:border-b-0`. |
+| `AccordionTrigger` | `py-4 text-sm font-medium hover:underline`. Ícone `CaretDown` que gira 180° com `[&[data-state=open]>svg]:rotate-180`. |
+| `AccordionContent` | `text-sm`, anima com `--radix-accordion-content-height`. Div interna: `pt-0 pb-4`. |
+
+### Props
+
+**Accordion (Root)**
+
+| Prop | Tipo | Padrão | Descrição |
 |---|---|---|---|
-| `value` | `string` | **required** | Unique identifier for this item. |
-| `disabled` | `boolean` | `false` | Prevents the item from being opened/closed. |
-| `className` | `string` | - | Additional CSS classes. Base: `border-b`. |
+| `type` | `"single" \| "multiple"` | **obrigatório** | Um ou vários itens abertos. |
+| `collapsible` | `boolean` | `false` | Com `type="single"`, permite fechar o item aberto clicando de novo. |
+| `defaultValue` | `string` (single) \| `string[]` (multiple) | — | Itens abertos de início. |
+| `value` | `string` \| `string[]` | — | Controlado. |
+| `onValueChange` | `(value: string \| string[]) => void` | — | Mudança dos itens abertos. |
+| `disabled` | `boolean` | `false` | Desabilita tudo. |
 
-### AccordionTrigger
+**AccordionItem**: `value` (obrigatório), `disabled`.
+**AccordionTrigger**: `asChild`. Estado: `data-state="open" | "closed"`.
+**AccordionContent**: `forceMount`. Estado: `data-state`.
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | - | Additional CSS classes. Base: `flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline`. |
-| `children` | `ReactNode` | - | Trigger label content. |
-
-### AccordionContent
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `className` | `string` | - | Applied to inner `div` wrapper. Base: `pt-0 pb-4`. |
-| `children` | `ReactNode` | - | Collapsible content. |
-
-## Usage
-
-### Basic single collapsible accordion
+### Exemplos
 
 ```tsx
 import {
@@ -58,50 +152,20 @@ import {
   AccordionTrigger,
 } from "@blips/ui/components/accordion"
 
-export function AccordionExample() {
+export function FaqAccordion() {
   return (
     <Accordion type="single" collapsible className="w-full" defaultValue="item-1">
       <AccordionItem value="item-1">
-        <AccordionTrigger>Product Information</AccordionTrigger>
+        <AccordionTrigger>Informações do produto</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            Our flagship product combines cutting-edge technology with sleek
-            design. Built with premium materials, it offers unparalleled
-            performance and reliability.
-          </p>
-          <p>
-            Key features include advanced processing capabilities, and an
-            intuitive user interface designed for both beginners and experts.
-          </p>
+          <p>Nosso produto principal combina tecnologia e design.</p>
+          <p>Inclui processamento avançado e interface intuitiva.</p>
         </AccordionContent>
       </AccordionItem>
       <AccordionItem value="item-2">
-        <AccordionTrigger>Shipping Details</AccordionTrigger>
+        <AccordionTrigger>Entrega</AccordionTrigger>
         <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            We offer worldwide shipping through trusted courier partners.
-            Standard delivery takes 3-5 business days, while express shipping
-            ensures delivery within 1-2 business days.
-          </p>
-          <p>
-            All orders are carefully packaged and fully insured. Track your
-            shipment in real-time through our dedicated tracking portal.
-          </p>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Return Policy</AccordionTrigger>
-        <AccordionContent className="flex flex-col gap-4 text-balance">
-          <p>
-            We stand behind our products with a comprehensive 30-day return
-            policy. If you&apos;re not completely satisfied, simply return the
-            item in its original condition.
-          </p>
-          <p>
-            Our hassle-free return process includes free return shipping and
-            full refunds processed within 48 hours of receiving the returned
-            item.
-          </p>
+          <p>Entrega padrão em 3 a 5 dias úteis; expressa em 1 a 2.</p>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
@@ -109,26 +173,21 @@ export function AccordionExample() {
 }
 ```
 
-### Multiple items open
+Vários abertos:
 
 ```tsx
 <Accordion type="multiple" defaultValue={["item-1", "item-2"]}>
   <AccordionItem value="item-1">
-    <AccordionTrigger>Section One</AccordionTrigger>
-    <AccordionContent>Content one</AccordionContent>
+    <AccordionTrigger>Seção um</AccordionTrigger>
+    <AccordionContent>Conteúdo um</AccordionContent>
   </AccordionItem>
   <AccordionItem value="item-2">
-    <AccordionTrigger>Section Two</AccordionTrigger>
-    <AccordionContent>Content two</AccordionContent>
+    <AccordionTrigger>Seção dois</AccordionTrigger>
+    <AccordionContent>Conteúdo dois</AccordionContent>
   </AccordionItem>
 </Accordion>
 ```
 
-## Project Notes
+## Exemplos na docs
 
-- Uses Phosphor Icons (`CaretDown`) instead of Lucide for the chevron icon.
-- Animations use custom Tailwind keyframes: `animate-accordion-up` and `animate-accordion-down`.
-
-## All Examples
-
-- `accordion-demo`
+`accordion-demo`, `accordion-basic`, `accordion-multiple`, `accordion-disabled`, `accordion-borders`, `accordion-card` (em `apps/docs/examples/`, escritos para a v3).

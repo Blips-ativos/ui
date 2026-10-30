@@ -25,12 +25,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@blips/ui/components/alert-dialog"
+import { Button } from "@blips/ui/components/button"
 ```
 
 ```tsx
-<AlertDialog>
-  <AlertDialogTrigger asChild>
-    <Button variant="outline">Mostrar diálogo</Button>
+const [open, setOpen] = React.useState(false)
+
+<AlertDialog open={open} onOpenChange={setOpen}>
+  <AlertDialogTrigger render={<Button variant="outline" />}>
+    Mostrar diálogo
   </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
@@ -42,28 +45,96 @@ import {
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancelar</AlertDialogCancel>
-      <AlertDialogAction>Continuar</AlertDialogAction>
+      <AlertDialogAction
+        onClick={async () => {
+          await excluirConta()
+          setOpen(false)
+        }}
+      >
+        Continuar
+      </AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
 ```
 
+O `AlertDialogCancel` fecha o diálogo. O `AlertDialogAction` é um `Button` comum e **não fecha sozinho**: controle `open` e feche no `onClick`, depois de concluir a ação.
+
 ## Exemplos
 
-### Exemplo
+### Pequeno
 
-Um alert dialog padrão que confirma uma ação destrutiva antes de prosseguir.
+Use `size="sm"` no `AlertDialogContent` para confirmações curtas.
 
-<ComponentPreview name="alert-dialog-demo" />
+<ComponentPreview name="alert-dialog-small" />
+
+### Com mídia
+
+Use `AlertDialogMedia` para exibir um ícone ao lado do título.
+
+<ComponentPreview name="alert-dialog-media" />
+
+### Destrutivo
+
+Combine `variant="destructive"` no `AlertDialogAction` com uma mídia em tom de erro.
+
+<ComponentPreview name="alert-dialog-destructive" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Alert Dialog](https://base-ui.com/react/components/alert-dialog).
+
+- `asChild` saiu do `AlertDialogTrigger`. Use `render`.
+- **Mudança de comportamento:** o `AlertDialogAction` não fecha mais o diálogo. Controle `open`/`onOpenChange` e feche no `onClick`.
+- `AlertDialogAction` aceita as props do `Button` (`variant`, `size`, `render`). `AlertDialogCancel` continua aceitando `variant` e `size` (padrão `outline`), mas não aceita `asChild`.
+- `AlertDialogContent` perde as props do Radix (`onEscapeKeyDown`, `onOpenAutoFocus`, `onCloseAutoFocus`, `forceMount`).
+- `onOpenChange` recebe `(open, eventDetails)`. Seletores `data-[state=*]` viram `data-open` e `data-closed`.
+- Tamanhos menores: `default` vai até `sm:max-w-sm` (antes `sm:max-w-lg`) e `sm` até `max-w-64`. O `AlertDialogMedia` caiu de `size-16` para `size-8`.
+
+```tsx
+// v2
+<AlertDialog>
+  <AlertDialogTrigger asChild>
+    <Button variant="outline">Excluir</Button>
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    {/* ... */}
+    <AlertDialogAction onClick={excluir}>Excluir</AlertDialogAction>
+  </AlertDialogContent>
+</AlertDialog>
+
+// v3
+<AlertDialog open={open} onOpenChange={setOpen}>
+  <AlertDialogTrigger render={<Button variant="outline" />}>
+    Excluir
+  </AlertDialogTrigger>
+  <AlertDialogContent>
+    {/* ... */}
+    <AlertDialogAction
+      onClick={async () => {
+        await excluir()
+        setOpen(false)
+      }}
+    >
+      Excluir
+    </AlertDialogAction>
+  </AlertDialogContent>
+</AlertDialog>
+```
 
 ## Referência da API
 
-### size
-
-Use a prop `size` no componente `AlertDialogContent` para controlar o tamanho do alert dialog. Ela aceita os seguintes valores:
+### AlertDialogContent
 
 | Prop   | Tipo                | Padrão      |
 | ------ | ------------------- | ----------- |
 | `size` | `"default" \| "sm"` | `"default"` |
 
-Para mais informações sobre os outros componentes e suas props, consulte a [documentação do Radix UI](https://www.radix-ui.com/primitives/docs/components/alert-dialog#api-reference).
+### AlertDialogCancel
+
+| Prop      | Tipo                              | Padrão      |
+| --------- | --------------------------------- | ----------- |
+| `variant` | `ButtonProps["variant"]`          | `"outline"` |
+| `size`    | `ButtonProps["size"]`             | `"default"` |
+
+Para mais informações sobre os outros componentes e suas props, consulte a documentação do [Base UI Alert Dialog](https://base-ui.com/react/components/alert-dialog).

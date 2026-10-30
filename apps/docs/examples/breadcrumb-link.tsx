@@ -8,19 +8,17 @@ import {
 } from "@blips/ui/components/breadcrumb";
 import Link from "next/link";
 
-export default function BreadcrumbWithCustomSeparator() {
+export default function BreadcrumbWithLink() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/">Home</Link>
-          </BreadcrumbLink>
+          <BreadcrumbLink render={<Link href="/" />}>Início</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/components">Components</Link>
+          <BreadcrumbLink render={<Link href="/docs/components" />}>
+            Componentes
           </BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />

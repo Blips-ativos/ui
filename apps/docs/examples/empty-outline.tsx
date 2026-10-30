@@ -7,14 +7,14 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@blips/ui/components/empty";
-import { CloudArrowUp } from "@phosphor-icons/react";
+import { CloudArrowUpIcon } from "@phosphor-icons/react";
 
 export default function EmptyOutline() {
   return (
     <Empty className="border border-dashed">
       <EmptyHeader>
         <EmptyMedia variant="icon">
-          <CloudArrowUp />
+          <CloudArrowUpIcon />
         </EmptyMedia>
         <EmptyTitle>Armazenamento vazio</EmptyTitle>
         <EmptyDescription>

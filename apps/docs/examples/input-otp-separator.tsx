@@ -4,7 +4,6 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@blips/ui/components/input-otp";
-import React from "react";
 
 export default function InputOTPWithSeparator() {
   return (

@@ -1,17 +1,17 @@
-"use client";
 import {
   Alert,
   AlertDescription,
   AlertTitle,
 } from "@blips/ui/components/alert";
-import { Terminal } from "@phosphor-icons/react";
+import { TerminalIcon } from "@phosphor-icons/react";
+
 export default function AlertDemo() {
   return (
-    <Alert>
-      <Terminal className="h-4 w-4" />
-      <AlertTitle>Heads up!</AlertTitle>
+    <Alert className="max-w-lg">
+      <TerminalIcon />
+      <AlertTitle>Atenção!</AlertTitle>
       <AlertDescription>
-        You can add components to your app using the cli.
+        Você pode adicionar componentes ao seu app usando a CLI.
       </AlertDescription>
     </Alert>
   );

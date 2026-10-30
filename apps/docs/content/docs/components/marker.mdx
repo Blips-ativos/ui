@@ -1,0 +1,74 @@
+---
+title: Marker
+description: Linha discreta de status ou evento numa conversa, como "pensando…", "trabalhou por 42s" ou "fulano entrou".
+---
+
+<ComponentPreview name="marker-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Marker, MarkerContent, MarkerIcon } from "@blips/ui/components/marker"
+```
+
+```tsx
+<Marker role="status">
+  <MarkerIcon>
+    <Spinner />
+  </MarkerIcon>
+  <MarkerContent>Pensando…</MarkerContent>
+</Marker>
+```
+
+Use `role="status"` quando o marcador anuncia algo em andamento. Para um efeito de carregamento no texto, adicione a classe `shimmer` ao `MarkerContent`. Com `render`, o marcador vira link ou botão:
+
+```tsx
+<Marker render={<a href="/logs" />}>
+  <MarkerContent>Ver logs</MarkerContent>
+</Marker>
+```
+
+## Exemplos
+
+### Borda
+
+`variant="border"` adiciona uma linha embaixo, bom para listas de passos.
+
+<ComponentPreview name="marker-border" />
+
+### Separador
+
+`variant="separator"` centraliza o conteúdo entre duas linhas, como um divisor de conversa.
+
+<ComponentPreview name="marker-separator" />
+
+### Accordion
+
+Coloque o marcador num `AccordionTrigger` para esconder detalhes, como o raciocínio de um agente.
+
+<ComponentPreview name="marker-accordion" />
+
+## Referência da API
+
+### Marker
+
+| Prop      | Type                                   | Default     |
+| --------- | -------------------------------------- | ----------- |
+| `variant` | `"default" \| "separator" \| "border"` | `"default"` |
+| `render`  | `ReactElement`                         | `<div>`     |
+
+Também exporta `markerVariants` (cva) para aplicar o estilo em outro elemento.
+
+### MarkerIcon
+
+`span` com `aria-hidden` para o ícone ou o spinner (`size-3.5`).
+
+### MarkerContent
+
+`span` com o texto. Links dentro dele ganham sublinhado.

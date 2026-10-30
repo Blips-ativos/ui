@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@blips/ui/components/button";
 import {
   Card,
@@ -7,51 +9,64 @@ import {
   CardHeader,
   CardTitle,
 } from "@blips/ui/components/card";
+import { Field, FieldGroup, FieldLabel } from "@blips/ui/components/field";
 import { Input } from "@blips/ui/components/input";
-import { Label } from "@blips/ui/components/label";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@blips/ui/components/select";
-import * as React from "react";
+
+const frameworks = [
+  { label: "Selecione", value: null },
+  { label: "Next.js", value: "next" },
+  { label: "SvelteKit", value: "sveltekit" },
+  { label: "Astro", value: "astro" },
+  { label: "Nuxt.js", value: "nuxt" },
+];
 
 export default function CardWithForm() {
   return (
     <Card className="w-[350px]">
       <CardHeader>
-        <CardTitle>Create project</CardTitle>
-        <CardDescription>Deploy your new project in one-click.</CardDescription>
+        <CardTitle>Criar projeto</CardTitle>
+        <CardDescription>
+          Publique o seu novo projeto em um clique.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form>
-          <div className="grid w-full items-center gap-6">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="name">Name</Label>
-              <Input id="name" placeholder="Name of your project" />
-            </div>
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="framework">Framework</Label>
-              <Select>
-                <SelectTrigger id="framework" className="w-full">
-                  <SelectValue placeholder="Select" />
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="card-project-name">Nome</FieldLabel>
+              <Input id="card-project-name" placeholder="Nome do projeto" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="card-framework">Framework</FieldLabel>
+              <Select items={frameworks}>
+                <SelectTrigger id="card-framework" className="w-full">
+                  <SelectValue />
                 </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="next">Next.js</SelectItem>
-                  <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                  <SelectItem value="astro">Astro</SelectItem>
-                  <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                <SelectContent>
+                  <SelectGroup>
+                    {frameworks.map((item) => (
+                      <SelectItem key={item.label} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
                 </SelectContent>
               </Select>
-            </div>
-          </div>
+            </Field>
+          </FieldGroup>
         </form>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline">Cancel</Button>
-        <Button>Deploy</Button>
+        <Button variant="outline">Cancelar</Button>
+        <Button>Publicar</Button>
       </CardFooter>
     </Card>
   );

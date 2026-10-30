@@ -134,13 +134,13 @@ As variáveis são aplicadas automaticamente nos componentes:
 
 ### Baseado no Estado Open
 
-```tsx
-<SidebarMenuButton
-  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
->
-  Menu Item
-</SidebarMenuButton>
-```
+Quando o `SidebarMenuButton` é o trigger de um dropdown, o atributo de "aberto" muda por
+versão (detecção de versão no Passo 0 do `SKILL.md` do building):
+
+Ver [v3.x — Base UI](#v3x--base-ui) e [v2.x — Radix](#v2x--radix) no fim deste arquivo.
+
+Os atributos próprios da sidebar (`data-state="expanded" | "collapsed"`, `data-collapsible`,
+`data-active`) são iguais nas duas versões.
 
 ## Largura da Sidebar
 
@@ -240,7 +240,33 @@ Para tooltips em icon mode:
 
 ```tsx
 <SidebarMenuButton tooltip="Dashboard">
-  <Home />
+  <HouseIcon />
   <span>Dashboard</span>
 </SidebarMenuButton>
+```
+
+## v3.x — Base UI
+
+O trigger do Base UI emite `data-popup-open` quando o menu está aberto:
+
+```tsx
+<DropdownMenuTrigger
+  render={
+    <SidebarMenuButton className="data-popup-open:bg-sidebar-accent data-popup-open:text-sidebar-accent-foreground" />
+  }
+>
+  Menu Item
+</DropdownMenuTrigger>
+```
+
+## v2.x — Radix
+
+O trigger do Radix emite `data-state="open"`:
+
+```tsx
+<DropdownMenuTrigger asChild>
+  <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
+    Menu Item
+  </SidebarMenuButton>
+</DropdownMenuTrigger>
 ```

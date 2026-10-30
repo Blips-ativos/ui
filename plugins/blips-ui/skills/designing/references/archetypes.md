@@ -8,8 +8,9 @@ densidade/profundidade/layout do zero a cada tela.
 
 - **Arquétipo é VOCABULÁRIO de direção, NUNCA troca de marca.** Você empresta
   *composição, escala, profundidade, movimento e tom* — **nunca cor nem fonte**.
-  Cor e fonte vêm SEMPRE do tema Blips (amarelo `primary` `#fcba28`; Inter
-  `font-sans`, Quicksand `font-display`, JetBrains Mono `font-mono`). _Porquê:_
+  Cor e fonte vêm SEMPRE do tema Blips (amarelo `primary` `#fcba28`; uma
+  família só, Inter — `font-display`/`font-mono` são aliases dela, não outra
+  face). _Porquê:_
   a identidade Blips é o tema; arquétipo é como você arruma o espaço dentro dele.
 - **Produto = default. Criativo = opt-in.** Os 8 de PRODUTO valem para qualquer
   tela de app (dashboard, admin, fluxo, form, tabela). Os 8 CRIATIVOS só entram
@@ -21,9 +22,10 @@ densidade/profundidade/layout do zero a cada tela.
   copiar**. O que você reproduz na Blips são as decisões neutras (números de
   espaçamento, estratégia de sombra, escala de peso). Traduza cada valor para
   as classes/tokens reais (`bg-card`, `border-border`, `rounded-lg`,
-  `font-mono`, `tabular-nums`, `shadow-sm`…).
-- Mapeie sempre ao stack real: shadcn/Radix via `@blips/ui`, Tailwind v4
-  CSS-first, ícones `@phosphor-icons/react`, Recharts para gráficos.
+  `tabular-nums`, `shadow-sm`…). Fonte do arquétipo nunca se traduz: vira Inter.
+- Mapeie sempre ao stack real: shadcn via `@blips/ui` (Base UI na v3.x, Radix na
+  v2.x — detecção de versão no Passo 0 do `SKILL.md` do building), Tailwind v4 CSS-first, ícones
+  `@phosphor-icons/react` (nomes `*Icon`), Recharts para gráficos (3 na v3.x, 2 na v2.x).
 - **Fronteira com `creative-presets.md`.** Arquétipo é vocabulário de direção; o
   COMO binário (bans/técnica/checklist) mora em `creative-presets.md` e na
   reviewing; em conflito, a reference canônica vence.
@@ -56,7 +58,7 @@ fluxo onde o trabalho emocional é *reduzir intimidação*.
 sombra sutil (`shadow-sm`) como profundidade única; borda quase imperceptível;
 pill badges (`rounded-full`) para status.
 **O NÃO.** O Notion Blue `#0075de` (acento = amarelo); a "NotionInter" custom e
-o tracking -2.125px (use Inter/Quicksand do tema).
+o tracking -2.125px (use a Inter do tema).
 
 ### Editorial-warmth — *fonte: claude*
 **Atmosfera.** Salão literário: caloroso, sem pressa, intelectual. Ritmo de
@@ -66,9 +68,9 @@ revista — espaçamento generoso entre seções, hierarquia conduzida por títu
 **Quando evocar.** Páginas de conteúdo/leitura, relatórios, docs, resumos
 gerados, telas que devem soar "companheiro pensante", não "ferramenta potente".
 **Tomar emprestado.** Pacing de revista (seções espaçadas, leitura sem aperto);
-hierarquia por **escala de título** (Quicksand `font-display`) + `leading-relaxed`
-no corpo; ring-shadow como profundidade.
-**O NÃO.** A serifa Anthropic e o terracota `#c96442` — título é Quicksand,
+hierarquia por **escala de título** (Inter) + `leading-relaxed` no corpo — e
+corpo long-form/markdown em `typeset typeset-docs`; ring-shadow como profundidade.
+**O NÃO.** A serifa Anthropic e o terracota `#c96442` — título é Inter,
 acento é amarelo. Os neutros olive (use os neutros do tema).
 
 ### Trust — *fonte: stripe*
@@ -81,7 +83,7 @@ nada pill. Numerais tabulares (`tnum`) para dados financeiros.
 faturamento, contratos, dashboards de portfólio onde confiança é o produto.
 **Tomar emprestado.** Profundidade em camadas com motivo (`shadow-md`/`shadow-lg`,
 um nível, consistente); radius contido (`rounded-md`, nunca pill em superfície
-séria); **`font-mono` + `tabular-nums`** em todo dado financeiro; gravitas por
+séria); **`tabular-nums`** em todo dado financeiro; gravitas por
 contenção, não por tamanho.
 **O NÃO.** O purple `#533afd` / ruby / magenta e a `sohne-var` peso 300 — Inter
 no tema começa em 400; acento é amarelo. Sombra **azulada** vira sombra neutra.
@@ -96,12 +98,12 @@ botões pill (9999px); sombra mínima (ring `0px 0px 0px 1px`).
 `primary` é o protagonista alegre** — exatamente o papel do lime `#9fe870` na
 Wise. Também headers de produto que querem energia sem perder confiança.
 **Tomar emprestado.** Acento como herói (grandes blocos de `bg-primary` com
-`text-primary-foreground` em `yellow-900`); títulos display agressivos (Quicksand 700,
+`text-primary-foreground` em `yellow-900`); títulos display agressivos (Inter 700,
 `tracking-tight`); radius generoso (`rounded-2xl`); **hover de escala discreto**
 (`scale(1.05)`) — note: só fora de produto; em app vale a regra 150–250ms sem
 spring.
 **O NÃO.** O lime `#9fe870` e o verde escuro `#163300` — o amarelo Blips já É
-esse papel. A "Wise Sans" peso 900 e o line-height 0.85 literal (Quicksand vai
+esse papel. A "Wise Sans" peso 900 e o line-height 0.85 literal (Inter no tema vai
 até 700; aperte com `tracking-tight`, não com line-height sub-1).
 
 ### Utility — *fonte: github*
@@ -116,8 +118,8 @@ por `border-border` (bordas-only); **cor só para significado** (quase
 monocromático — `text-success`/`text-destructive` pontuais); ícones Phosphor a
 16/24px, traço único, consistente; pill badges com semântica forte.
 **O NÃO.** O Primer blue/green como acento decorativo (acento = amarelo; status
-= tokens semânticos). Não há fonte display aqui — mas no tema, título ainda é
-Quicksand quando houver.
+= tokens semânticos). Não há fonte display aqui — e no tema também não: título
+é Inter, hierarquia por escala/peso.
 
 ### Minimal — *fonte: vercel*
 **Atmosfera.** Minimalismo como princípio de engenharia: "vazio de galeria onde
@@ -142,13 +144,13 @@ qualidade tátil, "afundam" na superfície. Vibração pontual de acento
 high-visibility.
 **Quando evocar.** Dashboards densos de métricas/observabilidade, telas de
 monitoramento, qualquer UI onde o **número é o herói** e a leitura é constante.
-**Tomar emprestado.** Dados em `font-mono` + `tabular-nums` (regra de ouro
-Blips); labels de métrica em `uppercase` + `tracking-wide` discreto; densidade
+**Tomar emprestado.** Dados em `tabular-nums` (regra de ouro Blips); labels de
+métrica em `uppercase` + `tracking-widest` (≥0.06em); densidade
 alta; profundidade contida (uma sombra/borda). Gráficos via Recharts com
 `chart-1..5`.
 **O NÃO.** O roxo-preto `#1f1633`, o lime `#c2ef4e`, a "Dammit Sans"/Rubik/Monaco
-— fundo é `background`/`card` do tema (dark via `.dark`), mono é JetBrains,
-acento é amarelo. Inset shadow tátil só se intencional, não em todo botão.
+— fundo é `background`/`card` do tema (dark via `.dark`), não há mono (dado
+alinha com `tabular-nums` na Inter), acento é amarelo. Inset shadow tátil só se intencional, não em todo botão.
 
 ---
 
@@ -156,7 +158,7 @@ acento é amarelo. Inset shadow tátil só se intencional, não em todo botão.
 
 > Aviso comum a todos: a "graça" do estilo vem de **composição, textura,
 > movimento e escala** — **a cor continua amarela `primary` + neutros do tema,
-> a fonte continua Inter/Quicksand/JetBrains**. Reproduzir o estilo trocando a
+> a fonte continua Inter (só ela)**. Reproduzir o estilo trocando a
 > paleta é justamente o que NÃO se faz.
 
 ### neobrutalism — *fonte: neobrutalism*
@@ -198,7 +200,7 @@ que deve soar **impresso**, não app. **Tomar emprestado.** Acento de raridade
 extrema (amarelo ≤5%, o resto neutro); hierarquia por escala de título; ritmo
 denso (`leading-tight`/`leading-snug`); ring/whisper-shadow; `tabular-nums`.
 **O NÃO.** O ink-blue `#1B365D` e a serifa Charter — acento é amarelo, título é
-Quicksand (não temos serifa no tema; a "voz de papel" vem do canvas neutro +
+Inter (não temos serifa no tema; a "voz de papel" vem do canvas neutro +
 ritmo, não da serifa).
 
 ### hud — *fonte: hud*
@@ -207,7 +209,7 @@ e **glow** substituem profundidade/sombra; dados em maiúsculas, geometria
 angular, "cada elemento é funcional ou não existe". Mono para readouts, escala
 mínima (8–32px), line-height 1.0. **Quando evocar.** Showcase de produto de
 dados em tempo real, telas-conceito de monitoramento, hero técnico. **Tomar
-emprestado.** Dados em `font-mono` + maiúsculas + `tracking-wide`; layout
+emprestado.** Dados em `tabular-nums` + maiúsculas + `tracking-widest`; layout
 angular/decluttered; hierarquia por **urgência** (warning/alert como tokens);
 glow sutil (`drop-shadow`) só em destaque. **O NÃO.** O phosphor green `#00FF41`
 literal — o "glow de dado vivo" vira amarelo `primary`; warning/alert = tokens
@@ -219,8 +221,8 @@ extremo**, mono em todos os dados, layouts tabulares **sem espaçamento
 decorativo**, legível a dois metros. Buy/sell por cor (cyan `#00D4AA` / coral
 `#FF4757`). **Quando evocar.** Showcase de produto de mercado/trading, hero de
 densidade radical, demo "olha quanta informação cabe". **Tomar emprestado.**
-Densidade máxima (padding mínimo, sem espaço decorativo); **tudo em `font-mono` +
-`tabular-nums`**; tabelas justas; ganho/perda por `text-success`/`text-destructive`.
+Densidade máxima (padding mínimo, sem espaço decorativo); **tudo em
+`tabular-nums`** (o "mono" do original vira alinhamento de dígito, não fonte); tabelas justas; ganho/perda por `text-success`/`text-destructive`.
 **O NÃO.** O cyan/coral literais (alta/baixa = tokens `success`/`destructive`);
 fundo dark vem do `.dark` do tema, não de `#0D0D0D` custom.
 
@@ -240,8 +242,8 @@ brincalhão. **Quando evocar.** Empty states divertidos, 404 lúdico, ilustraç�
 de marketing leve, microdetalhe de delight. **Tomar emprestado.** Sublinhados/
 setas/marcações desenhados à mão como ornamento; rotações leves (`rotate-1`);
 imperfeição proposital; ilustração orgânica em vez de ícone. **O NÃO.** O acento
-`#49B6E5` e fonte manuscrita — ornamento é desenhado, mas texto continua Inter/
-Quicksand e o acento continua amarelo (rabisco amarelo sobre neutro funciona).
+`#49B6E5` e fonte manuscrita — ornamento é desenhado, mas texto continua Inter
+e o acento continua amarelo (rabisco amarelo sobre neutro funciona).
 
 ---
 

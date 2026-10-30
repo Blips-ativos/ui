@@ -2,284 +2,182 @@
 
 Import: `@blips/ui/components/popover`
 
-## Sub-components
+Painel flutuante aberto por clique, com conteúdo interativo (mini-formulário,
+filtros, seletor). Para dica curta use Tooltip; para prévia no hover, Hover Card;
+para lista de ações, Dropdown Menu.
 
-| Component | Element | Description |
-|-----------|---------|-------------|
-| `Popover` | `PopoverPrimitive.Root` | Root state container (open/close). Direct re-export. |
-| `PopoverTrigger` | `PopoverPrimitive.Trigger` | Element that toggles the popover. Direct re-export. Supports `asChild`. |
-| `PopoverContent` | `PopoverPrimitive.Content` | Floating panel rendered in a Portal. Animated with fade/zoom/slide. |
-| `PopoverSection` | `<div>` | Optional section divider within popover content. Adds padding and bottom border. |
+Exports (iguais nas duas versões): `Popover`, `PopoverTrigger`, `PopoverContent`,
+`PopoverAnchor`, `PopoverHeader`, `PopoverTitle`, `PopoverDescription`.
 
-## Props & Variants
+## Notas comuns
 
-### Popover (Root)
+- `PopoverContent` vai num Portal; largura padrão `w-72` (ajuste com `className`).
+- `PopoverHeader` é um `div` (`flex flex-col gap-1`) para agrupar `PopoverTitle` + `PopoverDescription`.
+- `PopoverAnchor` posiciona o conteúdo em relação a outro elemento que não o trigger.
+- Não existe `PopoverSection` em nenhuma versão: divida o conteúdo com `Separator` ou com `div`s próprias.
+- Combobox no padrão Popover + Command: veja `command.md`. Na v3 existe também o Combobox primitivo (`combobox.md`).
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `open` | `boolean` | - | Controlled open state |
-| `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes |
-| `defaultOpen` | `boolean` | `false` | Uncontrolled default open state |
-| `modal` | `boolean` | `false` | Whether interaction outside closes the popover |
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-### PopoverTrigger
+## v3.x — Base UI
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `asChild` | `boolean` | `false` | Merges props onto the child element instead of rendering a button |
+Primitiva: `@base-ui/react/popover`.
 
-### PopoverContent
+| Componente | Descrição |
+|---|---|
+| `Popover` | `Popover.Root` envolvido num contexto da lib (para o `PopoverAnchor`). `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `modal` (`boolean \| "trap-focus"`). |
+| `PopoverTrigger` | `Popover.Trigger` (é um `<button>`). Troque o elemento com `render`. |
+| `PopoverContent` | Portal + Positioner + Popup. `flex flex-col gap-4 rounded-lg p-2.5 text-xs ring-1 ring-foreground/10 shadow-md`. |
+| `PopoverAnchor` | Reimplementado pela lib: `<div data-slot="popover-anchor">` que registra uma ref; o `PopoverContent` a usa como âncora. Precisa estar dentro do mesmo `<Popover>`. Sem `asChild`. |
+| `PopoverTitle` | `Popover.Title` (`h2`, `text-sm font-medium`), liga `aria-labelledby` sozinho. |
+| `PopoverDescription` | `Popover.Description` (`p`, `text-muted-foreground`), liga `aria-describedby`. |
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `align` | `"start" \| "center" \| "end"` | `"center"` | Alignment relative to trigger |
-| `sideOffset` | `number` | `4` | Distance from trigger in pixels |
-| `side` | `"top" \| "right" \| "bottom" \| "left"` | `"bottom"` | Preferred side (Radix prop) |
-| `className` | `string` | - | Additional CSS classes |
+**PopoverContent**
 
-**Default styles:**
-- `z-50 w-72 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none`
-- Transform origin: `origin-[--radix-popover-content-transform-origin]`
-- When contains `PopoverSection`: `has-data-[slot=popover-section]:p-0` (removes default padding)
-- Animated:
-  - Open: `fade-in-0 zoom-in-95`
-  - Close: `fade-out-0 zoom-out-95`
-  - Slide based on side: `slide-in-from-top-2`, `slide-in-from-bottom-2`, etc.
+| Prop | Tipo | Padrão |
+|---|---|---|
+| `side` | `"top" \| "right" \| "bottom" \| "left" \| "inline-start" \| "inline-end"` | `"bottom"` |
+| `sideOffset` | `number` | `4` |
+| `align` | `"start" \| "center" \| "end"` | `"center"` |
+| `alignOffset` | `number` | `0` |
+| `anchor` | `Element \| RefObject \| VirtualElement \| () => …` | trigger (ou o `PopoverAnchor`) |
+| `initialFocus` / `finalFocus` | do Popup do Base UI | — |
 
-### PopoverSection
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `className` | `string` | - | Additional CSS classes |
-
-**Default styles:**
-- `border-b p-4 last:border-b-0`
-- When used, parent `PopoverContent` padding is automatically removed (`has-data-[slot=popover-section]:p-0`)
-
-## Usage
-
-### Basic Popover with Form
+Estado: `data-open` / `data-closed`. CSS vars: `--anchor-width`, `--available-height`, `--transform-origin`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
+import { Button } from "@blips/ui/components/button";
+import { Input } from "@blips/ui/components/input";
+import { Label } from "@blips/ui/components/label";
 import {
   Popover,
   PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
-} from "@blips/ui/components/popover"
+} from "@blips/ui/components/popover";
 
-<Popover>
-  <PopoverTrigger asChild>
-    <Button variant="outline">Open popover</Button>
-  </PopoverTrigger>
-  <PopoverContent className="w-80">
-    <div className="grid gap-4">
-      <div className="space-y-2">
-        <h4 className="leading-none font-medium">Dimensions</h4>
-        <p className="text-sm text-muted-foreground">
-          Set the dimensions for the layer.
-        </p>
-      </div>
-      <div className="grid gap-2">
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="width">Width</Label>
-          <Input
-            id="width"
-            defaultValue="100%"
-            className="col-span-2 h-8"
-          />
-        </div>
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="maxWidth">Max. width</Label>
-          <Input
-            id="maxWidth"
-            defaultValue="300px"
-            className="col-span-2 h-8"
-          />
-        </div>
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="height">Height</Label>
-          <Input
-            id="height"
-            defaultValue="25px"
-            className="col-span-2 h-8"
-          />
-        </div>
-        <div className="grid grid-cols-3 items-center gap-4">
-          <Label htmlFor="maxHeight">Max. height</Label>
-          <Input
-            id="maxHeight"
-            defaultValue="none"
-            className="col-span-2 h-8"
-          />
-        </div>
-      </div>
-    </div>
-  </PopoverContent>
-</Popover>
-```
-
-### With Sections
-
-```tsx
-import {
-  Popover,
-  PopoverContent,
-  PopoverSection,
-  PopoverTrigger,
-} from "@blips/ui/components/popover"
-import { Button } from "@blips/ui/components/button"
-
-<Popover>
-  <PopoverTrigger asChild>
-    <Button variant="outline">Settings</Button>
-  </PopoverTrigger>
-  <PopoverContent className="w-80">
-    <PopoverSection>
-      <h4 className="font-medium leading-none">General</h4>
-      <p className="text-sm text-muted-foreground mt-1">
-        Configure general settings.
-      </p>
-    </PopoverSection>
-    <PopoverSection>
-      <h4 className="font-medium leading-none">Advanced</h4>
-      <p className="text-sm text-muted-foreground mt-1">
-        Advanced configuration options.
-      </p>
-    </PopoverSection>
-  </PopoverContent>
-</Popover>
-```
-
-### Controlled Popover
-
-```tsx
-"use client"
-
-import * as React from "react"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@blips/ui/components/popover"
-import { Button } from "@blips/ui/components/button"
-
-function ControlledPopover() {
-  const [open, setOpen] = React.useState(false)
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline">
-          {open ? "Close" : "Open"}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent>
-        <p>Controlled content</p>
-        <Button size="sm" onClick={() => setOpen(false)}>
-          Done
-        </Button>
-      </PopoverContent>
-    </Popover>
-  )
-}
-```
-
-### Alignment Options
-
-```tsx
-{/* Aligned to start */}
-<PopoverContent align="start">...</PopoverContent>
-
-{/* Aligned to center (default) */}
-<PopoverContent align="center">...</PopoverContent>
-
-{/* Aligned to end */}
-<PopoverContent align="end">...</PopoverContent>
-
-{/* Custom side offset */}
-<PopoverContent sideOffset={8}>...</PopoverContent>
-
-{/* Open on a different side */}
-<PopoverContent side="right">...</PopoverContent>
-```
-
-## Project Notes
-
-- This project's Popover includes `PopoverSection` which is not in all shadcn versions -- useful for multi-section popover content with automatic border dividers and padding management.
-- The component uses `forwardRef` pattern.
-
-## All Examples
-
-- `popover-demo` - Popover with form inputs for dimensions configuration
-
-## All Example Variants
-
-### popover-demo
-
-```tsx
-import { Button } from "@blips/ui/components/button"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@blips/ui/components/popover"
-
-export default function PopoverDemo() {
+export function DimensoesPopover() {
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">Open popover</Button>
+      <PopoverTrigger render={<Button variant="outline" />}>
+        Dimensões
       </PopoverTrigger>
-      <PopoverContent className="w-80">
+      <PopoverContent className="w-80" align="start">
+        <PopoverHeader>
+          <PopoverTitle>Dimensões</PopoverTitle>
+          <PopoverDescription>Defina o tamanho da camada.</PopoverDescription>
+        </PopoverHeader>
+        <div className="grid gap-2">
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Label htmlFor="largura">Largura</Label>
+            <Input id="largura" defaultValue="100%" className="col-span-2" />
+          </div>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Label htmlFor="altura">Altura</Label>
+            <Input id="altura" defaultValue="25px" className="col-span-2" />
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+```
+
+Controlado (fechar por um botão interno):
+
+```tsx
+const [aberto, setAberto] = React.useState(false);
+
+<Popover open={aberto} onOpenChange={setAberto}>
+  <PopoverTrigger render={<Button variant="outline" />}>Filtros</PopoverTrigger>
+  <PopoverContent>
+    {/* campos */}
+    <Button size="sm" onClick={() => setAberto(false)}>
+      Aplicar
+    </Button>
+  </PopoverContent>
+</Popover>
+```
+
+Ancorado em outro elemento:
+
+```tsx
+<Popover>
+  <PopoverAnchor className="w-full">
+    <Input placeholder="Buscar cliente" />
+  </PopoverAnchor>
+  <PopoverTrigger render={<Button size="icon" variant="ghost" />}>
+    <MagnifyingGlassIcon />
+  </PopoverTrigger>
+  <PopoverContent align="start">…</PopoverContent>
+</Popover>
+```
+
+### Armadilhas
+
+- `onOpenAutoFocus`, `onEscapeKeyDown`, `onInteractOutside`, `forceMount`, `avoidCollisions`, `collisionPadding` não existem. Foco: `initialFocus`/`finalFocus`; dismiss: `onOpenChange(open, eventDetails)` checando `eventDetails.reason`.
+- `--radix-popover-trigger-width` virou `--anchor-width` (ex.: `className="w-(--anchor-width)"`).
+- Não aninhe `<Button>` dentro do `PopoverTrigger`: passe-o em `render`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-popover`.
+
+| Componente | Descrição |
+|---|---|
+| `Popover` | `PopoverPrimitive.Root`. `open`, `defaultOpen`, `onOpenChange(open)`, `modal` (boolean). |
+| `PopoverTrigger` | `PopoverPrimitive.Trigger`. Use `asChild` com um `Button`. |
+| `PopoverContent` | Portal + Content. `rounded-md border p-4 shadow-md`, `w-72`. `align` padrão `"center"`, `sideOffset` padrão `4`; também `side`, `alignOffset`, `avoidCollisions`, `collisionPadding`, `onOpenAutoFocus`, `onEscapeKeyDown`, `onInteractOutside`, `forceMount`. |
+| `PopoverAnchor` | `PopoverPrimitive.Anchor` (aceita `asChild`). |
+| `PopoverTitle` | `div` simples com `font-medium` (sem ligação ARIA automática). |
+| `PopoverDescription` | `p` com `text-muted-foreground`. |
+
+Estado: `data-state="open" | "closed"`. CSS vars: `--radix-popover-trigger-width`, `--radix-popover-content-available-height`, `--radix-popover-content-transform-origin`.
+
+```tsx
+import * as React from "react"
+import { Button } from "@blips/ui/components/button"
+import { Input } from "@blips/ui/components/input"
+import { Label } from "@blips/ui/components/label"
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@blips/ui/components/popover"
+
+export function DimensoesPopover() {
+  const [aberto, setAberto] = React.useState(false)
+
+  return (
+    <Popover open={aberto} onOpenChange={setAberto}>
+      <PopoverTrigger asChild>
+        <Button variant="outline">Dimensões</Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-80" align="start">
         <div className="grid gap-4">
-          <div className="space-y-2">
-            <h4 className="leading-none font-medium">Dimensions</h4>
-            <p className="text-sm text-muted-foreground">
-              Set the dimensions for the layer.
-            </p>
+          <PopoverHeader>
+            <PopoverTitle>Dimensões</PopoverTitle>
+            <PopoverDescription>Defina o tamanho da camada.</PopoverDescription>
+          </PopoverHeader>
+          <div className="grid grid-cols-3 items-center gap-4">
+            <Label htmlFor="largura">Largura</Label>
+            <Input id="largura" defaultValue="100%" className="col-span-2 h-8" />
           </div>
-          <div className="grid gap-2">
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="width">Width</Label>
-              <Input
-                id="width"
-                defaultValue="100%"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="maxWidth">Max. width</Label>
-              <Input
-                id="maxWidth"
-                defaultValue="300px"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="height">Height</Label>
-              <Input
-                id="height"
-                defaultValue="25px"
-                className="col-span-2 h-8"
-              />
-            </div>
-            <div className="grid grid-cols-3 items-center gap-4">
-              <Label htmlFor="maxHeight">Max. height</Label>
-              <Input
-                id="maxHeight"
-                defaultValue="none"
-                className="col-span-2 h-8"
-              />
-            </div>
-          </div>
+          <Button size="sm" onClick={() => setAberto(false)}>
+            Aplicar
+          </Button>
         </div>
       </PopoverContent>
     </Popover>
   )
 }
 ```
+
+## Exemplos na docs
+
+`popover-demo`, `popover-basic`, `popover-alignments`, `popover-sides` (em `apps/docs/examples/`, escritos para a v3).

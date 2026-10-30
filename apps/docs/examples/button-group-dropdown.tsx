@@ -11,58 +11,60 @@ import {
   DropdownMenuTrigger,
 } from "@blips/ui/components/dropdown-menu";
 import {
-  Warning,
-  Check,
-  CaretDown,
-  Copy,
-  ShareNetwork,
-  Trash,
-  UserMinus,
-  SpeakerSimpleX,
+  CaretDownIcon,
+  CheckIcon,
+  CopyIcon,
+  ShareIcon,
+  SpeakerSlashIcon,
+  TrashIcon,
+  UserMinusIcon,
+  WarningIcon,
 } from "@phosphor-icons/react";
 
 export default function ButtonGroupDropdown() {
   return (
     <ButtonGroup>
-      <Button variant="outline">Follow</Button>
+      <Button variant="outline">Seguir</Button>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="pl-2!">
-            <CaretDown />
-          </Button>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="outline" size="icon" aria-label="Mais opções" />
+          }
+        >
+          <CaretDownIcon />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="[--radius:1rem]">
+        <DropdownMenuContent align="end" className="w-52">
           <DropdownMenuGroup>
             <DropdownMenuItem>
-              <SpeakerSimpleX />
-              Mute Conversation
+              <SpeakerSlashIcon />
+              Silenciar conversa
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Check />
-              Mark as Read
+              <CheckIcon />
+              Marcar como lida
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Warning />
-              Report Conversation
+              <WarningIcon />
+              Denunciar conversa
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <UserMinus />
-              Block User
+              <UserMinusIcon />
+              Bloquear usuário
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <ShareNetwork />
-              Share Conversation
+              <ShareIcon />
+              Compartilhar conversa
             </DropdownMenuItem>
             <DropdownMenuItem>
-              <Copy />
-              Copy Conversation
+              <CopyIcon />
+              Copiar conversa
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem variant="destructive">
-              <Trash />
-              Delete Conversation
+              <TrashIcon />
+              Excluir conversa
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

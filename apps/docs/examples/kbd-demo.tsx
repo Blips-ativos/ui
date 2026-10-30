@@ -1,10 +1,19 @@
-"use client";
 import { Kbd, KbdGroup } from "@blips/ui/components/kbd";
+
 export default function KbdDemo() {
   return (
-    <KbdGroup>
-      <Kbd>⌘</Kbd>
-      <Kbd>K</Kbd>
-    </KbdGroup>
+    <div className="flex flex-col items-center gap-4">
+      <KbdGroup>
+        <Kbd>⌘</Kbd>
+        <Kbd>⇧</Kbd>
+        <Kbd>⌥</Kbd>
+        <Kbd>⌃</Kbd>
+      </KbdGroup>
+      <KbdGroup>
+        <Kbd>Ctrl</Kbd>
+        <span>+</span>
+        <Kbd>B</Kbd>
+      </KbdGroup>
+    </div>
   );
 }

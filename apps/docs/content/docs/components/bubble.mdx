@@ -1,0 +1,100 @@
+---
+title: Bubble
+description: Balão de mensagem com variantes de cor, alinhamento e reações.
+---
+
+<ComponentPreview name="bubble-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import {
+  Bubble,
+  BubbleContent,
+  BubbleGroup,
+  BubbleReactions,
+} from "@blips/ui/components/bubble"
+```
+
+```tsx
+<Bubble variant="muted">
+  <BubbleContent>Oi! Em que posso ajudar?</BubbleContent>
+</Bubble>
+```
+
+O `Bubble` define a variante e o alinhamento; o `BubbleContent` é a superfície pintada. Dentro de um [Message](/docs/components/message) com `align="end"`, o balão se alinha ao fim sozinho.
+
+## Exemplos
+
+### Variantes
+
+<ComponentPreview name="bubble-variants" />
+
+### Grupo
+
+`BubbleGroup` empilha balões seguidos da mesma pessoa.
+
+<ComponentPreview name="bubble-group" />
+
+### Recolhível
+
+Combine com o [Collapsible](/docs/components/collapsible) para encurtar mensagens longas.
+
+<ComponentPreview name="bubble-collapsible" />
+
+### Botões e links
+
+Use `render` no `BubbleContent` para transformar o balão em link ou botão, por exemplo em sugestões de resposta.
+
+<ComponentPreview name="bubble-link" />
+
+```tsx
+<Bubble variant="outline" align="end">
+  <BubbleContent render={<button type="button" onClick={responder} />}>
+    Esqueci a minha senha.
+  </BubbleContent>
+</Bubble>
+```
+
+### Reações
+
+`BubbleReactions` posiciona emojis ou botões na borda do balão. Controle a posição com `side` e `align`. Para reações só visuais, use `role="img"` e um `aria-label`.
+
+<ComponentPreview name="bubble-reactions" />
+
+## Referência da API
+
+### Bubble
+
+| Prop        | Tipo                                                                                       | Padrão      |
+| ----------- | ------------------------------------------------------------------------------------------ | ----------- |
+| `variant`   | `"default" \| "secondary" \| "muted" \| "tinted" \| "outline" \| "ghost" \| "destructive"` | `"default"` |
+| `align`     | `"start" \| "end"`                                                                         | `"start"`   |
+| `className` | `string`                                                                                   |             |
+
+O balão ocupa no máximo 80% da largura; o `ghost` vai até 100%.
+
+### BubbleContent
+
+| Prop     | Tipo           | Padrão  |
+| -------- | -------------- | ------- |
+| `render` | `ReactElement` | `<div>` |
+
+Com `render={<a />}` ou `render={<button />}`, o balão ganha hover e anel de foco.
+
+### BubbleReactions
+
+| Prop    | Tipo                | Padrão     |
+| ------- | ------------------- | ---------- |
+| `side`  | `"top" \| "bottom"` | `"bottom"` |
+| `align` | `"start" \| "end"`  | `"end"`    |
+
+### BubbleGroup
+
+Coluna com `gap-2`. Aceita as props de `div`.

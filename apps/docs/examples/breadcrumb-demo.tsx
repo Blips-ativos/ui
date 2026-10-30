@@ -1,4 +1,3 @@
-"use client";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,16 +6,17 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@blips/ui/components/breadcrumb";
+
 export default function BreadcrumbDemo() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>
+          <BreadcrumbLink href="#">Início</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="/components">Components</BreadcrumbLink>
+          <BreadcrumbLink href="#">Componentes</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>

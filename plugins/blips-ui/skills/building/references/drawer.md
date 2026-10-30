@@ -2,48 +2,47 @@
 
 Import: `@blips/ui/components/drawer`
 
-Built on top of [Vaul](https://github.com/emilkowalski/vaul) — a drawer component for React.
+Painel que desliza de uma borda, com gesto de arrastar para fechar. Bom para
+mobile; no desktop prefira Dialog ou Sheet (padrão responsivo abaixo).
 
-## Sub-components
+Exports comuns: `Drawer`, `DrawerTrigger`, `DrawerPortal`, `DrawerOverlay`,
+`DrawerClose`, `DrawerContent`, `DrawerHeader`, `DrawerFooter`, `DrawerTitle`,
+`DrawerDescription`. Só na v3: `DrawerSwipeHandle`.
 
-| Component | Description |
+## Notas comuns
+
+- `DrawerContent` já renderiza Portal + Overlay.
+- Sempre inclua `DrawerTitle`.
+- Padrão responsivo: `useMediaQuery("(min-width: 768px)")` → Dialog no desktop, Drawer no mobile, com o mesmo formulário dentro.
+- Conteúdo longo: área rolável própria (`flex-1 overflow-y-auto`) entre header e footer.
+
+> A API difere bastante entre as versões (vaul vs Base UI: direção, alça, estrutura do DOM). Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente.
+
+## v3.x — Base UI
+
+Primitiva: `@base-ui/react/drawer`.
+
+| Componente | Props relevantes |
 |---|---|
-| `Drawer` | Root component. Wraps `vaul`'s `Drawer.Root` with `shouldScaleBackground` defaulting to `true`. |
-| `DrawerTrigger` | Button/element that opens the drawer. Supports `asChild` prop. |
-| `DrawerPortal` | Renders drawer content into a portal. |
-| `DrawerOverlay` | Full-screen overlay behind drawer (`bg-black/80`). |
-| `DrawerClose` | Button/element that closes the drawer. Supports `asChild` prop. |
-| `DrawerContent` | The main drawer panel. Fixed to bottom, includes a drag handle bar. |
-| `DrawerHeader` | Header section with centered text layout (`p-4`). |
-| `DrawerFooter` | Footer section with vertical button stack (`p-4`). |
-| `DrawerTitle` | Drawer title — `font-semibold text-lg`. |
-| `DrawerDescription` | Drawer description — `text-muted-foreground text-sm`. |
+| `Drawer` | `open`, `defaultOpen`, `onOpenChange(open, eventDetails)`, `swipeDirection` (`"down" \| "up" \| "left" \| "right"`, padrão `"down"`), `modal` (`true \| false \| "trap-focus"`, padrão `true`), `showSwipeHandle` (prop da lib, padrão `false`), `snapPoints`, `snapPoint`/`defaultSnapPoint`/`onSnapPointChange`, `snapToSequentialPoints`, `disablePointerDismissal` |
+| `DrawerTrigger` / `DrawerClose` | `render`, `nativeButton` |
+| `DrawerContent` | `className` vai para o **Popup** (`data-slot="drawer-popup"`); os filhos ficam num wrapper interno `data-slot="drawer-content"` |
+| `DrawerSwipeHandle` | Alça de arraste manual (quando não usar `showSwipeHandle`) |
+| `DrawerHeader` | `flex flex-col gap-1 p-4 pb-0` |
+| `DrawerFooter` | `mt-auto flex flex-col gap-2 p-4 pt-0` |
+| `DrawerTitle` / `DrawerDescription` | `text-sm font-medium` / `text-xs/relaxed text-balance` |
 
-## Props & Variants
-
-### Drawer (Root)
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `shouldScaleBackground` | `boolean` | `true` | Whether to scale the background when drawer is open. |
-| `open` | `boolean` | - | Controlled open state. |
-| `onOpenChange` | `(open: boolean) => void` | - | Callback when open state changes. |
-| `direction` | `"top" \| "bottom" \| "left" \| "right"` | `"bottom"` | Direction from which the drawer slides in. |
-
-### DrawerContent
-
-Renders inside a `DrawerPortal` with `DrawerOverlay`. Includes a built-in drag handle bar (100px wide, rounded). Positioned at bottom with `inset-x-0 bottom-0`, rounded top corners.
-
-### DrawerOverlay
-
-Full-screen fixed overlay with `z-50 bg-black/80`. Accepts standard `className` overrides.
-
-## Usage
-
-### Basic Drawer
+- `DrawerContent` precisa estar dentro do `<Drawer>` da lib (usa contexto interno; fora dele lança "useDrawer precisa ser usado dentro de um <Drawer>.").
+- A alça **não aparece por padrão**: `<Drawer showSwipeHandle>`.
+- Sem overlay quando `modal` não é `true`.
+- Seletores: `data-[swipe-direction=*]`, `data-[swipe-axis=x|y]`, grupo `group/drawer-popup` (ex.: `group-data-[swipe-axis=y]/drawer-popup:h-80`). Os seletores `data-[vaul-drawer-direction=*]` não existem mais.
+- Aninhamento é automático (drawers empilham).
+- Visual base-mira: painel flutuante com inset (`m-(--drawer-inset)`), `rounded-xl` em todos os cantos, `bg-popover`, `text-xs/relaxed`; altura máxima no eixo y `100dvh-6rem`.
 
 ```tsx
-import { Button } from "@blips/ui/components/button"
+"use client";
+
+import { Button } from "@blips/ui/components/button";
 import {
   Drawer,
   DrawerClose,
@@ -53,232 +52,70 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "@blips/ui/components/drawer"
+} from "@blips/ui/components/drawer";
 
-function DrawerDemo() {
+export function MetaDiaria() {
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Drawer</Button>
-      </DrawerTrigger>
+    <Drawer showSwipeHandle>
+      <DrawerTrigger render={<Button variant="outline" />}>Definir meta</DrawerTrigger>
       <DrawerContent>
         <div className="mx-auto w-full max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>Move Goal</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
+            <DrawerTitle>Meta diária</DrawerTitle>
+            <DrawerDescription>Defina a sua meta diária de atividade.</DrawerDescription>
           </DrawerHeader>
-          <div className="p-4 pb-0">
-            {/* Content */}
-          </div>
+          <div className="p-4">{/* conteúdo */}</div>
           <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
+            <Button>Salvar</Button>
+            <DrawerClose render={<Button variant="outline" />}>Cancelar</DrawerClose>
           </DrawerFooter>
         </div>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }
+
+// Lateral, pela direita
+<Drawer swipeDirection="right">
+  <DrawerTrigger render={<Button variant="outline" />}>Filtros</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Filtros</DrawerTitle>
+    </DrawerHeader>
+    <div className="flex-1 overflow-y-auto p-4">{/* filtros */}</div>
+    <DrawerFooter>
+      <DrawerClose render={<Button />}>Aplicar</DrawerClose>
+    </DrawerFooter>
+  </DrawerContent>
+</Drawer>
+
+// Pontos de parada
+<Drawer snapPoints={["31rem", 1]} showSwipeHandle>
+  {/* … */}
+</Drawer>
 ```
 
-### Responsive Drawer + Dialog Pattern
+Responsivo (Dialog no desktop): mesmo padrão da v2 abaixo, trocando `asChild` por `render` nos triggers e o `DrawerClose` por `<DrawerClose render={<Button variant="outline" />}>Cancelar</DrawerClose>`.
 
-Use `Drawer` on mobile and `Dialog` on desktop via media query:
+## v2.x — Radix
+
+Primitiva: **`vaul`** (`Drawer.Root` do vaul).
+
+| Componente | Props relevantes |
+|---|---|
+| `Drawer` | `open`, `onOpenChange(open)`, `direction` (`"top" \| "bottom" \| "left" \| "right"`, padrão `"bottom"`), `shouldScaleBackground`, `setBackgroundColorOnScale`, `dismissible`, `handleOnly`, `snapPoints`, `activeSnapPoint`/`setActiveSnapPoint`, `fadeFromIndex`, `nested`, `modal` |
+| `DrawerTrigger` / `DrawerClose` | `asChild` |
+| `DrawerContent` | Painel; na direção `bottom` já mostra a alça (`h-2 w-[100px]`) automaticamente |
+| `DrawerHeader` | `flex flex-col gap-0.5 p-4`; centralizado em `top`/`bottom` no mobile, à esquerda em `md:` |
+| `DrawerFooter` | `mt-auto flex flex-col gap-2 p-4` |
+| `DrawerTitle` / `DrawerDescription` | `font-semibold` / `text-sm text-muted-foreground` |
+
+Seletores: `data-[vaul-drawer-direction=*]`, `group-data-[vaul-drawer-direction=*]/drawer-content`. Altura máxima em `top`/`bottom`: `80vh`.
 
 ```tsx
 "use client"
 
 import * as React from "react"
-import { cn } from "@blips/ui/lib/utils"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { Button } from "@blips/ui/components/button"
-import {
-  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger,
-} from "@blips/ui/components/dialog"
-import {
-  Drawer, DrawerClose, DrawerContent, DrawerDescription,
-  DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger,
-} from "@blips/ui/components/drawer"
-
-function DrawerDialogDemo() {
-  const [open, setOpen] = React.useState(false)
-  const isDesktop = useMediaQuery("(min-width: 768px)")
-
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here.
-            </DialogDescription>
-          </DialogHeader>
-          <ProfileForm />
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
-  return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here.
-          </DrawerDescription>
-        </DrawerHeader>
-        <ProfileForm className="px-4" />
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-
-## All Examples
-
-- `drawer-demo` -- Basic drawer with goal counter and bar chart
-- `drawer-dialog` -- Responsive pattern: Dialog on desktop, Drawer on mobile
-
-## All Example Variants
-
-### drawer-demo
-
-```tsx
-"use client"
-
-import * as React from "react"
-import { Minus, Plus } from "@phosphor-icons/react"
-import { Bar, BarChart, ResponsiveContainer } from "recharts"
-
-import { Button } from "@blips/ui/components/button"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@blips/ui/components/drawer"
-
-const data = [
-  { goal: 400 },
-  { goal: 300 },
-  { goal: 200 },
-  { goal: 300 },
-  { goal: 200 },
-  { goal: 278 },
-  { goal: 189 },
-  { goal: 239 },
-  { goal: 300 },
-  { goal: 200 },
-  { goal: 278 },
-  { goal: 189 },
-  { goal: 349 },
-]
-
-export default function DrawerDemo() {
-  const [goal, setGoal] = React.useState(350)
-
-  function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)))
-  }
-
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Open Drawer</Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="mx-auto w-full max-w-sm">
-          <DrawerHeader>
-            <DrawerTitle>Move Goal</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
-          </DrawerHeader>
-          <div className="p-4 pb-0">
-            <div className="flex items-center justify-center space-x-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 shrink-0 rounded-full"
-                onClick={() => onClick(-10)}
-                disabled={goal <= 200}
-              >
-                <Minus />
-                <span className="sr-only">Decrease</span>
-              </Button>
-              <div className="flex-1 text-center">
-                <div className="text-7xl font-bold tracking-tighter">
-                  {goal}
-                </div>
-                <div className="text-[0.70rem] text-muted-foreground uppercase">
-                  Calories/day
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-8 w-8 shrink-0 rounded-full"
-                onClick={() => onClick(10)}
-                disabled={goal >= 400}
-              >
-                <Plus />
-                <span className="sr-only">Increase</span>
-              </Button>
-            </div>
-            <div className="mt-3 h-[120px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data}>
-                  <Bar
-                    dataKey="goal"
-                    style={
-                      {
-                        fill: "hsl(var(--foreground))",
-                        opacity: 0.9,
-                      } as React.CSSProperties
-                    }
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-          <DrawerFooter>
-            <Button>Submit</Button>
-            <DrawerClose asChild>
-              <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  )
-}
-```
-
-### drawer-dialog
-
-```tsx
-"use client"
-
-import * as React from "react"
-
-import { cn } from "@blips/ui/lib/utils"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@blips/ui/components/button"
 import {
@@ -299,10 +136,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@blips/ui/components/drawer"
-import { Input } from "@blips/ui/components/input"
-import { Label } from "@blips/ui/components/label"
 
-export default function DrawerDialogDemo() {
+export function EditarPerfilResponsivo() {
   const [open, setOpen] = React.useState(false)
   const isDesktop = useMediaQuery("(min-width: 768px)")
 
@@ -310,17 +145,14 @@ export default function DrawerDialogDemo() {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
+          <Button variant="outline">Editar perfil</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
-            </DialogDescription>
+            <DialogTitle>Editar perfil</DialogTitle>
+            <DialogDescription>Altere os dados do seu perfil.</DialogDescription>
           </DialogHeader>
-          <ProfileForm />
+          <FormPerfil />
         </DialogContent>
       </Dialog>
     )
@@ -329,39 +161,25 @@ export default function DrawerDialogDemo() {
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
+        <Button variant="outline">Editar perfil</Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </DrawerDescription>
+          <DrawerTitle>Editar perfil</DrawerTitle>
+          <DrawerDescription>Altere os dados do seu perfil.</DrawerDescription>
         </DrawerHeader>
-        <ProfileForm className="px-4" />
+        <FormPerfil className="px-4" />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Cancelar</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
   )
 }
-
-function ProfileForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-6", className)}>
-      <div className="grid gap-3">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
-      </div>
-      <div className="grid gap-3">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
-      </div>
-      <Button type="submit">Save changes</Button>
-    </form>
-  )
-}
 ```
+
+## Exemplos na docs
+
+`drawer-demo`, `drawer-position`, `drawer-scrollable`, `drawer-snap-points`, `drawer-swipe-handle`, `drawer-non-modal` (v3).

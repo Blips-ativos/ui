@@ -1,11 +1,11 @@
 ---
 title: Dialog
-description: Uma janela sobreposta a janela principal ou a outra janela de dialog, tornando o conteudo abaixo inerte.
+description: Uma janela sobreposta à janela principal ou a outro diálogo, tornando o conteúdo abaixo inerte.
 ---
 
 <ComponentPreview name="dialog-demo" />
 
-## Instalacao
+## Instalação
 
 ```bash
 npm install @blips/ui
@@ -14,10 +14,13 @@ npm install @blips/ui
 ## Uso
 
 ```tsx
+import { Button } from "@blips/ui/components/button"
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -26,27 +29,87 @@ import {
 
 ```tsx
 <Dialog>
-  <DialogTrigger>Abrir</DialogTrigger>
+  <DialogTrigger render={<Button variant="outline" />}>Abrir</DialogTrigger>
   <DialogContent>
     <DialogHeader>
-      <DialogTitle>Voce tem certeza absoluta?</DialogTitle>
+      <DialogTitle>Você tem certeza absoluta?</DialogTitle>
       <DialogDescription>
-        Esta acao nao pode ser desfeita. Isso excluira permanentemente sua conta
-        e removera seus dados de nossos servidores.
+        Esta ação não pode ser desfeita. Isso excluirá permanentemente sua conta
+        e removerá seus dados dos nossos servidores.
       </DialogDescription>
     </DialogHeader>
+    <DialogFooter>
+      <DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+      <Button>Confirmar</Button>
+    </DialogFooter>
   </DialogContent>
 </Dialog>
 ```
 
+O `DialogTrigger` e o `DialogClose` renderizam um `<button>` próprio. Para usar um `Button` da lib, passe-o pela prop `render` em vez de colocá-lo como filho.
+
 ## Exemplos
 
-### Botao de fechar personalizado
+### Botão de fechar personalizado
 
-Substitua o controle de fechar padrao pelo seu proprio botao.
+Substitua o controle de fechar padrão pelo seu próprio botão.
 
 <ComponentPreview name="dialog-close-button" />
 
-## Referencia da API
+### Sem botão de fechar
 
-Consulte a documentacao do [Radix UI](https://www.radix-ui.com/docs/primitives/components/dialog#api-reference) para mais informacoes.
+Use `showCloseButton={false}` no `DialogContent` para esconder o botão do canto superior direito.
+
+<ComponentPreview name="dialog-no-close-button" />
+
+### Conteúdo rolável
+
+Limite a altura do corpo com `max-h-*` e `overflow-y-auto` para conteúdos longos.
+
+<ComponentPreview name="dialog-scrollable-content" />
+
+### Rodapé fixo
+
+O rodapé fica visível enquanto o corpo rola.
+
+<ComponentPreview name="dialog-sticky-footer" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Dialog](https://base-ui.com/react/components/dialog).
+
+- `asChild` saiu do `DialogTrigger` e do `DialogClose`. Use `render`.
+- `onOpenChange` recebe `(open, eventDetails)`. Passar um `setState` direto continua funcionando.
+- O `DialogContent` agora é o `Dialog.Popup`: saem `onEscapeKeyDown`, `onPointerDownOutside`, `onInteractOutside`, `onOpenAutoFocus`, `onCloseAutoFocus` e `forceMount`; entram `initialFocus` e `finalFocus`. O fechamento por Esc ou clique fora se controla no `Dialog` (root).
+- Seletores `data-[state=open]` e `data-[state=closed]` viram `data-open` e `data-closed`.
+- A largura padrão caiu de `sm:max-w-lg` para `sm:max-w-sm`. Quem dependia da largura antiga passa `className="sm:max-w-lg"`.
+
+```tsx
+// v2
+<DialogTrigger asChild>
+  <Button variant="outline">Abrir</Button>
+</DialogTrigger>
+<DialogClose asChild>
+  <Button variant="outline">Cancelar</Button>
+</DialogClose>
+
+// v3
+<DialogTrigger render={<Button variant="outline" />}>Abrir</DialogTrigger>
+<DialogClose render={<Button variant="outline" />}>Cancelar</DialogClose>
+```
+
+## Referência da API
+
+### DialogContent
+
+| Prop              | Tipo      | Padrão |
+| ----------------- | --------- | ------ |
+| `showCloseButton` | `boolean` | `true` |
+
+### DialogFooter
+
+| Prop              | Tipo      | Padrão  |
+| ----------------- | --------- | ------- |
+| `showCloseButton` | `boolean` | `false` |
+
+Para as demais props, consulte a documentação do [Base UI Dialog](https://base-ui.com/react/components/dialog).

@@ -1,5 +1,8 @@
 # Componentes de Menu da Sidebar
 
+> Exemplos na **v3.x — Base UI**. Para repo **v2.x — Radix**, veja a seção
+> [v2.x — Radix](#v2x--radix) no fim (detecção de versão: Passo 0 do `SKILL.md` do building).
+
 ## Table of Contents
 
 - [Estrutura do Menu](#estrutura-do-menu)
@@ -10,6 +13,8 @@
 - [SidebarMenuSub](#sidebarmenusub)
 - [SidebarMenuSkeleton](#sidebarmenuskeleton)
 - [Padrões Comuns](#padrões-comuns)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Estrutura do Menu
 
@@ -34,11 +39,9 @@ Container para itens de menu. Usado dentro de `SidebarGroupContent`.
 <SidebarMenu>
   {items.map((item) => (
     <SidebarMenuItem key={item.title}>
-      <SidebarMenuButton asChild>
-        <a href={item.url}>
-          <item.icon />
-          <span>{item.title}</span>
-        </a>
+      <SidebarMenuButton render={<a href={item.url} />}>
+        <item.icon />
+        <span>{item.title}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>
   ))}
@@ -55,7 +58,7 @@ Botão principal do item de menu.
 
 | Prop | Tipo | Descrição |
 |------|------|-----------|
-| `asChild` | `boolean` | Renderiza como child (Link, a, etc) |
+| `render` (v3.x) / `asChild` (v2.x) | `ReactElement \| (props, state) => ReactElement` / `boolean` | Troca o elemento (Link, a, etc) |
 | `isActive` | `boolean` | Estado ativo |
 | `size` | `"default"`, `"sm"`, `"lg"` | Tamanho do botão |
 | `tooltip` | `string` | Tooltip quando colapsado |
@@ -66,11 +69,9 @@ Botão principal do item de menu.
 ```tsx
 import Link from "next/link";
 
-<SidebarMenuButton asChild>
-  <Link href="/dashboard">
-    <Home />
-    <span>Dashboard</span>
-  </Link>
+<SidebarMenuButton render={<Link href="/dashboard" />}>
+  <HouseIcon />
+  <span>Dashboard</span>
 </SidebarMenuButton>
 ```
 
@@ -79,22 +80,18 @@ import Link from "next/link";
 ```tsx
 const pathname = usePathname();
 
-<SidebarMenuButton asChild isActive={pathname === item.href}>
-  <Link href={item.href}>
-    <item.icon className="size-4" />
-    <span>{item.title}</span>
-  </Link>
+<SidebarMenuButton isActive={pathname === item.href} render={<Link href={item.href} />}>
+  <item.icon className="size-4" />
+  <span>{item.title}</span>
 </SidebarMenuButton>
 ```
 
 ### Com Tooltip (icon mode)
 
 ```tsx
-<SidebarMenuButton asChild tooltip={item.title}>
-  <Link href={item.href}>
-    <item.icon className="size-4" />
-    <span>{item.title}</span>
-  </Link>
+<SidebarMenuButton tooltip={item.title} render={<Link href={item.href} />}>
+  <item.icon className="size-4" />
+  <span>{item.title}</span>
 </SidebarMenuButton>
 ```
 
@@ -119,14 +116,12 @@ Ação secundária independente do botão principal.
 
 ```tsx
 <SidebarMenuItem>
-  <SidebarMenuButton asChild>
-    <a href="#">
-      <Home />
-      <span>Home</span>
-    </a>
+  <SidebarMenuButton render={<a href="#" />}>
+    <HouseIcon />
+    <span>Home</span>
   </SidebarMenuButton>
   <SidebarMenuAction>
-    <Plus /> <span className="sr-only">Add</span>
+    <PlusIcon /> <span className="sr-only">Add</span>
   </SidebarMenuAction>
 </SidebarMenuItem>
 ```
@@ -135,17 +130,13 @@ Ação secundária independente do botão principal.
 
 ```tsx
 <SidebarMenuItem>
-  <SidebarMenuButton asChild>
-    <a href="#">
-      <Folder />
-      <span>Project</span>
-    </a>
+  <SidebarMenuButton render={<a href="#" />}>
+    <FolderIcon />
+    <span>Project</span>
   </SidebarMenuButton>
   <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <SidebarMenuAction>
-        <MoreHorizontal />
-      </SidebarMenuAction>
+    <DropdownMenuTrigger render={<SidebarMenuAction />}>
+      <DotsThreeIcon />
     </DropdownMenuTrigger>
     <DropdownMenuContent side="right" align="start">
       <DropdownMenuItem>Edit Project</DropdownMenuItem>
@@ -161,7 +152,7 @@ Ação secundária independente do botão principal.
 <SidebarMenuAction
   className="peer-data-[active=true]/menu-button:opacity-100"
 >
-  <MoreHorizontal />
+  <DotsThreeIcon />
 </SidebarMenuAction>
 ```
 
@@ -174,7 +165,7 @@ Badge/contador ao lado do item.
 ```tsx
 <SidebarMenuItem>
   <SidebarMenuButton>
-    <Inbox />
+    <TrayIcon />
     <span>Inbox</span>
   </SidebarMenuButton>
   <SidebarMenuBadge>24</SidebarMenuBadge>
@@ -207,24 +198,18 @@ Submenu aninhado.
 <SidebarMenu>
   <Collapsible defaultOpen className="group/collapsible">
     <SidebarMenuItem>
-      <CollapsibleTrigger asChild>
-        <SidebarMenuButton>
-          <Settings />
-          <span>Settings</span>
-          <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-        </SidebarMenuButton>
+      <CollapsibleTrigger render={<SidebarMenuButton />}>
+        <GearIcon />
+        <span>Settings</span>
+        <CaretDownIcon className="ml-auto transition-transform group-data-open/collapsible:rotate-180" />
       </CollapsibleTrigger>
       <CollapsibleContent>
         <SidebarMenuSub>
           <SidebarMenuSubItem>
-            <SidebarMenuSubButton asChild>
-              <Link href="/settings/general">General</Link>
-            </SidebarMenuSubButton>
+            <SidebarMenuSubButton render={<Link href="/settings/general" />}>General</SidebarMenuSubButton>
           </SidebarMenuSubItem>
           <SidebarMenuSubItem>
-            <SidebarMenuSubButton asChild>
-              <Link href="/settings/security">Security</Link>
-            </SidebarMenuSubButton>
+            <SidebarMenuSubButton render={<Link href="/settings/security" />}>Security</SidebarMenuSubButton>
           </SidebarMenuSubItem>
         </SidebarMenuSub>
       </CollapsibleContent>
@@ -272,9 +257,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const items = [
-  { title: "Dashboard", href: "/dashboard", icon: Home },
-  { title: "Users", href: "/users", icon: Users },
-  { title: "Settings", href: "/settings", icon: Settings },
+  { title: "Dashboard", href: "/dashboard", icon: HouseIcon },
+  { title: "Users", href: "/users", icon: UsersIcon },
+  { title: "Settings", href: "/settings", icon: GearIcon },
 ];
 
 export function NavMain() {
@@ -287,11 +272,13 @@ export function NavMain() {
 
         return (
           <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-              <Link href={item.href}>
-                <item.icon className="size-4" />
-                <span>{item.title}</span>
-              </Link>
+            <SidebarMenuButton
+              isActive={isActive}
+              tooltip={item.title}
+              render={<Link href={item.href} />}
+            >
+              <item.icon className="size-4" />
+              <span>{item.title}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         );
@@ -312,8 +299,8 @@ interface NavItem {
 }
 
 const items: NavItem[] = [
-  { title: "Dashboard", href: "/dashboard", icon: Home },
-  { title: "Analytics", href: "/analytics", icon: BarChart, disabled: true },
+  { title: "Dashboard", href: "/dashboard", icon: HouseIcon },
+  { title: "Analytics", href: "/analytics", icon: ChartBarIcon, disabled: true },
 ];
 
 export function NavMain() {
@@ -341,11 +328,13 @@ export function NavMain() {
 
         return (
           <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton asChild isActive={isActive} tooltip={item.title}>
-              <Link href={item.href}>
-                <item.icon className="size-4" />
-                <span>{item.title}</span>
-              </Link>
+            <SidebarMenuButton
+              isActive={isActive}
+              tooltip={item.title}
+              render={<Link href={item.href} />}
+            >
+              <item.icon className="size-4" />
+              <span>{item.title}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         );
@@ -365,11 +354,9 @@ export function NavMain() {
       <SidebarMenu>
         {mainItems.map((item) => (
           <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton asChild>
-              <Link href={item.href}>
-                <item.icon />
-                <span>{item.title}</span>
-              </Link>
+            <SidebarMenuButton render={<Link href={item.href} />}>
+              <item.icon />
+              <span>{item.title}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
@@ -385,11 +372,9 @@ export function NavMain() {
       <SidebarMenu>
         {settingsItems.map((item) => (
           <SidebarMenuItem key={item.href}>
-            <SidebarMenuButton asChild>
-              <Link href={item.href}>
-                <item.icon />
-                <span>{item.title}</span>
-              </Link>
+            <SidebarMenuButton render={<Link href={item.href} />}>
+              <item.icon />
+              <span>{item.title}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
@@ -405,31 +390,27 @@ export function NavMain() {
 <SidebarMenu>
   {projects.map((project) => (
     <SidebarMenuItem key={project.id}>
-      <SidebarMenuButton asChild>
-        <Link href={`/projects/${project.id}`}>
-          <Folder />
-          <span>{project.name}</span>
-        </Link>
+      <SidebarMenuButton render={<Link href={`/projects/${project.id}`} />}>
+        <FolderIcon />
+        <span>{project.name}</span>
       </SidebarMenuButton>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <SidebarMenuAction showOnHover>
-            <MoreHorizontal />
-            <span className="sr-only">More</span>
-          </SidebarMenuAction>
+        <DropdownMenuTrigger render={<SidebarMenuAction showOnHover />}>
+          <DotsThreeIcon />
+          <span className="sr-only">More</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="right" align="start">
           <DropdownMenuItem>
-            <Pencil className="mr-2 size-4" />
+            <PencilIcon />
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Star className="mr-2 size-4" />
+            <StarIcon />
             Favorite
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive">
-            <Trash className="mr-2 size-4" />
+            <TrashIcon />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -438,3 +419,73 @@ export function NavMain() {
   ))}
 </SidebarMenu>
 ```
+
+---
+
+## v3.x — Base UI
+
+Os exemplos acima já estão na v3.x:
+
+- `render` em `SidebarMenuButton`/`SidebarMenuSubButton`/`SidebarMenuAction` e nos triggers
+  (`DropdownMenuTrigger render={<SidebarMenuAction />}`, `CollapsibleTrigger render={<SidebarMenuButton />}`).
+- Seta do submenu: `group-data-open/collapsible:` (a raiz do `Collapsible` emite `data-open`).
+- `SidebarMenuAction showOnHover` fica visível com o menu aberto via `aria-expanded`.
+- `DropdownMenuContent` posiciona com `align` default `"start"` e já usa `w-(--anchor-width)`.
+- Itens de dropdown: `onClick`; `closeOnClick={false}` mantém o menu aberto.
+- `tooltip` no `SidebarMenuButton`: o delay padrão é ~600ms (o `SidebarProvider` não traz
+  `TooltipProvider`); para abrir na hora, `<TooltipProvider delay={0}>` na raiz.
+
+## v2.x — Radix
+
+Mesmos padrões com `asChild`:
+
+```tsx
+{/* Como link */}
+<SidebarMenuButton asChild isActive={pathname === item.href} tooltip={item.title}>
+  <Link href={item.href}>
+    <item.icon />
+    <span>{item.title}</span>
+  </Link>
+</SidebarMenuButton>
+
+{/* Ação com dropdown */}
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <SidebarMenuAction showOnHover>
+      <DotsThree />
+      <span className="sr-only">More</span>
+    </SidebarMenuAction>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent side="right" align="start">
+    <DropdownMenuItem onSelect={() => edit(project)}>Edit</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+
+{/* Submenu collapsible */}
+<Collapsible defaultOpen className="group/collapsible">
+  <SidebarMenuItem>
+    <CollapsibleTrigger asChild>
+      <SidebarMenuButton>
+        <Gear />
+        <span>Settings</span>
+        <CaretDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+      </SidebarMenuButton>
+    </CollapsibleTrigger>
+    <CollapsibleContent>
+      <SidebarMenuSub>
+        <SidebarMenuSubItem>
+          <SidebarMenuSubButton asChild>
+            <Link href="/settings/general">General</Link>
+          </SidebarMenuSubButton>
+        </SidebarMenuSubItem>
+      </SidebarMenuSub>
+    </CollapsibleContent>
+  </SidebarMenuItem>
+</Collapsible>
+```
+
+- `DropdownMenuContent` com `align` default `"center"`; para casar a largura com o trigger use
+  `min-w-(--radix-dropdown-menu-trigger-width)`.
+- `SidebarMenuAction showOnHover` fica visível com o menu aberto via `data-[state=open]`.
+- O `SidebarProvider` já fornece `TooltipProvider delayDuration={0}`.
+

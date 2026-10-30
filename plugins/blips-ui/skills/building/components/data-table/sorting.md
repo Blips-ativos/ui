@@ -2,6 +2,10 @@
 
 Implementação de ordenação em data tables.
 
+> TanStack Table é igual nas duas versões da lib. Os exemplos usam a **v3.x — Base UI**
+> (`render`, `indeterminate`, `data-popup-open`, ícones `*Icon`); em repo **v2.x — Radix**,
+> aplique as trocas da seção [v2.x — Radix](#v2x--radix). Detecção de versão: Passo 0 do `SKILL.md` do building.
+
 ## Table of Contents
 
 - [Client-Side Sorting](#client-side-sorting)
@@ -15,6 +19,8 @@ Implementação de ordenação em data tables.
 - [Estado Inicial de Sorting](#estado-inicial-de-sorting)
 - [Desabilitar Sorting em Colunas Específicas](#desabilitar-sorting-em-colunas-específicas)
 - [Reset Sorting](#reset-sorting)
+- [v3.x — Base UI](#v3x--base-ui)
+- [v2.x — Radix](#v2x--radix)
 
 ## Client-Side Sorting
 
@@ -57,7 +63,7 @@ type SortingState = ColumnSort[];
 ```tsx
 // data-table-column-header.tsx
 import { Column } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, CaretUpDown } from "@phosphor-icons/react";
+import { ArrowDownIcon, ArrowUpIcon, CaretUpDownIcon } from "@phosphor-icons/react";
 import { Button } from "@blips/ui/components/button";
 
 interface DataTableColumnHeaderProps<TData, TValue> {
@@ -82,11 +88,11 @@ export function DataTableColumnHeader<TData, TValue>({
     >
       {title}
       {column.getIsSorted() === "desc" ? (
-        <ArrowDown className="ml-2 h-4 w-4" />
+        <ArrowDownIcon className="ml-2 h-4 w-4" />
       ) : column.getIsSorted() === "asc" ? (
-        <ArrowUp className="ml-2 h-4 w-4" />
+        <ArrowUpIcon className="ml-2 h-4 w-4" />
       ) : (
-        <CaretUpDown className="ml-2 h-4 w-4" />
+        <CaretUpDownIcon className="ml-2 h-4 w-4" />
       )}
     </Button>
   );
@@ -391,3 +397,13 @@ const table = useReactTable({
   Limpar ordenação
 </Button>
 ```
+
+## v3.x — Base UI
+
+- Cabeçalho com dropdown de ordenação: `DropdownMenuTrigger render={<Button … />}` e
+  `data-popup-open:bg-accent` para o estado aberto (ver `setup.md`).
+
+## v2.x — Radix
+
+- `DropdownMenuTrigger asChild` + `<Button className="data-[state=open]:bg-accent">` filho.
+- A lógica de `SortingState`, server-side e URL é igual nas duas versões.

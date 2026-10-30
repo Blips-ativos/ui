@@ -1,6 +1,6 @@
 import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 import rehypePrettyCode from "rehype-pretty-code";
-import { transformers } from "@/lib/highlight-code";
+import { CODE_THEMES, transformers } from "@/lib/highlight-code";
 
 export const docs = defineDocs({
   dir: "content/docs",
@@ -16,10 +16,7 @@ export default defineConfig({
       plugins.push([
         rehypePrettyCode,
         {
-          theme: {
-            dark: "github-dark",
-            light: "github-light-default",
-          },
+          theme: CODE_THEMES,
           transformers,
         },
       ]);

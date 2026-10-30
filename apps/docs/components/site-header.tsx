@@ -3,11 +3,12 @@
 import { Button } from "@blips/ui/components/button";
 import { SidebarTrigger } from "@blips/ui/components/sidebar";
 import { cn } from "@blips/ui/lib/utils";
-import { MagnifyingGlass } from "@phosphor-icons/react";
+import { MagnifyingGlassIcon } from "@phosphor-icons/react";
 import { useSearchContext } from "fumadocs-ui/contexts/search";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const NAV_ITEMS = [
@@ -20,12 +21,55 @@ const NAV_ITEMS = [
   { label: "Marca", href: "/docs/brand", match: "/docs/brand" },
 ];
 
-export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
+/** Se o header ainda está sobre a cena da hero (os primeiros 80% da tela). */
+function useOverFirstScreen(enabled: boolean) {
+  const [over, setOver] = useState(true);
+  useEffect(() => {
+    if (!enabled) return;
+    const update = () => {
+      const header = Number.parseFloat(
+        getComputedStyle(document.documentElement).fontSize
+      );
+      // A seção de componentes começa a 80% da altura da tela;
+      // --header-height = 3.5rem.
+      setOver(window.scrollY < window.innerHeight * 0.8 - header * 3.5);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [enabled]);
+  return over;
+}
+
+export function SiteHeader({
+  hasSidebar = true,
+  transparent = false,
+}: {
+  hasSidebar?: boolean;
+  /**
+   * Sem fundo, blur nem borda enquanto está sobre a primeira tela: a home
+   * deixa a cena do "b" aparecer atrás. Ao rolar para o conteúdo, volta ao
+   * fundo normal.
+   */
+  transparent?: boolean;
+}) {
   const { setOpenSearch } = useSearchContext();
   const pathname = usePathname();
+  const overHero = useOverFirstScreen(transparent);
 
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 h-(--header-height) border-b backdrop-blur">
+    <header
+      className={cn(
+        "sticky top-0 z-40 h-(--header-height) transition-colors duration-200",
+        transparent && overHero
+          ? "bg-transparent"
+          : "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      )}
+    >
       <div className="flex h-full items-center gap-2 px-4 lg:px-6">
         {/* gatilho da sidebar só existe quando há SidebarProvider (docs) */}
         {hasSidebar ? <SidebarTrigger className="lg:hidden" /> : null}
@@ -68,18 +112,18 @@ export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
               key={item.href}
               variant="ghost"
               size="sm"
-              asChild
-              className="px-2.5"
+              nativeButton={false}
+              render={
+                <Link
+                  href={item.href}
+                  data-active={pathname.startsWith(item.match)}
+                />
+              }
+              className={cn(
+                "px-2.5 text-foreground/70 transition-colors hover:text-foreground data-[active=true]:text-foreground data-[active=true]:font-medium"
+              )}
             >
-              <Link
-                href={item.href}
-                data-active={pathname.startsWith(item.match)}
-                className={cn(
-                  "text-foreground/70 transition-colors hover:text-foreground data-[active=true]:text-foreground data-[active=true]:font-medium"
-                )}
-              >
-                {item.label}
-              </Link>
+              {item.label}
             </Button>
           ))}
         </nav>
@@ -91,21 +135,28 @@ export function SiteHeader({ hasSidebar = true }: { hasSidebar?: boolean }) {
             onClick={() => setOpenSearch(true)}
             className="text-muted-foreground w-full justify-start gap-2 sm:w-56"
           >
-            <MagnifyingGlass className="size-4" />
+            <MagnifyingGlassIcon className="size-4" />
             <span className="flex-1 text-left">Buscar...</span>
             <kbd className="bg-muted pointer-events-none hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] sm:flex">
               ⌘K
             </kbd>
           </Button>
-          <Button variant="ghost" size="icon" className="size-8" asChild>
-            <a
-              href="https://github.com/Blips-ativos/ui"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="GitHub"
-            >
-              <GitHubIcon className="size-4" />
-            </a>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-8"
+            nativeButton={false}
+            render={
+              // biome-ignore lint/a11y/useAnchorContent: o conteúdo vem do children do Button
+              <a
+                href="https://github.com/Blips-ativos/ui"
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+              />
+            }
+          >
+            <GitHubIcon className="size-4" />
           </Button>
           <ThemeToggle />
         </div>

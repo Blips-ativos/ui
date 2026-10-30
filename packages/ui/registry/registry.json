@@ -7,10 +7,7 @@
       "name": "accordion",
       "type": "registry:ui",
       "description": "A vertically stacked set of interactive headings that each reveal a section of content.",
-      "dependencies": [
-        "@radix-ui/react-accordion",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/accordion.tsx",
@@ -22,9 +19,7 @@
       "name": "alert",
       "type": "registry:ui",
       "description": "Displays a callout for important information.",
-      "dependencies": [
-        "class-variance-authority"
-      ],
+      "dependencies": ["class-variance-authority"],
       "files": [
         {
           "path": "default/ui/alert.tsx",
@@ -36,12 +31,8 @@
       "name": "alert-dialog",
       "type": "registry:ui",
       "description": "A modal dialog that interrupts the user with important content and expects a response.",
-      "dependencies": [
-        "@radix-ui/react-alert-dialog"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["@base-ui/react"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "default/ui/alert-dialog.tsx",
@@ -53,9 +44,7 @@
       "name": "aspect-ratio",
       "type": "registry:ui",
       "description": "Displays content within a desired ratio.",
-      "dependencies": [
-        "@radix-ui/react-aspect-ratio"
-      ],
+      "dependencies": [],
       "files": [
         {
           "path": "default/ui/aspect-ratio.tsx",
@@ -64,12 +53,23 @@
       ]
     },
     {
+      "name": "attachment",
+      "type": "registry:ui",
+      "description": "Displays a file or media attachment with title, description and actions.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "default/ui/attachment.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["button"]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "description": "An image element with a fallback for representing the user.",
-      "dependencies": [
-        "@radix-ui/react-avatar"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/avatar.tsx",
@@ -81,9 +81,7 @@
       "name": "badge",
       "type": "registry:ui",
       "description": "Displays a badge or a component that looks like a badge.",
-      "dependencies": [
-        "class-variance-authority"
-      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
       "files": [
         {
           "path": "default/ui/badge.tsx",
@@ -95,10 +93,7 @@
       "name": "breadcrumb",
       "type": "registry:ui",
       "description": "Displays the path to the current resource using a hierarchy of links.",
-      "dependencies": [
-        "@radix-ui/react-slot",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/breadcrumb.tsx",
@@ -107,13 +102,22 @@
       ]
     },
     {
+      "name": "bubble",
+      "type": "registry:ui",
+      "description": "A chat bubble for conversation messages, with grouping and reactions.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "default/ui/bubble.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "description": "A button component with multiple variants and sizes.",
-      "dependencies": [
-        "@radix-ui/react-slot",
-        "class-variance-authority"
-      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
       "files": [
         {
           "path": "default/ui/button.tsx",
@@ -125,12 +129,8 @@
       "name": "button-group",
       "type": "registry:ui",
       "description": "Groups related buttons together.",
-      "dependencies": [
-        "@radix-ui/react-slot"
-      ],
-      "registryDependencies": [
-        "separator"
-      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "registryDependencies": ["separator"],
       "files": [
         {
           "path": "default/ui/button-group.tsx",
@@ -142,13 +142,8 @@
       "name": "calendar",
       "type": "registry:ui",
       "description": "A date field component that allows users to enter and edit date.",
-      "dependencies": [
-        "react-day-picker",
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["@phosphor-icons/react", "react-day-picker"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "default/ui/calendar.tsx",
@@ -172,13 +167,8 @@
       "name": "carousel",
       "type": "registry:ui",
       "description": "A carousel with motion and swipe built using Embla.",
-      "dependencies": [
-        "embla-carousel-react",
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["@phosphor-icons/react", "embla-carousel-react"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "default/ui/carousel.tsx",
@@ -190,9 +180,7 @@
       "name": "chart",
       "type": "registry:ui",
       "description": "Beautiful and responsive charts built with Recharts.",
-      "dependencies": [
-        "recharts"
-      ],
+      "dependencies": ["recharts@3.10.1"],
       "files": [
         {
           "path": "default/ui/chart.tsx",
@@ -204,10 +192,7 @@
       "name": "checkbox",
       "type": "registry:ui",
       "description": "A control that allows the user to toggle between checked and not checked.",
-      "dependencies": [
-        "@radix-ui/react-checkbox",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/checkbox.tsx",
@@ -219,9 +204,7 @@
       "name": "collapsible",
       "type": "registry:ui",
       "description": "An interactive component which expands/collapses a panel.",
-      "dependencies": [
-        "@radix-ui/react-collapsible"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/collapsible.tsx",
@@ -230,16 +213,24 @@
       ]
     },
     {
+      "name": "combobox",
+      "type": "registry:ui",
+      "description": "An input combined with a filterable list of options to pick from.",
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
+      "files": [
+        {
+          "path": "default/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["button", "input-group"]
+    },
+    {
       "name": "command",
       "type": "registry:ui",
       "description": "Fast, composable, unstyled command menu for React.",
-      "dependencies": [
-        "cmdk",
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "dialog"
-      ],
+      "dependencies": ["@phosphor-icons/react", "cmdk"],
+      "registryDependencies": ["dialog", "input-group"],
       "files": [
         {
           "path": "default/ui/command.tsx",
@@ -251,10 +242,7 @@
       "name": "context-menu",
       "type": "registry:ui",
       "description": "Displays a menu triggered by a right click.",
-      "dependencies": [
-        "@radix-ui/react-context-menu",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/context-menu.tsx",
@@ -266,13 +254,23 @@
       "name": "dialog",
       "type": "registry:ui",
       "description": "A window overlaid on the primary window, rendering the content underneath inert.",
-      "dependencies": [
-        "@radix-ui/react-dialog",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["button"]
+    },
+    {
+      "name": "direction",
+      "type": "registry:ui",
+      "description": "Provides the text direction (LTR or RTL) to the components below it.",
+      "dependencies": ["@base-ui/react"],
+      "files": [
+        {
+          "path": "default/ui/direction.tsx",
           "type": "registry:ui"
         }
       ]
@@ -281,9 +279,7 @@
       "name": "drawer",
       "type": "registry:ui",
       "description": "A drawer component for React, built on top of Vaul.",
-      "dependencies": [
-        "vaul"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/drawer.tsx",
@@ -295,10 +291,7 @@
       "name": "dropdown-menu",
       "type": "registry:ui",
       "description": "Displays a menu triggered by a button.",
-      "dependencies": [
-        "@radix-ui/react-dropdown-menu",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/dropdown-menu.tsx",
@@ -310,9 +303,7 @@
       "name": "empty",
       "type": "registry:ui",
       "description": "Use to display empty states, no results, or error states.",
-      "dependencies": [
-        "class-variance-authority"
-      ],
+      "dependencies": ["class-variance-authority"],
       "files": [
         {
           "path": "default/ui/empty.tsx",
@@ -324,13 +315,8 @@
       "name": "field",
       "type": "registry:ui",
       "description": "A composition primitive for accessible form fields, decoupled from any form library.",
-      "dependencies": [
-        "class-variance-authority"
-      ],
-      "registryDependencies": [
-        "label",
-        "separator"
-      ],
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["label", "separator"],
       "files": [
         {
           "path": "default/ui/field.tsx",
@@ -342,13 +328,8 @@
       "name": "form",
       "type": "registry:ui",
       "description": "Building forms with React Hook Form and Zod.",
-      "dependencies": [
-        "react-hook-form",
-        "@radix-ui/react-slot"
-      ],
-      "registryDependencies": [
-        "label"
-      ],
+      "dependencies": ["@base-ui/react", "react-hook-form"],
+      "registryDependencies": ["label"],
       "files": [
         {
           "path": "default/ui/form.tsx",
@@ -360,9 +341,7 @@
       "name": "hover-card",
       "type": "registry:ui",
       "description": "For sighted users to preview content available behind a link.",
-      "dependencies": [
-        "@radix-ui/react-hover-card"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/hover-card.tsx",
@@ -374,7 +353,7 @@
       "name": "input",
       "type": "registry:ui",
       "description": "An input component with consistent styling.",
-      "dependencies": [],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/input.tsx",
@@ -386,12 +365,8 @@
       "name": "input-group",
       "type": "registry:ui",
       "description": "Groups input elements with addons, buttons and text.",
-      "dependencies": [],
-      "registryDependencies": [
-        "button",
-        "input",
-        "textarea"
-      ],
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["button", "input", "textarea"],
       "files": [
         {
           "path": "default/ui/input-group.tsx",
@@ -403,16 +378,26 @@
       "name": "input-otp",
       "type": "registry:ui",
       "description": "Accessible one-time password component with copy paste functionality.",
-      "dependencies": [
-        "input-otp",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@phosphor-icons/react", "input-otp"],
       "files": [
         {
           "path": "default/ui/input-otp.tsx",
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "item",
+      "type": "registry:ui",
+      "description": "A flexible row for lists, with media, content and actions.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "default/ui/item.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["separator"]
     },
     {
       "name": "kbd",
@@ -430,10 +415,7 @@
       "name": "label",
       "type": "registry:ui",
       "description": "Renders an accessible label associated with controls.",
-      "dependencies": [
-        "@radix-ui/react-label",
-        "class-variance-authority"
-      ],
+      "dependencies": [],
       "files": [
         {
           "path": "default/ui/label.tsx",
@@ -442,16 +424,63 @@
       ]
     },
     {
+      "name": "marker",
+      "type": "registry:ui",
+      "description": "An inline marker that highlights a short piece of content with an icon.",
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "files": [
+        {
+          "path": "default/ui/marker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "menubar",
       "type": "registry:ui",
       "description": "A visually persistent menu common in desktop applications.",
-      "dependencies": [
-        "@radix-ui/react-menubar",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/menubar.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["dropdown-menu"]
+    },
+    {
+      "name": "message",
+      "type": "registry:ui",
+      "description": "Lays out a conversation message with avatar, header, content and footer.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "default/ui/message.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message-scroller",
+      "type": "registry:ui",
+      "description": "A scroll container for chat transcripts that sticks to the latest message.",
+      "dependencies": ["@phosphor-icons/react", "@shadcn/react"],
+      "files": [
+        {
+          "path": "default/ui/message-scroller.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["button"]
+    },
+    {
+      "name": "native-select",
+      "type": "registry:ui",
+      "description": "A styled native HTML select element.",
+      "dependencies": ["@phosphor-icons/react"],
+      "files": [
+        {
+          "path": "default/ui/native-select.tsx",
           "type": "registry:ui"
         }
       ]
@@ -461,9 +490,9 @@
       "type": "registry:ui",
       "description": "A collection of links for navigating websites.",
       "dependencies": [
-        "@radix-ui/react-navigation-menu",
-        "class-variance-authority",
-        "@phosphor-icons/react"
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "class-variance-authority"
       ],
       "files": [
         {
@@ -476,12 +505,8 @@
       "name": "pagination",
       "type": "registry:ui",
       "description": "Pagination with page navigation, next and previous links.",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
-      "registryDependencies": [
-        "button"
-      ],
+      "dependencies": ["@phosphor-icons/react"],
+      "registryDependencies": ["button"],
       "files": [
         {
           "path": "default/ui/pagination.tsx",
@@ -493,9 +518,7 @@
       "name": "popover",
       "type": "registry:ui",
       "description": "Displays rich content in a portal, triggered by a button.",
-      "dependencies": [
-        "@radix-ui/react-popover"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/popover.tsx",
@@ -507,9 +530,7 @@
       "name": "progress",
       "type": "registry:ui",
       "description": "Displays an indicator showing the completion progress of a task.",
-      "dependencies": [
-        "@radix-ui/react-progress"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/progress.tsx",
@@ -518,13 +539,23 @@
       ]
     },
     {
+      "name": "questionnaire",
+      "type": "registry:ui",
+      "description": "A step-by-step questionnaire with choices, inputs, progress and navigation.",
+      "dependencies": ["@phosphor-icons/react", "@shadcn/react"],
+      "files": [
+        {
+          "path": "default/ui/questionnaire.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["button"]
+    },
+    {
       "name": "radio-group",
       "type": "registry:ui",
       "description": "A set of checkable buttons where no more than one can be checked at a time.",
-      "dependencies": [
-        "@radix-ui/react-radio-group",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/radio-group.tsx",
@@ -536,10 +567,7 @@
       "name": "resizable",
       "type": "registry:ui",
       "description": "Accessible resizable panel groups and layouts with keyboard support.",
-      "dependencies": [
-        "react-resizable-panels",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["react-resizable-panels"],
       "files": [
         {
           "path": "default/ui/resizable.tsx",
@@ -551,9 +579,7 @@
       "name": "scroll-area",
       "type": "registry:ui",
       "description": "Augments native scroll functionality for custom, cross-browser styling.",
-      "dependencies": [
-        "@radix-ui/react-scroll-area"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/scroll-area.tsx",
@@ -565,10 +591,7 @@
       "name": "select",
       "type": "registry:ui",
       "description": "Displays a list of options for the user to pick from.",
-      "dependencies": [
-        "@radix-ui/react-select",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/select.tsx",
@@ -580,9 +603,7 @@
       "name": "separator",
       "type": "registry:ui",
       "description": "Visually or semantically separates content.",
-      "dependencies": [
-        "@radix-ui/react-separator"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/separator.tsx",
@@ -594,24 +615,23 @@
       "name": "sheet",
       "type": "registry:ui",
       "description": "Extends the Dialog component to display complementary content.",
-      "dependencies": [
-        "@radix-ui/react-dialog",
-        "class-variance-authority",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/sheet.tsx",
           "type": "registry:ui"
         }
-      ]
+      ],
+      "registryDependencies": ["button"]
     },
     {
       "name": "sidebar",
       "type": "registry:ui",
       "description": "A composable, themeable and customizable sidebar component.",
       "dependencies": [
-        "@phosphor-icons/react"
+        "@base-ui/react",
+        "@phosphor-icons/react",
+        "class-variance-authority"
       ],
       "registryDependencies": [
         "button",
@@ -619,7 +639,8 @@
         "separator",
         "sheet",
         "skeleton",
-        "tooltip"
+        "tooltip",
+        "use-mobile"
       ],
       "files": [
         {
@@ -644,9 +665,7 @@
       "name": "slider",
       "type": "registry:ui",
       "description": "An input where the user selects a value from within a given range.",
-      "dependencies": [
-        "@radix-ui/react-slider"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/slider.tsx",
@@ -658,11 +677,7 @@
       "name": "sonner",
       "type": "registry:ui",
       "description": "An opinionated toast component for React.",
-      "dependencies": [
-        "sonner",
-        "next-themes",
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@phosphor-icons/react", "next-themes", "sonner"],
       "files": [
         {
           "path": "default/ui/sonner.tsx",
@@ -674,9 +689,7 @@
       "name": "spinner",
       "type": "registry:ui",
       "description": "A loading spinner indicator.",
-      "dependencies": [
-        "@phosphor-icons/react"
-      ],
+      "dependencies": ["@phosphor-icons/react"],
       "files": [
         {
           "path": "default/ui/spinner.tsx",
@@ -688,9 +701,7 @@
       "name": "switch",
       "type": "registry:ui",
       "description": "A control that allows the user to toggle between checked and not checked state.",
-      "dependencies": [
-        "@radix-ui/react-switch"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/switch.tsx",
@@ -714,9 +725,7 @@
       "name": "tabs",
       "type": "registry:ui",
       "description": "A set of layered sections of content displayed one at a time.",
-      "dependencies": [
-        "@radix-ui/react-tabs"
-      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
       "files": [
         {
           "path": "default/ui/tabs.tsx",
@@ -737,13 +746,23 @@
       ]
     },
     {
+      "name": "toast",
+      "type": "registry:ui",
+      "description": "A succinct, temporary message shown in a stack of notifications.",
+      "dependencies": ["@base-ui/react", "@phosphor-icons/react"],
+      "files": [
+        {
+          "path": "default/ui/toast.tsx",
+          "type": "registry:ui"
+        }
+      ],
+      "registryDependencies": ["button"]
+    },
+    {
       "name": "toggle",
       "type": "registry:ui",
       "description": "A two-state button that can be either on or off.",
-      "dependencies": [
-        "@radix-ui/react-toggle",
-        "class-variance-authority"
-      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
       "files": [
         {
           "path": "default/ui/toggle.tsx",
@@ -755,12 +774,8 @@
       "name": "toggle-group",
       "type": "registry:ui",
       "description": "A set of two-state buttons that can be toggled on or off.",
-      "dependencies": [
-        "@radix-ui/react-toggle-group"
-      ],
-      "registryDependencies": [
-        "toggle"
-      ],
+      "dependencies": ["@base-ui/react", "class-variance-authority"],
+      "registryDependencies": ["toggle"],
       "files": [
         {
           "path": "default/ui/toggle-group.tsx",
@@ -772,13 +787,23 @@
       "name": "tooltip",
       "type": "registry:ui",
       "description": "A popup that displays information related to an element on hover or focus.",
-      "dependencies": [
-        "@radix-ui/react-tooltip"
-      ],
+      "dependencies": ["@base-ui/react"],
       "files": [
         {
           "path": "default/ui/tooltip.tsx",
           "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "description": "A hook that reports whether the viewport is below the mobile breakpoint.",
+      "dependencies": [],
+      "files": [
+        {
+          "path": "default/hooks/use-mobile.tsx",
+          "type": "registry:hook"
         }
       ]
     }

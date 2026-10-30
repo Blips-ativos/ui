@@ -1,7 +1,9 @@
 "use client";
+
 import { Button } from "@blips/ui/components/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -9,47 +11,42 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@blips/ui/components/dialog";
+import { Field, FieldGroup, FieldLabel } from "@blips/ui/components/field";
 import { Input } from "@blips/ui/components/input";
-import { Label } from "@blips/ui/components/label";
+
 export default function DialogDemo() {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
-          <DialogDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Name
-            </Label>
-            <Input
-              id="name"
-              defaultValue="Pedro Duarte"
-              className="col-span-3"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="username" className="text-right">
-              Username
-            </Label>
-            <Input
-              id="username"
-              defaultValue="@peduarte"
-              className="col-span-3"
-            />
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
-      </DialogContent>
+      <form>
+        <DialogTrigger render={<Button variant="outline" />}>
+          Editar perfil
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar perfil</DialogTitle>
+            <DialogDescription>
+              Altere os dados do seu perfil aqui. Clique em salvar quando
+              terminar.
+            </DialogDescription>
+          </DialogHeader>
+          <FieldGroup>
+            <Field>
+              <FieldLabel htmlFor="name-1">Nome</FieldLabel>
+              <Input id="name-1" name="name" defaultValue="Pedro Duarte" />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="username-1">Usuário</FieldLabel>
+              <Input id="username-1" name="username" defaultValue="@peduarte" />
+            </Field>
+          </FieldGroup>
+          <DialogFooter>
+            <DialogClose render={<Button variant="outline" />}>
+              Cancelar
+            </DialogClose>
+            <Button type="submit">Salvar alterações</Button>
+          </DialogFooter>
+        </DialogContent>
+      </form>
     </Dialog>
   );
 }

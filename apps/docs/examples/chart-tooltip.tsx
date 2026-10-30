@@ -3,14 +3,15 @@
 import { cn } from "@blips/ui/lib/utils";
 import type * as React from "react";
 
-export function ChartTooltipDemo() {
+export default function ChartTooltipDemo() {
   return (
     <div className="grid aspect-video w-full max-w-md justify-center text-foreground md:grid-cols-2 [&>div]:relative [&>div]:flex [&>div]:h-[137px] [&>div]:w-[224px] [&>div]:items-center [&>div]:justify-center [&>div]:p-4">
       <div>
         <div className="absolute top-[45px] left-[-35px] z-10 text-sm font-medium">
-          Label
+          Rótulo
         </div>
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 193 40"
           width="50"
@@ -31,19 +32,20 @@ export function ChartTooltipDemo() {
           </defs>
         </svg>
         <TooltipDemo
-          label="Page Views"
+          label="Visualizações"
           payload={[
             { name: "Desktop", value: 186, fill: "var(--chart-1)" },
             { name: "Mobile", value: 80, fill: "var(--chart-2)" },
           ]}
-          className="w-[8rem]"
+          className="w-32"
         />
       </div>
       <div className="items-end">
         <div className="absolute top-[0px] left-[122px] z-10 text-sm font-medium">
-          Name
+          Nome
         </div>
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="35"
           height="42"
@@ -64,36 +66,37 @@ export function ChartTooltipDemo() {
           </defs>
         </svg>
         <TooltipDemo
-          label="Browser"
+          label="Navegador"
           hideLabel
           payload={[
             { name: "Chrome", value: 1286, fill: "var(--chart-3)" },
             { name: "Firefox", value: 1000, fill: "var(--chart-4)" },
           ]}
           indicator="dashed"
-          className="w-[8rem]"
+          className="w-32"
         />
       </div>
       <div className="hidden! md:flex!">
         <TooltipDemo
-          label="Page Views"
+          label="Visualizações"
           payload={[{ name: "Desktop", value: 12486, fill: "var(--chart-3)" }]}
-          className="w-[9rem]"
+          className="w-36"
           indicator="line"
         />
       </div>
       <div className="items-start! justify-start!">
         <div className="absolute top-[60px] left-[50px] z-10 text-sm font-medium">
-          Indicator
+          Indicador
         </div>
         <TooltipDemo
-          label="Browser"
+          label="Navegador"
           hideLabel
           payload={[{ name: "Chrome", value: 1286, fill: "var(--chart-1)" }]}
           indicator="dot"
-          className="w-[8rem]"
+          className="w-32"
         />
         <svg
+          aria-hidden="true"
           xmlns="http://www.w3.org/2000/svg"
           width="15"
           height="34"
@@ -151,59 +154,57 @@ function TooltipDemo({
   return (
     <div
       className={cn(
-        "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl transition-all ease-in-out hover:-translate-y-0.5",
+        "grid min-w-32 items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs/relaxed shadow-xl transition-all ease-in-out hover:-translate-y-0.5",
         className
       )}
     >
       {!nestLabel ? tooltipLabel : null}
       <div className="grid gap-1.5">
-        {payload.map((item, index) => {
+        {payload.map((item) => {
           const indicatorColor = item.fill;
 
           return (
             <div
-              key={index}
+              key={item.name}
               className={cn(
                 "flex w-full items-stretch gap-2 [&>svg]:h-2.5 [&>svg]:w-2.5 [&>svg]:text-muted-foreground",
                 indicator === "dot" && "items-center"
               )}
             >
-              <>
-                {!hideIndicator && (
-                  <div
-                    className={cn(
-                      "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
-                      {
-                        "h-2.5 w-2.5": indicator === "dot",
-                        "w-1": indicator === "line",
-                        "w-0 border-[1.5px] border-dashed bg-transparent":
-                          indicator === "dashed",
-                        "my-0.5": nestLabel && indicator === "dashed",
-                      }
-                    )}
-                    style={
-                      {
-                        "--color-bg": indicatorColor,
-                        "--color-border": indicatorColor,
-                      } as React.CSSProperties
-                    }
-                  />
-                )}
+              {!hideIndicator && (
                 <div
                   className={cn(
-                    "flex flex-1 justify-between leading-none",
-                    nestLabel ? "items-end" : "items-center"
+                    "shrink-0 rounded-[2px] border-(--color-border) bg-(--color-bg)",
+                    {
+                      "h-2.5 w-2.5": indicator === "dot",
+                      "w-1": indicator === "line",
+                      "w-0 border-[1.5px] border-dashed bg-transparent":
+                        indicator === "dashed",
+                      "my-0.5": nestLabel && indicator === "dashed",
+                    }
                   )}
-                >
-                  <div className="grid gap-1.5">
-                    {nestLabel ? tooltipLabel : null}
-                    <span className="text-muted-foreground">{item.name}</span>
-                  </div>
-                  <span className="font-mono font-medium text-foreground tabular-nums">
-                    {item.value.toLocaleString()}
-                  </span>
+                  style={
+                    {
+                      "--color-bg": indicatorColor,
+                      "--color-border": indicatorColor,
+                    } as React.CSSProperties
+                  }
+                />
+              )}
+              <div
+                className={cn(
+                  "flex flex-1 justify-between leading-none",
+                  nestLabel ? "items-end" : "items-center"
+                )}
+              >
+                <div className="grid gap-1.5">
+                  {nestLabel ? tooltipLabel : null}
+                  <span className="text-muted-foreground">{item.name}</span>
                 </div>
-              </>
+                <span className="font-mono font-medium text-foreground tabular-nums">
+                  {item.value.toLocaleString("pt-BR")}
+                </span>
+              </div>
             </div>
           );
         })}

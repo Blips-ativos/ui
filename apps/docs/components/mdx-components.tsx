@@ -16,9 +16,12 @@ import { ComponentPreview } from "@/components/component-preview";
 import { CopyButton } from "@/components/copy-button";
 
 /**
- * Mapa de componentes MDX no padrão shadcn/ui: a tipografia é estilizada
- * elemento a elemento com utilitárias do Tailwind (sem `prose`/Typography),
- * o que evita conflitos como o pill de `code` vazando para o bloco de código.
+ * Mapa de componentes MDX. A tipografia vem do shadcn/typeset: a página envolve
+ * o MDX em `.typeset.typeset-docs` e os elementos saem sem classes. Aqui só
+ * fica comportamento — âncora dos títulos, tabela rolável, blocos de código —
+ * e os componentes embutidos. Componentes da @blips/ui têm `data-slot` e ficam
+ * fora do typeset sozinhos; os blocos do rehype-pretty-code saem com
+ * `data-not-typeset` para manter a própria moldura.
  */
 
 function getNodeText(node: React.ReactNode): string {
@@ -69,163 +72,58 @@ function HeadingAnchor({
 }
 
 export const mdxComponents = {
-  h1: ({ className, children, id, ...props }: React.ComponentProps<"h1">) => {
+  h1: ({ children, id, ...props }: React.ComponentProps<"h1">) => {
     const headingId = id ?? getHeadingId(children);
     return (
-      <h1
-        id={headingId}
-        className={cn(
-          "font-display mt-2 scroll-m-28 text-3xl font-bold tracking-tight",
-          className
-        )}
-        {...props}
-      >
+      <h1 id={headingId} {...props}>
         <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
       </h1>
     );
   },
-  h2: ({ className, children, id, ...props }: React.ComponentProps<"h2">) => {
+  h2: ({ children, id, ...props }: React.ComponentProps<"h2">) => {
     const headingId = id ?? getHeadingId(children);
     return (
-      <h2
-        id={headingId}
-        className={cn(
-          "font-display mt-10 scroll-m-28 text-xl font-medium tracking-tight first:mt-0 lg:mt-12 [&+h3]:mt-6! [&+p]:mt-4!",
-          className
-        )}
-        {...props}
-      >
+      <h2 id={headingId} {...props}>
         <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
       </h2>
     );
   },
-  h3: ({ className, children, id, ...props }: React.ComponentProps<"h3">) => {
+  h3: ({ children, id, ...props }: React.ComponentProps<"h3">) => {
     const headingId = id ?? getHeadingId(children);
     return (
-      <h3
-        id={headingId}
-        className={cn(
-          "font-display mt-12 scroll-m-28 text-lg font-medium tracking-tight [&+p]:mt-4!",
-          className
-        )}
-        {...props}
-      >
+      <h3 id={headingId} {...props}>
         <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
       </h3>
     );
   },
-  h4: ({ className, children, id, ...props }: React.ComponentProps<"h4">) => {
+  h4: ({ children, id, ...props }: React.ComponentProps<"h4">) => {
     const headingId = id ?? getHeadingId(children);
     return (
-      <h4
-        id={headingId}
-        className={cn(
-          "font-display mt-8 scroll-m-28 text-base font-medium tracking-tight",
-          className
-        )}
-        {...props}
-      >
+      <h4 id={headingId} {...props}>
         <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
       </h4>
     );
   },
-  h5: ({ className, children, id, ...props }: React.ComponentProps<"h5">) => {
+  h5: ({ children, id, ...props }: React.ComponentProps<"h5">) => {
     const headingId = id ?? getHeadingId(children);
     return (
-      <h5
-        id={headingId}
-        className={cn(
-          "mt-8 scroll-m-28 text-base font-medium tracking-tight",
-          className
-        )}
-        {...props}
-      >
+      <h5 id={headingId} {...props}>
         <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
       </h5>
     );
   },
-  h6: ({ className, children, id, ...props }: React.ComponentProps<"h6">) => {
+  h6: ({ children, id, ...props }: React.ComponentProps<"h6">) => {
     const headingId = id ?? getHeadingId(children);
     return (
-      <h6
-        id={headingId}
-        className={cn(
-          "mt-8 scroll-m-28 text-base font-medium tracking-tight",
-          className
-        )}
-        {...props}
-      >
+      <h6 id={headingId} {...props}>
         <HeadingAnchor id={headingId}>{children}</HeadingAnchor>
       </h6>
     );
   },
-  a: ({ className, ...props }: React.ComponentProps<"a">) => (
-    <a
-      className={cn("font-medium underline underline-offset-4", className)}
-      {...props}
-    />
-  ),
-  p: ({ className, ...props }: React.ComponentProps<"p">) => (
-    <p
-      className={cn("leading-relaxed [&:not(:first-child)]:mt-6", className)}
-      {...props}
-    />
-  ),
-  strong: ({ className, ...props }: React.ComponentProps<"strong">) => (
-    <strong className={cn("font-medium", className)} {...props} />
-  ),
-  ul: ({ className, ...props }: React.ComponentProps<"ul">) => (
-    <ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
-  ),
-  ol: ({ className, ...props }: React.ComponentProps<"ol">) => (
-    <ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
-  ),
-  li: ({ className, ...props }: React.ComponentProps<"li">) => (
-    <li className={cn("mt-2", className)} {...props} />
-  ),
-  blockquote: ({ className, ...props }: React.ComponentProps<"blockquote">) => (
-    <blockquote
-      className={cn("mt-6 border-l-2 pl-6 italic", className)}
-      {...props}
-    />
-  ),
-  img: ({ className, alt, ...props }: React.ComponentProps<"img">) => (
-    <img className={cn("rounded-md", className)} alt={alt} {...props} />
-  ),
-  hr: (props: React.ComponentProps<"hr">) => (
-    <hr className="my-4 md:my-8" {...props} />
-  ),
-  table: ({ className, ...props }: React.ComponentProps<"table">) => (
-    <div className="no-scrollbar my-6 w-full overflow-y-auto rounded-xl border">
-      <table
-        className={cn(
-          "relative w-full overflow-hidden border-none text-sm [&_tbody_tr:last-child]:border-b-0",
-          className
-        )}
-        {...props}
-      />
+  table: (props: React.ComponentProps<"table">) => (
+    <div className="typeset-scroll">
+      <table {...props} />
     </div>
-  ),
-  tr: ({ className, ...props }: React.ComponentProps<"tr">) => (
-    <tr className={cn("m-0 border-b", className)} {...props} />
-  ),
-  th: ({ className, ...props }: React.ComponentProps<"th">) => (
-    <th
-      className={cn(
-        "px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
-        className
-      )}
-      {...props}
-    />
-  ),
-  td: ({ className, ...props }: React.ComponentProps<"td">) => (
-    <td
-      className={cn(
-        "px-4 py-2 text-left whitespace-nowrap [&[align=center]]:text-center [&[align=right]]:text-right",
-        className
-      )}
-      {...props}
-    />
   ),
   pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => (
     <pre
@@ -239,7 +137,14 @@ export const mdxComponents = {
     </pre>
   ),
   figure: ({ className, ...props }: React.ComponentProps<"figure">) => (
-    <figure className={cn(className)} {...props} />
+    <figure
+      // Bloco de código: moldura própria (globals.css), fora do typeset.
+      data-not-typeset={
+        "data-rehype-pretty-code-figure" in props ? "" : undefined
+      }
+      className={cn(className)}
+      {...props}
+    />
   ),
   figcaption: ({ className, ...props }: React.ComponentProps<"figcaption">) => (
     <figcaption
@@ -251,7 +156,6 @@ export const mdxComponents = {
     />
   ),
   code: ({
-    className,
     __raw__,
     __npm__,
     __yarn__,
@@ -265,19 +169,6 @@ export const mdxComponents = {
     __pnpm__?: string;
     __bun__?: string;
   }) => {
-    // Código inline
-    if (typeof props.children === "string") {
-      return (
-        <code
-          className={cn(
-            "bg-muted relative rounded-md px-[0.3rem] py-[0.2rem] font-mono text-[0.8rem] break-words outline-none",
-            className
-          )}
-          {...props}
-        />
-      );
-    }
-
     // Bloco de comando de gerenciador de pacotes → abas
     if (__npm__ && __yarn__ && __pnpm__ && __bun__) {
       return (
@@ -290,23 +181,15 @@ export const mdxComponents = {
       );
     }
 
-    // Bloco de código padrão com botão de copiar
+    // Código inline (estilizado pelo typeset) ou bloco com botão de copiar
     return (
       <>
         {__raw__ && <CopyButton value={__raw__} />}
-        <code className={className} {...props} />
+        <code {...props} />
       </>
     );
   },
-  Step: ({ className, ...props }: React.ComponentProps<"h3">) => (
-    <h3
-      className={cn(
-        "font-display mt-8 scroll-m-32 text-lg font-medium tracking-tight",
-        className
-      )}
-      {...props}
-    />
-  ),
+  Step: (props: React.ComponentProps<"h3">) => <h3 {...props} />,
   Steps: ({ className, ...props }: React.ComponentProps<"div">) => (
     <div
       className={cn(
@@ -318,14 +201,12 @@ export const mdxComponents = {
   ),
   Image: ({
     src,
-    className,
     width,
     height,
     alt,
     ...props
   }: React.ComponentProps<"img">) => (
     <Image
-      className={cn("mt-6 rounded-md border", className)}
       src={(src as string) || ""}
       width={Number(width)}
       height={Number(height)}
@@ -354,7 +235,7 @@ export const mdxComponents = {
   }: React.ComponentProps<typeof TabsTrigger>) => (
     <TabsTrigger
       className={cn(
-        "text-muted-foreground hover:text-primary data-[state=active]:border-primary data-[state=active]:text-foreground rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 pb-3 text-base data-[state=active]:bg-transparent data-[state=active]:shadow-none!",
+        "text-muted-foreground hover:text-primary data-active:border-primary data-active:text-foreground rounded-none border-0 border-b-2 border-transparent bg-transparent px-0 pb-3 text-base data-active:bg-transparent data-active:shadow-none!",
         className
       )}
       {...props}
@@ -372,12 +253,7 @@ export const mdxComponents = {
       {...props}
     />
   ),
-  Link: ({ className, ...props }: React.ComponentProps<typeof Link>) => (
-    <Link
-      className={cn("font-medium underline underline-offset-4", className)}
-      {...props}
-    />
-  ),
+  Link,
   ComponentPreview,
   Kbd,
   ColorTokens,

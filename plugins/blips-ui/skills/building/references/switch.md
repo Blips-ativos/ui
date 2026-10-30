@@ -2,173 +2,91 @@
 
 Import: `@blips/ui/components/switch`
 
-## Sub-components
+Liga/desliga com efeito imediato (preferência, recurso ativo). Para aceite que só
+vale ao enviar o formulário, prefira Checkbox.
 
-- **`Switch`** - A toggle switch built on `@radix-ui/react-switch`. Renders as a pill-shaped track with a sliding thumb circle.
+Export (igual nas duas versões): `Switch`.
 
-## Props & Variants
+## Notas comuns
 
-### Switch Props
+- Prop da lib `size`: `"default"` (padrão) ou `"sm"`, exposta como `data-size`.
+- Props de estado: `checked`, `defaultChecked`, `onCheckedChange`, `disabled`, `required`, `name`, `value`.
+- Sempre com rótulo: `Label htmlFor` ou `FieldLabel` envolvendo um `Field orientation="horizontal"`.
+- Em react-hook-form: `checked={field.value}` + `onCheckedChange={field.onChange}` (não espalhe `{...field}`).
 
-Extends `React.ComponentPropsWithoutRef<typeof SwitchPrimitives.Root>`.
+> A API difere entre as versões. Detecte a versão no `package.json` (ver `SKILL.md`, Passo 0) e leia só a seção correspondente. Diferenças transversais em `v2-vs-v3.md`.
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `checked` | `boolean` | `undefined` | Controlled checked state |
-| `defaultChecked` | `boolean` | `false` | Uncontrolled default checked state |
-| `onCheckedChange` | `(checked: boolean) => void` | `undefined` | Callback when checked state changes |
-| `disabled` | `boolean` | `false` | Disables the switch |
-| `required` | `boolean` | `false` | Marks as required in forms |
-| `name` | `string` | `undefined` | Name for form submission |
-| `value` | `string` | `'on'` | Value for form submission |
-| `id` | `string` | `undefined` | HTML id (use with Label's `htmlFor`) |
-| `className` | `string` | `undefined` | Additional CSS classes |
+## v3.x — Base UI
 
-### Visual States
+Primitiva: `@base-ui/react/switch` (`Switch.Root` + `Switch.Thumb`).
 
-| State | Track Color | Thumb Position |
-|-------|-------------|----------------|
-| Unchecked | `bg-input` | `translate-x-0` (left) |
-| Checked | `bg-primary` | `translate-x-5` (right) |
-| Disabled | `opacity-50`, `cursor-not-allowed` | - |
-| Focused | `ring-2 ring-ring ring-offset-2` | - |
+| Prop | Tipo | Notas |
+|---|---|---|
+| `checked` / `defaultChecked` | `boolean` | |
+| `onCheckedChange` | `(checked: boolean, eventDetails) => void` | Ganhou o 2º argumento; `field.onChange` direto continua funcionando. |
+| `uncheckedValue` | `string` | Valor enviado no form quando desligado. |
+| `readOnly`, `inputRef`, `render` | | Base UI. Sem `asChild`. |
+| `size` | `"sm" \| "default"` | default 28×16.6px (thumb `size-3.5`); sm 24×14px. |
 
-### Dimensions
+- A raiz é um `<span role="switch">` com um `<input>` escondido (não é mais `<button>`).
+- Estado: `data-checked` / `data-unchecked`, `data-disabled`. Erro por `aria-invalid` (anel `destructive`).
 
-- Track: `h-6 w-11` (24px x 44px)
-- Thumb: `h-5 w-5` (20px x 20px)
+```tsx
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@blips/ui/components/field";
+import { Switch } from "@blips/ui/components/switch";
 
-## Usage
+export function ModoFoco() {
+  const [ativo, setAtivo] = React.useState(false);
 
-### Basic Switch with Label
+  return (
+    <FieldLabel htmlFor="modo-foco" className="max-w-sm">
+      <Field orientation="horizontal">
+        <FieldContent>
+          <FieldTitle>Compartilhar entre dispositivos</FieldTitle>
+          <FieldDescription>O modo foco desliga quando você sai do app.</FieldDescription>
+        </FieldContent>
+        <Switch id="modo-foco" checked={ativo} onCheckedChange={setAtivo} />
+      </Field>
+    </FieldLabel>
+  );
+}
+```
+
+### Armadilhas
+
+- `data-[state=checked]:` não casa: use `data-checked:` (ou `group-has-data-checked:`).
+- Testes que procuram `button[role=switch]` quebram: o elemento é `span[role=switch]`.
+
+## v2.x — Radix
+
+Primitiva: `@radix-ui/react-switch`. `onCheckedChange(checked: boolean)`, `asChild`.
+Raiz é um `<button role="switch">`. Tamanho default `h-[1.15rem] w-8` (thumb
+`size-4`), sm `h-3.5 w-6`.
+
+Estado: `data-state="checked" | "unchecked"`, `disabled:` (atributo nativo).
 
 ```tsx
 import { Label } from "@blips/ui/components/label"
 import { Switch } from "@blips/ui/components/switch"
 
-export default function SwitchDemo() {
+export function ModoAviao() {
+  const [ativo, setAtivo] = React.useState(false)
+
   return (
-    <div className="flex items-center space-x-2">
-      <Switch id="airplane-mode" />
-      <Label htmlFor="airplane-mode">Airplane Mode</Label>
+    <div className="flex items-center gap-2">
+      <Switch id="modo-aviao" checked={ativo} onCheckedChange={setAtivo} />
+      <Label htmlFor="modo-aviao">Modo avião</Label>
     </div>
   )
 }
 ```
 
-### With React Hook Form
+## Exemplos na docs
 
-```tsx
-"use client"
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { toast } from "sonner"
-import * as z from "zod"
-
-import { Button } from "@blips/ui/components/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@blips/ui/components/card"
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@blips/ui/components/field"
-import { Switch } from "@blips/ui/components/switch"
-
-const formSchema = z.object({
-  twoFactor: z.boolean().refine((val) => val === true, {
-    message: "It is highly recommended to enable two-factor authentication.",
-  }),
-})
-
-export default function FormRhfSwitch() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      twoFactor: false,
-    },
-  })
-
-  function onSubmit(data: z.infer<typeof formSchema>) {
-    toast("You submitted the following values:", {
-      description: (
-        <pre className="mt-2 w-[320px] overflow-x-auto rounded-md bg-code p-4 text-code-foreground">
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    })
-  }
-
-  return (
-    <Card className="w-full sm:max-w-md">
-      <CardHeader>
-        <CardTitle>Security Settings</CardTitle>
-        <CardDescription>
-          Manage your account security preferences.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form id="form-rhf-switch" onSubmit={form.handleSubmit(onSubmit)}>
-          <FieldGroup>
-            <Controller
-              name="twoFactor"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field
-                  orientation="horizontal"
-                  data-invalid={fieldState.invalid}
-                >
-                  <FieldContent>
-                    <FieldLabel htmlFor="form-rhf-switch-twoFactor">
-                      Multi-factor authentication
-                    </FieldLabel>
-                    <FieldDescription>
-                      Enable multi-factor authentication to secure your account.
-                    </FieldDescription>
-                    {fieldState.invalid && (
-                      <FieldError errors={[fieldState.error]} />
-                    )}
-                  </FieldContent>
-                  <Switch
-                    id="form-rhf-switch-twoFactor"
-                    name={field.name}
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    aria-invalid={fieldState.invalid}
-                  />
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Field orientation="horizontal">
-          <Button type="button" variant="outline" onClick={() => form.reset()}>
-            Reset
-          </Button>
-          <Button type="submit" form="form-rhf-switch">
-            Save
-          </Button>
-        </Field>
-      </CardFooter>
-    </Card>
-  )
-}
-```
-
-## All Examples
-
-- `switch-demo` - Basic switch with label
-- `form-rhf-switch` - Switch in a React Hook Form with Zod validation
-- `form-tanstack-switch` - Switch in a TanStack Form with Zod validation
+`switch-demo`, `switch-description`, `switch-disabled`, `switch-invalid`, `switch-sizes` (em `apps/docs/examples/`, escritos para a v3). Formulário com Switch: veja `form.md` e `field.md`.

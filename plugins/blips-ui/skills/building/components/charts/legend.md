@@ -2,6 +2,9 @@
 
 Customizacao de legendas em charts.
 
+API igual na v2.x e na v3.x para os usos deste guia; o tipo das props muda com o recharts —
+ver [v3.x — Base UI](#v3x--base-ui) e [v2.x — Radix](#v2x--radix).
+
 ## Uso Basico
 
 ```tsx
@@ -17,25 +20,27 @@ import { ChartLegend, ChartLegendContent } from "@blips/ui/components/chart"
 | Prop | Tipo | Descricao |
 |------|------|-----------|
 | `nameKey` | string | Config/data key para os nomes |
-| `verticalAlign` | `top` \| `bottom` | Posicao vertical |
-| `align` | `left` \| `center` \| `right` | Alinhamento horizontal |
+| `hideIcon` | boolean | Oculta o ícone do `chartConfig` |
+| `verticalAlign` | `top` \| `bottom` | Ajusta o espaçamento (default `bottom`); a posição vem do `ChartLegend` |
+
+`align`/`verticalAlign` de posição vão no `ChartLegend` (é o `Legend` do recharts).
 
 ---
 
 ## Posicionamento
 
-### Topo (padrao)
+### Inferior (padrao do recharts)
 
 ```tsx
 <ChartLegend content={<ChartLegendContent />} />
 ```
 
-### Inferior
+### Topo
 
 ```tsx
 <ChartLegend
-  verticalAlign="bottom"
-  content={<ChartLegendContent />}
+  verticalAlign="top"
+  content={<ChartLegendContent verticalAlign="top" />}
 />
 ```
 
@@ -188,6 +193,38 @@ export function RevenueChart() {
     </ChartContainer>
   )
 }
+```
+
+---
+
+## v3.x — Base UI
+
+`ChartLegendContent` recebe `DefaultLegendContentProps` do recharts 3 (além de `hideIcon` e
+`nameKey`). Legenda própria: tipe com `DefaultLegendContentProps` de `recharts`.
+
+```tsx
+import type { DefaultLegendContentProps } from "recharts"
+
+function MinhaLegenda({ payload }: DefaultLegendContentProps) {
+  return <ul className="flex gap-3 text-xs">{payload?.map((item) => <li key={String(item.value)}>{item.value}</li>)}</ul>
+}
+
+<ChartLegend content={MinhaLegenda} />
+```
+
+## v2.x — Radix
+
+`ChartLegendContent` recebe `Pick<LegendProps, "payload" | "verticalAlign">` do recharts 2.
+Legenda própria: tipe com `Pick<LegendProps, "payload">`.
+
+```tsx
+import type { LegendProps } from "recharts"
+
+function MinhaLegenda({ payload }: Pick<LegendProps, "payload">) {
+  return <ul className="flex gap-3 text-xs">{payload?.map((item) => <li key={String(item.value)}>{item.value}</li>)}</ul>
+}
+
+<ChartLegend content={<MinhaLegenda />} />
 ```
 
 ---

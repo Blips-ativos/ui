@@ -6,7 +6,7 @@ import {
   AvatarImage,
 } from "@blips/ui/components/avatar";
 
-export function AvatarGroupCountExample() {
+export default function AvatarGroupCountExample() {
   return (
     <AvatarGroup className="grayscale">
       <Avatar>

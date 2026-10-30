@@ -1,0 +1,97 @@
+---
+title: Message
+description: Estrutura uma mensagem de chat com avatar, conteúdo, cabeçalho e rodapé.
+---
+
+<ComponentPreview name="message-demo" />
+
+## Instalação
+
+```bash
+npm install @blips/ui
+```
+
+## Uso
+
+```tsx
+import { Bubble, BubbleContent } from "@blips/ui/components/bubble"
+import {
+  Message,
+  MessageAvatar,
+  MessageContent,
+  MessageFooter,
+  MessageGroup,
+  MessageHeader,
+} from "@blips/ui/components/message"
+```
+
+```tsx
+<Message align="end">
+  <MessageContent>
+    <Bubble>
+      <BubbleContent>Oi! Tudo certo?</BubbleContent>
+    </Bubble>
+  </MessageContent>
+</Message>
+```
+
+O `Message` cuida do layout da linha: alinhamento, avatar e as áreas de cabeçalho e rodapé. O balão em si é o [Bubble](/docs/components/bubble), e anexos usam o [Attachment](/docs/components/attachment). Para a lista rolável com autoscroll, combine com o [Message Scroller](/docs/components/message-scroller).
+
+## Exemplos
+
+### Avatar
+
+Use `MessageAvatar` para exibir quem enviou. Ele fica alinhado à base da mensagem e acompanha o lado definido por `align`.
+
+<ComponentPreview name="message-avatar" />
+
+### Grupo
+
+`MessageGroup` aproxima mensagens consecutivas da mesma pessoa. Um `MessageAvatar` vazio reserva o espaço do avatar para manter o alinhamento.
+
+<ComponentPreview name="message-group" />
+
+### Cabeçalho e rodapé
+
+`MessageHeader` mostra nome e horário; `MessageFooter` recebe status de entrega e ações. Com `align="end"`, o rodapé se alinha à direita.
+
+<ComponentPreview name="message-header-footer" />
+
+### Ações
+
+Coloque botões só com ícone no `MessageFooter` para copiar, avaliar ou reenviar. Sempre informe um `aria-label`.
+
+<ComponentPreview name="message-actions" />
+
+### Anexos
+
+Dentro de `MessageContent`, um `Attachment` se alinha como um balão.
+
+<ComponentPreview name="message-attachment" />
+
+## Referência da API
+
+### Message
+
+| Prop        | Type               | Default   |
+| ----------- | ------------------ | --------- |
+| `align`     | `"start" \| "end"` | `"start"` |
+| `className` | `string`           |           |
+
+Com `align="end"`, a linha é invertida (avatar à direita) e os filhos de `MessageContent` vão para o fim. O valor sai em `data-align`.
+
+### MessageGroup
+
+Agrupa mensagens com espaçamento menor (`gap-1.5`). Aceita as props de `div`.
+
+### MessageAvatar
+
+Contêiner redondo do avatar. Vazio, só reserva o espaço. Aceita as props de `div`.
+
+### MessageContent
+
+Coluna com o conteúdo da mensagem: balões, anexos, cabeçalho e rodapé. Aceita as props de `div`.
+
+### MessageHeader e MessageFooter
+
+Linhas de metadados em texto pequeno e `text-muted-foreground`. Aceitam as props de `div`.

@@ -14,30 +14,109 @@ npm install @blips/ui
 ## Uso
 
 ```tsx
+import { Button } from "@blips/ui/components/button"
 import {
   Tooltip,
   TooltipContent,
+  TooltipProvider,
   TooltipTrigger,
 } from "@blips/ui/components/tooltip"
 ```
 
 ```tsx
 <Tooltip>
-  <TooltipTrigger>Passe o mouse</TooltipTrigger>
+  <TooltipTrigger render={<Button variant="outline" />}>
+    Passe o mouse
+  </TooltipTrigger>
   <TooltipContent>
     <p>Adicionar à biblioteca</p>
   </TooltipContent>
 </Tooltip>
 ```
 
+O `Tooltip` funciona sem provider, com o atraso padrão do Base UI (cerca de 600ms). Para os tooltips abrirem na hora, como na v2, envolva o app num `TooltipProvider` (o da lib usa `delay={0}`):
+
+```tsx
+<TooltipProvider>
+  <App />
+</TooltipProvider>
+```
+
 ## Exemplos
 
-### Exemplo
+### Lados
 
-Exibe uma dica simples quando o usuário passa o mouse sobre o gatilho.
+Use a prop `side` no `TooltipContent` para escolher de que lado do gatilho o tooltip aparece.
 
-<ComponentPreview name="tooltip-demo" />
+<ComponentPreview name="tooltip-sides" />
+
+### Com ícone
+
+Num botão só de ícone, inclua um texto `sr-only` para leitores de tela.
+
+<ComponentPreview name="tooltip-icon" />
+
+### Com atalho de teclado
+
+Um `Kbd` dentro do `TooltipContent` recebe estilo próprio.
+
+<ComponentPreview name="tooltip-keyboard" />
+
+### Botão desabilitado
+
+Um botão desabilitado não dispara eventos de mouse. Renderize o gatilho como um `span` em volta dele.
+
+<ComponentPreview name="tooltip-disabled" />
+
+## Migrando da v2
+
+A primitiva passou de Radix para [Base UI Tooltip](https://base-ui.com/react/components/tooltip).
+
+- `asChild` saiu do `TooltipTrigger`. Use `render`.
+- O `Tooltip` não se envolve mais sozinho num `TooltipProvider`. Sem um provider ancestral, o atraso padrão é de cerca de 600ms.
+- No `TooltipProvider`, `delayDuration` vira `delay` e `skipDelayDuration` vira `timeout`. O atraso de um tooltip específico vai no `TooltipTrigger` (`delay`, `closeDelay`).
+- No `Tooltip` (root), `disableHoverableContent` vira `disableHoverablePopup`, e `onOpenChange` recebe `(open, eventDetails)`.
+- Variáveis CSS `--radix-tooltip-*` viram `--anchor-width`, `--available-height` e `--transform-origin`. A seta é sempre renderizada.
+
+```tsx
+// v2
+<TooltipProvider delayDuration={300}>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button size="icon">
+        <InfoIcon />
+      </Button>
+    </TooltipTrigger>
+    <TooltipContent>Informações</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+
+// v3
+<TooltipProvider delay={300}>
+  <Tooltip>
+    <TooltipTrigger render={<Button size="icon" />}>
+      <InfoIcon />
+    </TooltipTrigger>
+    <TooltipContent>Informações</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
 
 ## Referência da API
 
-Consulte a documentação do [Radix Tooltip](https://www.radix-ui.com/docs/primitives/components/tooltip#api-reference).
+### TooltipContent
+
+| Prop          | Tipo                                     | Padrão     |
+| ------------- | ---------------------------------------- | ---------- |
+| `side`        | `"top" \| "right" \| "bottom" \| "left"` | `"top"`    |
+| `sideOffset`  | `number`                                 | `4`        |
+| `align`       | `"start" \| "center" \| "end"`           | `"center"` |
+| `alignOffset` | `number`                                 | `0`        |
+
+### TooltipProvider
+
+| Prop    | Tipo     | Padrão |
+| ------- | -------- | ------ |
+| `delay` | `number` | `0`    |
+
+Consulte a documentação do [Base UI Tooltip](https://base-ui.com/react/components/tooltip).
